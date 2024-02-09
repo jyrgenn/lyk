@@ -7,4 +7,4 @@ build: $(SRCS) Makefile
 	$(COMP) $(SRCS)
 
 clean:
-	-rm -rf *~ org *.dSYM *.kexe *.class META-INF
+	-rm -rf *~ org *.dSYM *.kexe *.class META-INF lyk
