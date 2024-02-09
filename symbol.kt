@@ -3,9 +3,39 @@
 
 package org.w21.lyk
 
-class Symbol(val name: String, val immutable: Boolean = false): LispObject()
+val symbolTable: MutableMap<String, Symbol> = mutableMapOf()
+
+fun intern(name: String, immutable: Boolean = false): Symbol {
+    if (name in symbolTable.keys) {
+        return symbolTable[name] ?:
+            throw Exception(
+                "symbol $name in symbolTable is not in symbolTable"
+            )
+    }
+    val isKeyword = name.startsWith(":")
+    val sym = Symbol(name, immutable or isKeyword)
+    symbolTable[name] = sym
+    return sym
+}
+
+
+class Symbol(val name: String, val immutable: Boolean): LispObject()
 {
     val props: MutableMap<LispObject, LispObject> = mutableMapOf()
+
+    fun setValue(newvalue: LispObject) {
+        if (immutable) {
+            throw Exception("symbol $this is immutable")
+        } else {
+            currentEnv.setValue(this, newvalue)
+        }
+    }
+
+    fun getValue() = currentEnv.getValue(this)
+
+    fun setProp(propname: Symbol, propval: LispObject) {
+        props[propname] = propval
+    }
 
     override fun toString() = name
 }
