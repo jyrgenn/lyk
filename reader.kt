@@ -261,53 +261,64 @@ class Reader(input: Stream, sourceName: String): LocationHolder {
 
     fun readFreeRadixNumber(): Double {
         // #25R-7H and the like, radix first, in decimal
-        var digit_value: [Char: Int] = [
+        var digit_value = mapOf(
             '0' to 0, '1' to 1, '2' to 2, '3' to 3, '4' to 4,
             '5' to 5, '6' to 6, '7' to 7, '8' to 8, '9' to 9
-        ]
+        )
         var radix: Int = 0
-        
-        while var ch = try nextChar() {
-            if var value = digit_value[ch] {
+
+        while (true) {
+            val ch = nextChar()
+            var value = digit_value[ch]
+            if (value != null) {
                 radix = radix * 10 + value
-            } else if "rR".contains(ch) {
+            } else if (ch in "rR") {
                 break
             } else {
-                throw SyntaxError("unexpected char reading integer radix:"
-                                    + " `\(ch)`", this)
+                throw SyntaxError("unexpected char reading integer radix: $ch",
+                                  this)
             }
         }
-        if radix <= 36 && radix > 0 {
-            return try readRadixNumber(radix)
+        if (radix <= 36 && radix > 0) {
+            return readRadixNumber(radix)
         }
         throw ValueError("invalid number radix \(radix)")
     }
 
     fun readRadixNumber(radix: Int): Double {
-        var digits: [Char] = []
+        var digits: MutableList<Char> = mutableListOf()
         var sign = 1
         var first = true
+        var ch: Char? = null
 
-        while var ch = try nextChar() {
-            if first {
+        while (true) {
+            ch = nextChar()
+            if (ch == null) {
+                break
+            }
+            if (first) {
                 first = false
-                switch ch {
-                case '-': sign = -1; continue
-                case '+': continue
-                default: break
+                when (ch) {
+                    '-' ->{
+                        sign = -1
+                        continue
+                    }
+                    '+' -> continue
+                    else -> break
                 }
             }
-            if ch.isWhitespace || delimiter_chars.contains(ch) {
+            if (ch.isWhitespace || delimiter_chars.contains(ch)) {
                 unreadChar(ch)
                 break
             }
             digits.append(ch)
         }
-        var digs = String(digits)
-        if var value = Int(digs, radix: radix) {
-            return Double(value * sign)
+        val digs = String(digits)
+        try {
+            return Double(digs.toInt() * sign)
+        } catch (nfe: NumberFormatException) {
+            throw SyntaxError("not a number of base $radix: $digs", this)
         }
-        throw SyntaxError("not a number of base \(radix): \(digs)", this)
     }
     
 
