@@ -18,10 +18,65 @@ fun intern(name: String, immutable: Boolean = false): Symbol {
     return sym
 }
 
+fun uninternedSymbol(name: String, immutable: Boolean = false): Symbol {
+    val isKeyword = name.startsWith(":")
+    val sym = Symbol(name, immutable or isKeyword)
+    return sym
+}
+
+val symchars = "!#$%&*+-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{}~".toSet()
+
+fun isNumberString(s: String): Boolean {
+    try {
+        s.toDouble()
+        return true
+    } catch (e: Exception) {
+        return false
+    }
+}
 
 class Symbol(val name: String, val immutable: Boolean): LispObject()
 {
-    val props: MutableMap<LispObject, LispObject> = mutableMapOf()
+    val props: MutableMap<Symbol, LispObject> = mutableMapOf()
+    val descName = makeDescName()
+
+    fun makeDescName(): String {
+        var needQuoting = false
+
+        if (name == "") {
+            return "||"
+        }
+        if (name == ".") {
+            return "|.|"
+        }
+        if (name[0] in "#,") {
+            needQuoting = true
+        } else if (isNumberString(name)) {
+            needQuoting = true
+        } else {
+            for (ch in name) {
+                if (ch in symchars) {
+                    continue
+                }
+                needQuoting = true
+                break
+            }
+        }
+
+        if (needQuoting) {
+            var result: MutableList<Char> = mutableListOf('|')
+            for (ch in name) {
+                if (ch in "|\\") {
+                    result.add('\\')
+                }
+                result.add(ch)
+            }
+            result.add('|')
+            return result.joinToString(separator="")
+        } else {
+            return name
+        }
+    }
 
     fun setValue(newvalue: LispObject) {
         if (immutable) {
@@ -44,4 +99,6 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
     override fun bool() = this != Nil
 
     override fun toString() = name
+
+    override fun description() = descName
 }
