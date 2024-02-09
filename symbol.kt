@@ -33,9 +33,15 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
 
     fun getValue() = currentEnv.getValue(this)
 
-    fun setProp(propname: Symbol, propval: LispObject) {
-        props[propname] = propval
+    fun setProp(name: Symbol, value: LispObject) {
+        props[name] = value
     }
+
+    fun getProp(name: Symbol): LispObject {
+        return props[name] ?: Nil
+    }
+
+    override fun bool() = this != Nil
 
     override fun toString() = name
 }

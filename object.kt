@@ -14,7 +14,7 @@ abstract class LispObject {
     }
     
 
-    fun bool(): Boolean = true
+    open fun bool(): Boolean = true
 
     open fun description() = toString()
 
