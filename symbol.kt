@@ -38,7 +38,7 @@ fun isNumberString(s: String): Boolean {
 class Symbol(val name: String, val immutable: Boolean): LispObject()
 {
     val props: MutableMap<Symbol, LispObject> = mutableMapOf()
-    val descName = makeDescName()
+    lateinit val descName = makeDescName()
 
     fun makeDescName(): String {
         var needQuoting = false
