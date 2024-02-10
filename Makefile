@@ -1,6 +1,6 @@
 
 SRCS = cons.kt object.kt symbol.kt basedefs.kt main.kt environment.kt \
-	utils.kt
+	utils.kt exception.kt
 COMP = kotlinc-native
 
 compile-new:

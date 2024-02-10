@@ -5,35 +5,35 @@
 // their type; tokens for strings, symbols, numbers, and regexps also have some
 // value.
 
-class ReaderToken(reader: Reader): LocationHolder, CustomStringConvertible {
-    val sourceName: reader.sourceName
-    val line: reader.line
-    val column: reader.column
+open class ReaderToken(reader: Reader): LocationHolder {
+    val readerLocation = reader.location()
 
-    fun location() = "$source:$line:$column"
+    open override fun location() = readerLocation
     
-    fun description() = "${type(this)}"
+    open fun description() = "${this.type}"
 }
 
-class OparenToken: ReaderToken {}
-class CparenToken: ReaderToken {}
-class PeriodToken: ReaderToken {}
-class QuoteToken: ReaderToken {}
-class FunctionToken: ReaderToken {}
-class UnquoteToken: ReaderToken {}
-class QuasiquoteToken: ReaderToken {}
-class UnquoteSplicingToken: ReaderToken {}
-class StringToken(reader: Reader, value: String): ReaderToken {
-    override fun description() = super.description + "(\(value))"
+class OparenToken(reader: Reader): ReaderToken(reader)
+class CparenToken(reader: Reader): ReaderToken(reader) {}
+class PeriodToken(reader: Reader): ReaderToken(reader) {}
+class QuoteToken(reader: Reader): ReaderToken(reader) {}
+class FunctionToken(reader: Reader): ReaderToken(reader) {}
+class UnquoteToken(reader: Reader): ReaderToken(reader) {}
+class QuasiquoteToken(reader: Reader): ReaderToken(reader) {}
+class UnquoteSplicingToken(reader: Reader): ReaderToken(reader) {}
+open class StringToken(reader: Reader, val value: String): ReaderToken(reader) {
+    override fun description() = super.description() + "($value)"
 }
-class SymbolToken: StringToken {}
-class NumberToken(reader: Reader, value: Double): ReaderToken {
-    override fun description() = super.description + "(\(value))"
+class SymbolToken(reader: Reader, value: String):
+    StringToken(reader, value) {}
+class NumberToken(reader: Reader, val value: Double): ReaderToken(reader) {
+    override fun description() = super.description() + "($value)"
 }
-class TableStartToken: ReaderToken {}
-class VectorStartToken: ReaderToken {}
-class RegexpToken: StringToken {}
-class EOFToken: ReaderToken {}
+class TableStartToken(reader: Reader): ReaderToken(reader) {}
+class VectorStartToken(reader: Reader): ReaderToken(reader) {}
+class RegexpToken(reader: Reader, value: String):
+    StringToken(reader, value) {}
+class EOFToken(reader: Reader): ReaderToken(reader) {}
 
 
 val commentChar = ';'
@@ -45,10 +45,10 @@ val escape2specialChar = mapOf(
   "a" to "\u0007", "b" to "\b", "f" to "\u000c", "n" to "\n",
   "r" to "\r", "t" to "\t", "v" to "\u000b", "\"" to "\"", "\\" to "\\",
 )
-var specialChar2escaped = [
+var specialChar2escaped = mapOf(
   "\u0007" to "a", "\b" to "b", "\u000c" to "f", "\n" to "n",
   "\r" to "r", "\t" to "t", "\u000b" to "v", "\"" to "\"", "\\" to "\\",
-]
+)
 
 var QuoteSymbol = intern("quote", immutable=true)
 var UnquoteSymbol = intern("unquote", immutable=true)
@@ -67,7 +67,15 @@ fun closingOf(opening: Char): Char {
 }
 
 
-class Reader(input: Stream, sourceName: String): LocationHolder {
+fun the_int(s: String, radix = 10): Int? {
+    try {
+        return s.toInt(radix)
+    } catch (e: NumberFormatException) {
+        return null
+    }
+}
+
+class Reader(val input: Stream, val sourceName: String): LocationHolder {
     // This is a Lisp reader that on each call to read() returns an Objects as
     // found in the input stream, as long as it finds one. Then it returns nil,
     // meaning the input is read to the end.
@@ -84,9 +92,7 @@ class Reader(input: Stream, sourceName: String): LocationHolder {
     fun unreadToken(token: ReaderToken) {
         if (pushbackToken != null) {
             // InternalReaderError
-            throw Exception("pushbackToken $existing exists",
-                            self, // #function, #file, #line
-            )
+            throw InternalReaderError("pushbackToken $existing exists", this)
         }
         pushbackToken = token
     }
@@ -332,19 +338,19 @@ class Reader(input: Stream, sourceName: String): LocationHolder {
         // Maybe pulling the constant setup out to the top level could make this
         // faster. See later if it is worth the price.
         
-        enum CC: Int {                  // character class
-            case Bar = 0                // vertical bar
-            case Backsl                 // a backslash
-            case Delim                  // whitespace or some other delimiter
-            case Member                 // potential member of name or number
+        enum class CC(val v: Int) {   // character class
+            Bar(0),            // vertical bar
+            Backsl(1),         // a backslash
+            Delim(2),          // whitespace or some other delimiter
+            Member(3)          // potential member of name or number
         }
 
         fun charclass(ch: Char?): CC {
             // Return the class of a character.
-            if var ch = ch {
-                if ch == '|' { return CC.Bar }
-                if ch == '\\' { return CC.Backsl }
-                if ch.isWhitespace || delimiter_chars.contains(ch) {
+            if (ch != null) {
+                if (ch == '|') { return CC.Bar }
+                if (ch == '\\') { return CC.Backsl }
+                if (ch.isWhitespace || delimiter_chars.contains(ch)) {
                     return CC.Delim
                 }
                 return CC.Member
@@ -352,19 +358,19 @@ class Reader(input: Stream, sourceName: String): LocationHolder {
             return CC.Delim
         }
 
-        enum St: Int {                 // states
-            case initial = 0           // normal, nothing remarkable about this
-            case normesc               // escaped from initial state
-            case barred                // after a Bar (vs. *in* a bar)
-            case barresc               // escaped from barred state
-            case final                 // done with everything (crash otherwise)
+        enum class St(val v: Int) { // states
+            initial(0),    // normal, nothing remarkable about this
+            normesc(1),    // escaped from initial state
+            barred(2),     // after a Bar (vs. *in* a bar)
+            barresc(3),    // escaped from barred state
+            done(4)        // done with everything (crash otherwise)
         }
 
-        enum Ac {                       // actions
-            case none                   // do nothing except maybe change state
-            case collect                // collect character
-            case membar                 // remember being barred
-            case finish                 // unread character and return result
+        enum class Ac {                       // actions
+            none,                   // do nothing except maybe change state
+            collect,                // collect character
+            membar,                 // remember being barred
+            finish                 // unread character and return result
         }
         
         // 'Tis but a small table setup, luckily.
@@ -372,7 +378,7 @@ class Reader(input: Stream, sourceName: String): LocationHolder {
         // state transition table, by state (vertical) and cclass
         var newstate = [
             // Bar        Backsl      Delim       Member
-            [ St.barred,  St.normesc, St.final,   St.initial ], // initial
+            [ St.barred,  St.normesc, St.done,    St.initial ], // initial
             [ St.initial, St.initial, St.initial, St.initial ], // normesc
             [ St.initial, St.barresc, St.barred,  St.barred  ], // barred
             [ St.barred,  St.barred,  St.barred,  St.barred  ]  // barresc
@@ -388,54 +394,58 @@ class Reader(input: Stream, sourceName: String): LocationHolder {
         ]
         
         var was_barred = false          // was barred at some point => no number
-        var collected: [Char] = []
+        var collected: MutableList<Char> = []
         var the_state = St.initial
 
-        while the_state != St.final, var ch = try nextChar() {
+        while (the_state != St.final) {
+            var ch = nextChar()
+            if (ch == null) {
+                break
+            }
             var cclass = charclass(ch)
             var act = action[the_state.rawValue][cclass.rawValue]
             // print("next char is `\(ch)`, state \(the_state) cclass \(cclass)"
             //         + " action \(act)")
 
-            switch act {
-            case Ac.none:
-                break
-            case Ac.collect:
-                collected.append(ch)
-            case Ac.membar:
-                was_barred = true
-            case Ac.finish:
-                unreadChar(ch)
+            when (act) {
+                Ac.none    -> break
+                Ac.collect -> collected.append(ch)
+                Ac.membar  -> was_barred = true
+                Ac.finish  -> unreadChar(ch)
             }
             the_state = newstate[the_state.rawValue][cclass.rawValue]
         }
 
         var result = String(collected)
-        if was_barred {
-            return SymbolToken(this, value: result)
+        if (was_barred) {
+            return SymbolToken(this, result)
         }
 
-        if var num = Int(result) {
-            return NumberToken(this, value: Double(num))
+        var num = the_int(result)
+        if (num != null) {
+            return NumberToken(this, Double(num))
         }
-        if result.hasPrefix("0o") {
+        if (result.startsWith("0o")) {
             var result = result
             result.removeFirst(2)
-            if var num = Int(result, radix: 8) {
-                return NumberToken(this, value: Double(num))
+            var num = the_int(result, 8)
+            if (num != 0) {
+                return NumberToken(this, Double(num))
             }
         }
-        if result.hasPrefix("0b") {
+        if (result.startsWith("0b")) {
             var result = result
             result.removeFirst(2)
-            if var num = Int(result, radix: 2) {
-                return NumberToken(this, value: Double(num))
+            var num = the_int(result, 2)
+            if (num != null) {
+                return NumberToken(this, Double(num))
             }
         }
-        if var num = Double(result) {
-            return NumberToken(this, value: num)
+        var dnum = Double(result)
+        if (dnum != null) {
+            return NumberToken(this, dnum)
         }
-        return SymbolToken(this, value: result)
+        return SymbolToken(this, result)
     }
 
     fun read_stringlike(regexpp: Bool, endChar: Char): String {
@@ -443,10 +453,11 @@ class Reader(input: Stream, sourceName: String): LocationHolder {
         //
         // whatami is the name of the thing being read, for messages; endChar
         // is the char that stops the reading. Return the string contents.
-        var whatami = ["string", "regexp"][regexpp ? 1 : 0]
+        var whatami = ["string", "regexp"][if (regexpp) 1 else 0]
         var octaldigits = "01234567"
         var hexdigits = "0123456789abcdefABCDEF" // just to check membership!
-        var n_hexdigits: [Char: Int] = [ 'x' to 2, 'u' to 4, 'U' to 8 ]
+        var hexdigit_keys = "xuU"
+        var n_hexdigits = [ 'x' to 2, 'u' to 4, 'U' to 8 ]
 
         fun parse_octaldigits(first: Char): Char {
             // Read octal digits and return the number value
@@ -454,191 +465,180 @@ class Reader(input: Stream, sourceName: String): LocationHolder {
             // in length. There is at least one (the first, which we have read
             // already) and at most three, so we may now read up to two more.
             // Any character that is not an octal digit ends the sequence.
-            var digits = [first]
-            for _ in 1...3 {
-                guard var digit = try nextChar() else {
+            var digits: MutableList<Char> = [first]
+            for (_ in 1..3) {
+                var digit = nextChar()
+                if (digit == null) {
                     throw ParseError("unexpected EOF in string (octal)", this)
                 }
-                if !octaldigits.contains(digit) {
+                if (digit !in octaldigits) {
                     unreadChar(digit)
                     break
                 }
                 digits.append(digit)
             }
-            if var cvalue = Int(String(digits), radix: 8) {
-                if var scalar = Unicode.Scalar(cvalue) {
-                    return Char(scalar)
-                }
+            var cvalue = the_int(String(digits), 8)
+            if (cvalue != null) {
+                return cvalue.toChar()
             }
-            throw SyntaxError("cannot convert octal \(String(digits)) to char",
+            throw SyntaxError("cannot convert octal $digits to char",
                               this)
         }
 
         fun parse_hexdigits(ndigits: Int): Char {
             // Read a number of hex digits and return the number value.
-            var digits: [Char] = []
-            for _ in 1...ndigits {
-                guard var digit = try nextChar() else {
+            var digits: MutableList<Char> = []
+            for (_ in 1..ndigits) {
+                var digit = nextChar()
+                if (digit == null) {
                     throw ParseError("unexpected EOF in string (hex)", this)
                 }
-                if !hexdigits.contains(digit) {
-                    throw SyntaxError("invalid hex digit \(digit) in"
-                                   + " \(whatami) literal", this)
-                    // raise PyleSyntaxError(
-                    //     this,
-                    // "invalid hex digit in {} literal".format(whatami),
-                    //     digit)
+                if (digit !in hexdigits) {
+                    throw SyntaxError("invalid hex digit '$digit' in"
+                                   + " $whatami literal", this)
                 }
                 digits.append(digit)
             }
-            if var cvalue = (Int(String(digits), radix: 16)) {
-                if var scalar = Unicode.Scalar(cvalue) {
-                    return Char(scalar)
-                }
+            var cvalue = the_int(String(digits), 16)
+            if (cvalue != null) {
+                return cvalue.Char()
             }
-            throw SyntaxError("cannot convert hex \(String(digits)) to char",
+            throw SyntaxError("cannot convert hex '${String(digits)}' to char",
                               this)
         }
                 
 
-        var result: [Char] = []
+        var result: MutableList<Char> = []
         var after_backslash = false
-        while true {
-            if var ch = try nextChar() {
-                var to_append = ch
-                if after_backslash {
-                    // Now this is a bit tricky, as backslashes are for some
-                    // part used to escape regpexp specials chars, as * or +,
-                    // and for another to escape those that are special chars in
-                    // strings. Holy bovine, she is dumping!
-                    if var c = escape2specialChar[ch] {
-                        to_append = c
-                    } else if var n = n_hexdigits[ch] {
-                        to_append = try parse_hexdigits(ndigits: n)
-                    } else if octaldigits.contains(ch) {
-                        to_append = try parse_octaldigits(first: ch)
-                    } else if ch == endChar {
-                        // insert this if it is backslash-escaped
-                    } else if regexpp {  // need literal backslash after all
-                        result.append('\\')
-                    }
-                    after_backslash = false
-                } else {
-                    if ch == '\\' {
-                        after_backslash = true
-                        continue
-                    }
-                    if ch == endChar {
-                        break
-                    }
-                }
-                result.append(to_append)
-            } else {
-                throw ParseError("EOF in \(whatami) literal", this)
+        while (true) {
+            var ch = nextChar()
+            if (ch == null) {
+                throw ParseError("EOF in $whatami literal", this)
             }
+            var to_append = ch
+            if (after_backslash) {
+                // Now this is a bit tricky, as backslashes are for some
+                // part used to escape regpexp specials chars, as * or +,
+                // and for another to escape those that are special chars in
+                // strings. Holy bovine, she is dumping!
+                if (ch in escape2specialChar.keys) {
+                    to_append = escape2specialChar.getValue(ch)
+                } else if (ch in hexdigits.keys) {
+                    to_append = parse_hexdigits(n_hexdigits.getValue(ch))
+                } else if (ch in octaldigits) {
+                    to_append = parse_octaldigits(ch)
+                } else if (ch == endChar) {
+                    // insert this if it is backslash-escaped
+                } else if (regexpp) {  // need literal backslash after all
+                    result.append('\\')
+                }
+                after_backslash = false
+            } else {
+                if (ch == '\\') {
+                    after_backslash = true
+                    continue
+                }
+                if (ch == endChar) {
+                    break
+                }
+            }
+            result.append(to_append)
         }
         return String(result)
     }
     
     fun readRegexp(endChar: Char): ReaderToken {
         // Read a regexp from the input. '#/' has already been seen.
-        return RegexpToken(this,
-                           value: try read_stringlike(regexpp: true,
-                                                  endChar: endChar))
+        return RegexpToken(this, read_stringlike(regexpp = true,
+                                                 endChar = endChar))
     }
     
 
     fun readStringToken(): ReaderToken {
         // Read a string from the input, return a StringToken."""
-        return StringToken(this,
-                           value: try read_stringlike(regexpp: false,
-                                                  endChar: '\"'))
+        return StringToken(this, read_stringlike(regexpp = false,
+                                                 endChar = '\"'))
     }
 
 
     fun skipRestOfLine() {
-        while var ch = try nextChar() {
-            if ch == '\n' {
+        var ch: Char = null
+        do {
+            ch = nextChar()
+            if (ch == '\n') {
                 break
             }
-        }
+        } while (ch != null)
     }
 
 
     fun read(): Object? {
         // Read an expression from the input and return it.
-        do {
-            var token = try nextToken()
-            var macroSymbol: Symbol?
-            
-            switch token {
-            case is SymbolToken:
-                return intern((token as! SymbolToken).value)
-            case is NumberToken:
-                return makeNumber((token as! NumberToken).value)
-            case is StringToken:
-                return makeString((token as! StringToken).value)
-            case is OparenToken:
-                return try readList()
-            case is TableStartToken:
-                return try readTable()
-            case is VectorStartToken:
-                return try readVector()
-            case is RegexpToken:
-                return try Regexp((token as! RegexpToken).value)
-            case is QuoteToken:
+        var token = nextToken()
+        var macroSymbol: Symbol? = null
+        
+        when (token) {
+            is SymbolToken ->
+                return intern(token.value)
+            is NumberToken ->
+                return makeNumber(token.value)
+            is StringToken ->
+                return makeString(token.value)
+            is OparenToken ->
+                return readList()
+            is TableStartToken ->
+                return readTable()
+            is VectorStartToken ->
+                return readVector()
+            is RegexpToken ->
+                return Regexp(token.value)
+            is QuoteToken ->
                 macroSymbol = QuoteSymbol
-            case is FunctionToken:
+            is FunctionToken ->
                 macroSymbol = FunctionSymbol
-            case is UnquoteToken:
+            is UnquoteToken ->
                 macroSymbol = UnquoteSymbol
-            case is QuasiquoteToken:
+            is QuasiquoteToken ->
                 macroSymbol = QuasiquoteSymbol
-            case is UnquoteSplicingToken:
+            is UnquoteSplicingToken ->
                 macroSymbol = UnquoteSplicingSymbol
-            case is EOFToken:
+            is EOFToken ->
                 return null
-            case is CparenToken:
+            is CparenToken ->
                 throw SyntaxError("unexpected closing parenthesis", this)
-            case is PeriodToken:
+            is PeriodToken ->
                 throw SyntaxError("unexpected dot", this)
-            default:
-                throw SyntaxError("unexpected \(token)", this)
-            }
-            
-            if var macroFunction = macroSymbol {
-                guard var macroArg = try read() else {
-                    throw ParseError("unexpected EOF after `\(macroFunction)",
-                                     this)
-                }
-                return ListCollector(macroFunction, macroArg).list
-            }
-            throw InternalReaderError("must not reach this", this, #function,
-                                      #file, #line)
-                                      
-        } catch {
-            throw error
+            else ->
+                throw SyntaxError("unexpected $token", this)
         }
+        
+        if (macroSymbol != null) {
+            var macroArg = read() ?:
+                throw ParseError("unexpected EOF after $macroSymbol",
+                                 this)
+            return ListCollector(macroFunction, macroArg).list
+        }
+        throw InternalReaderError("must not reach this: Reader.read()")
     }
             
 
     fun readTable(): Object {
         // Read the body of a table. '#:' has already been read.
-        var token = try nextToken()
-        if !(token is OparenToken) {
-            throw SyntaxError("invalid \(token) expecting '(' in a table", this)
+        var token = nextToken()
+        if (token !is OparenToken) {
+            throw SyntaxError("invalid $token expecting '(' in a table", this)
         }
         var lc = ListCollector()
-        while true {
-            token = try nextToken()
-            switch token {
-            case is OparenToken:
-                lc.append(try readList())
-            case is CparenToken:
-                return try Table(lc.list)
-            default:
-                throw SyntaxError("invalid \(token) expecting key/value"
-                               + " pair in a table", this)
+        while (true) {
+            token = nextToken()
+            when (token) {
+                is OparenToken ->
+                    lc.append(readList())
+                is CparenToken ->
+                    return Table(lc.list)
+                else ->
+                    throw SyntaxError("invalid \(token) expecting key/value"
+                                      + " pair in a table", this)
             }
         }
     }
@@ -647,21 +647,22 @@ class Reader(input: Stream, sourceName: String): LocationHolder {
     fun readVector(): Object {
         // Read a vector from the input and return it.
         var lc = ListCollector()
-        while true {
-            var token = try nextToken()
-            switch token {
-            case is CparenToken:
-                return Vector(lc.list)
-            case is PeriodToken:
-                throw SyntaxError ("unexpected period in vector", this)
-            case is EOFToken:
-                throw ParseError("unexpected EOF in vector", this)
-            default:
-                try unreadToken(token)
-                guard var obj = try read() else {
-                    throw ParseError("EOF when expecting vector element", this)
+        while (true) {
+            var token = nextToken()
+            when (token) {
+                is CparenToken ->
+                    return Vector(lc.list)
+                is PeriodToken ->
+                    throw SyntaxError ("unexpected period in vector", this)
+                is EOFToken ->
+                    throw ParseError("unexpected EOF in vector", this)
+                else -> {
+                    unreadToken(token)
+                    obj = read() ?:
+                        throw ParseError("EOF when expecting vector element",
+                                         this)
+                    lc.append(obj)
                 }
-                lc.append(obj)
             }
         }
     }
@@ -670,35 +671,37 @@ class Reader(input: Stream, sourceName: String): LocationHolder {
     fun readList(): Object {
         // Read a list from the input and return it.
         var lc = ListCollector()
-        while true {
-            var token = try nextToken()
-            switch token {
-            case is PeriodToken:
-                if lc.list === Null {
-                    throw SyntaxError("unexpected dot at beginning of list",
-                                      token)
+        while (true) {
+            var token = nextToken()
+            when (token) {
+                is PeriodToken -> {
+                    if (lc.list() == Nil) {
+                        throw SyntaxError("unexpected dot at beginning of list",
+                                          token)
+                    }
+                    var elem = read() ?:
+                        throw ParseError("EOF reading list element after `.`",
+                                         this)
+                    lc.lastcdr(elem)
+                    var next = nextToken()
+                    if (next is CparenToken) {
+                        return lc.list
+                    } else {
+                        throw SyntaxError("unexpected \(next) in list"
+                                          + " where ')' expected after `.`",
+                                          this)
+                    }
                 }
-                guard var elem = try read() else {
-                    throw ParseError("EOF reading list element after `.`", this)
-                }
-                lc.lastcdr(elem)
-                var next = try nextToken()
-                if next is CparenToken {
+                is CparenToken ->
                     return lc.list
-                } else {
-                    throw SyntaxError("unexpected \(next) in list"
-                                        + " where ')' expected after `.`", this)
+                is EOFToken ->
+                    throw ParseError("EOF in list", this)
+                else -> {
+                    unreadToken(token)
+                    var elem = read() ?:
+                        throw ParseError("EOF reading list element", this)
+                    lc.append(elem)
                 }
-            case is CparenToken:
-                return lc.list
-            case is EOFToken:
-                throw ParseError("EOF in list", this)
-            default:
-                try unreadToken(token)
-                guard var elem = try read() else {
-                    throw ParseError("EOF reading list element", this)
-                }
-                lc.append(elem)
             }
         }
     }
