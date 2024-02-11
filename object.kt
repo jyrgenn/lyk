@@ -20,13 +20,12 @@ abstract class LispObject {
 
     open fun description() = toString()
 
-
     open fun length(): Int {
         throw ValueError("$this has no length")
     }
 
     override fun toString(): String {
-        return "Object[$id]{type}"
+        return "Object[$id]{${typeOf(this)}}"
     }
 
     open fun equal(other: LispObject) = false

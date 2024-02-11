@@ -89,9 +89,12 @@ class CharBuf {
     }
 }
 
-class StrBuf {
+class StrBuf() {
     val buf = mutableListOf<String>()
 
+    constructor(s: String) : this() {
+        buf.add(s)
+    }
     fun add(ch: Char) {
         buf.add(ch.toString())
     }

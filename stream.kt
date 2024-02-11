@@ -1,29 +1,93 @@
 package org.w21.lyk
 
+import java.io.File
+
+val stdinName  = "*stdin*"
+val stdoutName = "*stdout*"
+val stderrName = "*stderr*"
+val stdinPath  = "/dev/stdin"
+val stdoutPath = "/dev/stdout"
+val stderrPath = "/dev/stderr"
 
 
-class Stream(
-    val input: Boolean = true,       // is input stream?
-    val output: Boolean = false,     // is output stream?
-    val error: Boolean = false,      // i.e. stderr
-    val name: String? = null, // pathname or *stdin/out/err* or
-    // network something
-    val path: String? = null, // file pathname
-    val append: Boolean = false,
+class StdinStream(): FileReaderStream(stdinPath, stdinName)
+class StdoutStream(): FileWriterStream(stdoutPath, stdoutName)
+
+open class FileReaderStream(path: String, name: String? = null):
+    Stream(input = true, path = path, name = name ?: path)
+{
+    val fileReader = File(path).bufferedReader()
+
+    override fun read(): Char? {
+        val C = fileReader.read()       // returns an Int!
+        if (C < 0) {
+            return null
+        }
+        return C.toChar()
+    }
+    
+    override fun write(ch: Char) {
+        throw IOError("read on output stream $this")
+    }
+    override fun write(s: String) {
+        throw IOError("read on output stream $this")
+    }
+}
+
+open class FileWriterStream(path: String,
+                            name: String? = null,
+                            // append: Boolean = false,
+                            // create: Boolean = true,
+                            // exclusive: Boolean = false
+): Stream(output = true, path = path, name = name ?: path)
+{
+    val fileWriter = File(path).bufferedWriter()
+
+    override fun read(): Char? {
+        throw IOError("read on output stream $this")
+    }
+    
+    override fun write(ch: Char) {
+        fileWriter.write(ch.code)
+    }
+    override fun write(s: String) {
+        fileWriter.write(s)
+    }
+}
+
+abstract class Stream(
+    val input: Boolean = false,         // is input stream?
+    val output: Boolean = false,        // is output stream?
+    val error: Boolean = false,         // i.e. stderr
+    val name: String? = null,           // pathname or *stdin/out/err* or
+                                        // network something
+    val path: String? = null,           // file pathname
+    val append: Boolean = false,        // "a"
 ): LispObject() {
-
     var charUnread: Char? = null
 
+    abstract fun read(): Char?          // the actual reading
+    abstract fun write(ch: Char)
+    abstract fun write(s: String)
+    
     fun readChar(): Char? {
         if (charUnread != null) {
-            val ch = charUnread!!
+            val ch = charUnread
             charUnread = null
             return ch
         }
-        return 'a'
+        return read()
     }
 
     fun unreadChar(ch : Char) {
         charUnread = ch
     }
+
+    override fun toString(): String {
+        val i = if (input) "I" else ""
+        val o = if (input) "O" else ""
+        val e = if (error) "E" else ""
+        return "#<${typeOf(this)}[$i$o$e]$name>"
+    }
+    override fun description() = toString()
 }

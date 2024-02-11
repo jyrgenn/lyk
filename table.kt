@@ -17,10 +17,6 @@ class Table(elems: LispObject): LispObject(), Callable {
         }
     }
 
-    override fun description(): String {
-        return "#:" + pairs().description()
-    }
-
     fun get(key: LispObject, defaultvalue: LispObject = Nil): LispObject {
         val value = the_table[key]
         if (value != null) {
@@ -88,5 +84,20 @@ class Table(elems: LispObject): LispObject(), Callable {
 
     override fun call(arglist: LispObject): LispObject {
         return Nil
+    }
+
+    override fun description() = toString()
+
+    override fun toString(): String {
+        val buf = StrBuf("#:(")
+        for ((key, value) in the_table) {
+            buf.add("(")
+            buf.add(key.description())
+            buf.add(" . ")
+            buf.add(value.description())
+            buf.add(")")
+        }
+        buf.add(")")
+        return buf.toString()
     }
 }

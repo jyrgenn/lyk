@@ -27,6 +27,7 @@ class Vector(): LispObject() {
         }
         return "#(" + elems.join(" ") + ")"
     }
+    override fun toString() = description()
     
     fun get(index: Int): LispObject {
              if (index >= 0 && index < the_vector.size) {

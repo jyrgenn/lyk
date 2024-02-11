@@ -36,3 +36,4 @@ class TypeError(error: String, lh: LocationHolder?): ValueError(error, lh) {
     constructor(error: String) : this(error, null) {}
 }
 
+class IOError(error: String): Exception(error)

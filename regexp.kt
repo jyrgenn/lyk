@@ -8,6 +8,7 @@ class Regexp(pattern: String): LispObject() {
     }
 
     override fun description() = "#/${regex.pattern}/)"
+    override fun toString() = description()
 
     fun match(s: String): List {
         var lc = ListCollector()

@@ -6,3 +6,6 @@ META-INF
 *.kexe.dSYM
 lyk
 org
+
+# added by ni/gitignore 2024-02-11T17:40:48
+*.jar

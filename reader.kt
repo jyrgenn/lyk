@@ -88,18 +88,19 @@ fun the_double(s: String): Double? {
 }
 
 
-class Reader(val input: Stream, val sourceName: String): LocationHolder {
+class Reader(val input: Stream): LocationHolder
+{
     // This is a Lisp reader that on each call to read() returns an Objects as
     // found in the input stream, as long as it finds one. Then it returns nil,
     // meaning the input is read to the end.
-    
+
     var line = 1                        // current line
     var column = 0                      // current column read
     var pushbackToken: ReaderToken? = null
     
 
     override fun location(): String {
-        return "$sourceName:$line:$column"
+        return "${input.name}:$line:$column"
     }
 
     fun unreadToken(token: ReaderToken) {
@@ -421,8 +422,8 @@ class Reader(val input: Stream, val sourceName: String): LocationHolder {
             }
             var cclass = charclass(ch)
             var act = action[the_state.ordinal][cclass.ordinal]
-            println("next char is `$ch`, state $the_state cclass $cclass"
-                    + " action $act")
+            // println("next char is `$ch`, state $the_state cclass $cclass"
+            //         + " action $act")
 
             when (act) {
                 Ac.none    -> break

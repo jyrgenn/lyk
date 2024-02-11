@@ -34,7 +34,8 @@ class Number(val value: Double): LispObject() {
     fun isInt() = value == value.toInt().toDouble()
     
     override fun description(): String {
-        if (value <= Int.MAX_VALUE.toDouble()) {
+        if (value <= Int.MAX_VALUE.toDouble()
+                && value >= Int.MIN_VALUE.toDouble()) {
             val intVal = value.toInt()
             if (value == intVal.toDouble()) {
                 return intVal.toString()
@@ -42,6 +43,8 @@ class Number(val value: Double): LispObject() {
         }
         return value.toString()
     }
+
+    override fun toString() = description()
 
     // // return true iff self is less than other
     // fun cmp_lt(_ other: Comparable): Bool {
