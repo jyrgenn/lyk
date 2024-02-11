@@ -4,7 +4,8 @@ SRCS = cons.kt object.kt symbol.kt basedefs.kt main.kt environment.kt \
 COMP = kotlinc-native
 
 compile-new:
-	kotlinc $(SRCS) reader.kt stream.kt
+	kotlinc $(SRCS) reader.kt stream.kt number.kt string.kt regexp.kt \
+		table.kt vector.kt
 
 build: $(SRCS) Makefile
 	$(COMP) $(SRCS)

@@ -3,8 +3,8 @@
 package org.w21.lyk
 
 
-
-data class Cons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
+data class Cons(var car: LispObject,
+                var cdr: LispObject = Nil): LispObject(), List {
 
     override fun toString(): String {
         return "(${car.toString()} . ${cdr.toString()})"
@@ -16,5 +16,17 @@ data class Cons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
 
     fun rplacd(newcdr: LispObject) {
         cdr = newcdr
+    }
+
+    override fun car(): LispObject {
+        return car
+    }
+
+    override fun cdr(): LispObject {
+        return cdr
+    }
+
+    override fun iterator(): ListIterator {
+        return ListIterator(this)
     }
 }

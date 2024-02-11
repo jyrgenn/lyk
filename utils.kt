@@ -1,17 +1,50 @@
+package org.w21.lyk
+
 
 fun interface LocationHolder {
     fun location(): String
 }
 
+fun interface Callable {
+    fun call(arglist: LispObject): LispObject
+}
 
-class ListCollector {
-    var head: Object = Nil
-    var last: Cons? = null
+interface List: Iterable<LispObject> {
+    fun car(): LispObject
+    fun cdr(): LispObject
+}
 
-    fun append(arg: Object) {
+class ListIterator(var l: List): Iterator<LispObject> {
+    val original = l
+    override fun hasNext(): Boolean {
+        return l != Nil
+    }
+    override fun next(): LispObject {
+        val obj = l.car()
+        val next_l = l.cdr()
+        if (next_l is List) {
+            l = next_l
+            return obj
+        }
+        throw ValueError("iterated over improper list $original")
+    }
+}
+
+
+class ListCollector(vararg objects: LispObject) {
+    var head: LispObject = Nil
+    var last: LispObject? = null
+
+    init {
+        for (obj in objects) {
+            add(obj)
+        }
+    }
+
+    fun add(arg: LispObject) {
         val newpair = Cons(arg, Nil)
-        if (last != null) {
-            last.rplacd(newpair)
+        if (last is Cons) {
+            (last as Cons).rplacd(newpair)
         } else {
             head = newpair
         }
@@ -19,8 +52,8 @@ class ListCollector {
     }
 
     fun lastcdr(arg: LispObject) {
-        if (last is Pair) {
-            last.rplacd(arg)
+        if (last is Cons) {
+            (last as Cons).rplacd(arg)
         } else {
             last = arg
             head = arg
@@ -29,3 +62,50 @@ class ListCollector {
 
     fun list() = head
 }
+
+fun typeOf(obj: Any): String {
+    if (obj is LispString) {
+        return "string"
+    }
+    return "${obj::class.simpleName}".lowercase()
+}
+
+class CharBuf {
+    val chars = mutableListOf<Char>()
+
+    constructor() {
+        
+    }
+    constructor(ch: Char) {
+        chars.add(ch)
+    }
+
+    fun add(ch: Char) {
+        chars.add(ch)
+    }
+    
+    override fun toString(): String {
+        return chars.joinToString(separator = "")
+    }
+}
+
+class StrBuf {
+    val buf = mutableListOf<String>()
+
+    fun add(ch: Char) {
+        buf.add(ch.toString())
+    }
+    fun add(s: String) {
+        buf.add(s)
+    }
+    
+    override fun toString(): String {
+        return buf.joinToString(separator = "")
+    }
+
+    fun join(separator: String): String {
+        return buf.joinToString(separator = separator)
+    }
+}
+
+

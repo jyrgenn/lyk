@@ -19,6 +19,6 @@ fun main() {
                         "cdr"
          )) {
         val sym = intern(name)
-        println("sym \"$name\" = ${sym.description()}")
+        println("sym \"$name\" [${typeOf(sym)}] = ${sym.description()}")
     }
 }

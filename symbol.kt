@@ -35,7 +35,7 @@ fun isNumberString(s: String): Boolean {
     }
 }
 
-class Symbol(val name: String, val immutable: Boolean): LispObject()
+class Symbol(val name: String, val immutable: Boolean): LispObject(), List
 {
     val props: MutableMap<Symbol, LispObject> = mutableMapOf()
     val descName = makeDescName()
@@ -94,6 +94,27 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
 
     fun getProp(name: Symbol): LispObject {
         return props[name] ?: Nil
+    }
+
+    override fun car(): LispObject {
+        if (this === Nil) {
+            return Nil
+        }
+        throw ValueError("called car() of non-nil symbol $descName")
+    }
+
+    override fun cdr(): LispObject {
+        if (this === Nil) {
+            return Nil
+        }
+        throw ValueError("called cdr() of non-nil symbol $descName")
+    }
+
+    override fun iterator(): ListIterator {
+        if (this === Nil) {
+            return ListIterator(this)
+        }
+        throw ValueError("called iterator() of non-nil symbol $descName")
     }
 
     override fun bool() = this != Nil

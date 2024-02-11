@@ -14,16 +14,21 @@ abstract class LispObject {
     }
     
 
-    open fun bool(): Boolean = true
+    open fun bool() = true
+
+    open fun isAtom() = false
 
     open fun description() = toString()
 
+
     open fun length(): Int {
-        // should throw a more specific Exception some time
-        throw Exception("$this has no length")
+        throw ValueError("$this has no length")
     }
 
     override fun toString(): String {
         return "Object[$id]{type}"
     }
+
+    open fun equal(other: LispObject) = false
+
 }
