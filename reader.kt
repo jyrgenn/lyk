@@ -191,7 +191,7 @@ class Reader(val input: Stream): LocationHolder
         // that has been unread before.
 
         if (pushbackToken != null) {
-            val token = pushbackToken
+            val token = pushbackToken!!
             pushbackToken = null
             return token
         }
