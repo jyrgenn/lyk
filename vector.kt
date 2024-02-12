@@ -20,14 +20,14 @@ class Vector(): LispObject() {
         }
     }
 
-    override fun description(): String {
+    override fun desc(): String {
         var elems = StrBuf()
         for (elem in the_vector) {
-            elems.add(elem.description())
+            elems.add(elem.desc())
         }
         return "#(" + elems.join(" ") + ")"
     }
-    override fun toString() = description()
+    override fun toString() = desc()
     
     fun get(index: Int): LispObject {
              if (index >= 0 && index < the_vector.size) {

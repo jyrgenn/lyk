@@ -11,7 +11,7 @@ data class Cons(var car: LispObject,
 
         var elem: LispObject = this
         while (elem is Cons) {
-            result.add(elem.car().description())
+            result.add(elem.car().desc())
             if (elem.cdr !== Nil) {
                 result.add(" ")
             }
@@ -19,13 +19,13 @@ data class Cons(var car: LispObject,
         }
         if (elem !== Nil) {
             result.add(". ")
-            result.add(elem.description())
+            result.add(elem.desc())
         }
         result.add(")")
         return result.toString()
     }
 
-    override fun description() = toString()
+    override fun desc() = toString()
 
     fun rplaca(newcar: LispObject) {
         car = newcar

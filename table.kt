@@ -86,15 +86,15 @@ class Table(elems: LispObject): LispObject(), Callable {
         return Nil
     }
 
-    override fun description() = toString()
+    override fun desc() = toString()
 
     override fun toString(): String {
         val buf = StrBuf("#:(")
         for ((key, value) in the_table) {
             buf.add("(")
-            buf.add(key.description())
+            buf.add(key.desc())
             buf.add(" . ")
-            buf.add(value.description())
+            buf.add(value.desc())
             buf.add(")")
         }
         buf.add(")")

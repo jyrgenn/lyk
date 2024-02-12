@@ -111,7 +111,7 @@ abstract class Stream(
         val i = if (input) "I" else ""
         val o = if (output) "O" else ""
         val e = if (error) "E" else ""
-        return "#<${typeOf(this)}[$i$o$e]$name>"
+        return "#<${type()}[$i$o$e]$name>"
     }
-    override fun description() = toString()
+    override fun desc() = toString()
 }

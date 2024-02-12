@@ -16,7 +16,7 @@ class LispString(val value: String): LispObject() {
     override fun toString() = value
 
     // with all quoting and stuff
-    override fun description(): String {
+    override fun desc(): String {
         var result = CharBuf('\"')
         for (ch in value) {
             if (ch in "\\\"") {

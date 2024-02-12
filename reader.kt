@@ -11,8 +11,8 @@ open class ReaderToken(reader: Reader): LocationHolder {
     val readerLocation = reader.location()
 
     open override fun location() = readerLocation
-    open fun description() = "${typeOf(this)}"
-    override fun toString() = description()
+    open fun desc() = typeOf(this)
+    override fun toString() = desc()
 }
 
 // WARNING: don't let these inherit from another -- they must be disjoint types,
@@ -28,16 +28,16 @@ class UnquoteSplicingToken(reader: Reader): ReaderToken(reader) {}
 class TableStartToken(reader: Reader): ReaderToken(reader) {}
 class VectorStartToken(reader: Reader): ReaderToken(reader) {}
 class StringToken(reader: Reader, val value: String): ReaderToken(reader) {
-    override fun description() = super.description() + "($value)"
+    override fun desc() = super.desc() + "($value)"
 }
 class SymbolToken(reader: Reader, val value: String): ReaderToken(reader) {
-    override fun description() = super.description() + "($value)"
+    override fun desc() = super.desc() + "($value)"
 }
 class NumberToken(reader: Reader, val value: Double): ReaderToken(reader) {
-    override fun description() = super.description() + "($value)"
+    override fun desc() = super.desc() + "($value)"
 }
 class RegexpToken(reader: Reader, val value: String): ReaderToken(reader) {
-    override fun description() = super.description() + "($value)"
+    override fun desc() = super.desc() + "($value)"
 }
 class EOFToken(reader: Reader): ReaderToken(reader) {}
 
@@ -106,7 +106,7 @@ class Reader(val input: Stream): LocationHolder
     override fun toString(): String {
         return "#<${typeOf(this)}:$input>"
     }
-    fun description() = toString()
+    fun desc() = toString()
 
     override fun location(): String {
         return "${input.name}:$line:$column"

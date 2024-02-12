@@ -121,5 +121,5 @@ class Symbol(val name: String, val immutable: Boolean): LispObject(), List
 
     override fun toString() = name
 
-    override fun description() = descName
+    override fun desc() = descName
 }

@@ -10,8 +10,8 @@ class Regexp(pattern: String): LispObject() {
         regex = Regex(pattern)
     }
 
-    override fun description() = "#/${regex.pattern}/"
-    override fun toString() = description()
+    override fun desc() = "#/${regex.pattern}/"
+    override fun toString() = desc()
 
     fun match(s: String): List {
         val lc = ListCollector()

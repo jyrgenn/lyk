@@ -18,14 +18,16 @@ abstract class LispObject {
 
     open fun isAtom() = false
 
-    open fun description() = toString()
+    open fun desc() = toString()
+
+    fun type() = typeOf(this)
 
     open fun length(): Int {
         throw ValueError("$this has no length")
     }
 
     override fun toString(): String {
-        return "Object[$id]{${typeOf(this)}}"
+        return "Object[$id]{${type()}}"
     }
 
     open fun equal(other: LispObject) = false
