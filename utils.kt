@@ -67,7 +67,7 @@ fun typeOf(obj: Any): String {
     if (obj is LispString) {
         return "string"
     }
-    return "${obj::class.simpleName}".lowercase()
+    return "${obj::class.simpleName}"//.lowercase()
 }
 
 class CharBuf {

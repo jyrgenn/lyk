@@ -1,4 +1,7 @@
+// Regular expressions
+
 package org.w21.lyk
+
 
 class Regexp(pattern: String): LispObject() {
     val regex: Regex
@@ -7,11 +10,11 @@ class Regexp(pattern: String): LispObject() {
         regex = Regex(pattern)
     }
 
-    override fun description() = "#/${regex.pattern}/)"
+    override fun description() = "#/${regex.pattern}/"
     override fun toString() = description()
 
     fun match(s: String): List {
-        var lc = ListCollector()
+        val lc = ListCollector()
         for (match in regex.findAll(s)) {
             lc.add(LispString(match.value))
         }

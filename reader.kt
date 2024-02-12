@@ -11,10 +11,12 @@ open class ReaderToken(reader: Reader): LocationHolder {
     val readerLocation = reader.location()
 
     open override fun location() = readerLocation
-    
     open fun description() = "${typeOf(this)}"
+    override fun toString() = description()
 }
 
+// WARNING: don't let these inherit from another -- they must be disjoint types,
+// or otherwise the type checks depend on order, which is not good
 class OparenToken(reader: Reader): ReaderToken(reader)
 class CparenToken(reader: Reader): ReaderToken(reader) {}
 class PeriodToken(reader: Reader): ReaderToken(reader) {}
@@ -23,18 +25,20 @@ class FunctionToken(reader: Reader): ReaderToken(reader) {}
 class UnquoteToken(reader: Reader): ReaderToken(reader) {}
 class QuasiquoteToken(reader: Reader): ReaderToken(reader) {}
 class UnquoteSplicingToken(reader: Reader): ReaderToken(reader) {}
-open class StringToken(reader: Reader, val value: String): ReaderToken(reader) {
+class TableStartToken(reader: Reader): ReaderToken(reader) {}
+class VectorStartToken(reader: Reader): ReaderToken(reader) {}
+class StringToken(reader: Reader, val value: String): ReaderToken(reader) {
     override fun description() = super.description() + "($value)"
 }
-class SymbolToken(reader: Reader, value: String):
-    StringToken(reader, value) {}
+class SymbolToken(reader: Reader, val value: String): ReaderToken(reader) {
+    override fun description() = super.description() + "($value)"
+}
 class NumberToken(reader: Reader, val value: Double): ReaderToken(reader) {
     override fun description() = super.description() + "($value)"
 }
-class TableStartToken(reader: Reader): ReaderToken(reader) {}
-class VectorStartToken(reader: Reader): ReaderToken(reader) {}
-class RegexpToken(reader: Reader, value: String):
-    StringToken(reader, value) {}
+class RegexpToken(reader: Reader, val value: String): ReaderToken(reader) {
+    override fun description() = super.description() + "($value)"
+}
 class EOFToken(reader: Reader): ReaderToken(reader) {}
 
 
@@ -47,7 +51,7 @@ val escape2specialChar = mapOf(
   'a' to '\u0007', 'b' to '\b', 'f' to '\u000c', 'n' to '\n',
   'r' to '\r', 't' to '\t', 'v' to '\u000b', '\"' to '\"', '\\' to '\\',
 )
-var specialChar2escaped = mapOf(
+val specialChar2escaped = mapOf(
   '\u0007' to 'a', '\b' to 'b', '\u000c' to 'f', '\n' to 'n',
   '\r' to 'r', '\t' to 't', '\u000b' to 'v', '\"' to '\"', '\\' to '\\',
 )
@@ -55,17 +59,17 @@ var specialChar2escaped = mapOf(
 // characters denoting the end of (most) tokens, besides whitespace
 val delimiter_chars = "(),'`\""
 
-var QuoteSymbol = intern("quote", immutable=true)
-var UnquoteSymbol = intern("unquote", immutable=true)
-var QuasiquoteSymbol = intern("quasiquote", immutable=true)
-var UnquoteSplicingSymbol = intern("unquote-splicing")
-var FunctionSymbol = intern("function", immutable=true)
+val QuoteSymbol = intern("quote", immutable=true)
+val UnquoteSymbol = intern("unquote", immutable=true)
+val QuasiquoteSymbol = intern("quasiquote", immutable=true)
+val UnquoteSplicingSymbol = intern("unquote-splicing")
+val FunctionSymbol = intern("function", immutable=true)
 
 fun closingOf(opening: Char): Char {
     // Return the closing character for the opening character. For brackets
     // of any kind it is the matching opposite, for others it is the same
     // character.
-    var matching_bracket = mapOf(
+    val matching_bracket = mapOf(
         '{' to '}', '[' to ']', '(' to ')', '<' to '>'
     )
     return matching_bracket[opening] ?: opening
@@ -98,6 +102,11 @@ class Reader(val input: Stream): LocationHolder
     var column = 0                      // current column read
     var pushbackToken: ReaderToken? = null
     
+
+    override fun toString(): String {
+        return "#<${typeOf(this)}:$input>"
+    }
+    fun description() = toString()
 
     override fun location(): String {
         return "${input.name}:$line:$column"
@@ -181,7 +190,7 @@ class Reader(val input: Stream): LocationHolder
         // Deliver the next token from the input stream. This may be a token
         // that has been unread before.
 
-        var token = pushbackToken
+        val token = pushbackToken
         if (token != null) {
             pushbackToken = null
             return token
@@ -232,7 +241,7 @@ class Reader(val input: Stream): LocationHolder
         //
         // The type of the octothorpe token depends on the next char (*not* the
         // next non-space char!).
-        var ch = nextChar()
+        val ch = nextChar()
         if (ch != null) {
             when (ch) {
                 '\'' -> return FunctionToken(this)
@@ -241,7 +250,7 @@ class Reader(val input: Stream): LocationHolder
                 '/' ->                   // regexp in #/.../ form
                     return readRegexp('/')
                 'r' -> {                  // regexp in #r{...} form
-                    var c = nextChar()
+                    val c = nextChar()
                     if (c != null) {
                         if (c.isWhitespace() || c == commentChar) {
                             throw SyntaxError("regexp delimiter may not be"
@@ -279,7 +288,7 @@ class Reader(val input: Stream): LocationHolder
 
     fun readFreeRadixNumber(): Double {
         // #25R-7H and the like, radix first, in decimal
-        var digit_value = mapOf(
+        val digit_value = mapOf(
             '0' to 0, '1' to 1, '2' to 2, '3' to 3, '4' to 4,
             '5' to 5, '6' to 6, '7' to 7, '8' to 8, '9' to 9
         )
@@ -290,7 +299,7 @@ class Reader(val input: Stream): LocationHolder
             if (ch == null) {
                 throw SyntaxError("unexpected EOF reading integer radix", this)
             }
-            var value = digit_value[ch]
+            val value = digit_value[ch]
             if (value != null) {
                 radix = radix * 10 + value
             } else if (ch in "rR") {
@@ -307,7 +316,7 @@ class Reader(val input: Stream): LocationHolder
     }
 
     fun readRadixNumber(radix: Int): Double {
-        var digits = CharBuf()
+        val digits = CharBuf()
         var sign = 1
         var first = true
         var ch: Char?
@@ -394,7 +403,7 @@ class Reader(val input: Stream): LocationHolder
         // 'Tis but a small table setup, luckily.
 
         // state transition table, by state (vertical) and cclass
-        var newstate = arrayOf(
+        val newstate = arrayOf(
             // Bar        Backsl      Delim       Member
             arrayOf(St.barred,  St.normesc, St.done,    St.initial), // initial
             arrayOf(St.initial, St.initial, St.initial, St.initial), // normesc
@@ -403,7 +412,7 @@ class Reader(val input: Stream): LocationHolder
         )
         
         // action table, by state (vertical) and cclass
-        var action = arrayOf(
+        val action = arrayOf(
             // Bar        Backsl      Delim       Member
             arrayOf(Ac.membar,  Ac.none,    Ac.finish,  Ac.collect), // initial
             arrayOf(Ac.collect, Ac.collect, Ac.collect, Ac.collect), // normesc
@@ -412,16 +421,16 @@ class Reader(val input: Stream): LocationHolder
         )
         
         var was_barred = false          // was barred at some point => no number
-        var collected = CharBuf()
+        val collected = CharBuf()
         var the_state = St.initial
 
         while (the_state != St.done) {
-            var ch = nextChar()
+            val ch = nextChar()
             if (ch == null) {
                 break
             }
-            var cclass = charclass(ch)
-            var act = action[the_state.ordinal][cclass.ordinal]
+            val cclass = charclass(ch)
+            val act = action[the_state.ordinal][cclass.ordinal]
             // println("next char is `$ch`, state $the_state cclass $cclass"
             //         + " action $act")
 
@@ -434,12 +443,12 @@ class Reader(val input: Stream): LocationHolder
             the_state = newstate[the_state.ordinal][cclass.ordinal]
         }
 
-        var result = collected.toString()
+        val result = collected.toString()
         if (was_barred) {
             return SymbolToken(this, result)
         }
 
-        var num = the_int(result)
+        val num = the_int(result)
         if (num != null) {
             return NumberToken(this, num.toDouble())
         }
@@ -455,7 +464,7 @@ class Reader(val input: Stream): LocationHolder
                 return NumberToken(this, i.toDouble())
             }
         }
-        var dnum = the_double(result)
+        val dnum = the_double(result)
         if (dnum != null) {
             return NumberToken(this, dnum)
         }
@@ -467,11 +476,11 @@ class Reader(val input: Stream): LocationHolder
         //
         // whatami is the name of the thing being read, for messages; endChar
         // is the char that stops the reading. Return the string contents.
-        var whatami = arrayOf("string", "regexp")[if (regexpp) 1 else 0]
-        var octaldigits = "01234567"
-        var hexdigits = "0123456789abcdefABCDEF" // just to check membership!
-        // var hexdigit_keys = "xuU"
-        var n_hexdigits = mapOf('x' to 2, 'u' to 4, 'U' to 8)
+        val whatami = arrayOf("string", "regexp")[if (regexpp) 1 else 0]
+        val octaldigits = "01234567"
+        val hexdigits = "0123456789abcdefABCDEF" // just to check membership!
+        // val hexdigit_keys = "xuU"
+        val n_hexdigits = mapOf('x' to 2, 'u' to 4, 'U' to 8)
 
         fun parse_octaldigits(first: Char): Char {
             // Read octal digits and return the number value
@@ -479,9 +488,9 @@ class Reader(val input: Stream): LocationHolder
             // in length. There is at least one (the first, which we have read
             // already) and at most three, so we may now read up to two more.
             // Any character that is not an octal digit ends the sequence.
-            var digits = CharBuf(first)
+            val digits = CharBuf(first)
             for (n in 1..3) {
-                var digit = nextChar()
+                val digit = nextChar()
                 if (digit == null) {
                     throw SyntaxError("unexpected EOF in string (octal)", this)
                 }
@@ -491,7 +500,7 @@ class Reader(val input: Stream): LocationHolder
                 }
                 digits.add(digit)
             }
-            var cvalue = the_int(digits.toString(), 8)
+            val cvalue = the_int(digits.toString(), 8)
             if (cvalue != null) {
                 return cvalue.toChar()
             }
@@ -501,9 +510,9 @@ class Reader(val input: Stream): LocationHolder
 
         fun parse_hexdigits(ndigits: Int): Char {
             // Read a number of hex digits and return the number value.
-            var digits = CharBuf()
+            val digits = CharBuf()
             for (n in 1..ndigits) {
-                var digit = nextChar()
+                val digit = nextChar()
                 if (digit == null) {
                     throw SyntaxError("unexpected EOF in string (hex)", this)
                 }
@@ -513,7 +522,7 @@ class Reader(val input: Stream): LocationHolder
                 }
                 digits.add(digit)
             }
-            var cvalue = the_int(digits.toString(), 16)
+            val cvalue = the_int(digits.toString(), 16)
             if (cvalue != null) {
                 return cvalue.toChar()
             }
@@ -522,10 +531,10 @@ class Reader(val input: Stream): LocationHolder
         }
                 
 
-        var result = CharBuf()
+        val result = CharBuf()
         var after_backslash = false
         while (true) {
-            var ch = nextChar()
+            val ch = nextChar()
             if (ch == null) {
                 throw ParseError("EOF in $whatami literal", this)
             }
@@ -588,7 +597,7 @@ class Reader(val input: Stream): LocationHolder
 
     fun read(): LispObject? {
         // Read an expression from the input and return it.
-        var token = nextToken()
+        val token = nextToken()
         var macroSymbol: Symbol?
         
         when (token) {
@@ -627,7 +636,7 @@ class Reader(val input: Stream): LocationHolder
         }
 
         // arrives here only if we actually had a macroSymbol
-        var macroArg = read() ?:
+        val macroArg = read() ?:
             throw ParseError("unexpected EOF after $macroSymbol", this)
         return ListCollector(macroSymbol, macroArg).list()
     }
@@ -639,7 +648,7 @@ class Reader(val input: Stream): LocationHolder
         if (token !is OparenToken) {
             throw SyntaxError("invalid $token expecting '(' in a table", this)
         }
-        var lc = ListCollector()
+        val lc = ListCollector()
         while (true) {
             token = nextToken()
             when (token) {
@@ -657,9 +666,9 @@ class Reader(val input: Stream): LocationHolder
 
     fun readVector(): LispObject {
         // Read a vector from the input and return it.
-        var lc = ListCollector()
+        val lc = ListCollector()
         while (true) {
-            var token = nextToken()
+            val token = nextToken()
             when (token) {
                 is CparenToken ->
                     return Vector(lc.list())
@@ -681,20 +690,20 @@ class Reader(val input: Stream): LocationHolder
 
     fun readList(): LispObject {
         // Read a list from the input and return it.
-        var lc = ListCollector()
+        val lc = ListCollector()
         while (true) {
-            var token = nextToken()
+            val token = nextToken()
             when (token) {
                 is PeriodToken -> {
                     if (lc.list() == Nil) {
                         throw SyntaxError("unexpected dot at beginning of list",
                                           token)
                     }
-                    var elem = read() ?:
+                    val elem = read() ?:
                         throw ParseError("EOF reading list element after `.`",
                                          this)
                     lc.lastcdr(elem)
-                    var next = nextToken()
+                    val next = nextToken()
                     if (next is CparenToken) {
                         return lc.list()
                     } else {
@@ -709,7 +718,7 @@ class Reader(val input: Stream): LocationHolder
                     throw ParseError("EOF in list", this)
                 else -> {
                     unreadToken(token)
-                    var elem = read() ?:
+                    val elem = read() ?:
                         throw ParseError("EOF reading list element", this)
                     lc.add(elem)
                 }

@@ -10,8 +10,31 @@ val stdoutPath = "/dev/stdout"
 val stderrPath = "/dev/stderr"
 
 
-class StdinStream(): FileReaderStream(stdinPath, stdinName)
-class StdoutStream(): FileWriterStream(stdoutPath, stdoutName)
+class StdinStream(name: String = stdinName):
+    FileReaderStream(stdinPath, name)
+class StdoutStream(name: String = stdoutName):
+    FileWriterStream(stdoutPath, name)
+
+open class StringReaderStream(content: String, name: String? = null):
+    Stream(input = true, path = null, name = name)
+{
+    val chars = content.toCharArray()
+    var nextpos = 0
+
+    override fun read(): Char? {
+        if (nextpos < chars.size) {
+            return chars[nextpos]++
+        }
+        return null
+    }
+    
+    override fun write(ch: Char) {
+        throw IOError("write on input stream $this")
+    }
+    override fun write(s: String) {
+        throw IOError("write on input stream $this")
+    }
+}
 
 open class FileReaderStream(path: String, name: String? = null):
     Stream(input = true, path = path, name = name ?: path)
@@ -19,11 +42,11 @@ open class FileReaderStream(path: String, name: String? = null):
     val fileReader = File(path).bufferedReader()
 
     override fun read(): Char? {
-        val C = fileReader.read()       // returns an Int!
-        if (C < 0) {
+        val c = fileReader.read()       // returns an Int!
+        if (c < 0) {                    // EOF as in C
             return null
         }
-        return C.toChar()
+        return c.toChar()
     }
     
     override fun write(ch: Char) {
@@ -63,7 +86,8 @@ abstract class Stream(
                                         // network something
     val path: String? = null,           // file pathname
     val append: Boolean = false,        // "a"
-): LispObject() {
+): LispObject()
+{
     var charUnread: Char? = null
 
     abstract fun read(): Char?          // the actual reading
@@ -85,7 +109,7 @@ abstract class Stream(
 
     override fun toString(): String {
         val i = if (input) "I" else ""
-        val o = if (input) "O" else ""
+        val o = if (output) "O" else ""
         val e = if (error) "E" else ""
         return "#<${typeOf(this)}[$i$o$e]$name>"
     }
