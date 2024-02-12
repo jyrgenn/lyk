@@ -190,8 +190,8 @@ class Reader(val input: Stream): LocationHolder
         // Deliver the next token from the input stream. This may be a token
         // that has been unread before.
 
-        val token = pushbackToken
-        if (token != null) {
+        if (pushbackToken != null) {
+            val token = pushbackToken
             pushbackToken = null
             return token
         }
