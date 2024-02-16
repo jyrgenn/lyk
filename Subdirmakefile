@@ -1,0 +1,3 @@
+
+all:
+	cd .. && echo "make[1]: Entering directory \`$$PWD'" && $(MAKE)

@@ -35,7 +35,7 @@ fun isNumberString(s: String): Boolean {
     }
 }
 
-class Symbol(val name: String, val immutable: Boolean): LispObject(), List
+class Symbol(val name: String, val immutable: Boolean): LispObject(), LispList
 {
     val props: MutableMap<Symbol, LispObject> = mutableMapOf()
     val descName = makeDescName()
@@ -76,6 +76,10 @@ class Symbol(val name: String, val immutable: Boolean): LispObject(), List
         } else {
             return name
         }
+    }
+
+    fun isKeyword(): Boolean {
+        return name.startsWith(':')
     }
 
     fun setValue(newvalue: LispObject) {

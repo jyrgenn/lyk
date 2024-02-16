@@ -4,7 +4,7 @@ package org.w21.lyk
 
 
 data class Cons(var car: LispObject,
-                var cdr: LispObject = Nil): LispObject(), List {
+                var cdr: LispObject = Nil): LispObject(), LispList {
 
     override fun toString(): String {
         val result = StrBuf("(")

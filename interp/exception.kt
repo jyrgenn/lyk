@@ -37,3 +37,7 @@ class TypeError(error: String, lh: LocationHolder?): ValueError(error, lh) {
 }
 
 class IOError(error: String): Exception(error)
+
+class CallError(error: String): Exception(error)
+
+class ArgumentError(error: String): Exception(error)

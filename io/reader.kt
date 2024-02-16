@@ -351,7 +351,7 @@ class Reader(val input: Stream): LocationHolder
         }
     }
 
-    // A few enums for readAtomeToken(); these cannot be declared in a function,
+    // A few enums for readAtomToken(); these cannot be declared in a function,
     // sadly.
 
     enum class CC {                     // character class

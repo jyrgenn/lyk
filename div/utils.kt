@@ -9,20 +9,24 @@ fun interface Callable {
     fun call(arglist: LispObject): LispObject
 }
 
-interface List: Iterable<LispObject> {
+interface LispList: Iterable<LispObject> {
     fun car(): LispObject
     fun cdr(): LispObject
 }
 
-class ListIterator(var l: List): Iterator<LispObject> {
-    val original = l
-    override fun hasNext(): Boolean {
-        return l != Nil
-    }
+class ListIterator(var l: LispList): Iterator<LispObject> {
+    val original = l                    // keep the original list for an error
+
+    override fun hasNext() =
+        when (l){
+            is LispObject -> (l as LispObject) !== Nil
+            else -> false
+        }
+
     override fun next(): LispObject {
         val obj = l.car()
         val next_l = l.cdr()
-        if (next_l is List) {
+        if (next_l is LispList) {
             l = next_l
             return obj
         }
@@ -111,4 +115,28 @@ class StrBuf() {
     }
 }
 
+fun arrayIntern(array: Array<String>): List<Symbol> {
+    val symbols = mutableListOf<Symbol>()
+    for (elem in array) {
+        symbols.add(intern(elem))
+    }
+    return symbols
+}
+
+fun mapInternKeys(map: Map<String, LispObject>): Map<Symbol, LispObject> {
+    val result = mutableMapOf<Symbol, LispObject>()
+    for ((key, value) in map) {
+        result[intern(key)] = value
+    }
+    return result
+}
+
+fun pairsInternFirst(pairs: Array<Pair<String, LispObject>>
+): List<Pair<Symbol, LispObject>> {
+    var result = mutableListOf<Pair<Symbol, LispObject>>()
+    for ((key, value) in pairs) {
+        result.add(Pair<Symbol, LispObject>(intern(key), value))
+    }
+    return result
+}
 
