@@ -10,7 +10,7 @@ abstract class Function(
     val stdPars: List<Symbol>,                   // normal parameters
     val keyPars: Map<Symbol, LispObject>,        // &key name => default
     val optPars: List<Pair<Symbol, LispObject>>, // &optional name, default
-    val restPars: Symbol?,                       // &rest parameters
+    val restPar: Symbol?,                       // &rest parameters
     val retval: Symbol?,                         // return value description
     val docBody: LispString,                     // docstring sans signature
     val isSpecial: Boolean,                      // used by Builtins only
@@ -24,7 +24,7 @@ abstract class Function(
         has_name = functionName != null
         name = functionName ?: anonLambdaSym
         minargs = stdPars.size
-        maxargs = if (restPars == null)
+        maxargs = if (restPar == null)
             minargs + optPars.size + keyPars.size * 2 // ":key keyarg"
         else
             -1
@@ -55,9 +55,9 @@ abstract class Function(
                 }
             }
         }
-        if (restPars != null) {
+        if (restPar != null) {
             sb.add("&rest")
-            sb.add(restPars.name)
+            sb.add(restPar.name)
         }
         return sb.join(" ")
     }

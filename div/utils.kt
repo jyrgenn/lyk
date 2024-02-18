@@ -14,12 +14,20 @@ interface LispList: Iterable<LispObject> {
     fun cdr(): LispObject
 }
 
+fun list2lisp(elems: List<LispObject>): LispObject {
+    val lc = ListCollector()
+    for (elem in elems) {
+        lc.add(elem)
+    }
+    return lc.list()
+}
+
 class ListIterator(var l: LispList): Iterator<LispObject> {
     val original = l                    // keep the original list for an error
 
     override fun hasNext() =
-        when (l){
-            is LispObject -> (l as LispObject) !== Nil
+        when (l) {
+            is LispObject -> l !== Nil
             else -> false
         }
 

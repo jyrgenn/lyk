@@ -39,6 +39,7 @@ class Symbol(val name: String, val immutable: Boolean): LispObject(), LispList
 {
     val props: MutableMap<Symbol, LispObject> = mutableMapOf()
     val descName = makeDescName()
+    var function: LispObject?
 
     fun makeDescName(): String {
         var needQuoting = false
@@ -78,7 +79,7 @@ class Symbol(val name: String, val immutable: Boolean): LispObject(), LispList
         }
     }
 
-    fun isKeyword(): Boolean {
+    override fun isKeyword(): Boolean {
         return name.startsWith(':')
     }
 
@@ -91,6 +92,8 @@ class Symbol(val name: String, val immutable: Boolean): LispObject(), LispList
     }
 
     fun getValue() = currentEnv.getValue(this)
+
+    fun getValueOptional() = currentEnv.getValueMaybe(this)
 
     fun setProp(name: Symbol, value: LispObject) {
         props[name] = value

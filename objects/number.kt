@@ -47,7 +47,7 @@ class Number(val value: Double): LispObject() {
     override fun toString() = desc()
 
     // // return true iff self is less than other
-    // fun cmp_lt(_ other: Comparable): Bool {
+    // fun cmp_lt(_ other: CompObject): Bool {
     //     guard let myOther = other as? Number else {
     //         throw TypeError("cannot compare `\(self)` type \(type(of: self)) "
     //                           + "to `\(other)` type \(type(of: other))")
@@ -57,7 +57,7 @@ class Number(val value: Double): LispObject() {
     // }
 
     // // return true iff self is greater than other
-    // fun cmp_gt(_ other: Comparable): Bool {
+    // fun cmp_gt(_ other: CompObject): Bool {
     //     guard let myOther = other as? Number else {
     //         throw TypeError("cannot compare `\(self)` type \(type(of: self)) "
     //                           + "to `\(other)` type \(type(of: other))")
@@ -66,19 +66,19 @@ class Number(val value: Double): LispObject() {
     // }
 
     // // return true iff self is equal to other
-    // fun cmp_eq(_ other: Comparable): Bool {
+    // fun cmp_eq(_ other: CompObject): Bool {
     //     // with objects of this type being interned, equal means identical
     //     return self === other as! LispObject
     // }
 
     // // return true iff self is not equal to other
-    // fun cmp_ne(_ other: Comparable): Bool {
+    // fun cmp_ne(_ other: CompObject): Bool {
     //     // with objects of this type being interned, equal means identical
     //     return self !== other as! LispObject
     // }
 
     // // return true iff self is greater than or equal to other
-    // fun cmp_ge(_ other: Comparable): Bool {
+    // fun cmp_ge(_ other: CompObject): Bool {
     //     guard let myOther = other as? Number else {
     //         throw TypeError("cannot compare `\(self)` type \(type(of: self)) "
     //                           + "to `\(other)` type \(type(of: other))")
@@ -87,7 +87,7 @@ class Number(val value: Double): LispObject() {
     // }
 
     // // return true iff self is less than or equal to other
-    // fun cmp_le(_ other: Comparable): Bool {
+    // fun cmp_le(_ other: CompObject): Bool {
     //     guard let myOther = other as? Number else {
     //         throw TypeError("cannot compare `\(self)` type \(type(of: self)) "
     //                           + "to `\(other)` type \(type(of: other))")
@@ -96,7 +96,7 @@ class Number(val value: Double): LispObject() {
     // }
 
     // // return -1 if self is less than other, 0 if equal to, 1 if greater than
-    // fun cmp(_ other: Comparable): Int {
+    // fun cmp(_ other: CompObject): Int {
     //     guard let myOther = other as? Number else {
     //         throw TypeError("cannot compare `\(self)` type \(type(of: self)) "
     //                           + "to `\(other)` type \(type(of: other))")

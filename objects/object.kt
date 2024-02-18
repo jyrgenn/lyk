@@ -24,6 +24,8 @@ abstract class LispObject {
         throw ValueError("$this has no length")
     }
 
+    open fun isKeyword() = false
+
     // This will be used by the system, e.g. for expansion in "bla
     // $value" String templates. It will not necessarily be the form
     // that can be read in again by the reader.

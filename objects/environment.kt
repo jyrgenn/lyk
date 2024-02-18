@@ -49,3 +49,24 @@ class Environment(val parent: Environment? = null): LispObject() {
         rootEnv.map[symbol] = value
     }
 }
+
+fun with_new_environment(parent: Environment = currentEnv,
+                          closure: () -> LispObject): LispObject {
+    val savedEnv = currentEnv
+    currentEnv = Environment(parent)
+    try {
+        return closure()
+    } finally {
+        currentEnv = savedEnv
+    }
+}
+
+fun with_environment(env: Environment, closure: () -> LispObject): LispObject {
+    val savedEnv = currentEnv
+    currentEnv = env
+    try {
+        return closure()
+    } finally {
+        currentEnv = savedEnv
+    }
+}

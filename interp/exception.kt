@@ -41,3 +41,7 @@ class IOError(error: String): Exception(error)
 class CallError(error: String): Exception(error)
 
 class ArgumentError(error: String): Exception(error)
+
+class LambdaDefError(error: String): Exception(error)
+
+class FunctionError(error: String): Exception(error)

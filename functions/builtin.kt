@@ -9,7 +9,7 @@ fun maybeIntern(word: String?): Symbol? {
     return intern(word)
 }
 
-fun key2var(sym: Symbol): Symbol {
+fun key2var(sym: Symbol): Symbol? {
     return intern(sym.name.substring(startIndex = 1))}
 
 fun var2key(sym: Symbol): Symbol {
@@ -98,7 +98,7 @@ class Builtin(
                            && key2var(arg) in keyPars.keys) {
                 wantKeywordParam = key2var(arg)
                 argptr = argptr.cdr()
-            } else if (restPars != null) {
+            } else if (restPar != null) {
                 if (lastargpair != null) {
                     lastargpair.rplacd(argptr)
                 } else {
