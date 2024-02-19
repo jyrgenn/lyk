@@ -1,47 +1,57 @@
 package org.w21.lyk
 
 
-open class ParseError(val error: String,
-                       val lh: LocationHolder): Exception(error)
+open class ParseError(message: String,
+                       val lh: LocationHolder): Exception(message)
 {
-    override fun toString() = "${lh.location()}: $error"
+    override fun toString() = "${lh.location()}: $message"
 }
 
-class SyntaxError(error: String,
-                  lh: LocationHolder): ParseError(error, lh)
+class SyntaxError(message: String,
+                  lh: LocationHolder): ParseError(message, lh)
 
-class InternalReaderError(val error: String,
-                          val lh: LocationHolder): Exception(error) {
-    override fun toString() = "${lh.location()}: $error"
+class InternalReaderError(message: String,
+                          val lh: LocationHolder): Exception(message) {
+    override fun toString() = "${lh.location()}: $message"
 }
 
-open class ValueError(val error: String,
-                      lh: LocationHolder?): Exception(error) {
+open class ValueError(message: String,
+                      lh: LocationHolder?): Exception(message) {
     val loc: String?
 
     init {
         loc = lh?.location()
     }
     
-    constructor(error: String) : this(error, null) {}
+    constructor(message: String) : this(message, null) {}
     
     override fun toString(): String {
         val location = if (loc == null) "" else " at $loc"
-        return "${typeOf(this)}: $error$location"
+        return "${typeOf(this)}: $message$location"
     }
 
 }
 
-class TypeError(error: String, lh: LocationHolder?): ValueError(error, lh) {
-    constructor(error: String) : this(error, null) {}
+class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
+    constructor(message: String) : this(message, null) {}
 }
 
-class IOError(error: String): Exception(error)
+class IOError(message: String): Exception(message)
 
-class CallError(error: String): Exception(error)
+class CallError(message: String): Exception(message)
 
-class ArgumentError(error: String): Exception(error)
+class ArgumentError(message: String): Exception(message)
 
-class LambdaDefError(error: String): Exception(error)
+class LambdaDefError(message: String): Exception(message)
 
-class FunctionError(error: String): Exception(error)
+class FunctionError(message: String): Exception(message)
+
+class AbortEvalSignal(message: String): Exception(message)
+
+class LispError(message: String, label: String = "Lisp Message"):
+    Exception(label + ": " + message)
+{
+    fun pushFrame(level: Int, form: LispObject, env: Environment) {
+        evalStack = Cons(Vector(makeNumber(level), form, env), evalStack)
+    }
+}

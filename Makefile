@@ -26,7 +26,7 @@ build: $(SRCS) Makefile
 	$(COMP) $(SRCS) -include-runtime -d lyk.jar
 
 new: $(SRCS) functions/function.kt
-	$(COMP) $(SRCS) interp/eval.kt
+	$(COMP) $(SRCS)
 
 native: $(SRCS) Makefile
 	$(NATIVECOMP) $(SRCS) -o lykn

@@ -39,7 +39,7 @@ class Symbol(val name: String, val immutable: Boolean): LispObject(), LispList
 {
     val props: MutableMap<Symbol, LispObject> = mutableMapOf()
     val descName = makeDescName()
-    var function: LispObject?
+    var function: LispObject? = null
 
     fun makeDescName(): String {
         var needQuoting = false
@@ -115,13 +115,6 @@ class Symbol(val name: String, val immutable: Boolean): LispObject(), LispList
             return Nil
         }
         throw ValueError("called cdr() of non-nil symbol $descName")
-    }
-
-    override fun iterator(): ListIterator {
-        if (this === Nil) {
-            return ListIterator(this)
-        }
-        throw ValueError("called iterator() of non-nil symbol $descName")
     }
 
     override fun bool() = this != Nil

@@ -43,11 +43,6 @@ data class Cons(var car: LispObject,
         return cdr
     }
 
-    fun cxr(): Pair<LispObject, LispObject> {
-        return (car, cdr)
-    }
+    fun cxr() = Pair(car, cdr)
 
-    override fun iterator(): ListIterator {
-        return ListIterator(this)
-    }
 }

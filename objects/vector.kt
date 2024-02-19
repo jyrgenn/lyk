@@ -14,6 +14,12 @@ class Vector(): LispObject() {
         }
     }
 
+    constructor(vararg elems: LispObject) : this() {
+        for (elem in elems) {
+            the_vector.add(elem)
+        }
+    }
+
     constructor(length: Int, elem: LispObject) : this() {
         for (n in 1..length) {
             the_vector.add(elem)

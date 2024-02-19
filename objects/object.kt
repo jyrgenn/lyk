@@ -5,7 +5,7 @@ package org.w21.lyk
 private var objectCounter = 0
 
 
-abstract class LispObject {
+abstract class LispObject: Iterable<LispObject> {
     val id: Int
     
     init {
@@ -39,4 +39,33 @@ abstract class LispObject {
 
     open fun equal(other: LispObject) = false
 
+    override fun iterator() = ObjectIterator(this)
+}
+
+
+class ObjectIterator(var theObject: LispObject): Iterator<LispObject> {
+    val original = theObject
+
+    override fun hasNext(): Boolean {
+        if (theObject == Nil) {
+            return false
+        }
+        if (theObject is Cons) {
+            return true
+        }
+        throw ValueError("iterating over not a proper list: $original")
+    }
+
+    override fun next(): LispObject {
+        if (theObject is Cons) {
+            val ob = theObject as Cons
+            val retVal = ob.car()
+            theObject = ob.cdr()
+            return retVal
+        }
+        if (theObject === Nil) {
+            throw ValueError("called next() after end of list: $original")
+        }
+        throw ValueError("iterating over improper list: $original")
+    }
 }

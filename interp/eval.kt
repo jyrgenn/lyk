@@ -2,12 +2,14 @@
 
 package org.w21.lyk
 
-fun eval(arg: LispObject): LispObject {
-    return arg
-}
 
-fun evalProgn(arg: LispObject): LispObject {
-    return arg
+fun evalProgn(forms: LispObject): LispObject {
+    var retVal: LispObject = Nil
+
+    for (form in forms) {
+        retVal = eval(form)
+    }
+    return retVal
 }
 
 
@@ -41,14 +43,25 @@ fun evalArgs(arglist: LispObject): LispObject {
     for (arg in arglist) {
         lc.add(eval(arg))
     }
-    return lc.list
+    return lc.list()
 }
 
 val traceEvalSym = intern("eval")
 val callFunctionSym = intern("call")
 var current_eval_level: Int = 0
+var evalCounter: Int = 0
+var tracing_on: Boolean = false
+var maxEvalLevel: Int = 0
+var maxRecursionDepth: Int = 1_000_000_000
+var abortEval: Boolean = false
+var stepEval: Boolean = false
+var evalStack: LispObject = Nil
 
-fun eval(form: LispObject, expandMacros: Bool = false): LispObject {
+fun trace(sym: Symbol, closure: () -> Unit) {}
+fun trace(sym: Symbol, vararg args: LispObject) {}
+
+
+fun eval(form: LispObject, expandMacros: Boolean = false): LispObject {
     evalCounter += 1
     val savedLevel: Int = current_eval_level
     val deferList = listOf({ current_eval_level = savedLevel })
@@ -73,7 +86,7 @@ fun eval(form: LispObject, expandMacros: Bool = false): LispObject {
         // break_if(breakSymbol, "eval[{}]: {:r}", current_eval_level, form)
         try {
             if (abortEval) {
-                throw AbortEvalSignal()
+                throw AbortEvalSignal("eval aborted")
             }
             // if (stepEval) {
             //     var done = false
@@ -114,7 +127,7 @@ fun eval(form: LispObject, expandMacros: Bool = false): LispObject {
                 var args = form.cdr()
                 val function = evalFun(func)
                 // print("function is", function)
-                if (!function.isSpecial()) {
+                if (!function.isSpecial) {
                     args = evalArgs(args)
                 }
                 if (tracing_on) {
@@ -127,7 +140,7 @@ fun eval(form: LispObject, expandMacros: Bool = false): LispObject {
             if (stepEval) {
                 print("[$current_eval_level] => $value")
             }
-            if (tracing)_on {
+            if (tracing_on) {
                 trace(traceEvalSym) {
                     print("TRC eval[$current_eval_level] $form => $value")
                 }
