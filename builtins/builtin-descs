@@ -1,0 +1,14 @@
+# builtin function declarations
+
+builtin +
+fun     bi_plus
+std     
+key     
+opt     
+rest    numbers
+ret     sum
+special no
+doc {
+Return the sum of the NUMBERS.
+}
+end builtin
