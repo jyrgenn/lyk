@@ -122,4 +122,8 @@ class Symbol(val name: String, val immutable: Boolean): LispObject(), LispList
     override fun toString() = name
 
     override fun desc() = descName
+
+    override fun dump(): String {
+        return super.dump() + "($descName:$function:$props)"
+    }
 }

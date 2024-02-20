@@ -18,7 +18,7 @@ class Lambda(
     docBody: LispString,                     // docstring sans signature
     val environment: Environment
 ): Function(functionName, stdPars, keyPars, optPars, restPar, intern("value"),
-            docBody, false)
+            false, docBody)
 {
     val lambdatype = "function"
     

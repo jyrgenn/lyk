@@ -51,7 +51,8 @@ class Environment(val parent: Environment? = null): LispObject() {
 }
 
 fun with_new_environment(parent: Environment = currentEnv,
-                          closure: () -> LispObject): LispObject {
+                         closure: () -> LispObject
+): LispObject {
     val savedEnv = currentEnv
     currentEnv = Environment(parent)
     try {

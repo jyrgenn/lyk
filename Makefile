@@ -6,9 +6,10 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	interp/basedefs.kt interp/main.kt interp/exception.kt \
 	div/utils.kt \
 	io/reader.kt io/repl.kt io/stream.kt \
-	functions/function.kt functions/builtin.kt functions/helpers.kt \
+	functions/function.kt functions/builtin.kt \
 	functions/lambda.kt \
-	interp/eval.kt
+	interp/eval.kt \
+	builtins/init-builtins.kt builtins/helpers.kt builtins/numbers.kt
 
 #SRCS = cons.kt object.kt symbol.kt basedefs.kt main.kt environment.kt \
 #	utils.kt exception.kt reader.kt stream.kt number.kt string.kt \
@@ -22,8 +23,11 @@ NATIVECOMP = kotlinc-native
 # rm -f $JAR
 
 
-build: $(SRCS) Makefile
+build: init-builtins $(SRCS) Makefile
 	$(COMP) $(SRCS) -include-runtime -d lyk.jar
+
+init-builtins:
+	$(MAKE) -C builtins init-builtins.kt
 
 new: $(SRCS) functions/function.kt
 	$(COMP) $(SRCS)

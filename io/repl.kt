@@ -15,7 +15,9 @@ fun repl(prompt: String = "> ") {
                 println()
                 break
             }
-            println("${typeOf(obj)} ${obj.desc()}")
+            val result = eval(obj)
+            // println("${typeOf(obj)} ${obj.desc()} => $result")
+            println(result.desc())
         } catch (e: Exception) {
             reader.skipRestOfLine()
             println(e)

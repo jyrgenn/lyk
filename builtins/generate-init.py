@@ -40,34 +40,39 @@ def print_init(data):
     if errors:
         sys.exit(1)
 
-    prin(f'    Builtin("{data.name}", ::{data.fun}, ')
+    prin(f'    Builtin("{data.name}", ::{data.fun},\n            ')
     if data.std:
         content = "\", \"".join(data.std)
-        prin(f'arrayOf<String>("{content}", ')
+        prin(f'arrayOf<String>("{content}")')
     else:
-        prin("noStd, ")
+        prin("noStd")
+    prin(",\n            ")
 
     if data.key:
         prin("mapOf<String, LispObject>(")
         prin(" ".join(data.key))
-        prin("), ")
+        prin(")")
     else:
-        prin("noKey, ")
+        prin("noKey")
+    prin(",\n            ")
 
     if data.opt:
         prin("arrayOf<Pair<String, LispObject>>(")
         prin(" ".join(data.opt))
-        prin("), ")
+        prin(")")
     else:
-        prin("noOpt, ")
+        prin("noOpt")
+    prin(",\n            ")
 
-    prin(f'"{data.rest or "noRest"}", ')
-    prin(f'"{data.ret or "noRet"}", ')
-    prin("\n            ")
+    prin(f'"{data.rest or "noRest"}"')
+    prin(",\n            ")
+    prin(f'"{data.ret or "noRet"}"')
+    prin(",\n            ")
+    
     prin(repr(y.boolish(data.special[0])).lower())
+    prin(",\n            ")
     if data.doc:
-        print(", ")
-        prin('"' + repr(data.doc)[1:-2] + '"')
+        prin('"""' + repr(data.doc)[1:-2] + '"""')
     print(")")
 
 

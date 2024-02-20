@@ -14,7 +14,7 @@ fun numberArg(arg: LispObject, what: String): Double {
     if (arg is Number) {
         return arg.value
     }
-    throw ArgumentError("$what argument not a number: $arg")
+    throw ArgumentError("$what argument not a number: $arg (${typeOf(arg)}")
 }
 
 // fun intArg(arg: LispObject, what: String): Int {

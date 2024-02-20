@@ -30,8 +30,11 @@ abstract class LispObject: Iterable<LispObject> {
     // $value" String templates. It will not necessarily be the form
     // that can be read in again by the reader.
     override fun toString(): String {
-        return "Object[$id]{${type()}}"
+        return dump()
     }
+
+    // Print as much information about the object as can be helpful debugging.
+    open fun dump() = "${type()}[$id]"
 
     // The output of this shall, if at all possible, be sufficent to
     // be read by the reader to re-create the object.

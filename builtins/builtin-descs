@@ -12,3 +12,43 @@ doc {
 Return the sum of the NUMBERS.
 }
 end builtin
+
+builtin -
+fun     bi_minus
+std     num1
+key     
+opt     
+rest    numbers
+ret     number
+special no
+doc {
+Return NUM1 minus all NUMBERS, or the negation of sole arg NUM1.
+}
+end builtin
+
+builtin *
+fun     bi_mult
+std     
+key     
+opt     
+rest    numbers
+ret     product
+special no
+doc {
+Return the product of all NUMBERS.
+}
+end builtin
+
+builtin /
+fun     bi_div
+std     num1
+key     
+opt     
+rest    numbers
+ret     number
+special no
+doc {
+Return NUM1 divided by all NUMBERS, or the inverse of sole arg NUM1.
+}
+end builtin
+

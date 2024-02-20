@@ -12,8 +12,8 @@ abstract class Function(
     val optPars: List<Pair<Symbol, LispObject>>, // &optional name, default
     val restPar: Symbol?,                       // &rest parameters
     val retval: Symbol?,                         // return value description
-    val docBody: LispString,                     // docstring sans signature
     val isSpecial: Boolean,                      // used by Builtins only
+    val docBody: LispString,                     // docstring sans signature
 ): LispObject(), Callable {
     val name: Symbol
     val has_name: Boolean
@@ -28,6 +28,11 @@ abstract class Function(
             minargs + optPars.size + keyPars.size * 2 // ":key keyarg"
         else
             -1
+        println("init function '$name'")
+        if (has_name) {
+            println("assign function '${dump()}' to ${functionName?.dump()}")
+            (functionName as Symbol).function = this
+        }
     }
 
     fun parlist(): String {
@@ -62,19 +67,12 @@ abstract class Function(
         return sb.join(" ")
     }
 
-    fun typeDesc(): String {
-        // for the documentation
-        if (this is Builtin) {
-            if (isSpecial) {
-                return "Special form"
-            }
-            return "Builtin function"
-        }
+    open fun typeDesc(): String {
         return typeOf(this)
     }
 
     fun docHeader(): String {
-        return "#<${typeDesc()} (${parlist()})>"
+        return "${typeDesc()} (${parlist()}) => $retval"
     }
 
     fun documentation(): String {
@@ -98,5 +96,9 @@ abstract class Function(
 
     open override fun call(arglist: LispObject): LispObject {
         throw InternalError("calling $this, not Subclass")
+    }
+
+    override fun dump(): String {
+        return "#<${typeDesc()}[$id](${parlist()})= $retval>"
     }
 }

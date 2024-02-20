@@ -3,37 +3,38 @@
 package org.w21.lyk
 
 
+// var breakSymbol = Symbol.uninterned("*break-eval*")
+
 fun evalProgn(forms: LispObject): LispObject {
-    var retVal: LispObject = Nil
+    var result: LispObject = Nil
 
     for (form in forms) {
-        retVal = eval(form)
+        result = eval(form)
     }
-    return retVal
+    return result
 }
-
-
-// var breakSymbol = Symbol.uninterned("*break-eval*")
 
 fun evalFun(obj: LispObject?,
             reclevel: Int = 0,
             show: LispObject? = null): Function
 {
-    // print("evalFun(", obj ?: "nil", reclevel, ")")
+    println("evalFun(${obj?.dump() ?: "nil"}, $reclevel)")
     if (obj != null && reclevel <= 2) {
         // dump(obj)
         if (obj is Function) {
             return obj
         }
         if (obj is Symbol) {
-            // print("$obj is symbol, function ${obj.function}")
+            obj.dump()
+            println("$obj is symbol, function ${obj.function}")
             return evalFun(obj.function ?: obj.getValueOptional(),
                            reclevel + 1, show ?: obj)
         }
         return evalFun(eval(obj), reclevel+1, show ?: obj)
     }
     val present = show ?: obj ?: uninternedSymbol("WOT?:")
-    throw FunctionError("object `$present` is not a function")
+    throw FunctionError("object `$present` is not a function "
+                        + present.dump())
 }
 
 
@@ -57,11 +58,24 @@ var abortEval: Boolean = false
 var stepEval: Boolean = false
 var evalStack: LispObject = Nil
 
-fun trace(sym: Symbol, closure: () -> Unit) {}
-fun trace(sym: Symbol, vararg args: LispObject) {}
+fun trace(sym: Symbol, closure: () -> Unit) {
+    if (sym !== Nil) {
+        closure()
+    }
+}
+fun trace(sym: Symbol, vararg args: LispObject) {
+    if (sym !== Nil) {
+        print("TRC")
+        for (arg in args) {
+            print(" ")
+            print(arg)
+        }
+        println()
+    }
+}
 
 
-fun eval(form: LispObject, expandMacros: Boolean = false): LispObject {
+fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
     evalCounter += 1
     val savedLevel: Int = current_eval_level
     val deferList = listOf({ current_eval_level = savedLevel })
