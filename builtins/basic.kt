@@ -264,7 +264,7 @@ fun bi_function(args: LispObject, key_args: Map<Symbol, LispObject>
 fun bi_symbol_function(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
     val sym = symbolArg(arg1(args), "symbol")
-    if (sym.function != null {
+    if (sym.function != null) {
             return sym.function
     }
     throw ArgumentError("symbol $sym has no function value")
@@ -276,28 +276,26 @@ fun bi_error(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 }
 
 fun bi_catch(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    var args = args
-    val tag = eval(pop(&args))
-
-    do {
-        return evalProgn(args)
-    } catch {
-        if val sig = error is ThrowSignal, sig.tag === tag {
+    val (tagform, bodyforms) = args
+    val tag = eval(tagform)
+    try {
+        return evalProgn(bodyforms)
+    } catch (sig: ThrowSignal) {
+        if (sig.tag === tag) {
             return sig.value
-        } else {
-            throw error
         }
+        throw error
     }
 }
 
 fun bi_throw(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     val (tag, value) = args2(args)
-    throw ThrowSignal(tag: tag, value: value)
+    throw ThrowSignal(tag, value)
 }
 
 fun bi_boundp(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     val sym = symbolArg(arg1(args), "boundp")
-    if val _ = sym.getValueOptional() {
+    if (sym.getValueOptional() != null) {
         return T
     }
     return Nil
@@ -306,7 +304,7 @@ fun bi_boundp(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 fun bi_fboundp(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
     val sym = symbolArg(arg1(args), "fboundp")
-    if sym.function != nil {
+    if (sym.function != null) {
         return T
     }
     return Nil
@@ -315,20 +313,18 @@ fun bi_fboundp(args: LispObject, key_args: Map<Symbol, LispObject>
 fun bi_errset(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     val (expr, print_error) = args2(args)
     val saveErrset = inErrset
-    defer { inErrset = saveErrset }
     inErrset = true
-    do {
+    try {
         return Cons(eval(expr), Nil)
-    } catch {
-        if val lerror = error is LispError {
-            val errO: ErrorObject = lerror.object()
-            intern("*last-error*").setValue(errO, silent: true)
-            if print_error != Nil {
-                print(errO)
-            }
-            return Nil
+    } catch (lerror: LispError) {
+        val errObj = lerror.asObject()
+        intern("*last-error*").setValue(errObj, silent = true)
+        if (print_error != Nil) {
+            print(errObj)
         }
-        throw error
+        return Nil
+    } finally {
+        inErrset = saveErrset
     }
 }
 
@@ -342,85 +338,83 @@ fun bi_makunbound(args: LispObject, key_args: Map<Symbol, LispObject>
 fun bi_fmakunbound(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
     val sym = symbolArg(arg1(args), "makunbound")
-    sym.set_function(nil)           // checked in the symbol object
+    sym.set_function(null)              // checked in the symbol object
     return sym
 }
 
 fun bi_funcall(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    var args = args
-    val function = functionArg(pop(&args), "funcall")
-    return function.call(arglist: args)
+    val (function, rest) = args
+    return functionArg(function, "funcall").call(args)
 }
 
 fun bi_apply(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    var args = args
-    val function = functionArg(pop(&args), "funcall")
-    return function.call(arglist: spreadArglist(args))
+    val (function, rest) = args
+    return functionArg(function, "funcall").call(spreadArglist(rest))
 }
 
 fun bi_environmentp(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args).isEnvironment())
+    return bool2ob(arg1(args) is Environment)
 }
 
 fun bi_errorp(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    return bool2ob(arg1(args).isError())
+    return bool2ob(arg1(args) is LispError)
 }
 
 fun bi_stringp(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args).isString())
+    return bool2ob(arg1(args) is LispString)
 }
 
 fun bi_numberp(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args).isNumber())
+    return bool2ob(arg1(args)is Number)
 }
 
 fun bi_consp(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    return bool2ob(arg1(args).isCons())
+    return bool2ob(arg1(args) is Cons)
 }
 
 fun bi_regexpp(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args).isRegexp())
+    return bool2ob(arg1(args) is Regexp)
 }
 
 fun bi_symbolp(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args).isSymbol())
+    return bool2ob(arg1(args) is Symbol)
 }
 
 fun bi_tablep(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args).isTable())
+    return bool2ob(arg1(args) is Table)
 }
 
 fun bi_vectorp(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args).isVector())
+    return bool2ob(arg1(args) is Vector)
 }
 
 fun bi_listp(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
     val arg = arg1(args)
-    return bool2ob(arg.isCons() || arg === Nil)
+    return bool2ob(arg is Cons || arg === Nil)
 }
 
 fun bi_functionp(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args).isFunction())
+    return bool2ob(arg1(args) is Function)
 }
 
 fun bi_builtinp(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args).isBuiltin())
+    return bool2ob(arg1(args) is Builtin)
 }
 
 fun bi_macrop(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args).isMacro())
+    return bool2ob(arg1(args) is Macro)
 }
 
 fun bi_length(args: LispObject, key_args: Map<Symbol, LispObject>
@@ -430,47 +424,46 @@ fun bi_length(args: LispObject, key_args: Map<Symbol, LispObject>
 
 fun bi_typeof(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return arg1(args).typeof
+    return intern(typeOf(arg1(args)))
 }
 
 fun bi_loop(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    while key_args.count >= 0 {         // fake to suppress the warning
-        _ = evalProgn(args)
+    while (true) {         // fake to suppress the warning
+        evalProgn(args)
     }
     return Nil
 }
 
 fun bi_while(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    var args = args
-    val condition = pop(&args)
-    while eval(condition) !== Nil {
-        _ = evalProgn(args)
+    val (condition, rest) = args
+    
+    while (eval(condition) !== Nil) {
+        evalProgn(args)
     }
     return Nil
 }
 
 fun bi_unwind_protect(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    var args = args
-    val bodyform = pop(&args)
-    defer {
-        do {
-            _ = evalProgn(args)
-        } catch {}
+    val (bodyform, unwindforms) = args
+    try {
+        return eval(bodyform)
+    } finally {
+        evalProgn(unwindforms)
     }
-    return eval(bodyform)
 }
 
 fun bi_gensym(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    val prefix = arg1(args).description
-    if prefix.description != "G#" && symbolTable[prefix] == nil {
+    val prefix = arg1(args).toString()
+
+    if (prefix != "G#" && symbolTable[prefix] == null) {
         return Symbol.uninterned(prefix)
     }
-    while true {
+    while (true) {
         val name = prefix + String(gensymCounter)
         gensymCounter += 1
-        if symbolTable[name] == nil {
+        if (symbolTable[name] == null) {
             return Symbol.uninterned(name)
         }
     }
@@ -482,37 +475,36 @@ fun bi_gensym(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 fun bi_append(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     val lc = ListCollector()
 
-    var args = args
-    while val cell = args is Cons {
-        val arg = cell.car()
-        if cell.cdr() === Nil {
+    while (args is Cons) {
+        val arg = args.car()
+        if (args.cdr() === Nil) {
             lc.lastcdr(arg)
-            return lc.list
+            return lc.list()
         }
-        for elem in arg {
+        for (elem in arg) {
             lc.add(elem)
         }
-        args = cell.cdr()
+        args = args.cdr()
     }
     return lc.list
 }
 
 fun bi_fset(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    val (sym, fun) = args2(args)
+    val (sym, func) = args2(args)
     val symbol = symbolArg(sym, "fset symbol")
-    val function = functionArg(fun, "fset function")
+    val function = functionArg(func, "fset function")
     symbol.set_function(function)
     return function
 }
 
 // Assign the value of `expr` to (un-evaluated) `variable` and return the value.
 fun bi_defvar(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    val (sym, val, doc) = args3(args)
+    val (sym, value, doc) = args3(args)
     val symbol = symbolArg(sym, "defvar symbol")
-    if symbol.getValueOptional() == nil {
-        symbol.setValue(eval(val), silent: true)
+    if (symbol.getValueOptional() == null) {
+        symbol.setValue(eval(value), silent = true)
     }
-    if doc !== Nil {
+    if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
         symbol.putprop(intern("docstring"), makeString(docstring))
     }
@@ -522,10 +514,10 @@ fun bi_defvar(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 // Define variable SYMBOL with optional INITIAL-VALUE and DOCSTRING.
 // If the variable is already bound, its value is changed nonetheless.
 fun bi_defparameter(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    val (sym, val, doc) = args3(args)
+    val (sym, value, doc) = args3(args)
     val symbol = symbolArg(sym, "defvar symbol")
-    symbol.setValue(eval(val), silent: true)
-    if doc !== Nil {
+    symbol.setValue(eval(value), silent = true)
+    if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
         symbol.putprop(intern("docstring"), makeString(docstring))
     }
@@ -536,7 +528,7 @@ fun bi_defparameter(args: LispObject, key_args: Map<Symbol, LispObject>): LispOb
 // 
 fun bi_last(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     val list_arg = arg1(args)
-    if list_arg === Nil {
+    if (list_arg === Nil) {
         return Nil
     }
     return lastCons(consArg(list_arg, "last"))
@@ -544,22 +536,22 @@ fun bi_last(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 
 fun bi_read(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     val (tentative_stream, eof_error_p, eof_value) = args3(args)
-    var input_stream: Stream? = nil
+    var input_stream: Stream? = null
 
-    if tentative_stream === Nil {
+    if (tentative_stream === Nil) {
         input_stream = stdin
-    } else if val stream = tentative_stream is Stream {
-        input_stream = stream
-    } else if val str = tentative_stream is StringObject {
-        input_stream = StringStream(str.value)
+    } else if (tentative_stream is Stream) {
+        input_stream = tentative_stream
+    } else if (tentative_stream is StringObject) {
+        input_stream = StringStream(tentative_stream.value)
     }
-    guard val input_stream = input_stream else {
+    if (input_stream == null) {
         throw ArgumentError("read argument not a stream or string: "
-                              + " \(String(describing: input_stream))")
+                            + " $input_stream")
     }
-    guard val obj = Reader(input: input_stream,
-                               source: "*expr*").read() else {
-        if eof_error_p !== Nil {
+    val obj = Reader(input_stream, "*expr*").read()
+    if (obj == null) {
+        if (eof_error_p !== Nil) {
             throw EOFError("unexpected EOF in read")
         }
         return eof_value
@@ -567,6 +559,7 @@ fun bi_read(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     return obj
 }
 
+TODO
 fun bi_flet(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     var args = args
     val bindings = pop(&args)

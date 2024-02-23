@@ -6,8 +6,8 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	interp/basedefs.kt interp/main.kt interp/exception.kt \
 	div/utils.kt \
 	io/reader.kt io/repl.kt io/stream.kt \
-	functions/function.kt functions/builtin.kt \
-	functions/lambda.kt \
+	functions/function.kt functions/builtin.kt functions/lambda.kt \
+	functions/macro.kt \
 	interp/eval.kt \
 	builtins/init-builtins.kt builtins/helpers.kt builtins/numbers.kt \
 	builtins/basic.kt

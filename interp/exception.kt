@@ -1,8 +1,22 @@
 package org.w21.lyk
 
 
+class ErrorObject(val error: LispError): LispObject() {
+    fun toString() = error.toString()
+}
+
+open class LispError(message: String): Exception(message) {
+    fun asObject() = ErrorObject(this)
+
+    fun toString() = "#<${super.toString()}>"
+
+    fun pushFrame(level: Int, form: LispObject, env: Environment) {
+        evalStack = Cons(Vector(makeNumber(level), form, env), evalStack)
+    }
+}
+
 open class ParseError(message: String,
-                       val lh: LocationHolder): Exception(message)
+                       val lh: LocationHolder): LispError(message)
 {
     override fun toString() = "${lh.location()}: $message"
 }
@@ -11,12 +25,12 @@ class SyntaxError(message: String,
                   lh: LocationHolder): ParseError(message, lh)
 
 class InternalReaderError(message: String,
-                          val lh: LocationHolder): Exception(message) {
+                          val lh: LocationHolder): LispError(message) {
     override fun toString() = "${lh.location()}: $message"
 }
 
 open class ValueError(message: String,
-                      lh: LocationHolder?): Exception(message) {
+                      lh: LocationHolder?): LispError(message) {
     val loc: String?
 
     init {
@@ -36,22 +50,16 @@ class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
     constructor(message: String) : this(message, null) {}
 }
 
-class IOError(message: String): Exception(message)
+class IOError(message: String): LispError(message)
 
-class CallError(message: String): Exception(message)
+class CallError(message: String): LispError(message)
 
-class ArgumentError(message: String): Exception(message)
+class ArgumentError(message: String): LispError(message)
 
-class LambdaDefError(message: String): Exception(message)
+class LambdaDefError(message: String): LispError(message)
 
-class FunctionError(message: String): Exception(message)
+class FunctionError(message: String): LispError(message)
 
-class AbortEvalSignal(message: String): Exception(message)
+class AbortEvalSignal(message: String): LispError(message)
 
-class LispError(message: String, label: String = "Lisp Message"):
-    Exception(label + ": " + message)
-{
-    fun pushFrame(level: Int, form: LispObject, env: Environment) {
-        evalStack = Cons(Vector(makeNumber(level), form, env), evalStack)
-    }
-}
+class ThrowSignal(val tag: LispObject, val value: LispObject): Exception()
