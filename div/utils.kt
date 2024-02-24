@@ -1,3 +1,5 @@
+// dig. utilities
+
 package org.w21.lyk
 
 
@@ -9,11 +11,6 @@ fun interface Callable {
     fun call(arglist: LispObject): LispObject
 }
 
-interface LispList: Iterable<LispObject> {
-    fun car(): LispObject
-    fun cdr(): LispObject
-}
-
 fun list2lisp(elems: List<LispObject>): LispObject {
     val lc = ListCollector()
     for (elem in elems) {
@@ -22,11 +19,12 @@ fun list2lisp(elems: List<LispObject>): LispObject {
     return lc.list()
 }
 
-class ListIterator(var l: LispList): Iterator<LispObject> {
+class ListIterator(var l: LispObject): Iterator<LispObject> {
     val original = l                    // keep the original list for an error
 
     override fun hasNext() =
         when (l) {
+            is Cons -> true
             is LispObject -> l !== Nil
             else -> false
         }
@@ -34,7 +32,7 @@ class ListIterator(var l: LispList): Iterator<LispObject> {
     override fun next(): LispObject {
         val obj = l.car()
         val next_l = l.cdr()
-        if (next_l is LispList) {
+        if (next_l is Cons) {
             l = next_l
             return obj
         }

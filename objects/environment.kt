@@ -15,7 +15,14 @@ class Environment(val parent: Environment? = null): LispObject() {
     }
 
     fun unbind(symbol: Symbol) {
-        map.remove(symbol)
+        if (symbol.immutable) {
+            throw Exception("symbol $symbol is immutable")
+        }
+        var env: Environment? = this
+        while (env != null) {
+            env.map.remove(symbol)
+            env = env.parent
+        }
     }
     
     fun getValueMaybe(symbol: Symbol): LispObject? {
@@ -35,7 +42,7 @@ class Environment(val parent: Environment? = null): LispObject() {
             throw Exception("value of $symbol is undefined")
     }
 
-    fun setValue(symbol: Symbol, value: LispObject) {
+    fun setValue(symbol: Symbol, value: LispObject): Boolean {
         if (symbol.immutable) {
             throw Exception("symbol $symbol is immutable")
         }
@@ -43,10 +50,12 @@ class Environment(val parent: Environment? = null): LispObject() {
         while (env != null) {
             if (symbol in env.map.keys) {
                 env.map[symbol] = value
+                return true
             }
             env = env.parent
         }
         rootEnv.map[symbol] = value
+        return false
     }
 }
 

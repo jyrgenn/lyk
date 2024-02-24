@@ -59,11 +59,11 @@ val specialChar2escaped = mapOf(
 // characters denoting the end of (most) tokens, besides whitespace
 val delimiter_chars = "(),'`\""
 
-val QuoteSymbol = intern("quote", immutable=true)
-val UnquoteSymbol = intern("unquote", immutable=true)
-val QuasiquoteSymbol = intern("quasiquote", immutable=true)
+val QuoteSymbol = intern("quote", true)
+val UnquoteSymbol = intern("unquote", true)
+val QuasiquoteSymbol = intern("quasiquote", true)
 val UnquoteSplicingSymbol = intern("unquote-splicing")
-val FunctionSymbol = intern("function", immutable=true)
+val FunctionSymbol = intern("function", true)
 
 fun closingOf(opening: Char): Char {
     // Return the closing character for the opening character. For brackets
@@ -92,7 +92,7 @@ fun the_double(s: String): Double? {
 }
 
 
-class Reader(val input: Stream): LocationHolder
+class Reader(val input: Stream, sourceName: String): LocationHolder
 {
     // This is a Lisp reader that on each call to read() returns an Objects as
     // found in the input stream, as long as it finds one. Then it returns nil,

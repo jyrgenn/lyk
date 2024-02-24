@@ -9,13 +9,6 @@ fun maybeIntern(word: String?): Symbol? {
     return intern(word)
 }
 
-fun key2var(sym: Symbol): Symbol? {
-    return intern(sym.name.substring(startIndex = 1))}
-
-fun var2key(sym: Symbol): Symbol {
-    return intern(":" + sym.name)
-}
-
 
 class Builtin(
     name: String,

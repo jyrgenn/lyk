@@ -4,7 +4,7 @@ package org.w21.lyk
 
 
 fun repl(prompt: String = "> ") {
-    val reader = Reader(StdinStream(name = "*repl*"))
+    val reader = Reader(stdinStream, "*repl*")
     println("read on ${reader.desc()}")
 
     while (true) {

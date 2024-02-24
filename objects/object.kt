@@ -18,6 +18,8 @@ abstract class LispObject: Iterable<LispObject> {
 
     open fun isAtom() = false
 
+    open fun isList() = false
+
     fun type() = typeOf(this)
 
     open fun length(): Int {
@@ -43,6 +45,26 @@ abstract class LispObject: Iterable<LispObject> {
     open fun equal(other: LispObject) = false
 
     override fun iterator() = ObjectIterator(this)
+
+    operator fun component1(): LispObject {
+        return (this as Cons)?.car() ?:
+            throw TypeError("$this is not a pair")
+    }
+
+    operator fun component2(): LispObject {
+        return (this as Cons)?.cdr() ?:
+            throw TypeError("$this is not a pair")
+    }
+
+    fun toBoolean() = this != Nil
+
+    open fun car(): LispObject {
+        throw LispError("called car on non-list $this")
+    }
+
+    open fun cdr(): LispObject {
+        throw LispError("called cdr on non-list $this")
+    }
 }
 
 

@@ -13,12 +13,12 @@ class Regexp(pattern: String): LispObject() {
     override fun desc() = "#/${regex.pattern}/"
     override fun toString() = desc()
 
-    fun match(s: String): LispList {
+    fun match(s: String): LispObject {
         val lc = ListCollector()
         for (match in regex.findAll(s)) {
             lc.add(LispString(match.value))
         }
-        return lc.list() as LispList
+        return lc.list()
     }
 
     override fun equal(other: LispObject): Boolean {

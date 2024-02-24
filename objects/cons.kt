@@ -3,8 +3,7 @@
 package org.w21.lyk
 
 
-data class Cons(var car: LispObject,
-                var cdr: LispObject = Nil): LispObject(), LispList {
+class Cons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
 
     override fun toString(): String {
         val result = StrBuf("(")
@@ -25,6 +24,8 @@ data class Cons(var car: LispObject,
         return result.toString()
     }
 
+    override fun isList() = true
+
     override fun desc() = toString()
 
     fun rplaca(newcar: LispObject) {
@@ -44,5 +45,4 @@ data class Cons(var car: LispObject,
     }
 
     fun cxr() = Pair(car, cdr)
-
 }

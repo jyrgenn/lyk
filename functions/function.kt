@@ -84,7 +84,7 @@ abstract class Function(
 
     fun key2var(maybeSym: LispObject): Symbol? {
         // if sym is a keyword *and* in the keyPars, return the variable
-        // symbol, used in both Builtings and Lambdas
+        // symbol, used in both Builtins and Lambdas
         if (maybeSym is Symbol && maybeSym.isKeyword()) {
             val varsym = intern(maybeSym.name.substring(startIndex = 1))
             if (varsym in keyPars.keys) {

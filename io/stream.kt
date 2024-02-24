@@ -8,12 +8,15 @@ val stderrName = "*stderr*"
 val stdinPath  = "/dev/stdin"
 val stdoutPath = "/dev/stdout"
 val stderrPath = "/dev/stderr"
+val newLine = 10
 
 
 class StdinStream(name: String = stdinName):
     FileReaderStream(stdinPath, name)
 class StdoutStream(name: String = stdoutName):
-    FileWriterStream(stdoutPath, name)
+    FileWriterStream(stdoutPath, name, flushln = true)
+class StderrStream(name: String = stderrName):
+    FileWriterStream(stderrPath, name, flushch = true, error = true)
 
 open class StringReaderStream(content: String, name: String? = null):
     Stream(input = true, path = null, name = name)
@@ -34,6 +37,9 @@ open class StringReaderStream(content: String, name: String? = null):
     override fun write(s: String) {
         throw IOError("write on input stream $this")
     }
+    override fun println(s: String) {
+        throw IOError("write on input stream $this")
+    }
 }
 
 open class FileReaderStream(path: String, name: String? = null):
@@ -50,19 +56,25 @@ open class FileReaderStream(path: String, name: String? = null):
     }
     
     override fun write(ch: Char) {
-        throw IOError("read on output stream $this")
+        throw IOError("write on input stream $this")
     }
     override fun write(s: String) {
-        throw IOError("read on output stream $this")
+        throw IOError("write on input stream $this")
+    }
+    override fun println(s: String) {
+        throw IOError("write on input stream $this")
     }
 }
 
 open class FileWriterStream(path: String,
                             name: String? = null,
+                            val flushln: Boolean = false,
+                            val flushch: Boolean = false,
+                            error: Boolean = false,
                             // append: Boolean = false,
                             // create: Boolean = true,
                             // exclusive: Boolean = false
-): Stream(output = true, path = path, name = name ?: path)
+): Stream(output = true, path = path, name = name ?: path, error = error)
 {
     val fileWriter = File(path).bufferedWriter()
 
@@ -72,9 +84,23 @@ open class FileWriterStream(path: String,
     
     override fun write(ch: Char) {
         fileWriter.write(ch.code)
+        if (flushch) {
+            fileWriter.flush()
+        }
     }
     override fun write(s: String) {
         fileWriter.write(s)
+        if (flushch) {
+            fileWriter.flush()
+        }
+    }
+
+    override fun println(s: String) {
+        fileWriter.write(s)
+        fileWriter.write(newLine)
+        if (flushch || flushln) {
+            fileWriter.flush()
+        }
     }
 }
 
@@ -93,6 +119,7 @@ abstract class Stream(
     abstract fun read(): Char?          // the actual reading
     abstract fun write(ch: Char)
     abstract fun write(s: String)
+    abstract fun println(s: String)
     
     fun readChar(): Char? {
         if (charUnread != null) {

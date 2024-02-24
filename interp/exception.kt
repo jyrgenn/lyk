@@ -2,13 +2,13 @@ package org.w21.lyk
 
 
 class ErrorObject(val error: LispError): LispObject() {
-    fun toString() = error.toString()
+    override fun toString() = error.toString()
 }
 
 open class LispError(message: String): Exception(message) {
     fun asObject() = ErrorObject(this)
 
-    fun toString() = "#<${super.toString()}>"
+    open override fun toString() = "#<${super.toString()}>"
 
     fun pushFrame(level: Int, form: LispObject, env: Environment) {
         evalStack = Cons(Vector(makeNumber(level), form, env), evalStack)
@@ -16,7 +16,7 @@ open class LispError(message: String): Exception(message) {
 }
 
 open class ParseError(message: String,
-                       val lh: LocationHolder): LispError(message)
+                      val lh: LocationHolder): LispError(message)
 {
     override fun toString() = "${lh.location()}: $message"
 }
@@ -28,6 +28,11 @@ class InternalReaderError(message: String,
                           val lh: LocationHolder): LispError(message) {
     override fun toString() = "${lh.location()}: $message"
 }
+
+class ImmutableError(val symbol: Symbol, val function: Boolean): 
+    LispError("symbol $symbol is immutable")
+
+class UserError(message: String, val data: LispObject = Nil): Exception(message)
 
 open class ValueError(message: String,
                       lh: LocationHolder?): LispError(message) {
@@ -63,3 +68,5 @@ class FunctionError(message: String): LispError(message)
 class AbortEvalSignal(message: String): LispError(message)
 
 class ThrowSignal(val tag: LispObject, val value: LispObject): Exception()
+
+class EOFError(message: String): LispError(message)

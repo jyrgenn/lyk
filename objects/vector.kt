@@ -5,7 +5,7 @@ class Vector(): LispObject() {
     val the_vector = mutableListOf<LispObject>()
 
     constructor(elems: LispObject) : this() {
-        if (elems !is LispList) {
+        if (!elems.isList()) {
             throw TypeError("Vector constructor called with "
                             + "non-list arg $elems")
         }

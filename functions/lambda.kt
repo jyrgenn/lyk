@@ -8,8 +8,8 @@ val restPSym = intern("&rest")
 val emptyString = makeString("")
 
 
-class Lambda(
-    functionName: Symbol?,                       // present if non anonymous
+open class Lambda(                           // Macro will inherit this
+    functionName: Symbol?,                   // present if non anonymous
     stdPars: List<Symbol>,                   // normal parameters
     keyPars: Map<Symbol, LispObject>,        // &key name => default
     optPars: List<Pair<Symbol, LispObject>>, // &optional name, default
@@ -23,7 +23,7 @@ class Lambda(
     val lambdatype = "function"
     
     fun bindPars(arglist: LispObject) {
-        if (arglist !is LispList) {
+        if (!arglist.isList()) {
             throw CallError("Lambda $name called with invalid argaument"
                             +" list ($arglist)")
         }
@@ -161,9 +161,9 @@ val action_table = arrayOf( // [PLS, TC] => Ac
 
 
 fun makeLambda(params: LispObject,
-                body: LispObject,
-                env: Environment,
-                name: Symbol? = null): Lambda
+               body: LispObject,
+               env: Environment = currentEnv,
+               name: Symbol? = null): Lambda
 {
     // sort params into the various params arrays
     var argptr = params

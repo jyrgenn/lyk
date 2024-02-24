@@ -5,26 +5,33 @@ package org.w21.lyk
 
 val symbolTable: MutableMap<String, Symbol> = mutableMapOf()
 
-fun intern(name: String, immutable: Boolean = false): Symbol {
+fun makeGlobal(name: String, value: LispObject = Nil) {
+    val symbol = intern(name)
+    symbol.setValue(value, silent = true)
+}
+
+fun intern(name: String, immutable_and_selfvalued: Boolean = false): Symbol {
     if (name in symbolTable.keys) {
         return symbolTable[name] ?:
             throw Exception(
                 "symbol $name in symbolTable is not in symbolTable"
             )
     }
-    val isKeyword = name.startsWith(":")
-    val sym = Symbol(name, immutable or isKeyword)
+    val sym = Symbol(name, immutable_and_selfvalued or name.startsWith(":"))
     symbolTable[name] = sym
+    if (immutable_and_selfvalued) {
+        sym.setValue(sym)
+    }
     return sym
 }
 
-fun uninternedSymbol(name: String, immutable: Boolean = false): Symbol {
-    val isKeyword = name.startsWith(":")
-    val sym = Symbol(name, immutable or isKeyword)
+fun uninternedSymbol(name: String): Symbol {
+    val sym = Symbol(name, name.startsWith(":"))
     return sym
 }
 
-val symchars = "!#$%&*+-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{}~".toSet()
+val symchars = "!#$%&*+-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^" +
+    "_abcdefghijklmnopqrstuvwxyz{}~".toSet()
 
 fun isNumberString(s: String): Boolean {
     try {
@@ -35,11 +42,11 @@ fun isNumberString(s: String): Boolean {
     }
 }
 
-class Symbol(val name: String, val immutable: Boolean): LispObject(), LispList
+class Symbol(val name: String, val immutable: Boolean): LispObject()
 {
-    val props: MutableMap<Symbol, LispObject> = mutableMapOf()
+    val props = mutableMapOf<Symbol, LispObject>()
     val descName = makeDescName()
-    var function: LispObject? = null
+    var function: Function? = null
 
     fun makeDescName(): String {
         var needQuoting = false
@@ -79,16 +86,49 @@ class Symbol(val name: String, val immutable: Boolean): LispObject(), LispList
         }
     }
 
+    override fun isList() = this === Nil
+
     override fun isKeyword(): Boolean {
         return name.startsWith(':')
     }
 
-    fun setValue(newvalue: LispObject) {
+    // Get the value of a property of Symbol. If it is not defined, return Nil.
+    fun getprop(name: Symbol): LispObject {
+        return props[name] ?: Nil
+    }
+    
+    // Set the value of a property of Symbol.
+    fun putprop(name: Symbol, value: LispObject) {
+        props[name] = value
+    }
+
+
+    fun setFunction(func: Function?, silent: Boolean = false) {
         if (immutable) {
-            throw Exception("symbol $this is immutable")
-        } else {
-            currentEnv.setValue(this, newvalue)
+            throw ImmutableError(this, true)
         }
+        if (function is Builtin && !silent) {
+            val what = if (func == null) "unbinding" else "redefining"
+            warn("$what builtin function $name")
+        }
+        function = func
+    }
+
+    fun setValue(newvalue: LispObject, silent: Boolean = false) {
+        if (immutable) {
+            throw ImmutableError(this, false)
+        } else {
+            if (!(currentEnv.setValue(this, newvalue) || silent)) {
+                warn("setting unbound variable $this to $newvalue")
+            }
+        }
+    }
+
+    fun bind(newValue: LispObject) {
+        if (this.immutable) {
+            throw Exception("symbol $this is immutable")
+        }
+        currentEnv.bind(this, newValue)
     }
 
     fun getValue() = currentEnv.getValue(this)
@@ -116,6 +156,8 @@ class Symbol(val name: String, val immutable: Boolean): LispObject(), LispList
         }
         throw ValueError("called cdr() of non-nil symbol $descName")
     }
+
+    override fun isAtom() = true
 
     override fun bool() = this != Nil
 

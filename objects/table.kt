@@ -5,7 +5,7 @@ class Table(elems: LispObject): LispObject(), Callable {
     val the_table = mutableMapOf<LispObject, LispObject>()
 
     init {
-        if (elems !is LispList) {
+        if (!elems.isList()) {
             throw TypeError("Table constructor argument is not a list")
         }
         for (elem in elems) {
