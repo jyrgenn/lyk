@@ -77,64 +77,67 @@ def print_init(data):
 
 
 def errx(message):
-    sys.exit("line {lineno}: " + message)
+    sys.exit(f"line {lineno}: " + message)
 
 def err(message):
     print("line {lineno}: " + message, file=sys.stderr)
 
+try:
+    for line in y.all_input_lines(sys.argv[1:]):
+        lineno += 1
+        line = line.rstrip()
+        # print("I read:", line, file=sys.stderr)
 
-for line in y.all_input_lines(sys.argv[1:]):
-    lineno += 1
-    line = line.rstrip()
-    # print("I read:", line, file=sys.stderr)
+        if in_doc:
+            if line.lstrip() == "}":
+                builtin["doc"] = "\n".join(docstring)
+                in_doc = False
+            else:
+                docstring.append(line)
+            continue
 
-    if in_doc:
-        if line.lstrip() == "}":
-            builtin["doc"] = "\n".join(docstring)
-            in_doc = False
-        else:
-            docstring.append(line)
-        continue
+        if not line or line.startswith("#"):
+            continue
 
-    if not line or line.startswith("#"):
-        continue
+        parts = line.split()
+        cmd = parts[0]
 
-    parts = line.split()
-    cmd = parts[0]
+        if builtin:
+            if cmd in ("std", "key", "opt", "rest"):
+                print(f"builtin[{cmd}] = {parts[1:]}", file=sys.stderr)
+                builtin[cmd] = parts[1:]
+            elif cmd in ("fun", "ret", "special"):
+                if len(parts) != 2:
+                    print(line)
+                    errx(f"just one parameter needed for '{cmd}'")
+                print(f"builtin[{cmd}] = {parts[1]}", file=sys.stderr)
+                builtin[cmd] = parts[1]
+            elif cmd == "doc":
+                if len(parts) != 2 or parts[1] != "{":
+                    errx("missing opening brace after 'doc'")
+                in_doc = True
+                docstring = []
+            elif cmd == "end":
+                if len(parts) != 2 or parts[1] != "builtin":
+                    errx("missing 'builtin' after 'end'")
+                print_init(builtin)
+                builtin = None
+            else:
+                errx(f"unexpected command '{cmd}'")
+            continue
 
-    if builtin:
-        if cmd in ("std", "key", "opt"):
-            print(f"builtin[{cmd}] = {parts[1:]}", file=sys.stderr)
-            builtin[cmd] = parts[1:]
-        elif cmd in ("fun", "rest", "ret", "special"):
+        if cmd == "builtin":
             if len(parts) != 2:
-                errx(f"just one parameter needed for '{cmd}'")
-            print(f"builtin[{cmd}] = {parts[1]}", file=sys.stderr)
-            builtin[cmd] = parts[1]
-        elif cmd == "doc":
-            if len(parts) != 2 or parts[1] != "{":
-                errx("missing opening brace after 'doc'")
-            in_doc = True
-            docstring = []
-        elif cmd == "end":
-            if len(parts) != 2 or parts[1] != "builtin":
-                errx("missing 'builtin' after 'end'")
-            print_init(builtin)
-            builtin = None
+                sys.exit(f"line {lineno}: builtin without name")
+            builtin = y.Namespace(name=parts[1], fun=None, std=None, key=None,
+                                  opt=None, rest=None, ret=None, doc=None,
+                                  special=False)
         else:
-            errx(f"unexpected command '{cmd}'")
-        continue
+            errx(f"unexpected command '{cmd}', expected 'builtin <name>'")
 
-    if cmd == "builtin":
-        if len(parts) != 2:
-            sys.exit(f"line {lineno}: builtin without name")
-        builtin = y.Namespace(name=parts[1], fun=None, std=None, key=None,
-                              opt=None, rest=None, ret=None, doc=None,
-                              special=False)
-    else:
-        errx(f"unexpected command '{cmd}', expected 'builtin <name>'")
-        
-print("""\
-}
-// EOF
-""")
+    print("""\
+    }
+    // EOF
+    """)
+except FileNotFoundError as e:
+    sys.exit(e)
