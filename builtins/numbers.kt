@@ -101,3 +101,20 @@ fun bi_div(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     return makeNumber(1 / acc)
 }
 
+/// builtin zerop
+/// fun     bi_zerop
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if number is zero, nil otherwise
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_zerop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    return bool2ob(numberArg(arg1(args), "zerop") == 0.0)
+}
+

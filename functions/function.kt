@@ -28,9 +28,7 @@ abstract class Function(
             minargs + optPars.size + keyPars.size * 2 // ":key keyarg"
         else
             -1
-        println("init function '$name'")
         if (has_name) {
-            println("assign function '${dump()}' to ${functionName?.dump()}")
             (functionName as Symbol).function = this
         }
     }

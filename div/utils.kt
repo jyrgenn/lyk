@@ -30,12 +30,8 @@ class ListIterator(var l: LispObject): Iterator<LispObject> {
 
     override fun next(): LispObject {
         val obj = l.car()
-        val next_l = l.cdr()
-        if (next_l is Cons) {
-            l = next_l
-            return obj
-        }
-        throw ValueError("iterated over improper list $original")
+        l = l.cdr()
+        return obj
     }
 }
 

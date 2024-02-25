@@ -20,6 +20,7 @@ fun repl(prompt: String = "> ") {
             println(result.desc())
         } catch (e: Exception) {
             reader.skipRestOfLine()
+            throw e
             println(e)
         }
     }

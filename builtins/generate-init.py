@@ -22,9 +22,10 @@ fun init_Builtins() {
 """)
 
 builtin = None                          # keyword => value, also, in one?
-lineno = 0
 in_doc = False
 docstring = None
+filename = None
+lineno = 0
 
 
 def prin(*args, **kwargs):
@@ -42,6 +43,7 @@ def print_init(data):
 
     prin(f'    Builtin("{data.name}", ::{data.fun},\n            ')
     if data.std:
+        prin("/* std */ ")
         content = "\", \"".join(data.std)
         prin(f'arrayOf<String>("{content}")')
     else:
@@ -49,6 +51,7 @@ def print_init(data):
     prin(",\n            ")
 
     if data.key:
+        prin("/* key */ ")
         prin("mapOf<String, LispObject>(")
         prin(" ".join(data.key))
         prin(")")
@@ -57,18 +60,30 @@ def print_init(data):
     prin(",\n            ")
 
     if data.opt:
+        prin("/* opt */ ")
         prin("arrayOf<Pair<String, LispObject>>(")
-        prin(" ".join(data.opt))
+        for vardef in data.opt.split(","):
+            parts = vardef.split()
+            var = parts[0]
+            if len(parts) == 1:
+                value = "Nil"
+            elif len(parts) == 2:
+                value = parts[1]
+            else:
+                errx(f"botched opt in {data}")
+            prin(f"Pair(\"{var}\", {value}), ")
         prin(")")
     else:
         prin("noOpt")
     prin(",\n            ")
 
+    prin("/* rest */ ")
     prin(f'"{data.rest or "noRest"}"')
     prin(",\n            ")
+    prin("/* ret */ ")
     prin(f'"{data.ret or "noRet"}"')
     prin(",\n            ")
-    
+    prin("/* special */ ")
     prin(repr(y.boolish(data.special[0])).lower())
     prin(",\n            ")
     if data.doc:
@@ -77,14 +92,26 @@ def print_init(data):
 
 
 def errx(message):
-    sys.exit(f"line {lineno}: " + message)
+    sys.exit(f"{filename}:{lineno}: " + message)
 
 def err(message):
-    print("line {lineno}: " + message, file=sys.stderr)
+    print("{filename}:{lineno}: " + message, file=sys.stderr)
+
+    
+def all_lines(files):
+    global filename
+    global lineno
+    for file in files:
+        with open(file) as f:
+            filename = file
+            for line in f:
+                lineno += 1
+                if line.startswith("/// "):
+                    yield line[4:]
+                
 
 try:
-    for line in y.all_input_lines(sys.argv[1:]):
-        lineno += 1
+    for line in all_lines(sys.argv[1:]):
         line = line.rstrip()
         # print("I read:", line, file=sys.stderr)
 
@@ -103,9 +130,13 @@ try:
         cmd = parts[0]
 
         if builtin:
-            if cmd in ("std", "key", "opt", "rest"):
+            if cmd in ("std", "key", "rest"):
                 print(f"builtin[{cmd}] = {parts[1:]}", file=sys.stderr)
                 builtin[cmd] = parts[1:]
+            elif cmd in ("opt"):
+                arg = " ".join(parts[1:])
+                print(f"builtin[{cmd}] = {arg}", file=sys.stderr)
+                builtin[cmd] = arg
             elif cmd in ("fun", "ret", "special"):
                 if len(parts) != 2:
                     print(line)
@@ -128,7 +159,7 @@ try:
 
         if cmd == "builtin":
             if len(parts) != 2:
-                sys.exit(f"line {lineno}: builtin without name")
+                sys.exit(f"{filename}:{lineno}: builtin without name")
             builtin = y.Namespace(name=parts[1], fun=None, std=None, key=None,
                                   opt=None, rest=None, ret=None, doc=None,
                                   special=False)

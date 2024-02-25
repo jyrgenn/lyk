@@ -37,7 +37,7 @@ fun bi_cdr(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 }
 
 /// builtin rplaca
-/// fun     bi_replaca
+/// fun     bi_rplaca
 /// std     cons new-car
 /// key     
 /// opt     
@@ -715,7 +715,7 @@ fun bi_fboundp(args: LispObject, key_args: Map<Symbol, LispObject>
 /// fun     bi_errset
 /// std     expr
 /// key     
-/// opt     print-error t
+/// opt     print-error T
 /// rest    
 /// ret     result
 /// special yes
@@ -1157,7 +1157,7 @@ fun bi_unwind_protect(args: LispObject, key_args: Map<Symbol, LispObject>
 /// fun     bi_gensym
 /// std     
 /// key     
-/// opt     (prefix "G#")
+/// opt     prefix makeString("G#")
 /// rest    
 /// ret     symbol
 /// special no
@@ -1221,8 +1221,8 @@ fun bi_append(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 
 /// builtin fset
 /// fun     bi_fset
-/// std     symbol
-/// key     new-func
+/// std     symbol new-func
+/// key     
 /// opt     
 /// rest    
 /// ret     new-func
@@ -1244,7 +1244,7 @@ fun bi_fset(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 /// fun     bi_defvar
 /// std     symbol
 /// key     
-/// opt     initial-value docstring
+/// opt     initial-value, docstring
 /// rest    
 /// ret     symbol
 /// special no
@@ -1271,8 +1271,8 @@ fun bi_defvar(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 /// fun     bi_defparameter
 /// std     symbol
 /// key     
-/// opt     
-/// rest    initial-value docstring
+/// opt     initial-value, docstring
+/// rest    
 /// ret     symbl
 /// special no
 /// doc {
@@ -1318,7 +1318,7 @@ fun bi_last(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 /// fun     bi_read
 /// std     
 /// key     
-/// opt     input-stream eof-error-p eof-value
+/// opt     input-stream, eof-error-p, eof-value
 /// rest    
 /// ret     value
 /// special no
@@ -1466,5 +1466,28 @@ fun bi_eval(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     return with_environment(envArg(env, "eval environment")) {
         eval(expr)
     }
+}
+
+/// builtin symbols
+/// fun     bi_symbols
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     symbol-list
+/// special no
+/// doc {
+/// Return a list of all symbols.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_symbols(args: LispObject, key_args: Map<Symbol, LispObject>
+): LispObject {
+    val lc = ListCollector()
+
+    for (sym in symbolTable.values) {
+        lc.add(sym)
+    }
+    return lc.list()
 }
 

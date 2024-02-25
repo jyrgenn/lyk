@@ -41,6 +41,7 @@ fun evalFun(obj: LispObject?,
 fun evalArgs(arglist: LispObject): LispObject {
     val lc = ListCollector()
 
+    println("arglist $arglist")
     for (arg in arglist) {
         lc.add(eval(arg))
     }
@@ -79,7 +80,8 @@ fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
     evalCounter += 1
     val savedLevel: Int = current_eval_level
     val deferList = listOf({ current_eval_level = savedLevel })
-
+    
+    println("eval $form, ${typeOf(form)}")
     try {
         current_eval_level += 1
         if (tracing_on) {

@@ -39,7 +39,7 @@ class Environment(val parent: Environment? = null): LispObject() {
 
     fun getValue(symbol: Symbol): LispObject {
         return getValueMaybe(symbol) ?:
-            throw Exception("value of $symbol is undefined")
+            throw ValueError("value of symbol `$symbol` is undefined")
     }
 
     fun setValue(symbol: Symbol, value: LispObject): Boolean {
