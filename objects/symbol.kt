@@ -6,28 +6,8 @@ package org.w21.lyk
 val symbolTable: MutableMap<String, Symbol> = mutableMapOf()
 
 fun makeGlobal(name: String, value: LispObject = Nil) {
-    val symbol = intern(name)
+    val symbol = Symbol.intern(name)
     symbol.setValue(value, silent = true)
-}
-
-fun intern(name: String, immutable_and_selfvalued: Boolean = false): Symbol {
-    if (name in symbolTable.keys) {
-        return symbolTable[name] ?:
-            throw Exception(
-                "symbol $name in symbolTable is not in symbolTable"
-            )
-    }
-    val sym = Symbol(name, immutable_and_selfvalued or name.startsWith(":"))
-    symbolTable[name] = sym
-    if (immutable_and_selfvalued) {
-        sym.setValue(sym)
-    }
-    return sym
-}
-
-fun uninternedSymbol(name: String): Symbol {
-    val sym = Symbol(name, name.startsWith(":"))
-    return sym
 }
 
 val symchars = "!#$%&*+-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^" +
@@ -47,6 +27,30 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
     val props = mutableMapOf<Symbol, LispObject>()
     val descName = makeDescName()
     var function: Function? = null
+
+    companion object {
+        fun intern(name: String, immutable_and_selfvalued: Boolean = false
+        ): Symbol {
+            if (name in symbolTable.keys) {
+                return symbolTable[name] ?:
+                    throw Exception(
+                        "symbol $name in symbolTable is not in symbolTable"
+                    )
+            }
+            val sym = Symbol(name,
+                             immutable_and_selfvalued or name.startsWith(":"))
+            symbolTable[name] = sym
+            if (immutable_and_selfvalued) {
+                rootEnv.setValue(sym, sym)
+            }
+            return sym
+        }
+
+        fun uninterned(name: String): Symbol {
+            val sym = Symbol(name, name.startsWith(":"))
+            return sym
+        }
+    }                           // end companion object
 
     fun makeDescName(): String {
         var needQuoting = false

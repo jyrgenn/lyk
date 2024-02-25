@@ -1,11 +1,11 @@
 
 package org.w21.lyk
 
-val Nil = intern("nil", true)
-val T = intern("t", true)
-
 val rootEnv = Environment()
 var currentEnv = rootEnv
+
+val Nil = Symbol.intern("nil", true)
+val T = Symbol.intern("t", true)
 
 var inErrset = false            // are we in an (errset ...) context?
 val last_error = makeGlobal("*last-error*")

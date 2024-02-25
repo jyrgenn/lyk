@@ -47,12 +47,12 @@ abstract class LispObject: Iterable<LispObject> {
     override fun iterator() = ObjectIterator(this)
 
     operator fun component1(): LispObject {
-        return (this as Cons)?.car() ?:
+        return (this as? Cons)?.car() ?:
             throw TypeError("$this is not a pair")
     }
 
     operator fun component2(): LispObject {
-        return (this as Cons)?.cdr() ?:
+        return (this as? Cons)?.cdr() ?:
             throw TypeError("$this is not a pair")
     }
 

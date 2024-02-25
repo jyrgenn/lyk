@@ -3,7 +3,7 @@
 package org.w21.lyk
 
 
-val anonLambdaSym = intern("*anon-lambda*")
+val anonLambdaSym = Symbol.intern("*anon-lambda*")
 
 abstract class Function(
     functionName: Symbol?,                       // present if non anonymous
@@ -86,7 +86,7 @@ abstract class Function(
         // if sym is a keyword *and* in the keyPars, return the variable
         // symbol, used in both Builtins and Lambdas
         if (maybeSym is Symbol && maybeSym.isKeyword()) {
-            val varsym = intern(maybeSym.name.substring(startIndex = 1))
+            val varsym = Symbol.intern(maybeSym.name.substring(startIndex = 1))
             if (varsym in keyPars.keys) {
                 return varsym
             }

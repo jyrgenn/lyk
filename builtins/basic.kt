@@ -33,7 +33,7 @@ fun bi_rplacd(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 // Return the (potentially new) interned symbol with the name `name` (a string).
 @Suppress("UNUSED_PARAMETER")
 fun bi_intern(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    return intern(stringArg(arg1(args), "intern"))
+    return Symbol.intern(stringArg(arg1(args), "intern"))
 }
 
 // Return a list with the elements `elems`.
@@ -364,7 +364,7 @@ fun bi_errset(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
         return Cons(eval(expr), Nil)
     } catch (lerror: LispError) {
         val errObj = lerror.asObject()
-        intern("*last-error*").setValue(errObj, silent = true)
+        Symbol.intern("*last-error*").setValue(errObj, silent = true)
         if (print_error != Nil) {
             print(errObj)
         }
@@ -484,7 +484,7 @@ fun bi_length(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 
 @Suppress("UNUSED_PARAMETER")
 fun bi_typeof(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    return intern(typeOf(arg1(args)))
+    return Symbol.intern(typeOf(arg1(args)))
 }
 
 @Suppress("UNUSED_PARAMETER")
@@ -496,7 +496,7 @@ fun bi_loop(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 
 @Suppress("UNUSED_PARAMETER")
 fun bi_while(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    val (condition, rest) = args
+    val (condition, _) = args
     
     while (eval(condition) !== Nil) {
         evalProgn(args)
@@ -520,13 +520,13 @@ fun bi_gensym(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     val prefix = arg1(args).toString()
 
     if (prefix != "G#" && symbolTable[prefix] == null) {
-        return uninternedSymbol(prefix)
+        return Symbol.uninterned(prefix)
     }
     while (true) {
         val name = prefix + gensymCounter.toString()
         gensymCounter += 1
         if (symbolTable[name] == null) {
-            return uninternedSymbol(name)
+            return Symbol.uninterned(name)
         }
     }
 }
@@ -572,7 +572,7 @@ fun bi_defvar(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     }
     if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
-        symbol.putprop(intern("docstring"), makeString(docstring))
+        symbol.putprop(Symbol.intern("docstring"), makeString(docstring))
     }
     return symbol
 }
@@ -586,7 +586,7 @@ fun bi_defparameter(args: LispObject, key_args: Map<Symbol, LispObject>): LispOb
     symbol.setValue(eval(value), silent = true)
     if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
-        symbol.putprop(intern("docstring"), makeString(docstring))
+        symbol.putprop(Symbol.intern("docstring"), makeString(docstring))
     }
     return symbol
 }

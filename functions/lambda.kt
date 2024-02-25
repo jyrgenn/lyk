@@ -2,9 +2,9 @@
 
 package org.w21.lyk
 
-val optionalPSym = intern("&optional")
-val keyPSym = intern("&key")
-val restPSym = intern("&rest")
+val optionalPSym = Symbol.intern("&optional")
+val keyPSym = Symbol.intern("&key")
+val restPSym = Symbol.intern("&rest")
 val emptyString = makeString("")
 
 
@@ -17,8 +17,8 @@ open class Lambda(                           // Macro will inherit this
     val bodyForms: LispObject,               //
     docBody: LispString,                     // docstring sans signature
     val environment: Environment
-): Function(functionName, stdPars, keyPars, optPars, restPar, intern("value"),
-            false, docBody)
+): Function(functionName, stdPars, keyPars, optPars, restPar,
+            Symbol.intern("value"), false, docBody)
 {
     val lambdatype = "function"
     

@@ -43,9 +43,6 @@ class Environment(val parent: Environment? = null): LispObject() {
     }
 
     fun setValue(symbol: Symbol, value: LispObject): Boolean {
-        if (symbol.immutable) {
-            throw Exception("symbol $symbol is immutable")
-        }
         var env: Environment? = this
         while (env != null) {
             if (symbol in env.map.keys) {

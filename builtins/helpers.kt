@@ -4,12 +4,12 @@ package org.w21.lyk
 
 
 fun envArg(arg: LispObject, what: String): Environment {
-    return (arg as Environment) ?:
+    return (arg as? Environment) ?:
         throw ArgumentError("$what argument is not an environment: $arg")
 }
 
 fun numberArg(arg: LispObject, what: String): Double {
-    return (arg as Number)?.value ?:
+    return (arg as? Number)?.value ?:
         throw ArgumentError("$what argument not a number: $arg (${typeOf(arg)}")
 }
 
@@ -31,10 +31,8 @@ fun intArg(arg: LispObject, what: String): Int {
 }
 
 fun functionArg(arg: LispObject, what: String): Function {
-    if (arg is Function) {
-        return arg
-    }
-    throw ArgumentError("$what argument not a function: $arg")
+    return arg as? Function ?:
+        throw ArgumentError("$what argument not a function: $arg")
 }
 
 // fun comparableArg(arg: LispObject, what: String): CompObject {
@@ -46,15 +44,13 @@ fun functionArg(arg: LispObject, what: String): Function {
 // }
 
 fun consArg(arg: LispObject, what: String): Cons {
-    if (arg is Cons) {
-        return arg
-    }
-    throw ArgumentError("$what argument not a cons: $arg")
+    return arg as? Cons ?:
+        throw ArgumentError("$what argument not a cons: $arg")
 }
 
 fun listArg(arg: LispObject, what: String): LispObject {
-    if (arg is Cons || arg === Nil) {
-        return arg as LispObject
+    if (arg.isList()) {
+        return arg
     }
     throw ArgumentError("$what argument not a list: $arg")
 }
@@ -67,10 +63,8 @@ fun listArg(arg: LispObject, what: String): LispObject {
 // }
 
 fun stringArg(arg: LispObject, what: String): String {
-    if (arg is LispString) {
-        return arg.value
-    }
-    throw ArgumentError("$what argument not a string: $arg")
+    return (arg as? LispString)?.value ?:
+        throw ArgumentError("$what argument not a string: $arg")
 }
 
 fun stringlikeArg(arg: LispObject, what: String): String {
@@ -84,10 +78,8 @@ fun stringlikeArg(arg: LispObject, what: String): String {
 }
 
 fun symbolArg(arg: LispObject, what: String): Symbol {
-    if (arg is Symbol) {
-        return arg
-    }
-    throw ArgumentError("$what argument not a symbol: $arg")
+    return arg as? Symbol ?:
+        throw ArgumentError("$what argument not a symbol: $arg")
 }
 
 fun tableArg(arg: LispObject, what: String): Table {
@@ -135,12 +127,12 @@ fun spreadArglist(args: LispObject): LispObject {
 }
 
 fun environmentArg(arg: LispObject, what: String): Environment {
-    return arg as Environment ?:
+    return arg as? Environment ?:
         throw ArgumentError("$what argument not a environment: $arg")
 }
 
 fun streamArg(arg: LispObject, what: String): Stream {
-    return arg as Stream ?:
+    return arg as? Stream ?:
         throw ArgumentError("$what argument not a stream: $arg")
 }
 
@@ -177,21 +169,21 @@ fun lastCons2(list: Cons): Cons {
 // not a cons, return Nil for efficiency reasons. The caller must know or not
 // care.
 fun arg1(list: LispObject): LispObject {
-    return (list as Cons)?.car() ?: Nil
+    return (list as? Cons)?.car() ?: Nil
 }
 
 // Return the second element of list. This is not checked -- if the list is not
 // a cons or not long enough, return Nil for efficiency reasons. The caller must
 // know or not care.
 fun arg2(list: LispObject): LispObject {
-    return ((list as Cons)?.cdr() as Cons)?.car() ?: Nil
+    return ((list as? Cons)?.cdr() as? Cons)?.car() ?: Nil
 }
 
 // Return the third element of list. This is not checked -- if the list is not a
 // cons or not long enough, return Nil for efficiency reasons. The caller must
 // know or not care.
 fun arg3(list: LispObject): LispObject {
-    return (((list as Cons)?.cdr() as Cons)?.cdr() as Cons)?.car() ?: Nil
+    return (((list as? Cons)?.cdr() as? Cons)?.cdr() as? Cons)?.car() ?: Nil
 }
 
 // Return the first two elements of list. This is not checked -- if the list is
@@ -213,7 +205,7 @@ fun args3(list: LispObject): Triple<LispObject, LispObject, LispObject> {
 
 
 fun key2var(sym: Symbol): Symbol {
-    return intern(sym.name.substring(1))
+    return Symbol.intern(sym.name.substring(1))
 }
 
 fun isKeysym(sym: Symbol): Symbol? {
@@ -224,7 +216,7 @@ fun isKeysym(sym: Symbol): Symbol? {
 }
 
 fun var2key(sym: Symbol): Symbol {
-    return intern(":" + sym.name)
+    return Symbol.intern(":" + sym.name)
 }
 
 fun itemList(args: LispObject): LispObject {

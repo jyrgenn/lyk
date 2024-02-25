@@ -59,11 +59,11 @@ val specialChar2escaped = mapOf(
 // characters denoting the end of (most) tokens, besides whitespace
 val delimiter_chars = "(),'`\""
 
-val QuoteSymbol = intern("quote", true)
-val UnquoteSymbol = intern("unquote", true)
-val QuasiquoteSymbol = intern("quasiquote", true)
-val UnquoteSplicingSymbol = intern("unquote-splicing")
-val FunctionSymbol = intern("function", true)
+val QuoteSymbol = Symbol.intern("quote", true)
+val UnquoteSymbol = Symbol.intern("unquote", true)
+val QuasiquoteSymbol = Symbol.intern("quasiquote", true)
+val UnquoteSplicingSymbol = Symbol.intern("unquote-splicing")
+val FunctionSymbol = Symbol.intern("function", true)
 
 fun closingOf(opening: Char): Char {
     // Return the closing character for the opening character. For brackets
@@ -92,7 +92,7 @@ fun the_double(s: String): Double? {
 }
 
 
-class Reader(val input: Stream, sourceName: String): LocationHolder
+class Reader(val input: Stream, sourceName: String?): LocationHolder
 {
     // This is a Lisp reader that on each call to read() returns an Objects as
     // found in the input stream, as long as it finds one. Then it returns nil,
@@ -101,6 +101,7 @@ class Reader(val input: Stream, sourceName: String): LocationHolder
     var line = 1                        // current line
     var column = 0                      // current column read
     var pushbackToken: ReaderToken? = null
+    val readerName = sourceName ?: input.name
     
 
     override fun toString(): String {
@@ -109,7 +110,7 @@ class Reader(val input: Stream, sourceName: String): LocationHolder
     fun desc() = toString()
 
     override fun location(): String {
-        return "${input.name}:$line:$column"
+        return "${readerName}:$line:$column"
     }
 
     fun unreadToken(token: ReaderToken) {
@@ -602,7 +603,7 @@ class Reader(val input: Stream, sourceName: String): LocationHolder
         
         when (token) {
             is SymbolToken ->
-                return intern(token.value)
+                return Symbol.intern(token.value)
             is NumberToken ->
                 return makeNumber(token.value)
             is StringToken ->

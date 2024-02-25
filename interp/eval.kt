@@ -32,7 +32,7 @@ fun evalFun(obj: LispObject?,
         }
         return evalFun(eval(obj), reclevel+1, show ?: obj)
     }
-    val present = show ?: obj ?: uninternedSymbol("WOT?:")
+    val present = show ?: obj ?: Symbol.uninterned("WOT?:")
     throw FunctionError("object `$present` is not a function "
                         + present.dump())
 }
@@ -47,8 +47,8 @@ fun evalArgs(arglist: LispObject): LispObject {
     return lc.list()
 }
 
-val traceEvalSym = intern("eval")
-val callFunctionSym = intern("call")
+val traceEvalSym = Symbol.intern("eval")
+val callFunctionSym = Symbol.intern("call")
 var current_eval_level: Int = 0
 var evalCounter: Int = 0
 var tracing_on: Boolean = false

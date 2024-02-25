@@ -25,7 +25,6 @@ class ListIterator(var l: LispObject): Iterator<LispObject> {
     override fun hasNext() =
         when (l) {
             is Cons -> true
-            is LispObject -> l !== Nil
             else -> false
         }
 
@@ -124,7 +123,7 @@ class StrBuf() {
 fun arrayIntern(array: Array<String>): List<Symbol> {
     val symbols = mutableListOf<Symbol>()
     for (elem in array) {
-        symbols.add(intern(elem))
+        symbols.add(Symbol.intern(elem))
     }
     return symbols
 }
@@ -132,7 +131,7 @@ fun arrayIntern(array: Array<String>): List<Symbol> {
 fun mapInternKeys(map: Map<String, LispObject>): Map<Symbol, LispObject> {
     val result = mutableMapOf<Symbol, LispObject>()
     for ((key, value) in map) {
-        result[intern(key)] = value
+        result[Symbol.intern(key)] = value
     }
     return result
 }
@@ -141,7 +140,7 @@ fun pairsInternFirst(pairs: Array<Pair<String, LispObject>>
 ): List<Pair<Symbol, LispObject>> {
     var result = mutableListOf<Pair<Symbol, LispObject>>()
     for ((key, value) in pairs) {
-        result.add(Pair<Symbol, LispObject>(intern(key), value))
+        result.add(Pair<Symbol, LispObject>(Symbol.intern(key), value))
     }
     return result
 }

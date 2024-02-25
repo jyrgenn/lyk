@@ -6,7 +6,7 @@ fun maybeIntern(word: String?): Symbol? {
     if (word == null) {
         return null
     }
-    return intern(word)
+    return Symbol.intern(word)
 }
 
 
@@ -21,7 +21,7 @@ class Builtin(
     isSpecial: Boolean = false,
     docBody: String,
 ): Function(
-       intern(name),
+       Symbol.intern(name),
        arrayIntern(stdPars),
        mapInternKeys(keyPars),
        pairsInternFirst(optPars),

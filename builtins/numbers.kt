@@ -19,8 +19,8 @@ fun bi_minus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     var acc = numberArg(arg, "-")
 
     if (rest !== Nil) {
-        for (arg in rest) {
-            acc -= numberArg(arg, "-")
+        for (elem in rest) {
+            acc -= numberArg(elem, "-")
         }
         return makeNumber(acc)
     }
@@ -43,8 +43,8 @@ fun bi_div(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     var acc = numberArg(arg, "/")
 
     if (rest !== Nil) {
-        for (arg in rest) {
-            acc /= numberArg(arg, "/")
+        for (elem in rest) {
+            acc /= numberArg(elem, "/")
         }
         return makeNumber(acc)
     }
