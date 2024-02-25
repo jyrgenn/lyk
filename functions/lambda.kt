@@ -22,6 +22,11 @@ open class Lambda(                           // Macro will inherit this
 {
     val lambdatype = "function"
     
+    override fun dump(): String {
+        return "#<${typeDesc()}[$id](${parlist()}) $bodyForms>"
+    }
+
+
     fun bindPars(arglist: LispObject) {
         if (!arglist.isList()) {
             throw CallError("Lambda $name called with invalid argaument"

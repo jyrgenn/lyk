@@ -21,7 +21,7 @@ fun repl(prompt: String = "> ") {
         } catch (e: Exception) {
             reader.skipRestOfLine()
             throw e
-            println(e)
+            // println(e)
         }
     }
 }

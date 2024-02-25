@@ -96,7 +96,7 @@ abstract class Function(
         throw InternalError("calling $this, not Subclass")
     }
 
-    override fun dump(): String {
+    open override fun dump(): String {
         return "#<${typeDesc()}[$id](${parlist()})= $retval>"
     }
 }

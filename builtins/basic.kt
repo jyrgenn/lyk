@@ -177,7 +177,8 @@ fun bi_quote(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_setq(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     val (sym, value) = args2(args)
-    symbolArg(sym, "setq").setValue(eval(value))
+    val newvalue = eval(value)
+    symbolArg(sym, "setq").setValue(newvalue)
     return value
 }
 
@@ -506,7 +507,9 @@ fun bi_lambda(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_defun(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    var (name, params, bodyforms) = args3(args)
+    val (name, rest) = args
+    val (params, bodyforms) = rest
+
     val sym = symbolArg(name, "function name")
     sym.setFunction(makeLambda(params, bodyforms, currentEnv, sym))
     return sym

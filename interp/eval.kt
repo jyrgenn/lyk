@@ -7,6 +7,7 @@ package org.w21.lyk
 
 fun evalProgn(forms: LispObject): LispObject {
     var result: LispObject = Nil
+    print("evalProgn $forms")
 
     for (form in forms) {
         result = eval(form)
