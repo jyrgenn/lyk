@@ -7,7 +7,7 @@ package org.w21.lyk
 
 fun evalProgn(forms: LispObject): LispObject {
     var result: LispObject = Nil
-    debug("evalProgn $forms")
+    debug(traceEvalSym, "evalProgn $forms")
 
     for (form in forms) {
         result = eval(form)
@@ -19,7 +19,7 @@ fun evalFun(obj: LispObject?,
             reclevel: Int = 0,
             show: LispObject? = null): Function
 {
-    debug("evalFun(${obj?.dump() ?: "nil"}, $reclevel)")
+    debug(traceEvalSym, "evalFun(${obj?.dump() ?: "nil"}, $reclevel)")
     if (obj != null && reclevel <= 2) {
         // dump(obj)
         if (obj is Function) {
@@ -27,7 +27,7 @@ fun evalFun(obj: LispObject?,
         }
         if (obj is Symbol) {
             obj.dump()
-            debug("$obj is symbol, function ${obj.function}")
+            debug(traceEvalSym, "$obj is symbol, function ${obj.function}")
             return evalFun(obj.function ?: obj.getValueOptional(),
                            reclevel + 1, show ?: obj)
         }

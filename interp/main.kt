@@ -7,7 +7,7 @@ val traceCallSym = Symbol.intern("call")
 val traceArgsSym = Symbol.intern("args")
 
 object Options {
-    var debug = mutableMapOf<Symbol, Symbol>(
+    var debug = mutableMapOf<Symbol, Boolean>(
         traceEvalSym to false,
         traceCallSym to false,
     )
@@ -20,7 +20,8 @@ fun debug(topic: Symbol, closure: () -> Unit) {
         closure()
     }
 }
-fun debug(sym: Symbol, vararg args: LispObject) {
+
+fun debug(topic: Symbol, vararg args: LispObject) {
     if (Options.debug[topic] ?: false) {
         print("DBG")
         for (arg in args) {
@@ -49,7 +50,6 @@ fun main(args: Array<String>) {
         }
         for (ch in arg.substring(1)) {
             when (ch) {
-                'D' -> { Options.debug = true }
                 'E' -> { Options.print_estack = true }
                 else -> { println("unknown option $ch") }
             }

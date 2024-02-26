@@ -2,6 +2,9 @@
 
 package org.w21.lyk
 
+val debugOffSym = Symbol.intern("off")
+val debugListSym = Symbol.intern("list")
+
 /// builtin debug
 /// fun     bi_debug
 /// std     
@@ -15,14 +18,33 @@ package org.w21.lyk
 /// Topics are activated by using their name as argument, or deactivated with
 /// `-name`. To deactivate all, use `off`. To show what topics are available,
 /// use `list`.
-/// Return the active debug topics (a list of symbols).
+/// Return the active debug topics (a list of symbols) or all with `list`.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_debug(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-TODO debug symbols    if (args != Nil) {
-        Options.debug = ob2bool(arg1(args))
+    val lc = ListCollector()
+    for (arg in args) {
+        when (arg) {
+            debugOffSym -> {
+                for (key in Options.debug.keys) {
+                    Options.debug[key] = false
+                }
+                break
+            }
+            debugListSym -> {
+                for (key in Options.debug.keys) {
+                    lc.add(key)
+                }
+                return lc.list()
+            }
+        }
     }
-    return bool2ob(Options.debug)
+    for ((key, value) in Options.debug) {
+        if (value) {
+            lc.add(key)
+        }
+    }
+    return lc.list()
 }
 
