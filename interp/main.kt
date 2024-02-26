@@ -1,15 +1,38 @@
 
 import org.w21.lyk.*
 
+
+val traceEvalSym = Symbol.intern("eval")
+val traceCallSym = Symbol.intern("call")
+val traceArgsSym = Symbol.intern("args")
+
 object Options {
-    var debug = false
+    var debug = mutableMapOf<Symbol, Symbol>(
+        traceEvalSym to false,
+        traceCallSym to false,
+    )
     var warn = true
     var print_estack = false
 }
 
+fun debug(topic: Symbol, closure: () -> Unit) {
+    if (Options.debug[topic] ?: false) {
+        closure()
+    }
+}
+fun debug(sym: Symbol, vararg args: LispObject) {
+    if (Options.debug[topic] ?: false) {
+        print("DBG")
+        for (arg in args) {
+            print(" ")
+            print(arg)
+        }
+        println()
+    }
+}
 
-fun debug(msg: String, vararg args: Any) {
-    if (Options.debug) {
+fun debug(topic: Symbol, msg: String, vararg args: Any) {
+    if (Options.debug[topic] ?: false) {
         println("DBG $msg ${args}")
     }
 }
@@ -26,8 +49,8 @@ fun main(args: Array<String>) {
         }
         for (ch in arg.substring(1)) {
             when (ch) {
-                'd' -> { Options.debug = true }
-                'e'-> { Options.print_estack }
+                'D' -> { Options.debug = true }
+                'E' -> { Options.print_estack = true }
                 else -> { println("unknown option $ch") }
             }
         }

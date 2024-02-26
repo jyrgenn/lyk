@@ -7,7 +7,7 @@ package org.w21.lyk
 
 fun evalProgn(forms: LispObject): LispObject {
     var result: LispObject = Nil
-    print("evalProgn $forms")
+    debug("evalProgn $forms")
 
     for (form in forms) {
         result = eval(form)
@@ -19,7 +19,7 @@ fun evalFun(obj: LispObject?,
             reclevel: Int = 0,
             show: LispObject? = null): Function
 {
-    println("evalFun(${obj?.dump() ?: "nil"}, $reclevel)")
+    debug("evalFun(${obj?.dump() ?: "nil"}, $reclevel)")
     if (obj != null && reclevel <= 2) {
         // dump(obj)
         if (obj is Function) {
@@ -27,7 +27,7 @@ fun evalFun(obj: LispObject?,
         }
         if (obj is Symbol) {
             obj.dump()
-            println("$obj is symbol, function ${obj.function}")
+            debug("$obj is symbol, function ${obj.function}")
             return evalFun(obj.function ?: obj.getValueOptional(),
                            reclevel + 1, show ?: obj)
         }
@@ -42,39 +42,21 @@ fun evalFun(obj: LispObject?,
 fun evalArgs(arglist: LispObject): LispObject {
     val lc = ListCollector()
 
-    println("arglist $arglist")
+    debug(traceArgsSym, "arglist $arglist")
     for (arg in arglist) {
         lc.add(eval(arg))
     }
     return lc.list()
 }
 
-val traceEvalSym = Symbol.intern("eval")
-val callFunctionSym = Symbol.intern("call")
 var current_eval_level: Int = 0
 var evalCounter: Int = 0
-var tracing_on: Boolean = false
 var maxEvalLevel: Int = 0
 var maxRecursionDepth: Int = 1_000_000_000
 var abortEval: Boolean = false
 var stepEval: Boolean = false
 var evalStack: LispObject = Nil
 
-fun trace(sym: Symbol, closure: () -> Unit) {
-    if (sym !== Nil) {
-        closure()
-    }
-}
-fun trace(sym: Symbol, vararg args: LispObject) {
-    if (sym !== Nil) {
-        print("TRC")
-        for (arg in args) {
-            print(" ")
-            print(arg)
-        }
-        println()
-    }
-}
 
 
 fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
@@ -85,10 +67,8 @@ fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
     println("eval $form, ${typeOf(form)}")
     try {
         current_eval_level += 1
-        if (tracing_on) {
-            trace(traceEvalSym) {
-                print("TRC eval[$current_eval_level] $form")
-            }
+        debug(traceEvalSym) {
+            print("TRC eval[$current_eval_level] $form")
         }
         if (current_eval_level > maxEvalLevel) {
             maxEvalLevel = current_eval_level
@@ -147,9 +127,7 @@ fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
                 if (!function.isSpecial) {
                     args = evalArgs(args)
                 }
-                if (tracing_on) {
-                    trace(callFunctionSym, function, args)
-                }
+                debug(callFunctionSym, function, args)
                 value = function.call(args)
             } else {
                 value = form
@@ -157,10 +135,8 @@ fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
             if (stepEval) {
                 print("[$current_eval_level] => $value")
             }
-            if (tracing_on) {
-                trace(traceEvalSym) {
-                    print("TRC eval[$current_eval_level] $form => $value")
-                }
+            debug(traceEvalSym) {
+                print("TRC eval[$current_eval_level] $form => $value")
             }
             return value
         } catch (err: LispError) {
