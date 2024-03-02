@@ -12,6 +12,7 @@ object Options {
         traceEvalSym to false,
         traceCallSym to false,
         debugErrorSym to false,
+        debugDebugSym to false,
         traceEvalFunSym to false,
     )
     var warn = true

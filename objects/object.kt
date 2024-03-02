@@ -72,13 +72,12 @@ class ObjectIterator(var theObject: LispObject): Iterator<LispObject> {
     val original = theObject
 
     override fun hasNext(): Boolean {
-        if (theObject == Nil) {
-            return false
+        when (theObject) {
+            Nil -> return false
+            is Cons -> return true
+            else ->
+                throw ValueError("iterating over not a proper list: $original")
         }
-        if (theObject is Cons) {
-            return true
-        }
-        throw ValueError("iterating over not a proper list: $original")
     }
 
     override fun next(): LispObject {

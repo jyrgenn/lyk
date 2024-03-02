@@ -6,6 +6,7 @@ var currentEnv = rootEnv
 
 val Nil = Symbol.intern("nil", true)
 val T = Symbol.intern("t", true)
+val theNonPrintingObject = Symbol.intern("*the-non-printing-object*", true)
 
 var inErrset = false            // are we in an (errset ...) context?
 val last_error = makeGlobal("*last-error*")
@@ -22,12 +23,12 @@ var errors = true               // print errors
 
 fun warn(message: String) {
     if (warnings) {
-        System.err.println(";; $message")
+        printErr(";; $message")
     }
 }
 
 fun error(message: String) {
     if (errors) {
-        System.err.println("ERROR $message")
+        printErr("ERROR $message")
     }
 }

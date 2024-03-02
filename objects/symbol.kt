@@ -37,10 +37,10 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
                         "symbol $name in symbolTable is not in symbolTable"
                     )
             }
-            val sym = Symbol(name,
-                             immutable_and_selfvalued or name.startsWith(":"))
+            val i_and_sv = immutable_and_selfvalued || name.startsWith(":")
+            val sym = Symbol(name, i_and_sv)
             symbolTable[name] = sym
-            if (immutable_and_selfvalued) {
+            if (i_and_sv) {
                 rootEnv.setValue(sym, sym)
             }
             return sym

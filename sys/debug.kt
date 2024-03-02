@@ -41,13 +41,14 @@ fun clearDebug(sym: Symbol) {
 
 fun debug(topic: Symbol, closure: () -> Unit) {
     if (Options.debug[topic] ?: false) {
+        println("DBG-$topic:2")
         closure()
     }
 }
 
 fun debug(topic: Symbol, vararg args: LispObject) {
     if (Options.debug[topic] ?: false) {
-        print("DBG")
+        print("DBG-$topic")
         for (arg in args) {
             print(" ")
             print(arg)
@@ -58,6 +59,10 @@ fun debug(topic: Symbol, vararg args: LispObject) {
 
 fun debug(topic: Symbol, msg: String, vararg args: Any) {
     if (Options.debug[topic] ?: false) {
-        println("DBG $msg ${args}")
+        print("DBG-$topic $msg")
+        for (arg in args) {
+            print(" " + arg.toString())
+        }
+        println()
     }
 }

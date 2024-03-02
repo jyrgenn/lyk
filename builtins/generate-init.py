@@ -79,7 +79,7 @@ def print_init(data):
 
     if data.rest:
         prin("/* rest */ ")
-        prin('"', data.rest, '"')
+        prin('"', data.rest[0], '"')
     else:
        prin("noRest")
     prin(",\n            ")
@@ -92,7 +92,7 @@ def print_init(data):
     prin("/* special */ ")
     prin(repr(y.boolish(data.special[0])).lower())
     prin(",\n            ")
-    prin('"""' + repr(data.doc)[1:-2] + '"""')
+    prin('"""\n' + data.doc + '"""\n.trimMargin()')
     print(")")
     print()
 

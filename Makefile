@@ -26,7 +26,9 @@ NATIVECOMP = kotlinc-native
 # rm -f $JAR
 
 
-build: init-builtins $(SRCS) Makefile
+build: init-builtins Makefile lyk.jar
+
+lyk.jar: $(SRCS)
 	$(COMP) $(SRCS) -include-runtime -d lyk.jar
 
 init-builtins:

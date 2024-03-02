@@ -16,17 +16,20 @@ fun repl(prompt: String = "\n> ") {
                 break
             }
             val result = eval(obj)
-            println(result.desc())
+            if (result !== theNonPrintingObject) {
+                println(result.desc())
+            }
         } catch (e: LispError) {
             reader.skipRestOfLine()
             if (Options.print_estack) {
                 e.printStackTrace()
             } else {
-                println(e.toString())
+                printErr(e.toString())
                 debug(debugErrorSym, e.asObject().desc())
             }
         } catch (e: Exception) {
-            
+            printErr("unexpected exception:", e)
+            e.printStackTrace()
         }
     }
 }

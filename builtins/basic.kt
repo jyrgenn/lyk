@@ -1471,26 +1471,3 @@ fun bi_eval(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     }
 }
 
-/// builtin symbols
-/// fun     bi_symbols
-/// std     
-/// key     
-/// opt     
-/// rest    
-/// ret     symbol-list
-/// special no
-/// doc {
-/// Return a list of all symbols.
-/// }
-/// end builtin
-@Suppress("UNUSED_PARAMETER")
-fun bi_symbols(args: LispObject, key_args: Map<Symbol, LispObject>
-): LispObject {
-    val lc = ListCollector()
-
-    for (sym in symbolTable.values) {
-        lc.add(sym)
-    }
-    return lc.list()
-}
-
