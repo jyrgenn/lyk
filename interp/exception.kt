@@ -3,12 +3,14 @@ package org.w21.lyk
 
 class ErrorObject(val error: LispError): LispObject() {
     override fun toString() = error.toString()
+
+    override fun desc() = "#<${typeOf(this)}: {error.toString()}>"
 }
 
 open class LispError(message: String): Exception(message) {
     fun asObject() = ErrorObject(this)
 
-    open override fun toString() = "#<${super.toString()}>"
+    open override fun toString() = "${typeOf(this)}: $message"
 
     fun pushFrame(level: Int, form: LispObject, env: Environment) {
         evalStack = Cons(Vector(makeNumber(level), form, env), evalStack)
@@ -46,7 +48,7 @@ open class ValueError(message: String,
     
     override fun toString(): String {
         val location = if (loc == null) "" else " at $loc"
-        return "${typeOf(this)}: $message$location"
+        return super.toString() + location
     }
 
 }

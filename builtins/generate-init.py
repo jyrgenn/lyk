@@ -29,7 +29,7 @@ lineno = 0
 
 
 def prin(*args, **kwargs):
-    print(*args, end="", **kwargs)
+    print(*args, sep="", end="", **kwargs)
 
 
 def print_init(data):
@@ -77,18 +77,24 @@ def print_init(data):
         prin("noOpt")
     prin(",\n            ")
 
-    prin("/* rest */ ")
-    prin(f'"{data.rest or "noRest"}"')
+    if data.rest:
+        prin("/* rest */ ")
+        prin('"', data.rest, '"')
+    else:
+       prin("noRest")
     prin(",\n            ")
-    prin("/* ret */ ")
-    prin(f'"{data.ret or "noRet"}"')
+    if data.ret:
+        prin("/* ret */ ")
+        prin('"', data.ret, '"')
+    else:
+        prin("noRet")
     prin(",\n            ")
     prin("/* special */ ")
     prin(repr(y.boolish(data.special[0])).lower())
     prin(",\n            ")
-    if data.doc:
-        prin('"""' + repr(data.doc)[1:-2] + '"""')
+    prin('"""' + repr(data.doc)[1:-2] + '"""')
     print(")")
+    print()
 
 
 def errx(message):

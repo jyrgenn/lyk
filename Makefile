@@ -4,14 +4,14 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	objects/table.kt objects/vector.kt objects/regexp.kt \
 	objects/comparable.kt \
 	interp/basedefs.kt interp/main.kt interp/exception.kt \
-	div/utils.kt \
 	io/reader.kt io/repl.kt io/stream.kt \
 	functions/function.kt functions/builtin.kt functions/lambda.kt \
 	functions/macro.kt \
 	interp/eval.kt \
 	builtins/init-builtins.kt builtins/helpers.kt builtins/numbers.kt \
 	builtins/basic.kt builtins/system.kt \
-	utils/lists.kt
+	utils/lists.kt utils/div.kt utils/interfaces.kt \
+	sys/debug.kt 
 
 
 #SRCS = cons.kt object.kt symbol.kt basedefs.kt main.kt environment.kt \

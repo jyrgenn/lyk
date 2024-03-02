@@ -3,7 +3,7 @@
 package org.w21.lyk
 
 
-fun repl(prompt: String = "> ") {
+fun repl(prompt: String = "\n> ") {
     val reader = Reader(stdinStream, "*repl*")
     println("read on ${reader.desc()}")
 
@@ -16,12 +16,17 @@ fun repl(prompt: String = "> ") {
                 break
             }
             val result = eval(obj)
-            // println("${typeOf(obj)} ${obj.desc()} => $result")
             println(result.desc())
-        } catch (e: Exception) {
+        } catch (e: LispError) {
             reader.skipRestOfLine()
-            throw e
-            // println(e)
+            if (Options.print_estack) {
+                e.printStackTrace()
+            } else {
+                println(e.toString())
+                debug(debugErrorSym, e.asObject().desc())
+            }
+        } catch (e: Exception) {
+            
         }
     }
 }

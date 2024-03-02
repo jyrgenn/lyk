@@ -1,72 +1,6 @@
-// dig. utilities
-
 package org.w21.lyk
 
-
-fun interface LocationHolder {
-    fun location(): String
-}
-
-fun interface Callable {
-    fun call(arglist: LispObject): LispObject
-}
-
-fun list2lisp(elems: List<LispObject>): LispObject {
-    val lc = ListCollector()
-    for (elem in elems) {
-        lc.add(elem)
-    }
-    return lc.list()
-}
-
-class ListIterator(var l: LispObject): Iterator<LispObject> {
-    val original = l                    // keep the original list for an error
-
-    override fun hasNext() =
-        when (l) {
-            is Cons -> true
-            else -> false
-        }
-
-    override fun next(): LispObject {
-        val obj = l.car()
-        l = l.cdr()
-        return obj
-    }
-}
-
-
-class ListCollector(vararg objects: LispObject) {
-    var head: LispObject = Nil
-    var last: LispObject? = null
-
-    init {
-        for (obj in objects) {
-            add(obj)
-        }
-    }
-
-    fun add(arg: LispObject) {
-        val newpair = Cons(arg, Nil)
-        if (last is Cons) {
-            (last as Cons).rplacd(newpair)
-        } else {
-            head = newpair
-        }
-        last = newpair
-    }
-
-    fun lastcdr(arg: LispObject) {
-        if (last is Cons) {
-            (last as Cons).rplacd(arg)
-        } else {
-            last = arg
-            head = arg
-        }
-    }
-
-    fun list() = head
-}
+import kotlin.system.exitProcess
 
 fun typeOf(obj: Any): String {
     if (obj is LispString) {
@@ -74,6 +8,7 @@ fun typeOf(obj: Any): String {
     }
     return "${obj::class.simpleName}"//.lowercase()
 }
+
 
 class CharBuf {
     val chars = mutableListOf<Char>()
@@ -141,3 +76,21 @@ fun pairsInternFirst(pairs: Array<Pair<String, LispObject>>
     return result
 }
 
+fun printErr(vararg things: Any) {
+    System.err.print("Error:")
+    for (thing in things) {
+        System.err.print(" " + thing)
+    }
+    System.err.println()
+}
+
+fun printErr(e: LispError) {
+    System.err.println(e)
+}
+
+fun errExit(message: String? = null) {
+    if (message != null) {
+        printErr(message)
+    }
+    exitProcess(1)
+}

@@ -19,7 +19,7 @@ fun evalFun(obj: LispObject?,
             reclevel: Int = 0,
             show: LispObject? = null): Function
 {
-    debug(traceEvalSym, "evalFun(${obj?.dump() ?: "nil"}, $reclevel)")
+    debug(traceEvalFunSym, "evalFun(${obj?.dump() ?: "nil"}, $reclevel)")
     if (obj != null && reclevel <= 2) {
         // dump(obj)
         if (obj is Function) {
@@ -42,7 +42,6 @@ fun evalFun(obj: LispObject?,
 fun evalArgs(arglist: LispObject): LispObject {
     val lc = ListCollector()
 
-    debug(traceArgsSym, "arglist $arglist")
     for (arg in arglist) {
         lc.add(eval(arg))
     }
@@ -64,11 +63,11 @@ fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
     val savedLevel: Int = current_eval_level
     val deferList = listOf({ current_eval_level = savedLevel })
     
-    println("eval $form, ${typeOf(form)}")
+    debug(traceEvalSym, "eval $form, ${typeOf(form)}")
     try {
         current_eval_level += 1
         debug(traceEvalSym) {
-            print("TRC eval[$current_eval_level] $form")
+            println("TRC eval[$current_eval_level] $form")
         }
         if (current_eval_level > maxEvalLevel) {
             maxEvalLevel = current_eval_level
@@ -127,7 +126,7 @@ fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
                 if (!function.isSpecial) {
                     args = evalArgs(args)
                 }
-                debug(callFunctionSym, function, args)
+                debug(traceCallSym, function, args)
                 value = function.call(args)
             } else {
                 value = form
@@ -136,7 +135,7 @@ fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
                 print("[$current_eval_level] => $value")
             }
             debug(traceEvalSym) {
-                print("TRC eval[$current_eval_level] $form => $value")
+                println("TRC eval[$current_eval_level] $form => $value")
             }
             return value
         } catch (err: LispError) {

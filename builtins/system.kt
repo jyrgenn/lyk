@@ -38,6 +38,11 @@ fun bi_debug(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
                 }
                 return lc.list()
             }
+            else -> {
+                if (!(arg is Symbol && setDebug(arg))) {
+                    throw ValueError("$arg is not a valid debug symbol")
+                }
+            }
         }
     }
     for ((key, value) in Options.debug) {
