@@ -20,18 +20,17 @@ fun setDebug(vararg syms: Symbol, value: Boolean = true): Boolean {
     return true
 }
 
-fun setDebug(options: String) {
-    var errors = false
+fun setDebug(options: String?): Boolean {
+    options ?: return false
+    var isgood = true
     for (option in options.split(',')) {
         val sym = Symbol.intern(option)
         if (!setDebug(sym)) {
-            errors = true
+            isgood = false
             printErr("`$option` is not a valid debug option")
         }
     }
-    if (errors) {
-        errExit()
-    }
+    return isgood
 }
 
 fun clearDebug(sym: Symbol) {
@@ -66,3 +65,4 @@ fun debug(topic: Symbol, msg: String, vararg args: Any) {
         println()
     }
 }
+

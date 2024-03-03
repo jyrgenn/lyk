@@ -94,3 +94,9 @@ fun errExit(message: String? = null) {
     }
     exitProcess(1)
 }
+
+fun warn(warning: String) {
+    if (Options.warnings) {
+        System.err.println(";; " + warning )
+    }
+}

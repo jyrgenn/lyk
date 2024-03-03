@@ -23,18 +23,3 @@ var stdinStream = StdinStream()
 var stdoutStream = StdoutStream()
 var stderrStream = StderrStream()
 
-var warnings = true             // print warnings
-var errors = true               // print errors
-
-
-fun warn(message: String) {
-    if (warnings) {
-        printErr(";; $message")
-    }
-}
-
-fun error(message: String) {
-    if (errors) {
-        printErr("ERROR $message")
-    }
-}
