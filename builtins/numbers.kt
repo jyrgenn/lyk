@@ -22,7 +22,7 @@ fun bi_plus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     for (arg in args) {
         acc += numberArg(arg, "+")
     }
-    return makeNumber(acc)
+    return Number.makeNumber(acc)
 }
 
 
@@ -47,9 +47,9 @@ fun bi_minus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
         for (elem in rest) {
             acc -= numberArg(elem, "-")
         }
-        return makeNumber(acc)
+        return Number.makeNumber(acc)
     }
-    return makeNumber(- acc)
+    return Number.makeNumber(- acc)
 }
 
 
@@ -72,7 +72,7 @@ fun bi_mult(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     for (arg in args) {
         acc *= numberArg(arg, "*")
     }
-    return makeNumber(acc)
+    return Number.makeNumber(acc)
 }
 
 /// builtin /
@@ -96,9 +96,9 @@ fun bi_div(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
         for (elem in rest) {
             acc /= numberArg(elem, "/")
         }
-        return makeNumber(acc)
+        return Number.makeNumber(acc)
     }
-    return makeNumber(1 / acc)
+    return Number.makeNumber(1 / acc)
 }
 
 /// builtin zerop

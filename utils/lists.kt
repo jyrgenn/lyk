@@ -7,7 +7,7 @@ fun collectedList(closure: (lc: ListCollector) -> Unit): LispObject {
     return lc.list()
 }
 
-fun list2lisp(elems: List<LispObject>): LispObject {
+fun list2lisp(elems: MutableCollection<LispObject>): LispObject {
     val lc = ListCollector()
     for (elem in elems) {
         lc.add(elem)

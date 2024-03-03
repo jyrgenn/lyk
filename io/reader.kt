@@ -605,7 +605,7 @@ class Reader(val input: Stream, sourceName: String?): LocationHolder
             is SymbolToken ->
                 return Symbol.intern(token.value)
             is NumberToken ->
-                return makeNumber(token.value)
+                return Number.makeNumber(token.value)
             is StringToken ->
                 return makeString(token.value)
             is OparenToken ->

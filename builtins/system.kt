@@ -102,6 +102,25 @@ fun bi_doc(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 }
 
 
+/// builtin numbers
+/// fun     bi_numbers
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     number-list
+/// special no
+/// doc {
+/// Return a list of all number objects currently in use.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_numbers(args: LispObject, key_args: Map<Symbol, LispObject>
+): LispObject {
+    return Number.numbers()
+}
+
+
 /// builtin symbols
 /// fun     bi_symbols
 /// std     
@@ -118,10 +137,28 @@ fun bi_doc(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 fun bi_symbols(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
     val lc = ListCollector()
-
     for (sym in symbolTable.values) {
         lc.add(sym)
     }
     return lc.list()
+}
+
+/// builtin gc
+/// fun     bi_gc
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     nil
+/// special no
+/// doc {
+/// Trigger a garbage collection.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_gc(args: LispObject, key_args: Map<Symbol, LispObject>
+): LispObject {
+    System.gc()
+    return Nil
 }
 
