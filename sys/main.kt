@@ -104,6 +104,6 @@ fun main(args: Array<String>) {
         }
         exitProcess(0)
     }
-    println(";; " + buildtag())
+    warn(buildtag())
     repl()
 }

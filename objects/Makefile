@@ -1,1 +1,1 @@
-../Subdirmakefile
+../scripts/Subdirmakefile
