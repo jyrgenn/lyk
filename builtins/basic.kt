@@ -491,8 +491,8 @@ fun bi_lambda(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 /// fun     bi_defun
 /// std     name lambda-list
 /// key     
-/// opt     
-/// rest    [docstring] bodyforms
+/// opt     docstring
+/// rest    bodyforms
 /// ret     value
 /// special yes
 /// doc {

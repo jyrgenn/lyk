@@ -2,6 +2,7 @@
 
 # create the Builtin register calls for the described builtins
 
+import re
 import sys
 import jpylib as y
 
@@ -32,37 +33,37 @@ def prin(*args, **kwargs):
     print(*args, sep="", end="", **kwargs)
 
 
-def print_init(data):
+def print_init(builtin):
     errors = False
-    for key in data:
-        if data.get(key) == None:
-            err(f"builtin {data.name}: missing {key}")
+    for key in builtin:
+        if builtin.get(key) == None:
+            err(f"builtin {builtin.name}: missing {key}")
             errors = True
     if errors:
         sys.exit(1)
 
-    prin(f'    Builtin("{data.name}", ::{data.fun},\n            ')
-    if data.std:
+    prin(f'    Builtin("{builtin.name}", ::{builtin.fun},\n            ')
+    if builtin.std:
         prin("/* std */ ")
-        content = "\", \"".join(data.std)
+        content = "\", \"".join(builtin.std)
         prin(f'arrayOf<String>("{content}")')
     else:
         prin("noStd")
     prin(",\n            ")
 
-    if data.key:
+    if builtin.key:
         prin("/* key */ ")
         prin("mapOf<String, LispObject>(")
-        prin(" ".join(data.key))
+        prin(" ".join(builtin.key))
         prin(")")
     else:
         prin("noKey")
     prin(",\n            ")
 
-    if data.opt:
+    if builtin.opt:
         prin("/* opt */ ")
         prin("arrayOf<Pair<String, LispObject>>(")
-        for vardef in data.opt.split(","):
+        for vardef in builtin.opt.split(","):
             parts = vardef.split()
             var = parts[0]
             if len(parts) == 1:
@@ -70,29 +71,29 @@ def print_init(data):
             elif len(parts) == 2:
                 value = parts[1]
             else:
-                errx(f"botched opt in {data}")
+                errx(f"botched opt in {builtin}")
             prin(f"Pair(\"{var}\", {value}), ")
         prin(")")
     else:
         prin("noOpt")
     prin(",\n            ")
 
-    if data.rest:
+    if builtin.rest:
         prin("/* rest */ ")
-        prin('"', data.rest[0], '"')
+        prin('"', builtin.rest[0], '"')
     else:
        prin("noRest")
     prin(",\n            ")
-    if data.ret:
+    if builtin.ret:
         prin("/* ret */ ")
-        prin('"', data.ret, '"')
+        prin('"', builtin.ret, '"')
     else:
         prin("noRet")
     prin(",\n            ")
     prin("/* special */ ")
-    prin(repr(y.boolish(data.special[0])).lower())
+    prin(repr(y.boolish(builtin.special[0])).lower())
     prin(",\n            ")
-    prin('"""\n' + data.doc + '"""\n.trimMargin()')
+    prin('"""\n' + builtin.doc + '"""\n')
     print(")")
     print()
 
@@ -112,8 +113,8 @@ def all_lines(files):
             filename = file
             for line in f:
                 lineno += 1
-                if line.startswith("/// "):
-                    yield line[4:]
+                if line.startswith("///"):
+                    yield re.sub("^/// ?", "", line)
                 
 
 try:
@@ -126,6 +127,8 @@ try:
                 builtin["doc"] = "\n".join(docstring)
                 in_doc = False
             else:
+                if builtin.name == "defun":
+                    print(f">>{line}<<", file=sys.stderr)
                 docstring.append(line)
             continue
 

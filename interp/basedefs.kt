@@ -6,6 +6,12 @@ var currentEnv = rootEnv
 
 val Nil = Symbol.intern("nil", true)
 val T = Symbol.intern("t", true)
+
+// This is meant for interactive functions like #'doc, so their
+// printed output is not cluttered by the display of a (irrelevant)
+// return value. The REPL will print any return value but this one.
+// Idea taken from TI's PC Scheme.
+//
 val theNonPrintingObject = Symbol.intern("*the-non-printing-object*", true)
 
 var inErrset = false            // are we in an (errset ...) context?

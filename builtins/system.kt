@@ -85,7 +85,7 @@ fun bi_doc(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
         if (as_string) {
             return LispString(doc)
         } else {
-            println(doc)
+            print(doc)
             return theNonPrintingObject
         }
     }
