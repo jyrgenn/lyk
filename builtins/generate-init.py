@@ -19,7 +19,7 @@ val noRet = "nil"
 
 
 fun init_Builtins() {
-    println("Initialise Builtins")
+
 """)
 
 builtin = None                          # keyword => value, also, in one?
@@ -93,7 +93,7 @@ def print_init(builtin):
     prin("/* special */ ")
     prin(repr(y.boolish(builtin.special[0])).lower())
     prin(",\n            ")
-    prin('"""\n' + builtin.doc + '"""\n')
+    prin('"""\n' + builtin.doc + '"""')
     print(")")
     print()
 

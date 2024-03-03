@@ -23,7 +23,16 @@ open class Lambda(                           // Macro will inherit this
     val lambdatype = "function"
     
     override fun dump(): String {
-        return "#<${typeDesc()}[$id](${parlist()}) $bodyForms>"
+        var body: String
+
+        if (bodyForms === Nil) {
+            body = Nil.toString()
+        } else {
+            val s = bodyForms.toString()
+            body = s.substring(1, s.length - 1)
+        }
+        
+        return "#<${typeDesc()}[$id](${parlist()}) $body>"
     }
 
 

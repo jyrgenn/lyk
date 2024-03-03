@@ -17,7 +17,7 @@ val debugDebugSym = Symbol.intern("debug")
 /// doc {
 /// Activate and deactivate debug topics (symbols), items/areas to be debugged.
 /// Topics are activated by using their name as argument, or deactivated with
-/// `-name`. To deactivate all, use `off`. To show what topics are available,
+/// `-name`. To deactivate all, use `:off`. To show what topics are available,
 /// use `list`.
 /// Return the active debug topics (a list of symbols) or all with `list`.
 /// }
@@ -41,8 +41,17 @@ fun bi_debug(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
                 return lc.list()
             }
             else -> {
-                if (!(arg is Symbol && setDebug(arg))) {
-                    throw ValueError("$arg is not a valid debug symbol")
+                if (arg !is Symbol) {
+                    throw ValueError("$arg is not a symbol")
+                }
+                var sym = arg
+                var is_on = true
+                if (sym.name.startsWith("-")) {
+                    is_on = false
+                    sym = Symbol.intern(sym.name.substring(1))
+                }
+                if (!setDebug(sym, is_on)) {
+                    throw ValueError("$sym is not a valid debug symbol")
                 }
             }
         }

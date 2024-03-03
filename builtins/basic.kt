@@ -493,7 +493,7 @@ fun bi_lambda(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 /// key     
 /// opt     docstring
 /// rest    bodyforms
-/// ret     value
+/// ret     name
 /// special yes
 /// doc {
 /// Create a function with name `name`, `lambda-list`, and `bodyforms`.
