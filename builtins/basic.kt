@@ -483,7 +483,7 @@ fun bi_progn(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_lambda(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
-    var (params, bodyforms) = args2(args)
+    var (params, bodyforms) = args
     return makeLambda(params, bodyforms)
 }
 
