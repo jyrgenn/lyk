@@ -162,3 +162,28 @@ fun bi_gc(args: LispObject, key_args: Map<Symbol, LispObject>
     return Nil
 }
 
+/// builtin apropos
+/// fun     bi_apropos
+/// std     string
+/// key     
+/// opt     
+/// rest    
+/// ret     none
+/// special no
+/// doc {
+/// Print all interned symbols whose name contains `string`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_apropos(args: LispObject, key_args: Map<Symbol, LispObject>
+): LispObject {
+    val string = arg1(args).toString()
+
+    for (sym in symbolTable.values) {
+        if (sym.name.contains(string)) {
+            println(sym)
+        }
+    }
+    return theNonPrintingObject
+}
+
