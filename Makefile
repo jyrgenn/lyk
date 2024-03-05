@@ -14,11 +14,7 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	sys/debug.kt sys/main.kt \
 	generated/buildtag.kt generated/init-builtins.kt
 
-
-#SRCS = cons.kt object.kt symbol.kt basedefs.kt main.kt environment.kt \
-#	utils.kt exception.kt reader.kt stream.kt number.kt string.kt \
-#	regexp.kt table.kt vector.kt repl.kt
-
+BUILTINSRC = $(shell ls builtins/*.kt | egrep -v '(helpers)\.kt')
 COMP = kotlinc
 NATIVECOMP = kotlinc-native
 
@@ -27,7 +23,7 @@ NATIVECOMP = kotlinc-native
 # rm -f $JAR
 
 
-build: Makefile buildtag init-builtins lyk.jar
+build: Makefile buildtag generated/init-builtins.kt lyk.jar
 
 lyk.jar: $(SRCS)
 	$(COMP) $(SRCS) -include-runtime -d lyk.jar
@@ -36,9 +32,10 @@ generated/buildtag.kt: buildtag
 buildtag:
 	scripts/buildtag.sh lyk > generated/buildtag.kt
 
-init-builtins:
-	$(MAKE) -C builtins ../generated/init-builtins.kt
-
+generated/init-builtins.kt: scripts/gen-bi-init Makefile $(BUILTINSRC)
+	-rm -f generated/Makefile && \
+	    ln -s ../scripts/Subdirmakefile generated/Makefile
+	scripts/gen-bi-init -q $(BUILTINSRC) > generated/init-builtins.kt
 
 new: $(SRCS) functions/function.kt
 	$(COMP) $(SRCS)
@@ -48,4 +45,4 @@ native: $(SRCS) Makefile
 	mv lykn.pexe lykn
 
 clean:
-	-rm -rf *~ org *.dSYM *.kexe *.class *.jar META-INF lyk generated/*
+	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar generated/* META-INF lyk

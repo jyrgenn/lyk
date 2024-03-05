@@ -32,8 +32,8 @@ class Builtin(
    ) {
 
     override fun call(arglist: LispObject): LispObject {
-       // first establish the key_args[] with the default values
-        var key_args = keyPars.toMutableMap()
+       // first establish the kwArgs[] with the default values
+        var kwArgs = keyPars.toMutableMap()
 
         var nargs = 0                   // # of normal args seen
         var larglist = arglist          // local arglist; we may need to assign
@@ -84,7 +84,7 @@ class Builtin(
         while (argptr is Cons) {
             val arg = argptr.car()
             if (wantKeywordParam != null) {
-                key_args[wantKeywordParam] = arg
+                kwArgs[wantKeywordParam] = arg
                 wantKeywordParam = null
                 argptr = argptr.cdr()
             } else if (arg is Symbol
@@ -118,7 +118,7 @@ class Builtin(
                                 + "calling builtin `$name`")
         }
         // finally, call the actual function
-        return bfun(larglist, key_args)
+        return bfun(larglist, kwArgs)
     }
 
     override fun typeDesc() = if (isSpecial) "Special form" else "Builtin"
