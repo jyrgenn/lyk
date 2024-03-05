@@ -98,20 +98,23 @@ def print_init(builtin):
     print()
 
 
-def info(*args):
-    if verbose:
-        print(*args, file=sys.stderr)
-
-def notice(*args):
-    if not quiet:
-        print(*args, file=sys.stderr)
-
-    
 def errx(message):
-    sys.exit(f"{filename}:{lineno}: " + message)
+    sys.exit(f"\n{filename}:{lineno}: " + message)
 
 def err(message):
-    print("{filename}:{lineno}: " + message, file=sys.stderr)
+    print("\n{filename}:{lineno}: " + message, file=sys.stderr)
+
+wrap_column = 76
+column = 0
+
+def notef(s):
+    global column
+    if y.is_notice():
+        if len(s) + column > wrap_column:
+            print(file=sys.stderr)
+            column = 0
+        print(s, file=sys.stderr, end="")
+        column += len(s)
 
     
 def all_lines(files):
@@ -134,8 +137,8 @@ ovc, args = y.pgetopts({
           "increase verbosity (up to 3 make sense)"),
 })
 
-
 try:
+    notef("register builtins ")
     for line in all_lines(args):
         line = line.rstrip()
         y.debug("I read:", line)
@@ -146,7 +149,7 @@ try:
                 in_doc = False
             else:
                 if builtin.name == "defun":
-                    y.debug(f">>{line}<<")
+                    y.debug(f" >>{line}<<")
                 docstring.append(line)
             continue
 
@@ -158,17 +161,17 @@ try:
 
         if builtin:
             if cmd in ("std", "key", "rest"):
-                y.info(f"builtin[{cmd}] = {parts[1:]}")
+                y.info(f" builtin[{cmd}] = {parts[1:]}")
                 builtin[cmd] = parts[1:]
             elif cmd in ("opt"):
                 arg = " ".join(parts[1:])
-                y.info(f"builtin[{cmd}] = {arg}")
+                y.info(f" builtin[{cmd}] = {arg}")
                 builtin[cmd] = arg
             elif cmd in ("fun", "ret", "special"):
                 if len(parts) != 2:
                     y.debug(line)
                     errx(f"exactly one parameter needed for '{cmd}'")
-                y.info(f"builtin[{cmd}] = {parts[1]}")
+                y.info(f" builtin[{cmd}] = {parts[1]}")
                 builtin[cmd] = parts[1]
             elif cmd == "doc":
                 if len(parts) != 2 or parts[1] != "{":
@@ -186,11 +189,11 @@ try:
 
         if cmd == "builtin":
             if len(parts) != 2:
-                sys.exit(f"{filename}:{lineno}: builtin without name")
+                errx("builtin without name")
             builtin = y.Namespace(name=parts[1], fun=None, std=None, key=None,
                                   opt=None, rest=None, ret=None, doc=None,
                                   special=False)
-            y.notice(f"register builtin {builtin.name}")
+            notef(f"{builtin.name}, ")
         else:
             errx(f"unexpected command '{cmd}', expected 'builtin <name>'")
 
@@ -198,5 +201,6 @@ try:
     }
     // EOF
     """)
+    notef("\nbuiltins done\n")
 except FileNotFoundError as e:
     sys.exit(e)
