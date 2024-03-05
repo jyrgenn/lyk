@@ -4,8 +4,9 @@ Lyk — Lysp yn Kotlin
 
 This is going to be a Lisp in Kotlin. While I am not the biggest fan
 of JVM-based things because you'll always have to schlep that
-runtime around (I know there is the native option, but it doesn't
-have everything AFAICS), I am curious.
+runtime around, I am curious. (I know there is the native option,
+but functionality seems to be limited. Maybe I'll consider it again
+if the backend choice turns out to be a major performance issue.)
 
 So far Kotlin is remarkably similar to Swift, such that I can take
 the Swift code from Lys, do a few replacements like s/func/fun/ and
