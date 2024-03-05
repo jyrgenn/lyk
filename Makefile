@@ -1,13 +1,10 @@
-
 SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	objects/environment.kt objects/number.kt objects/string.kt \
 	objects/table.kt objects/vector.kt objects/regexp.kt \
-	objects/comparable.kt \
-	interp/basedefs.kt interp/exception.kt \
+	interp/basedefs.kt interp/exception.kt interp/eval.kt \
 	io/reader.kt io/repl.kt io/stream.kt \
 	functions/function.kt functions/builtin.kt functions/lambda.kt \
 	functions/macro.kt \
-	interp/eval.kt \
 	builtins/helpers.kt builtins/numbers.kt builtins/cxr.kt \
 	builtins/basic.kt builtins/system.kt builtins/alists.kt \
 	utils/lists.kt utils/div.kt utils/interfaces.kt \
@@ -30,9 +27,11 @@ lyk.jar: $(SRCS)
 
 generated/buildtag.kt: buildtag
 buildtag:
+	mkdir -p generated
 	scripts/buildtag.sh lyk > generated/buildtag.kt
 
 generated/init-builtins.kt: scripts/gen-bi-init Makefile $(BUILTINSRC)
+	mkdir -p generated
 	-rm -f generated/Makefile && \
 	    ln -s ../scripts/Subdirmakefile generated/Makefile
 	scripts/gen-bi-init $(BUILTINSRC) > generated/init-builtins.kt
