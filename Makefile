@@ -8,7 +8,7 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	functions/function.kt functions/builtin.kt functions/lambda.kt \
 	functions/macro.kt \
 	interp/eval.kt \
-	builtins/helpers.kt builtins/numbers.kt \
+	builtins/helpers.kt builtins/numbers.kt builtins/cxr.kt \
 	builtins/basic.kt builtins/system.kt builtins/alists.kt \
 	utils/lists.kt utils/div.kt utils/interfaces.kt \
 	sys/debug.kt sys/main.kt \
@@ -35,7 +35,7 @@ buildtag:
 generated/init-builtins.kt: scripts/gen-bi-init Makefile $(BUILTINSRC)
 	-rm -f generated/Makefile && \
 	    ln -s ../scripts/Subdirmakefile generated/Makefile
-	scripts/gen-bi-init -q $(BUILTINSRC) > generated/init-builtins.kt
+	scripts/gen-bi-init $(BUILTINSRC) > generated/init-builtins.kt
 
 new: $(SRCS) functions/function.kt
 	$(COMP) $(SRCS)
