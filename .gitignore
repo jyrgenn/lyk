@@ -14,4 +14,4 @@ org
 builtins/init-builtins.kt
 
 # added by ni/gitignore 2024-03-03T15:36:40
-/generated/buildtag.kt
+/generated
