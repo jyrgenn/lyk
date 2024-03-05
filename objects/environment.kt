@@ -3,6 +3,7 @@
 
 package org.w21.lyk
 
+val bindSymSym = Symbol.intern("bind")
 
 class Environment(val parent: Environment? = null): LispObject() {
     val level: Int = if (parent == null) 0 else parent.level + 1
@@ -11,6 +12,7 @@ class Environment(val parent: Environment? = null): LispObject() {
 
     // must only be called by symbol.bind
     fun bind(symbol: Symbol, value: LispObject) {
+	debug(bindSymSym, "bind $symbol = $value in $this")
         map[symbol] = value
     }
 
@@ -20,6 +22,7 @@ class Environment(val parent: Environment? = null): LispObject() {
         }
         var env: Environment? = this
         while (env != null) {
+	    debug(bindSymSym, "unbind $symbol in $this")
             env.map.remove(symbol)
             env = env.parent
         }
@@ -54,11 +57,12 @@ class Environment(val parent: Environment? = null): LispObject() {
         rootEnv.map[symbol] = value
         return false
     }
+
+    override fun toString() = "#<${typeOf(this)}$id[$level]>"
 }
 
 fun with_new_environment(parent: Environment = currentEnv,
-                         closure: () -> LispObject
-): LispObject {
+                         closure: () -> LispObject): LispObject {
     val savedEnv = currentEnv
     currentEnv = Environment(parent)
     try {
@@ -72,8 +76,10 @@ fun with_environment(env: Environment, closure: () -> LispObject): LispObject {
     val savedEnv = currentEnv
     currentEnv = env
     try {
+	debug(bindSymSym, "enter $env from $savedEnv")
         return closure()
     } finally {
+	debug(bindSymSym, "leave $env, back to $savedEnv")
         currentEnv = savedEnv
     }
 }

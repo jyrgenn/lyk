@@ -2,6 +2,9 @@
 
 package org.w21.lyk
 
+val catchThrowSym = Symbol.intern("catch-throw")
+val letBindSym = Symbol.intern("let")
+
 /// builtin car
 /// fun     bi_car
 /// std     list
@@ -208,25 +211,24 @@ fun bi_let(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     var syms = mutableListOf<Symbol>()     // variable symbols to bind
     var vals = mutableListOf<LispObject>() // values to bind to them
     
-    for (arg in bindings) {
-        if (arg is Symbol) {
-            syms.add(arg)
+    for (binding in bindings) {
+        if (binding is Symbol) {
+            syms.add(binding)
             vals.add(Nil)
-        } else if (arg is Cons) {
-            syms.add(symbolArg(arg.car(), "let binding variable"))
-            if (arg.cdr() === Nil) {
-                vals.add(Nil)
-            } else {
-                val rest = arg.cdr()
-                if (rest is Cons) {
-                    if (rest.cdr() !== Nil) {
-                        throw ArgumentError("let: malformed binding clause")
-                    }
-                    vals.add(eval(rest.car()))
-                } else {
-                    throw ArgumentError("let: malformed variable clause")
-                }
-            }
+	    debug(letBindSym, "will bind lone $binding to nil")
+        } else if (binding is Cons) {
+	    val (sym, rest) = binding
+	    if (rest !is Cons) {
+		throw ArgumentError("let: malformed variable clause") 
+	    }
+	    if (rest.cdr() != Nil) {
+		throw ArgumentError("let: malformed binding clause") 
+	    }
+	    val form = rest.car()
+	    val value = eval(form)
+            syms.add(symbolArg(sym, "let binding variable"))
+	    vals.add(value)
+	    debug(letBindSym, "will bind $sym to $value, was $form")
         } else {
             throw ArgumentError("let: malformed variables list")
         }
@@ -234,7 +236,7 @@ fun bi_let(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     // do the bindings
     return with_new_environment() {
         val sym_i = syms.iterator()
-        val val_i = syms.iterator()
+        val val_i = vals.iterator()
 
         while (sym_i.hasNext()) {
             val sym = sym_i.next()
@@ -271,33 +273,30 @@ fun bi_letrec(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject{
     var syms = mutableListOf<Symbol>()     // variable symbols to bind
     var vals = mutableListOf<LispObject>() // values to bind to them
     
-    for (arg in bindings) {
-        if (arg is Symbol) {
-            syms.add(arg)
+    for (binding in bindings) {
+        if (binding is Symbol) {
+            syms.add(binding)
             vals.add(Nil)
-        } else if (arg is Cons) {
-            syms.add(symbolArg(arg.car(), "let binding variable"))
-            if (arg.cdr() === Nil) {
-                vals.add(Nil)
-            } else {
-                val rest = arg.cdr()
-                if (rest is Cons) {
-                    if (rest.cdr() !== Nil) {
-                        throw ArgumentError("let: malformed binding clause")
-                    }
-                    vals.add(rest.car())
-                } else {
-                    throw ArgumentError("let: malformed variable clause")
-                }
-            }
+        } else if (binding is Cons) {
+	    val (sym, rest) = binding
+	    if (rest !is Cons) {
+		throw ArgumentError("let*: malformed variable clause")
+	    }
+	    if (rest.cdr() != Nil) {
+		throw ArgumentError("let*: malformed binding clause")
+	    }
+	    val value = rest.car()
+	    syms.add(symbolArg(sym, "let* binding variable"))
+	    vals.add(value)
+	    debug(letBindSym, "will bind $sym to eval($value)")
         } else {
-            throw ArgumentError("let: malformed variables list")
+            throw ArgumentError("let*: malformed variables list")
         }
     }
     // do the bindings
     return with_new_environment() {
         val sym_i = syms.iterator()
-        val val_i = syms.iterator()
+        val val_i = vals.iterator()
 
         while (sym_i.hasNext()) {
             val sym = sym_i.next()
@@ -628,7 +627,7 @@ fun bi_error(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// std     tag
 /// key     
 /// opt     
-/// rest    
+/// rest    bodyforms
 /// ret     value
 /// special yes
 /// doc {
@@ -643,12 +642,18 @@ fun bi_catch(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val tag = eval(tagform)
     
     try {
-        return evalProgn(bodyforms)
+	debug(catchThrowSym, "catch ($tag) opened")
+        val result = evalProgn(bodyforms)
+	debug(catchThrowSym, "catch ($tag) closed")
+	return result
     } catch (sig: ThrowSignal) {
         if (sig.tag === tag) {
+	    debug(catchThrowSym, "catch ($tag) caught $sig, will return")
             return sig.value
-        }
-        throw sig
+        } else {
+	    debug(catchThrowSym, "catch ($tag) caught $sig, will rethrow")
+            throw sig
+	}
     }
 }
 
@@ -668,6 +673,7 @@ fun bi_catch(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_throw(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val (tag, value) = args2(args)
+    debug(catchThrowSym, "throw tag ($tag) with $value")
     throw ThrowSignal(tag, value)
 }
 

@@ -172,4 +172,18 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
     override fun dump(): String {
         return super.dump() + "($descName:$function:$props)"
     }
+
+    override fun compareTo(other: LispObject): Int {
+	if (other is Symbol) {
+	    if (name < other.name) {
+		return -1
+	    } else if (name > other.name) {
+		return 1
+	    } else {
+		return 0
+	    }
+	} else {
+	    throw TypeError("cannot compare symbol to ${typeOf(other)}")
+	}
+    }
 }

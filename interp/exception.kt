@@ -70,6 +70,7 @@ class FunctionError(message: String): LispError(message)
 
 class AbortEvalSignal(message: String): LispError(message)
 
-class ThrowSignal(val tag: LispObject, val value: LispObject): Exception()
+class ThrowSignal(val tag: LispObject, val value: LispObject):
+    LispError("uncaught; tag $tag value $value")
 
 class EOFError(message: String): LispError(message)

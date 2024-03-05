@@ -15,6 +15,9 @@ object Options {
         debugErrorSym to false,
         debugDebugSym to false,
         traceEvalFunSym to false,
+	catchThrowSym to false,
+	bindSymSym to false,
+	letBindSym to false,
     )
     var warnings = true
     var print_estack = false
@@ -24,15 +27,22 @@ object Options {
 
 fun usage() {
     println(buildtag())
-    print("""Options:
+    println("\nUsage: lyk [-EWh?] [-d debug-options] [-e expression] [-R maxrecurse]")
+
+    print("""
     -E               : print exception stack
     -W               : suppress warnings
-    -d debug-options : set debug options, comma separated, one or more of
-                         eval, evalfun, call, error, debug
+    -d debug-options : set debug options, comma separated, see below
     -e expression    : evaluate Lisp expression, print result, and exit
     -h, -?           : print this help on options
     -R maxrecurse    : maximum eval recursion depth 
-          """)
+
+""")
+    print("Available debug options:")
+    for (opt in Options.debug.keys.sorted()) {
+	print(" $opt")
+    }
+    println()
     exitProcess(0)
 }
 
@@ -90,6 +100,7 @@ fun main(args: Array<String>) {
 
     init_Builtins()    
 
+    
     if (lispExpression != null) {
         try {
             val reader = Reader(StringReaderStream(lispExpression),

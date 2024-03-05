@@ -24,7 +24,7 @@ fun repl(prompt: String = "\n> ") {
             if (Options.print_estack) {
                 e.printStackTrace()
             } else {
-                printErr(e.toString())
+                printErr(e)
                 debug(debugErrorSym, e.asObject().desc())
             }
         } catch (e: Exception) {
