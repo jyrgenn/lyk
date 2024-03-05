@@ -5,7 +5,7 @@ package org.w21.lyk
 private var objectCounter = 0
 
 
-abstract class LispObject: Iterable<LispObject> {
+abstract class LispObject: Iterable<LispObject>, Comparable<LispObject> {
     val id: Int
     
     init {
@@ -64,6 +64,10 @@ abstract class LispObject: Iterable<LispObject> {
 
     open fun cdr(): LispObject {
         throw LispError("called cdr on non-list $this")
+    }
+
+    open override fun compareTo(other: LispObject): Int {
+        throw TypeError("cannot compare ${typeOf(this)} to ${typeOf(other)}")
     }
 }
 

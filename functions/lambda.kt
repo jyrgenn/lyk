@@ -5,7 +5,7 @@ package org.w21.lyk
 val optionalPSym = Symbol.intern("&optional")
 val keyPSym = Symbol.intern("&key")
 val restPSym = Symbol.intern("&rest")
-val emptyString = makeString("")
+val emptyString = LispString.makeString("")
 
 
 open class Lambda(                           // Macro will inherit this

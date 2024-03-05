@@ -28,7 +28,7 @@ class Builtin(
        maybeIntern(restPars),
        maybeIntern(retval),
        isSpecial,
-       makeString(docBody),
+       LispString.makeString(docBody),
    ) {
 
     override fun call(arglist: LispObject): LispObject {

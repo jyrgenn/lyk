@@ -99,10 +99,10 @@ def print_init(builtin):
 
 
 def errx(message):
-    sys.exit(f"{filename}:{lineno}: " + message)
+    sys.exit(f"builtins/{filename}:{lineno}: " + message)
 
 def err(message):
-    print("{filename}:{lineno}: " + message, file=sys.stderr)
+    print("builtins/{filename}:{lineno}: " + message, file=sys.stderr)
 
     
 def all_lines(files):
@@ -111,6 +111,7 @@ def all_lines(files):
     for file in files:
         with open(file) as f:
             filename = file
+            lineno = 0
             for line in f:
                 lineno += 1
                 if line.startswith("///"):
@@ -149,7 +150,7 @@ try:
             elif cmd in ("fun", "ret", "special"):
                 if len(parts) != 2:
                     print(line)
-                    errx(f"just one parameter needed for '{cmd}'")
+                    errx(f"exactly one parameter needed for '{cmd}'")
                 print(f"builtin[{cmd}] = {parts[1]}", file=sys.stderr)
                 builtin[cmd] = parts[1]
             elif cmd == "doc":
@@ -168,7 +169,7 @@ try:
 
         if cmd == "builtin":
             if len(parts) != 2:
-                sys.exit(f"{filename}:{lineno}: builtin without name")
+                sys.exit(f"builtins/{filename}:{lineno}: builtin without name")
             builtin = y.Namespace(name=parts[1], fun=None, std=None, key=None,
                                   opt=None, rest=None, ret=None, doc=None,
                                   special=False)

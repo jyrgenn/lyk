@@ -8,11 +8,11 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	functions/function.kt functions/builtin.kt functions/lambda.kt \
 	functions/macro.kt \
 	interp/eval.kt \
-	builtins/init-builtins.kt builtins/helpers.kt builtins/numbers.kt \
+	builtins/helpers.kt builtins/numbers.kt \
 	builtins/basic.kt builtins/system.kt builtins/alists.kt \
 	utils/lists.kt utils/div.kt utils/interfaces.kt \
 	sys/debug.kt sys/main.kt \
-	generated/buildtag.kt
+	generated/buildtag.kt generated/init-builtins.kt
 
 
 #SRCS = cons.kt object.kt symbol.kt basedefs.kt main.kt environment.kt \
@@ -37,7 +37,7 @@ buildtag:
 	scripts/buildtag.sh lyk > generated/buildtag.kt
 
 init-builtins:
-	$(MAKE) -C builtins init-builtins.kt
+	$(MAKE) -C builtins ../generated/init-builtins.kt
 
 
 new: $(SRCS) functions/function.kt
@@ -48,4 +48,4 @@ native: $(SRCS) Makefile
 	mv lykn.pexe lykn
 
 clean:
-	-rm -rf *~ org *.dSYM *.kexe *.class *.jar META-INF lyk
+	-rm -rf *~ org *.dSYM *.kexe *.class *.jar META-INF lyk generated/*

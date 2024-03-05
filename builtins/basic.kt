@@ -1160,7 +1160,7 @@ fun bi_unwind_protect(args: LispObject, key_args: Map<Symbol, LispObject>
 /// fun     bi_gensym
 /// std     
 /// key     
-/// opt     prefix makeString("G#")
+/// opt     prefix LispString.makeString("G#")
 /// rest    
 /// ret     symbol
 /// special no
@@ -1265,7 +1265,8 @@ fun bi_defvar(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
     }
     if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
-        symbol.putprop(Symbol.intern("docstring"), makeString(docstring))
+        symbol.putprop(Symbol.intern("docstring"),
+                       LispString.makeString(docstring))
     }
     return symbol
 }
@@ -1290,7 +1291,8 @@ fun bi_defparameter(args: LispObject, key_args: Map<Symbol, LispObject>): LispOb
     symbol.setValue(eval(value), silent = true)
     if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
-        symbol.putprop(Symbol.intern("docstring"), makeString(docstring))
+        symbol.putprop(Symbol.intern("docstring"),
+                       LispString.makeString(docstring))
     }
     return symbol
 }
@@ -1408,7 +1410,7 @@ fun bi_flet(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_symbol_name(args: LispObject, key_args: Map<Symbol, LispObject>
 ): LispObject {
-    return makeString(symbolArg(arg1(args), "symbol-name").name)
+    return LispString.makeString(symbolArg(arg1(args), "symbol-name").name)
 }
 
 /// builtin atom
