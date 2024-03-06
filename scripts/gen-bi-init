@@ -113,7 +113,7 @@ def notef(s):
         if len(s) + column > wrap_column:
             print(file=sys.stderr)
             column = 0
-        print(s, file=sys.stderr, end="")
+        print(s, file=sys.stderr, end="", flush=True)
         column += len(s)
 
     
@@ -198,9 +198,9 @@ try:
             errx(f"unexpected command '{cmd}', expected 'builtin <name>'")
 
     print("""\
-    }
-    // EOF
-    """)
-    notef("\nbuiltins done\n")
+}
+// EOF
+""")
+    notef("\nbuiltins registered\n")
 except FileNotFoundError as e:
     sys.exit(e)
