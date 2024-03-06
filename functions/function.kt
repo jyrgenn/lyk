@@ -77,7 +77,7 @@ abstract class Function(
         if (docBody.value == "") {
             return docHeader() + "\n"
         }
-        return docHeader() + "\n" + docBody.value + "\n"        
+        return docHeader() + docBody.value + "\n"        
     }
 
     fun key2var(maybeSym: LispObject): Symbol? {
