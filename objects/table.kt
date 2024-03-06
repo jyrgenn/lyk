@@ -56,7 +56,7 @@ class Table(elems: LispObject): LispObject(), Callable {
         return lc.list()
     }
 
-    fun pairs(): LispObject {
+    fun items(): LispObject {
         val lc = ListCollector()
         for ((key, value) in the_table) {
             lc.add(Cons(key, value))
