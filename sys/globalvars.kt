@@ -3,6 +3,10 @@
 package org.w21.lyk
 
 val rootEnv = Environment()
+var currentEnv = rootEnv
+
+val Nil = Symbol.intern("nil", true)
+val T = Symbol.intern("t", true)
 
 val warningsAsErrors = Symbol.makeGlobal("*warnings-as-errors*")
 val last_error = Symbol.makeGlobal("*last-error*")
