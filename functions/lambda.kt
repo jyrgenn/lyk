@@ -66,16 +66,14 @@ open class Lambda(                           // Macro will inherit this
         var wantKeywordParam: Symbol? = null
         var restArgs = ListCollector()
         for (arg in argsi) {
-            // while ((arg = argsi.next()) != null) {
             if (wantKeywordParam != null) {
                 val variable = wantKeywordParam
                 currentEnv.bind(variable, arg)
                 keyBound.add(variable)
                 wantKeywordParam = null
             } else if (arg.isKeyword()) {
-                val maybeKeyVar = key2var(arg)
-                if (maybeKeyVar != null) {
-                    wantKeywordParam = maybeKeyVar
+                if ((arg as Symbol) in keyPars.keys) {
+                    wantKeywordParam = arg
                 } else {
                     throw ArgumentError("&key `$wantKeywordParam` not "
                                         + "valid for $lambdatype `$name`")
@@ -89,7 +87,7 @@ open class Lambda(                           // Macro will inherit this
                                 + "calling $lambdatype `$name`")
         }
         for ((key, defval) in keyPars) {
-            var sym = key2var(key) as Symbol
+            var sym = key2var(key)
             if (sym !in keyBound) {
                 currentEnv.bind(sym, defval)
             }

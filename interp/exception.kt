@@ -58,7 +58,9 @@ class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
     constructor(message: String) : this(message, null) {}
 }
 
-class IOError(message: String, val e: Exception): LispError(message)
+class IOError(message: String, val e: Exception): LispError(message) {
+    override fun toString(): String = "${super.toString()}: ${e.message}"
+}
 
 class CallError(message: String): LispError(message)
 
@@ -75,4 +77,6 @@ class ThrowSignal(val tag: LispObject, val value: LispObject):
 
 class EOFError(message: String): LispError(message)
 
-class OtherError(message: String, val e: Exception): LispError(message)
+class OtherError(message: String, val e: Exception): LispError(message) {
+    override fun toString(): String = "${super.toString()}: $e"
+}

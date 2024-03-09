@@ -81,6 +81,7 @@ class Builtin(
         }
 
         var wantKeywordParam: Symbol? = null  // i.e. have seen this keyword
+        
         while (argptr is Cons) {
             val arg = argptr.car()
             if (wantKeywordParam != null) {
@@ -90,11 +91,14 @@ class Builtin(
                 kwArgs[wantKeywordParam] = arg
                 wantKeywordParam = null
                 argptr = argptr.cdr()
-            } else if (arg is Symbol
-                           && arg.isKeyword()
-                           && arg in keyPars.keys) {
-                wantKeywordParam = key2var(arg)
-                argptr = argptr.cdr()
+            } else if (arg.isKeyword()) {
+                if (arg in keyPars.keys) {
+                    wantKeywordParam = arg as Symbol
+                    argptr = argptr.cdr()
+                } else {
+                    throw ArgumentError("keyword $arg invalid"
+                                        + " for function `${this.name}'")
+                }
             } else if (restPar != null) {
                 if (lastargpair != null) {
                     lastargpair.rplacd(argptr)
@@ -104,8 +108,8 @@ class Builtin(
                     larglist = argptr
                 }
                 lastargpair = argptr
-                argptr = argptr.cdr()
                 lastargpair.rplacd(Nil)
+                argptr = argptr.cdr()
             } else {
                 val atmost = if (minargs == maxargs) "" else "at most "
                 throw ArgumentError("too many args for function `$name`;"

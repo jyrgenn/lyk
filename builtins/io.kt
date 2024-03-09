@@ -298,7 +298,7 @@ fun bi_format(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// builtin open
 /// fun     bi_open
 /// std     fname
-/// key     "if-does-not-exist" to Symbol.intern(":error"), "direction" to Symbol.intern(":input"), "if-exists" to Symbol.intern(":overwrite")
+/// key     ":if-does-not-exist" to Symbol.intern(":error"), ":direction" to Symbol.intern(":input"), ":if-exists" to Symbol.intern(":overwrite")
 /// opt     
 /// rest    
 /// ret     stream
