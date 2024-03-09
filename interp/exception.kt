@@ -80,3 +80,10 @@ class EOFError(message: String): LispError(message)
 class OtherError(message: String, val e: Exception): LispError(message) {
     override fun toString(): String = "${super.toString()}: $e"
 }
+
+class AssertionFail(form: LispObject, val moreInfo: LispObject):
+    LispError(form.toString())
+{
+    override fun toString(): String =
+        "${super.toString()}" + if (moreInfo === Nil) "" else ", $moreInfo"
+}

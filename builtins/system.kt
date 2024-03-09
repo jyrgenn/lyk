@@ -162,6 +162,30 @@ fun bi_gc(args: LispObject, key_args: Map<Symbol, LispObject>
     return Nil
 }
 
+/// builtin assert
+/// fun     bi_assert
+/// std     test-form
+/// key     
+/// opt     message
+/// rest    
+/// ret     nil
+/// special yes
+/// doc {
+/// Evaluate `test-form`, and if the result is nil, raise an error.
+/// The error message includes `test-form`, and, if present, `message`
+/// (which is evaluated in that case).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_assert(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject
+{
+    val (form, message) = args2(args)
+    if (eval(form) === Nil) {
+        throw AssertionFail(form, eval(message))
+    }
+    return Nil
+}
+
 /// builtin apropos
 /// fun     bi_apropos
 /// std     string
@@ -187,3 +211,4 @@ fun bi_apropos(args: LispObject, key_args: Map<Symbol, LispObject>
     return theNonPrintingObject
 }
 
+// EOF
