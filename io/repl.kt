@@ -40,7 +40,6 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
             if (result !== theNonPrintingObject) {
                 iprintln(result.desc())
             }
-            return null
         } catch (e: LispError) {
             reader.skipRestOfLine()
             if (Options.print_estack) {
@@ -49,7 +48,6 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
                 printErr(e)
                 debug(debugErrorSym, e.asObject().desc())
             }
-            return e
         } catch (e: Exception) {
             printErr("unexpected exception:", e)
             e.printStackTrace()

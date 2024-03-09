@@ -99,7 +99,6 @@ fun main(args: Array<String>) {
     }
 
     init_Builtins()    
-
     
     if (lispExpression != null) {
         try {
@@ -116,5 +115,5 @@ fun main(args: Array<String>) {
         exitProcess(0)
     }
     warn(buildtag())
-    repl(Reader(stdin), ": ")
+    repl(Reader(stdin), "> ")
 }
