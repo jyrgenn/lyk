@@ -3,22 +3,44 @@
 package org.w21.lyk
 
 
-fun repl(prompt: String = "\n> ") {
-    val reader = Reader(stdinStream, "*repl*")
-    // warn("read on ${reader.desc()}")
+fun repl(reader: Reader, prompt: String? = null): LispError? {
+    // If we have a prompt, we assume this repl is interactive and print eval
+    // results to stdout.
+
+    val interactive = prompt != null
+    val promptString = prompt ?: ""     // just so we don't have to check all
+                                        // the time; we rely on interactive
+                                        // anyway
+    fun iprint(s: String, flush: Boolean = false) {
+        if (interactive) {
+            stdout.write(s)
+            if (flush) {
+                stdout.flush()
+            }
+        }
+    }
+
+    fun iprintln(s: String? = null) {
+        // print only when interactive
+        if (s != null) {
+            iprint(s)
+        }
+        iprint("\n", flush = true)
+    }
 
     while (true) {
-        print(prompt)
+        iprint(promptString, true)
         try {
             val obj = reader.read()
             if (obj == null) {
-                println()
+                iprintln()
                 break
             }
             val result = eval(obj)
             if (result !== theNonPrintingObject) {
-                println(result.desc())
+                iprintln(result.desc())
             }
+            return null
         } catch (e: LispError) {
             reader.skipRestOfLine()
             if (Options.print_estack) {
@@ -27,9 +49,12 @@ fun repl(prompt: String = "\n> ") {
                 printErr(e)
                 debug(debugErrorSym, e.asObject().desc())
             }
+            return e
         } catch (e: Exception) {
             printErr("unexpected exception:", e)
             e.printStackTrace()
+            return OtherError("unexpected exception in REPL", e)
         }
     }
+    return null
 }

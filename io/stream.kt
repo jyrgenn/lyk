@@ -11,13 +11,6 @@ val stderrPath = "/dev/stderr"
 val newLine = 10
 
 
-class StdinStream(name: String = stdinName):
-    FileReaderStream(stdinPath, name)
-class StdoutStream(name: String = stdoutName):
-    FileWriterStream(stdoutPath, name, flushln = true)
-class StderrStream(name: String = stderrName):
-    FileWriterStream(stderrPath, name, flushch = true, error = true)
-
 open class StringReaderStream(content: String, name: String? = null):
     Stream(input = true, path = null, name = name)
 {
@@ -25,25 +18,30 @@ open class StringReaderStream(content: String, name: String? = null):
     var nextpos = 0
 
     override fun read(): Char? {
-        if (nextpos < chars.size) {
+        if (is_open && nextpos < chars.size) {
             return chars[nextpos]++
         }
         return null
     }
     
     override fun write(ch: Char) {
-        throw IOError("write on input stream $this")
+        throw ArgumentError("write on input stream $this")
     }
     override fun write(s: String) {
-        throw IOError("write on input stream $this")
+        throw ArgumentError("write on input stream $this")
     }
     override fun println(s: String) {
-        throw IOError("write on input stream $this")
+        throw ArgumentError("write on input stream $this")
+    }
+
+    override fun close(): Boolean {
+        return super.close()
     }
 }
 
-open class FileReaderStream(path: String, name: String? = null):
-    Stream(input = true, path = path, name = name ?: path)
+open class FileReaderStream(path: String, name: String? = null,
+                            error: Boolean = true):
+    Stream(input = true, path = path, name = name ?: path, error = error)
 {
     val fileReader = File(path).bufferedReader()
 
@@ -56,13 +54,18 @@ open class FileReaderStream(path: String, name: String? = null):
     }
     
     override fun write(ch: Char) {
-        throw IOError("write on input stream $this")
+        throw ArgumentError("write on input stream $this")
     }
     override fun write(s: String) {
-        throw IOError("write on input stream $this")
+        throw ArgumentError("write on input stream $this")
     }
     override fun println(s: String) {
-        throw IOError("write on input stream $this")
+        throw ArgumentError("write on input stream $this")
+    }
+
+    override fun close(): Boolean {
+        fileReader.close()
+        return super.close()
     }
 }
 
@@ -76,10 +79,10 @@ open class FileWriterStream(path: String,
                             // exclusive: Boolean = false
 ): Stream(output = true, path = path, name = name ?: path, error = error)
 {
-    val fileWriter = File(path).bufferedWriter()
+    val fileWriter = File(path).printWriter().buffered()
 
     override fun read(): Char? {
-        throw IOError("read on output stream $this")
+        throw ArgumentError("read on output stream $this")
     }
     
     override fun write(ch: Char) {
@@ -102,6 +105,15 @@ open class FileWriterStream(path: String,
             fileWriter.flush()
         }
     }
+
+    fun flush() {
+        fileWriter.flush()
+    }
+
+    override fun close(): Boolean {
+        fileWriter.close()
+        return super.close()
+    }
 }
 
 abstract class Stream(
@@ -115,6 +127,7 @@ abstract class Stream(
 ): LispObject()
 {
     var charUnread: Char? = null
+    var is_open = true
 
     abstract fun read(): Char?          // the actual reading
     abstract fun write(ch: Char)
@@ -132,6 +145,14 @@ abstract class Stream(
 
     fun unreadChar(ch : Char) {
         charUnread = ch
+    }
+
+    open fun close(): Boolean {
+        try {
+            return is_open
+        } finally {
+            is_open = false
+        }
     }
 
     override fun toString(): String {

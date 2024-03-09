@@ -1344,7 +1344,7 @@ fun bi_read(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     var input_stream: Stream? = null
 
     if (tentative_stream === Nil) {
-        input_stream = stdinStream
+        input_stream = stdin
     } else if (tentative_stream is Stream) {
         input_stream = tentative_stream
     } else if (tentative_stream is LispString) {

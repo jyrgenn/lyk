@@ -31,7 +31,7 @@ fun usage() {
 
     print("""
     -E               : print exception stack
-    -W               : suppress warnings
+    -q               : suppress warnings
     -d debug-options : set debug options, comma separated, see below
     -e expression    : evaluate Lisp expression, print result, and exit
     -h, -?           : print this help on options
@@ -82,7 +82,7 @@ fun main(args: Array<String>) {
         for (ch in arg.substring(1)) {
             when (ch) {
                 'E' -> { Options.print_estack = true }
-                'W' -> { Options.warnings = false }
+                'q' -> { Options.warnings = false }
                 'd' -> { setDebug(getOptVal("debug options")) }
                 'e' -> { lispExpression = getOptVal("Lisp expression") }
                 'h', '?' -> { usage() }
@@ -116,5 +116,5 @@ fun main(args: Array<String>) {
         exitProcess(0)
     }
     warn(buildtag())
-    repl()
+    repl(Reader(stdin), ": ")
 }

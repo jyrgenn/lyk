@@ -5,11 +5,6 @@ package org.w21.lyk
 
 val symbolTable: MutableMap<String, Symbol> = mutableMapOf()
 
-fun makeGlobal(name: String, value: LispObject = Nil) {
-    val symbol = Symbol.intern(name)
-    symbol.setValue(value, silent = true)
-}
-
 val symchars = "!#$%&*+-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^" +
     "_abcdefghijklmnopqrstuvwxyz{}~".toSet()
 
@@ -49,6 +44,12 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
         fun uninterned(name: String): Symbol {
             val sym = Symbol(name, name.startsWith(":"))
             return sym
+        }
+
+        fun makeGlobal(name: String, value: LispObject = Nil): Symbol {
+            val symbol = Symbol.intern(name)
+            rootEnv.map[symbol] = value
+            return symbol
         }
     }                           // end companion object
 

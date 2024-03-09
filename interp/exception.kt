@@ -58,7 +58,7 @@ class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
     constructor(message: String) : this(message, null) {}
 }
 
-class IOError(message: String): LispError(message)
+class IOError(message: String, val e: Exception): LispError(message)
 
 class CallError(message: String): LispError(message)
 
@@ -74,3 +74,5 @@ class ThrowSignal(val tag: LispObject, val value: LispObject):
     LispError("uncaught; tag $tag value $value")
 
 class EOFError(message: String): LispError(message)
+
+class OtherError(message: String, val e: Exception): LispError(message)

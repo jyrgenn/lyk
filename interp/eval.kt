@@ -49,7 +49,6 @@ fun evalArgs(arglist: LispObject): LispObject {
 }
 
 var current_eval_level: Int = 0
-var evalCounter: Int = 0
 var maxEvalLevel: Int = 0
 var maxRecursionDepth: Int = 1_000_000_000
 var abortEval: Boolean = false

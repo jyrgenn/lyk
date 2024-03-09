@@ -92,7 +92,7 @@ fun the_double(s: String): Double? {
 }
 
 
-class Reader(val input: Stream, sourceName: String?): LocationHolder
+class Reader(val input: Stream, sourceName: String? = null): LocationHolder
 {
     // This is a Lisp reader that on each call to read() returns an Objects as
     // found in the input stream, as long as it finds one. Then it returns nil,

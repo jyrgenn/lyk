@@ -8,7 +8,6 @@ val outputKeyw = Symbol.intern(":output")
 val ioKeyw = Symbol.intern(":io")
 val if_existsKeyw = Symbol.intern(":if-exists")
 val new_versionKeyw = Symbol.intern(":new-version")
-val appendKeyw = Symbol.intern(":append")
 val overwriteKeyw = Symbol.intern(":overwrite")
 val supersedeKeyw = Symbol.intern(":supersede")
 val errorKeyw = Symbol.intern(":error")
@@ -16,186 +15,369 @@ val if_does_not_existKeyw = Symbol.intern(":if-does-not-exist")
 val createKeyw = Symbol.intern(":create")
 
 
+/// builtin print
+/// fun     bi_print
+/// std     arg
+/// key     
+/// opt     output-stream
+/// rest    
+/// ret     arg
+/// special no
+/// doc {
+/// Print `arg` to `stream` (or standard output) suitable for input to (read),
+/// with quoting and escaping where necessary, preceded by a newline and
+/// followed by a blank.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_print(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    // TODO: &optional port
-    print("\n${arg1(args).desc()} ")
+    val (arg, stream) = args2(args)
+    outputStreamArg(stream, "print stream").write("\n${arg.desc()} ")
     return arg
 }
 
-fun bi_print_to_string(args: LispObject, kwArgs: Map<Symbol, LispObject>
-): LispObject {
-    return LispString.makeString("\n${arg1(args).desc()} ")
-}
-
+/// builtin prin1
+/// fun     bi_prin1
+/// std     arg
+/// key     
+/// opt     output-stream
+/// rest    
+/// ret     arg
+/// special no
+/// doc {
+/// Print `arg` to `stream` (or standard output) suitable for input to (read),
+/// with quoting and escaping where necessary.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_prin1(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    // TODO: &optional port
-    print(arg1(args).desc())
+    val (arg, stream) = args2(args)
+    outputStreamArg(stream, "prin1 stream").write(arg.desc())
     return arg
 }
 
+/// builtin prin1-to-string
+/// fun     bi_prin1_to_string
+/// std     arg
+/// key     
+/// opt     
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Print `arg` to a string as with prin1 and return the string.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_prin1_to_string(args: LispObject, kwArgs: Map<Symbol, LispObject>
 ): LispObject {
-    return makeString(arg1(args).desc())
+    return LispString.makeString(arg1(args).desc())
 }
 
+/// builtin princ
+/// fun     bi_princ
+/// std     arg
+/// key     
+/// opt     output-stream
+/// rest    
+/// ret     arg
+/// special no
+/// doc {
+/// Print `arg` to `stream` (or standard output) without quoting or escaping.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_princ(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    // TODO: &optional port
-    print(arg1(args).desc())
+    val (arg, stream) = args2(args)
+    outputStreamArg(stream, "princ stream").write(arg.toString())
     return arg
 }
 
+/// builtin princ-to-string
+/// fun     bi_princs
+/// std     arg
+/// key     
+/// opt     
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Print `arg` to a string without quoting or escaping and return the string.
+/// Also known as princs.
+/// }
+/// end builtin
+
+/// builtin princs
+/// fun     bi_princs
+/// std     arg
+/// key     
+/// opt     
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Print `arg` to a string without quoting or escaping and return the string.
+/// Also known as princ-to-string.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_princs(args: LispObject, kwArgs: Map<Symbol, LispObject>
 ): LispObject {
-    return makeString(arg1(args).desc())
+    return LispString.makeString(arg1(args).toString())
 }
 
+/// builtin terpri
+/// fun     bi_terpri
+/// std     
+/// key     
+/// opt     output-stream
+/// rest    
+/// ret     nil
+/// special no
+/// doc {
+/// Terminate a print line by sending a newline to the output-stream
+/// (or standard output).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_terpri(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    // TODO: &optional port
-    println()
+    val stream = arg1(args)
+    outputStreamArg(stream, "terpri stream").write('\n')
     return Nil
 }
 
+/// builtin warning
+/// fun     bi_warning
+/// std     format-string
+/// key     
+/// opt     
+/// rest    format-args
+/// ret     nil
+/// special no
+/// doc {
+/// Raise a warning message with `format string` and format arguments.
+/// If warnings are treated as errors (i.e. *warnings-as-errors* is true), the
+/// warning exits all active calls immediately, except for errset. Otherwise,
+/// only the message is printed as a warning, formatted as specified.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_warning(args: LispObject, kwArgs: Map<Symbol, LispObject>
 ): LispObject {
     // TODO: warnings as errors
     val (msg1, rest) = args
-    var message = msg.desc()
+    val fields = mutableListOf(msg1.toString())
     for (arg in rest) {
-        message += " "
-        message += arg.desc()
+        fields.add(arg.toString())
     }
-    warn(message)
+    warn(fields.joinToString(" "))
     return Nil
 }
 
 fun bi_load(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    val fname = arg1(args).valueString
-    val verbose = key_args[Symbol.intern("verbose")] !== Nil
-    val throw_error = key_args[Symbol.intern("error")] ?? T
+    val fname = arg1(args).toString()
+    val verbose = kwArgs[verboseSym] !== Nil
+    val throw_error = kwArgs[errorSym] ?: T
     val pairsBefore = pairCounter
     val evalsBefore = evalCounter
-    val savedLoadFileValue = try currentLoadFile.getValue()
-    defer { do { try currentLoadFile.bindValue(savedLoadFileValue) } catch {} }
-    do {
-        val load_file = try Stream.readFile(path: fname, name: fname)
-        try currentLoadFile.bindValue(makeString(fname))
-        defer { do { try load_file.close(); } catch {} }
-        if val error = try repl(Reader(input: load_file, source: fname)) {
-            if verbose {
-                stderr.println("\(error)")
+
+    var success = Nil
+    
+    withVariableAs(currentLoadFile, LispString.makeString(fname)) {
+        var load_file = FileReaderStream(fname)
+        try {
+            val error = repl(Reader(load_file, fname))
+            if (error != null) {
+                if (verbose) {
+                    stderr.println(error.toString())
+                }
+                if (throw_error !== Nil) {
+                    throw error
+                }
+                success = Nil
+            } else {
+                success = T
+                if (verbose) {
+                    val pairs = pairCounter - pairsBefore
+                    val evals = evalCounter - evalsBefore
+                    stderr.println("; load $fname: $pairs pairs, $evals evals")
+                }
             }
-            if throw_error !== Nil {
-                throw error
+        } catch (e: Exception) {
+            if (verbose) {
+                stderr.println(e.toString())
             }
-            return Nil
+            if (throw_error !== Nil) {
+                throw e
+            }
+            success = Nil
+        } finally {
+            load_file.close()
         }
-        if verbose {
-            val pairs = pairCounter - pairsBefore
-            val evals = evalCounter - evalsBefore
-            stderr.println("; load \(fname): \(pairs) pairs, \(evals) evals")
-        }
-    } catch {
-            if verbose {
-                stderr.println("\(error)")
-            }
-            if throw_error !== Nil {
-                throw error
-            }
-            return Nil
     }
-    return T
+    return success
 }
 
-fun bi_make_string_input_stream(args: LispObject, kwArgs: Map<Symbol, LispObject>
-): LispObject {
-    val string = try stringArg(arg1(args), "make-string-input-stream")
-    return try bi_stream(args: Pair(makeString(string), Nil),
-                              key_args: [:])
+/// builtin make-string-input-stream
+/// fun     bi_make_string_input_stream
+/// std     string
+/// key     
+/// opt     
+/// rest    
+/// ret     stream
+/// special no
+/// doc {
+/// Return a string input stream. This stream will supply, in order, the
+/// characters in the string.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_make_string_input_stream(args: LispObject,
+                                kwArgs: Map<Symbol, LispObject>): LispObject {
+    val string = stringArg(arg1(args), "make-string-input-stream")
+    return StringReaderStream(string)
 }
 
+/// builtin stream
+/// fun     bi_stream
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     stream
+/// special no
+/// doc {
+/// Return an input stream from `object`.
+/// If `object` is a stream, return it. Otherwise take the string
+/// representation of `object` and make a stream from that.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_stream(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val arg = arg1(args)
-    if val stream = arg as? Stream {
-        return stream
+    if (arg is Stream) {
+        return arg
     }
-    return try StringStream(String(arg.valueString))
+    return StringReaderStream(arg.toString())
 }
 
+/// builtin format
+/// fun     bi_format
+/// std     format destination
+/// key     
+/// opt     
+/// rest    args
+/// ret     nil-or-string
+/// special no
+/// doc {
+/// Format `args` according to `format-string` and write to `dest` (stream,
+/// t, or nil). Nil means return the result as a string, t means write to
+/// standard output.
+/// The format string is interpreted by the Kotlin library, meaning it is
+/// mostly like the format string in the related C functions.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_format(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    var args = args
-    val dest = pop(&args)
-    val format = try stringArg(pop(&args), "format string")
-    val varargs = list2varargs(args)
-    val result = String(format: format, arguments: varargs)
-    switch dest {
-    case T:
-        stdout.print(result)
-    case Nil:
-        return makeString(result)
-    case val s as Stream:
-        s.print(result)
-    default:
-        throw ArgumentError("format `dest` is not nil or t or stream: \(dest)")
+    val (dest, rest) = args
+    val (f, f_args) = rest
+    val format = stringArg(f, "format string")
+    val result = format.format(valueList(f_args))
+    when (dest) {
+        T -> stdout.write(result)
+        Nil -> return LispString.makeString(result)
+        is Stream ->
+            dest.write(result)
+        else ->
+            throw ArgumentError("format `dest` not nil or t or stream: $dest")
     }
     return Nil
 }
 
+
+/// builtin open
+/// fun     bi_open
+/// std     fname
+/// key     "if-does-not-exist" to Symbol.intern(":error"), "direction" to Symbol.intern(":input"), "if-exists" to Symbol.intern(":overwrite")
+/// opt     
+/// rest    
+/// ret     stream
+/// special no
+/// doc {
+/// Open a file (or reopen a stream) and return the connected stream.
+/// Options: :direction followed by :input or :output or :io,
+/// :if-exists followed by :new-version or :append or :overwrite
+/// or :supersede or :error or nil
+/// :if-does-not-exist followed by :error or :create or nil
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_open(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    // TODO complete
-    print("open \(args) \(key_args)")
-    val fname = arg1(args).valueString
-    val direction = key_args[key2var(directionKeyw)] ?? Nil
-    val if_exists = key_args[key2var(if_existsKeyw)] ?? Nil
-    val if_does_not_exist = key_args[key2var(if_does_not_existKeyw)] ?? Nil
+    val fname = arg1(args).toString()    
+    val direction = kwArgs[directionKeyw] ?: Nil
+    val if_exists = kwArgs[if_existsKeyw] ?: Nil
+    val if_does_not_exist = kwArgs[if_does_not_existKeyw] ?: Nil
 
     var inp = false
     var outp = false
-    var append = false
     var return_nil = false
 
-    switch direction {
-    case inputKeyw:  inp = true
-    case outputKeyw: outp = true
-    case ioKeyw:     inp = true; outp = true
-    default:
+    when (direction) {
+    inputKeyw ->  inp = true
+    outputKeyw -> outp = true
+    ioKeyw ->     { inp = true; outp = true }
+    else ->
         throw ArgumentError("open :direction not :input or :output or :io : "
-                              + direction.description)
+                            + direction.desc())
     }
-    switch if_exists {
-    case new_versionKeyw, overwriteKeyw, supersedeKeyw:
-        break
-    case appendKeyw:
-        append = true
-    case errorKeyw:
-        break
-    default:
-        break
+    if (!inp && !outp) {
+        throw ArgumentError("open :direction not :input or :output or :io : "
+                            + direction.desc())
     }
-    switch if_does_not_exist {
-    case errorKeyw:
-        break
-    case Nil:
-        return_nil = true
-    default:
-        break
+    when (if_exists) {
+        new_versionKeyw, overwriteKeyw, supersedeKeyw -> {}
+        errorKeyw -> {}
+        else -> {}
     }
-    do {
-        val s = try Stream(inp: inp, outp: outp, path: fname, append: append)
-        // print(">>\(s)<<")
-        return s
-    } catch {
-        if return_nil {
+    when (if_does_not_exist) {
+        errorKeyw -> {}
+        Nil -> return_nil = true
+        else -> {}
+    }
+    try {
+        if (inp) {
+            return FileReaderStream(fname)
+        }
+        if (outp) {
+            return FileWriterStream(fname)
+        }
+    } catch (e: Exception) {
+        if (return_nil) {
             return Nil
         }
-        throw error
+        throw IOError("error opening `$fname`", e)
     }
+    return Nil
 }
 
+/// builtin close
+/// fun     bi_close
+/// std     stream
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Close an open stream. Return t if the stream was open, nil else
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_close(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    do {
-        try (try streamArg(arg1(args), "close")).close()
+    try {
+        streamArg(arg1(args), "close").close()
         return T
-    } catch {
+    } catch (e: Exception) {
         return Nil
     }
 }

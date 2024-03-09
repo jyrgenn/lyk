@@ -7,12 +7,24 @@ fun collectedList(closure: (lc: ListCollector) -> Unit): LispObject {
     return lc.list()
 }
 
-fun list2lisp(elems: MutableCollection<LispObject>): LispObject {
+fun list2lisp(elems: Collection<LispObject>): LispObject {
     val lc = ListCollector()
     for (elem in elems) {
         lc.add(elem)
     }
     return lc.list()
+}
+
+fun valueList(elems: LispObject): List<Any> {
+    val l = mutableListOf<Any>()
+
+    for (elem in elems) {
+        l.add(when (elem) {
+                  is Number -> elem.value
+                  else -> elem.toString()
+              })
+    }
+    return l
 }
 
 class ListIterator(var l: LispObject): Iterator<LispObject> {

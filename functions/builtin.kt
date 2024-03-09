@@ -84,12 +84,15 @@ class Builtin(
         while (argptr is Cons) {
             val arg = argptr.car()
             if (wantKeywordParam != null) {
+                // here we have :key => value, meaning the colon is part of the
+                // key in the map (other than in the Lambda, where only 'key is
+                // bound to the value, not :key)
                 kwArgs[wantKeywordParam] = arg
                 wantKeywordParam = null
                 argptr = argptr.cdr()
             } else if (arg is Symbol
                            && arg.isKeyword()
-                           && key2var(arg) in keyPars.keys) {
+                           && arg in keyPars.keys) {
                 wantKeywordParam = key2var(arg)
                 argptr = argptr.cdr()
             } else if (restPar != null) {

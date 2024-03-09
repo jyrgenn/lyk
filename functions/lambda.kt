@@ -38,7 +38,7 @@ open class Lambda(                           // Macro will inherit this
 
     fun bindPars(arglist: LispObject) {
         if (!arglist.isList()) {
-            throw CallError("Lambda $name called with invalid argaument"
+            throw CallError("Lambda $name called with invalid argument"
                             +" list ($arglist)")
         }
         var argsi = ListIterator(arglist)
@@ -64,17 +64,18 @@ open class Lambda(                           // Macro will inherit this
         // keywords and rest
         var keyBound = mutableSetOf<LispObject>()
         var wantKeywordParam: Symbol? = null
-        var restArgs = mutableListOf<LispObject>()
+        var restArgs = ListCollector()
         for (arg in argsi) {
             // while ((arg = argsi.next()) != null) {
             if (wantKeywordParam != null) {
-                currentEnv.bind(wantKeywordParam, arg)
-                keyBound.add(wantKeywordParam)
+                val variable = wantKeywordParam
+                currentEnv.bind(variable, arg)
+                keyBound.add(variable)
                 wantKeywordParam = null
             } else if (arg.isKeyword()) {
-                val variable =  key2var(arg)
-                if (variable in keyPars.keys) {
-                    wantKeywordParam = variable
+                val maybeKeyVar = key2var(arg)
+                if (maybeKeyVar != null) {
+                    wantKeywordParam = maybeKeyVar
                 } else {
                     throw ArgumentError("&key `$wantKeywordParam` not "
                                         + "valid for $lambdatype `$name`")
@@ -87,15 +88,16 @@ open class Lambda(                           // Macro will inherit this
             throw ArgumentError("&key `$wantKeywordParam` argument missing "
                                 + "calling $lambdatype `$name`")
         }
-        for ((sym, defval) in keyPars) {
+        for ((key, defval) in keyPars) {
+            var sym = key2var(key) as Symbol
             if (sym !in keyBound) {
                 currentEnv.bind(sym, defval)
             }
         }
         if (restPar != null) {
-            currentEnv.bind(restPar, list2lisp(restArgs))
+            currentEnv.bind(restPar, restArgs.list())
         } else {
-            if (restArgs.count() > 0) {
+            if (restArgs.list() !== Nil) {
                 throw ArgumentError("too many args for $lambdatype `$name`")
             }
         }

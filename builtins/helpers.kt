@@ -3,6 +3,18 @@
 package org.w21.lyk
 
 
+fun outputStreamArg(arg: LispObject, what: String): Stream {
+    if (arg === Nil) {
+        return stdout
+    }
+    return streamArg(arg, what)
+}
+
+fun streamArg(arg: LispObject, what: String): Stream { 
+    return (arg as? Stream) ?:
+        throw ArgumentError("$what argument is not a stream: $arg")
+}
+
 fun envArg(arg: LispObject, what: String): Environment {
     return (arg as? Environment) ?:
         throw ArgumentError("$what argument is not an environment: $arg")
@@ -131,11 +143,6 @@ fun environmentArg(arg: LispObject, what: String): Environment {
         throw ArgumentError("$what argument not a environment: $arg")
 }
 
-fun streamArg(arg: LispObject, what: String): Stream {
-    return arg as? Stream ?:
-        throw ArgumentError("$what argument not a stream: $arg")
-}
-
 fun bool2ob(value: Boolean): LispObject {
     return if (value) T else Nil
 }
@@ -223,6 +230,21 @@ fun itemList(args: LispObject): LispObject {
     return collectedList() { lc ->
         for (arg in args) {
             lc.add(arg)
+        }
+    }
+}
+
+fun withVariableAs(variable: Symbol, value: LispObject, closure: () -> Unit) {
+    val previousValue = variable.getValueOptional()
+    
+    variable.setValue(value)
+    try {
+        closure()
+    } finally {
+        if (previousValue == null) {
+            currentEnv.unbind(variable)
+        } else {
+            variable.setValue(previousValue)
         }
     }
 }
