@@ -65,6 +65,10 @@ abstract class Function(
         return sb.join(" ")
     }
 
+    override open fun toString() = "#<${typeDesc()}[$id]$name>"
+
+    override open fun desc() = "#<${typeDesc()}[$id](${parlist()})=$retval>"
+
     open fun typeDesc(): String {
         return typeOf(this)
     }
@@ -94,7 +98,5 @@ abstract class Function(
         throw InternalError("calling $this, not Subclass")
     }
 
-    open override fun dump(): String {
-        return "#<${typeDesc()}[$id](${parlist()})= $retval>"
-    }
+    open override fun dump() = desc()
 }

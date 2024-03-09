@@ -107,9 +107,8 @@ class Builtin(
                     // larglist must have been nil
                     larglist = argptr
                 }
-                lastargpair = argptr
-                lastargpair.rplacd(Nil)
-                argptr = argptr.cdr()
+                argptr = Nil
+                break
             } else {
                 val atmost = if (minargs == maxargs) "" else "at most "
                 throw ArgumentError("too many args for function `$name`;"

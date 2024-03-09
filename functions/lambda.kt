@@ -22,7 +22,7 @@ open class Lambda(                           // Macro will inherit this
 {
     val lambdatype = "function"
     
-    override fun dump(): String {
+    override fun desc(): String {
         var body: String
 
         if (bodyForms === Nil) {
@@ -44,7 +44,9 @@ open class Lambda(                           // Macro will inherit this
         var argsi = ListIterator(arglist)
         for (param in stdPars) {
             if (argsi.hasNext()) {
-                currentEnv.bind(param, argsi.next())
+                val value = argsi.next()
+                debug(debugBindParSym, "$this: bind $param = arg $value")
+                currentEnv.bind(param, value)
             } else {
                 val atleast = if (minargs == maxargs) "" else "at least "
                 throw ArgumentError("too few args for $lambdatype `$name`;"
@@ -53,9 +55,13 @@ open class Lambda(                           // Macro will inherit this
         }
         for ((sym, defval) in optPars) {
             if (argsi.hasNext()) {
-                currentEnv.bind(sym, argsi.next())
+                val value = argsi.next()
+                debug(debugBindParSym, "$this: bind $sym = opt $value")
+                currentEnv.bind(sym, value)
             } else {
-                currentEnv.bind(sym, eval(defval))
+                val value = eval(defval)
+                debug(debugBindParSym, "$this: bind $sym = default $value")
+                currentEnv.bind(sym, value)
             }
         }
         if (!argsi.hasNext()) {
@@ -68,6 +74,7 @@ open class Lambda(                           // Macro will inherit this
         for (arg in argsi) {
             if (wantKeywordParam != null) {
                 val variable = wantKeywordParam
+                debug(debugBindParSym, "$this: bind $variable = key $arg")
                 currentEnv.bind(variable, arg)
                 keyBound.add(variable)
                 wantKeywordParam = null
@@ -89,11 +96,14 @@ open class Lambda(                           // Macro will inherit this
         for ((key, defval) in keyPars) {
             var sym = key2var(key)
             if (sym !in keyBound) {
+                debug(debugBindParSym, "$this: bind $sym = keydef $defval")
                 currentEnv.bind(sym, defval)
             }
         }
         if (restPar != null) {
-            currentEnv.bind(restPar, restArgs.list())
+            val value = restArgs.list()
+            debug(debugBindParSym, "$this: bind $restPar = rest $value")
+            currentEnv.bind(restPar, value)
         } else {
             if (restArgs.list() !== Nil) {
                 throw ArgumentError("too many args for $lambdatype `$name`")
