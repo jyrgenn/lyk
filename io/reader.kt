@@ -1,4 +1,4 @@
-// Reader and Readertoken (which comes first)
+// the Lisp Reader
 
 package org.w21.lyk
 
@@ -56,7 +56,7 @@ fun the_double(s: String): Double? {
 class Reader(val input: Stream, sourceName: String? = null): LocationHolder
 {
     // This is a Lisp reader that on each call to read() returns an Objects as
-    // found in the input stream, as long as it finds one. Then it returns nil,
+    // found in the input stream, as long as it finds one. Then it returns null,
     // meaning the input is read to the end.
 
     var line = 1                        // current line
