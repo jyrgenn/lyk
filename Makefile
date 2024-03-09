@@ -7,7 +7,7 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	functions/macro.kt \
 	builtins/helpers.kt builtins/numbers.kt builtins/cxr.kt \
 	builtins/basic.kt builtins/system.kt builtins/alists.kt \
-	builtins/environments.kt builtins/io.kt \
+	builtins/environments.kt builtins/io.kt builtins/strings.kt \
 	utils/lists.kt utils/div.kt utils/interfaces.kt \
 	sys/debug.kt sys/main.kt sys/globalvars.kt \
 	generated/buildtag.kt generated/init-builtins.kt
