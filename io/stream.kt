@@ -2,12 +2,14 @@ package org.w21.lyk
 
 import java.io.File
 
-val stdinName  = "*stdin*"
-val stdoutName = "*stdout*"
-val stderrName = "*stderr*"
-val stdinPath  = "/dev/stdin"
-val stdoutPath = "/dev/stdout"
-val stderrPath = "/dev/stderr"
+val stdinName   = "*stdin*"
+val stdoutName  = "*stdout*"
+val stderrName  = "*stderr*"
+val consoleName = "*console*"
+val stdinPath   = "/dev/stdin"
+val stdoutPath  = "/dev/stdout"
+val stderrPath  = "/dev/stderr"
+val consolePath = "/dev/tty"
 val newLine = 10
 
 
@@ -24,16 +26,6 @@ open class StringReaderStream(content: String, name: String? = null):
         return null
     }
     
-    override fun write(ch: Char) {
-        throw ArgumentError("write on input stream $this")
-    }
-    override fun write(s: String) {
-        throw ArgumentError("write on input stream $this")
-    }
-    override fun println(s: String) {
-        throw ArgumentError("write on input stream $this")
-    }
-
     override fun close(): Boolean {
         return super.close()
     }
@@ -46,11 +38,15 @@ open class FileReaderStream(path: String, name: String? = null,
     val fileReader = File(path).bufferedReader()
 
     override fun read(): Char? {
-        val c = fileReader.read()       // returns an Int!
-        if (c < 0) {                    // EOF as in C
-            return null
+        try {
+            val c = fileReader.read()       // returns an Int!
+            if (c < 0) {                    // EOF as in C
+                return null
+            }
+            return c.toChar()
+        } catch (e: Exception) {
+            throw IOError("reading $this", e)
         }
-        return c.toChar()
     }
     
     override fun write(ch: Char) {
@@ -77,7 +73,7 @@ open class FileWriterStream(path: String,
                             // append: Boolean = false,
                             // create: Boolean = true,
                             // exclusive: Boolean = false
-): Stream(output = true, path = path, name = name ?: path, error = error)
+): Stream(output = true, path = path, name = name ?: "'$path'", error = error)
 {
     val fileWriter = File(path).printWriter().buffered()
 
@@ -86,33 +82,53 @@ open class FileWriterStream(path: String,
     }
     
     override fun write(ch: Char) {
-        fileWriter.write(ch.code)
-        if (flushch) {
-            fileWriter.flush()
+        try {
+            fileWriter.write(ch.code)
+            if (flushch) {
+                fileWriter.flush()
+            }
+        } catch (e: Exception) {
+            throw IOError("writing $this", e)
         }
     }
     override fun write(s: String) {
-        fileWriter.write(s)
-        if (flushch) {
-            fileWriter.flush()
+        try {
+            fileWriter.write(s)
+            if (flushch) {
+                fileWriter.flush()
+            }
+        } catch (e: Exception) {
+            throw IOError("writing $this", e)
         }
     }
 
     override fun println(s: String) {
-        fileWriter.write(s)
-        fileWriter.write(newLine)
-        if (flushch || flushln) {
-            fileWriter.flush()
+        try {
+            fileWriter.write(s)
+            fileWriter.write(newLine)
+            if (flushch || flushln) {
+                fileWriter.flush()
+            }
+        } catch (e: Exception) {
+            throw IOError("writing $this", e)
         }
     }
 
     fun flush() {
-        fileWriter.flush()
+        try {
+            fileWriter.flush()
+        } catch (e: Exception) {
+            throw IOError("flushing $this", e)
+        }
     }
 
     override fun close(): Boolean {
-        fileWriter.close()
-        return super.close()
+        try {
+            fileWriter.close()
+            return super.close()
+        } catch (e: Exception) {
+            throw IOError("closing $this", e)
+        }
     }
 }
 
@@ -130,9 +146,19 @@ abstract class Stream(
     var is_open = true
 
     abstract fun read(): Char?          // the actual reading
-    abstract fun write(ch: Char)
-    abstract fun write(s: String)
-    abstract fun println(s: String)
+
+    open fun write(ch: Char) {
+        throw ArgumentError("write on $this")
+    }
+    open fun write(s: String) {
+        throw ArgumentError("write on $this")
+    }
+    open fun print(s: String) {
+        throw ArgumentError("write on $this")
+    }
+    open fun println(s: String) {
+        throw ArgumentError("write on $this")
+    }
     
     fun readChar(): Char? {
         if (charUnread != null) {
@@ -148,18 +174,17 @@ abstract class Stream(
     }
 
     open fun close(): Boolean {
-        try {
-            return is_open
-        } finally {
-            is_open = false
-        }
+        val result = is_open
+        is_open = false
+        return result
     }
 
     override fun toString(): String {
+        val x = if (is_open) "" else "x"
         val i = if (input) "I" else ""
         val o = if (output) "O" else ""
         val e = if (error) "E" else ""
-        return "#<${type()}[$i$o$e]$name>"
+        return "#<${type()}[$i$o$e$x]$name>"
     }
     override fun desc() = toString()
 }

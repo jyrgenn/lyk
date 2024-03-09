@@ -182,7 +182,7 @@ fun bi_setq(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val (sym, value) = args2(args)
     val newvalue = eval(value)
     symbolArg(sym, "setq").setValue(newvalue)
-    return value
+    return newvalue
 }
 
 /// builtin let
@@ -1256,7 +1256,7 @@ fun bi_fset(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// opt     initial-value, docstring
 /// rest    
 /// ret     symbol
-/// special no
+/// special yes
 /// doc {
 /// Define variable `symbol` with optional `initial-value` and `docstring`.
 /// If the variable is already bound, its value is not changed.

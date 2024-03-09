@@ -26,8 +26,9 @@ var stdin = FileReaderStream(stdinPath, stdinName, error = true)
 var stdout = FileWriterStream(stdoutPath, stdoutName, flushln = true)
 var stderr = FileWriterStream(stderrPath, stderrName, flushch = true,
                               error = true)
+var console = FileWriterStream(consolePath, consoleName, flushch = true)
 
-
+var debug_out = console
 
 val verboseSym = Symbol.intern("verbose")
 val errorSym = Symbol.intern("error")

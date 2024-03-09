@@ -7,6 +7,7 @@ val traceEvalSym = Symbol.intern("eval")
 val traceEvalFunSym = Symbol.intern("evalfun")
 val traceCallSym = Symbol.intern("call")
 val debugErrorSym = Symbol.intern("error")
+val debugIOSym = Symbol.intern("io")
 
 object Options {
     var debug = mutableMapOf<Symbol, Boolean>(
@@ -18,6 +19,7 @@ object Options {
 	catchThrowSym to false,
 	bindSymSym to false,
 	letBindSym to false,
+        debugIOSym to false,
     )
     var warnings = true
     var print_estack = false

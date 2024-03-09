@@ -40,7 +40,7 @@ fun clearDebug(sym: Symbol) {
 
 fun debug(topic: Symbol, closure: () -> Unit) {
     if (Options.debug[topic] ?: false) {
-        println("DBG-$topic:2")
+        debug_out.println("DBG-$topic:2")
         closure()
     }
 }

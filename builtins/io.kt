@@ -374,10 +374,10 @@ fun bi_open(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_close(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    val stream = streamArg(arg1(args), "close")
     try {
-        streamArg(arg1(args), "close").close()
-        return T
+        return bool2ob(stream.close())
     } catch (e: Exception) {
-        return Nil
+        throw IOError("closing $stream", e)
     }
 }
