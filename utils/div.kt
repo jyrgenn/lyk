@@ -3,8 +3,8 @@ package org.w21.lyk
 import kotlin.system.exitProcess
 
 fun padString(s: String, width: Int, pad: Char = ' '): String {
-    val len = s.length
-    return s.padEnd(width - len, pad).toString()
+    val result = s.padEnd(width, pad).toString()
+    return result
 }
 
 fun typeOf(obj: Any): String {

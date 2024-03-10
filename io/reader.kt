@@ -80,6 +80,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
             throw InternalReaderError("pushbackToken $pushbackToken exists",
                                       this)
         }
+        debug(debugReaderSym, "push back token $token")
         pushbackToken = token
     }
     
@@ -93,12 +94,14 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
                 } else {
                     column += 1
                 }
+                debug(debugReaderSym, "nextChar() returns '$ch'")
                 return ch
             }
         } catch (e: Exception) {
             // IOError
             throw Exception("reading character from $input: #error")
         }
+        debug(debugReaderSym, "nextChar() returns null")
         return null
     }
     
@@ -108,6 +111,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
         } else {
             column -= 1
         }
+        debug(debugReaderSym, "unreadChar('$ch')")
         input.unreadChar(ch)
     }
     
@@ -118,16 +122,19 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
         while (true) {
             val ch = nextChar()
             if (ch == null) {
+                debug(debugReaderSym, "nextNonCommentChar() returns null")
                 return null
             }
             if (in_comment) {
                 if (ch == '\n') {
+                debug(debugReaderSym, "nextNonCommentChar() returns ' '")
                     return ' '
                 }
             } else if (ch == commentChar) {
                 in_comment = true
                 continue
             } else {
+                debug(debugReaderSym, "nextNonCommentChar() returns '$ch'")
                 return ch
             }
         }
@@ -139,11 +146,13 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
         while (true) {
             ch = nextNonCommentChar()
             if (ch == null) {
+            debug(debugReaderSym, "nextNonSpaceChar() returns null")
                 return null
             }
             if (ch.isWhitespace()) {
                 continue
             }
+            debug(debugReaderSym, "nextNonSpaceChar() returns '$ch'")
             return ch
         }
     }

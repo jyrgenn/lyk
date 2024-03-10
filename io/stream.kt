@@ -13,7 +13,7 @@ val consolePath = "/dev/tty"
 val newLine = 10
 
 
-open class StringReaderStream(content: String, name: String? = null):
+open class StringReaderStream(content: String, name: String? = ""):
     Stream(input = true, path = null, name = name)
 {
     val chars = content.toCharArray()
@@ -21,7 +21,7 @@ open class StringReaderStream(content: String, name: String? = null):
 
     override fun read(): Char? {
         if (is_open && nextpos < chars.size) {
-            return chars[nextpos]++
+            return chars[nextpos++]
         }
         return null
     }

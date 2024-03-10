@@ -190,34 +190,40 @@ fun bi_assert(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject
 /// fun     bi_apropos
 /// std     string
 /// key     
-/// opt     
+/// opt     as-list
 /// rest    
-/// ret     none
+/// ret     none/list
 /// special no
 /// doc {
 /// Print all interned symbols whose name contains `string`.
+/// If optional `as-listz` is true, return a list of the symbol names.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_apropos(args: LispObject, kwArgs: Map<Symbol, LispObject>
 ): LispObject {
-    val string = arg1(args).toString()
-    val symlist = mutableListOf<Symbol>()
+    val (pattern, as_list) = args2(args)
+    val patternstring = pattern.toString()
+    val symlist_lc = ListCollector()
     var maxsymlen = 0
 
     for (sym in symbolTable.values) {
-        if (sym.name.contains(string)) {
-            symlist.add(sym)
+        if (sym.name.contains(patternstring)) {
+            symlist_lc.add(sym)
             val len = sym.name.length
             if (len > maxsymlen) {
                 maxsymlen = len
             }
         }
     }
-    for (sym in symlist) {
-        var func = ""
-        var bound = ""
-        var props = ""
+    if (ob2bool(as_list)) {
+        return symlist_lc.list()
+    }
+    for (symbol in symlist_lc.list()) {
+        val sym = symbol as Symbol
+        var func = "-"
+        var bound = "-"
+        var props = "-"
         if (sym.function != null) {
             val special = sym.function?.isSpecial ?: false
             func = when (sym.function) {
@@ -233,9 +239,9 @@ fun bi_apropos(args: LispObject, kwArgs: Map<Symbol, LispObject>
         if (sym.props.size > 0) {
             props = "properties"
         }
-        stdout.print(padString(sym.name, maxsymlen + 2))
-        stdout.print(padString(func, 14))
-        stdout.print(padString(bound, 7))
+        stdout.print(sym.name.padEnd(maxsymlen + 2))
+        stdout.print(func.padEnd(14))
+        stdout.print(bound.padEnd(7))
         stdout.println(props)                     
     }
     return theNonPrintingObject
