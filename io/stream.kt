@@ -102,6 +102,10 @@ open class FileWriterStream(path: String,
         }
     }
 
+    override fun print(s: String) {
+        write(s)
+    }
+
     override fun println(s: String) {
         try {
             fileWriter.write(s)

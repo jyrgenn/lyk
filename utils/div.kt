@@ -2,6 +2,11 @@ package org.w21.lyk
 
 import kotlin.system.exitProcess
 
+fun padString(s: String, width: Int, pad: Char = ' '): String {
+    val len = s.length
+    return s.padEnd(width - len, pad).toString()
+}
+
 fun typeOf(obj: Any): String {
     if (obj is LispString) {
         return "string"

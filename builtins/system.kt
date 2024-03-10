@@ -23,7 +23,7 @@ val debugDebugSym = Symbol.intern("debug")
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_debug(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
+fun bi_debug(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val lc = ListCollector()
     for (arg in args) {
         debug(debugDebugSym, "debug sym is", arg, typeOf(arg))
@@ -79,7 +79,7 @@ fun bi_debug(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_doc(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
+fun bi_doc(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val ob = arg1(args)
     var func: LispObject?
     val as_string = ob2bool(arg2(args))
@@ -115,7 +115,7 @@ fun bi_doc(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_numbers(args: LispObject, key_args: Map<Symbol, LispObject>
+fun bi_numbers(args: LispObject, kwArgs: Map<Symbol, LispObject>
 ): LispObject {
     return Number.numbers()
 }
@@ -134,7 +134,7 @@ fun bi_numbers(args: LispObject, key_args: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_symbols(args: LispObject, key_args: Map<Symbol, LispObject>
+fun bi_symbols(args: LispObject, kwArgs: Map<Symbol, LispObject>
 ): LispObject {
     val lc = ListCollector()
     for (sym in symbolTable.values) {
@@ -156,7 +156,7 @@ fun bi_symbols(args: LispObject, key_args: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_gc(args: LispObject, key_args: Map<Symbol, LispObject>
+fun bi_gc(args: LispObject, kwArgs: Map<Symbol, LispObject>
 ): LispObject {
     System.gc()
     return Nil
@@ -177,7 +177,7 @@ fun bi_gc(args: LispObject, key_args: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assert(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject
+fun bi_assert(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject
 {
     val (form, message) = args2(args)
     if (eval(form) === Nil) {
@@ -199,16 +199,73 @@ fun bi_assert(args: LispObject, key_args: Map<Symbol, LispObject>): LispObject
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_apropos(args: LispObject, key_args: Map<Symbol, LispObject>
+fun bi_apropos(args: LispObject, kwArgs: Map<Symbol, LispObject>
 ): LispObject {
     val string = arg1(args).toString()
+    val symlist = mutableListOf<Symbol>()
+    var maxsymlen = 0
 
     for (sym in symbolTable.values) {
         if (sym.name.contains(string)) {
-            println(sym)
+            symlist.add(sym)
+            val len = sym.name.length
+            if (len > maxsymlen) {
+                maxsymlen = len
+            }
         }
     }
+    for (sym in symlist) {
+        var func = ""
+        var bound = ""
+        var props = ""
+        if (sym.function != null) {
+            val special = sym.function?.isSpecial ?: false
+            func = when (sym.function) {
+                // is Macro -> "macro"
+                is Lambda -> "lambda"
+                is Builtin -> if (special) {"special form"} else {"builtin"}
+                else -> "ewot?!"
+            }
+        }
+        if (sym.getValueOptional() != null) {
+            bound = "bound"
+        }
+        if (sym.props.size > 0) {
+            props = "properties"
+        }
+        stdout.print(padString(sym.name, maxsymlen + 2))
+        stdout.print(padString(func, 14))
+        stdout.print(padString(bound, 7))
+        stdout.println(props)                     
+    }
     return theNonPrintingObject
+}
+
+/// builtin build-info
+/// fun     bi_build_info
+/// std     
+/// key     
+/// opt     as-string
+/// rest    
+/// ret     alist
+/// special no
+/// doc {
+/// Return an alist with data decribing the current program build.
+/// If optional argument `as-string` is true, return the info as a string.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_build_info(args: LispObject, kwArgs: Map<Symbol, LispObject>
+): LispObject {
+    var as_string = ob2bool(arg1(args))
+    var lc = ListCollector()
+    for ((key, value) in build_info) {
+        lc.add(Cons(Symbol.intern(key), LispString.makeString(value)))
+    }
+    if (as_string) {
+        return LispString.makeString(build_info.values.joinToString(" "))
+    }
+    return lc.list()
 }
 
 // EOF
