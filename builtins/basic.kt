@@ -1469,7 +1469,7 @@ fun bi_equal(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_eval(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    val (expr, env) = args
+    val (expr, env) = args2(args)
 
     if (env === Nil) {
         return eval(expr)
@@ -1479,3 +1479,63 @@ fun bi_eval(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     }
 }
 
+/// builtin get
+/// fun     bi_getprop
+/// std     symbol property
+/// key     
+/// opt     default-value
+/// rest    
+/// ret     value
+/// special no
+/// doc {
+/// Return the value of `symbol`'s property `property` (or nil, if not set).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_getprop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    val (symbol, property, default) = args3(args)
+    val sym = symbolArg(symbol, "get symbol")
+    val prop = symbolArg(property, "get property")
+    return sym.getProp(prop, default)
+}
+
+/// builtin put
+/// fun     bi_putprop
+/// std     symbol property value
+/// key     
+/// opt     
+/// rest    
+/// ret     value
+/// special no
+/// doc {
+/// Return the value of `symbol`'s property `property` (or nil, if not set).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_putprop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    val (symbol, property, value) = args3(args)
+    val sym = symbolArg(symbol, "put symbol")
+    val prop = symbolArg(property, "put property")
+    sym.setProp(prop, value)
+    return value
+}
+
+/// builtin remprop
+/// fun     bi_remprop
+/// std     symbol property
+/// key     
+/// opt     
+/// rest    
+/// ret     value
+/// special no
+/// doc {
+/// Remove `property` from `symbol` and return the previous value (or Nil).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_remprop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    val (symbol, property) = args3(args)
+    val sym = symbolArg(symbol, "put symbol")
+    val prop = symbolArg(property, "put property")
+    return sym.remProp(prop)
+}

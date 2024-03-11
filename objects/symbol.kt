@@ -144,8 +144,14 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
         props[name] = value
     }
 
-    fun getProp(name: Symbol): LispObject {
-        return props[name] ?: Nil
+    fun getProp(name: Symbol, default: LispObject): LispObject {
+        return props[name] ?: default
+    }
+
+    fun remProp(name: Symbol): LispObject {
+        val result = props[name] ?: Nil
+        props.remove(name)
+        return result
     }
 
     override fun car(): LispObject {
