@@ -81,6 +81,10 @@ class OtherError(message: String, val e: Exception): LispError(message) {
     override fun toString(): String = "${super.toString()}: $e"
 }
 
+class NotProvidedError(val feature: Symbol):
+    LispError("Required feature `$feature` has not been provided") {
+}
+
 class AssertionFail(form: LispObject, val moreInfo: LispObject):
     LispError(form.toString())
 {

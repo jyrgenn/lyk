@@ -36,5 +36,17 @@ val errorSym = Symbol.intern("error")
 var pairCounter = 0
 var evalCounter = 0
 
+// debug and trace topic names
+val traceEvalSym = Symbol.intern("eval")
+val traceEvalFunSym = Symbol.intern("evalfun")
+val traceCallSym = Symbol.intern("call")
+val debugErrorSym = Symbol.intern("error")
+val debugIOSym = Symbol.intern("io")
+val debugBindParSym = Symbol.intern("bindpar")
+val debugReaderSym = Symbol.intern("reader")
+
+
 val currentLoadFile = Symbol.makeGlobal("*current-load-file*")
 
+// set of features provided
+val featureSet = mutableSetOf<Symbol>()

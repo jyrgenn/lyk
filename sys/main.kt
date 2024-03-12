@@ -3,14 +3,6 @@ package org.w21.lyk
 
 import kotlin.system.exitProcess
 
-val traceEvalSym = Symbol.intern("eval")
-val traceEvalFunSym = Symbol.intern("evalfun")
-val traceCallSym = Symbol.intern("call")
-val debugErrorSym = Symbol.intern("error")
-val debugIOSym = Symbol.intern("io")
-val debugBindParSym = Symbol.intern("bindpar")
-val debugReaderSym = Symbol.intern("reader")
-
 object Options {
     var debug = mutableMapOf<Symbol, Boolean>(
         traceEvalSym to false,

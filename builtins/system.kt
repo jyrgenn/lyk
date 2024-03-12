@@ -357,4 +357,46 @@ fun bi_describe(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 }
 
 
+/// builtin provide
+/// fun     bi_provide
+/// std     feature
+/// key     
+/// opt     
+/// rest    
+/// ret     feature
+/// special no
+/// doc {
+/// Declare `feature` (a symbol) as provided in case it will be required.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_provide(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    val feature = symbolArg(arg1(args), "provide feature")
+    featureSet.add(feature)
+    return feature
+}
+
+/// builtin require
+/// fun     bi_require
+/// std     feature
+/// key     
+/// opt     
+/// rest    
+/// ret     t
+/// special no
+/// doc {
+/// Declare `feature` (a symbol) as required to have been provided earlier.
+/// If that is not the case, raise an error
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_require(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    val feature = symbolArg(arg1(args), "require feature")
+    if (feature in featureSet) {
+        return T
+    }
+    throw NotProvidedError(feature) 
+}
+
+
 // EOF
