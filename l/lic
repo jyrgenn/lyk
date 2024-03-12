@@ -1,0 +1,600 @@
+#!/usr/bin/env lingo
+;;; '-*- lisp -*-'
+;;; lic -- a Lisp RPN Calculator, adapted for lingo
+;;; placed into the public domain by Juergen Nickelsen <ni@w21.org>
+
+;;(trace 'mod t)
+
+(defvar *lic-stack* nil)		;the whole stack
+(defvar *lic-values* nil)		;all computed values
+(defvar *lic-print-stack* nil)		;print stack after every input line
+(defvar *period-char* (elt "." 0))      ;due to different char literal syntaxes
+(defvar *lic-history-file* (string (getenv "HOME") "/.lic-history"))
+
+;; format strings for lingo
+(defvar *fstring-prompt* "[%d]; ") ;input prompt with stack size argument
+(defvar *fstring-stack-format* "%s -> %s: %s")
+(defvar *fstring-describe* "%v: %v arg%s, %v result\n  %v\n")
+(defvar *fstring-functions* "%v\n")
+(defvar *fstring-describe-functions* "%v: %v")
+(defvar *fstring-simple* "%v")
+(defvar *fstring-simple-nl* "%v\n")
+(defvar *fstring-repl* "\n> ")
+(defvar *fstring-vars* "%10v: %v\n")
+(defvar *fstring-stackframe* "%2d:  %v%v\n")
+(defvar *fstring-error* "\nerror: %v\n")
+(defvar *fstring-error-nosymbol* "%v is not a function symbol\n")
+(defvar *fstring-too-few-args*
+  "too few arguments on stack for %v (needs %d)\n")
+
+(defmacro handle-error (evalform handlerform)
+  "Eval EVALFORM; on error, bind `error-condition' and eval HANDLERFORM."
+  `(let* ((result (errset ,evalform nil)))
+     (when (atom result)
+       (let ((error-condition |sys:last-error|))
+         ,handlerform))))
+(defmacro make-blanks-string (len)
+  `(make-string ,len " "))
+(defmacro print-prompt ())
+(defmacro ldebug (msg obj)
+  `(format t "DBG %s: %v\n" ,msg ,obj))
+(setf sys:stdin
+      (open-interactive-stream sys:stdin
+                               (lambda ()
+                                 (format nil *fstring-prompt*
+                                         (length *lic-stack*)))
+                               *lic-history-file*))
+
+(defvar *lic-functions* nil)            ;list of function names
+(defvar *lic-max-padding* 24)		;max. padding for number justification
+(defvar *lic-user-variables* (make-table))  ;places to sto and rcl values
+(defvar *lic-history* '())              ;input history
+
+;; Functions are stored in the properties of their symbol: lic-function,
+;; lic-arity, lic-resultsp, lic-help (a description); if lic-resultsp is nil, no
+;; results are pushed on the stack. The function is applied to the appropriate
+;; number of arguments from the stack and returns a single result or a list of
+;; results, which are then placed on the stack if resultsp.
+
+;; define a lic function
+(defun deflic (symbol arity resultsp function help)
+  ;;(ldebug "deflic" (list symbol arity resultsp function help))
+  (setf (get symbol 'lic-function) function)
+  ;;(ldebug "retrieve" (get symbol 'lic-function))
+  (setf (get symbol 'lic-arity) arity)
+  (setf (get symbol 'lic-resultsp) resultsp)
+  (setf (get symbol 'lic-help) help)
+  (push symbol *lic-functions*)
+  symbol)
+
+;; make this even shorter (but needs bodyforms)
+;; sym: function symbol
+;; args: list of arguments, may be ()
+;; result: symbol for the result or nil if none
+;; documentation: help string
+;; body: forms to execute and return the value (if any)
+(defmacro defl (sym args result documentation &rest body)
+  (let ((doc (format nil *fstring-stack-format*
+		     (join " " args)
+		     (if result (format nil *fstring-simple* result) "")
+		     documentation)))
+    `(deflic ',sym (length ',args) ',result
+       #'(lambda ,args ,@body)
+       ,doc)))
+
+(defun lic-help ()
+  (format t "
+Enter numbers, function symbols, or Lisp expressions. Numbers are
+pushed on the stack, functions remove their arguments from the stack
+and push their result (one, or more if it is a list). Lisp expressions
+do not take arguments from the stack, but they push their result(s).
+
+Discovery commands:
+
+p                  -- print the stack
+functions          -- print the function symbols
+'func desc         -- describe a single function \"func\"
+describe-functions -- describe all functions
+
+lisp-functions     -- print Lisp function symbols
+(doc 'func)        -- describe a Lisp function \"func\"
+
+(defl symbol (args) result help bodyform...)
+   defines function symbol; all arguments shall be unquoted as with defun:
+       symbol: name of the function
+       (args): list of argument variables
+       result: description of result(s), string or symbol, or nil
+	 help: function documentation
+    bodyforms: forms to be evaluated, with args bound, to produce the result
+Example:
+(defl hypo (a b) c \"compute hypotenuse\" (sqrt (+ (* a a) (* b b))))
+
+"))
+
+(defl lisp-functions () nil "print Lisp function symbols"
+  (format t "%s\n" (join " " (function-symbols))))
+
+(defun lic-pop ()
+  "Remove the value on top of the stack and return it."
+  (pop *lic-stack*))
+
+(defun lic-tos ()
+  "Return the value on top of the stack. The stack is not changed."
+  (car *lic-stack*))
+
+(defl pos (position) value
+  "Get a value from the specified stack position."
+  (nth (- (length *lic-stack*) position) *lic-stack*))
+
+(defl stack-size () size
+  "Return the stack size (before calling stack-size)."
+  (length *lic-stack*))
+
+(defun lic-describe (symbol)
+  (if (get symbol 'lic-function)
+      (let ((arity (get symbol 'lic-arity)))
+	(format t *fstring-describe*
+		symbol arity (if (= 1 arity) "" "s")
+                (if (get symbol 'lic-resultsp)
+                    "has"
+                  "no")
+		(get symbol 'lic-help)))
+    (error *fstring-error-nosymbol* symbol)))
+  
+
+;; plain old faculty function, iteratively in a loop
+(defun fac (n)
+  (let ((result 1)
+        (i 2))
+    (while (<= i n)
+      (setf result (* result i))
+      (incf i))
+    result))
+
+;; combinations, as pick 6 from 49 (n over k)
+
+(defun of (k n)
+  (/ (fac n) (* (fac (- n k))
+                (fac k))))
+(defl of (k n) combinations
+  "Number of combinations n over k (or k from n)"
+  (of k n))
+
+;; define lots of unary Lisp functions in one go
+(mapcar (lambda (sym)
+          (deflic sym 1 t (symbol-function sym)
+            (format nil "x -> y; as the corresponding Lisp function `%s':\n%s"
+                    sym (function-docstring sym))))
+	'(float 1+ 1- fac sin cos tan abs asin acos atan sinh cosh tanh
+	  asinh acosh atanh random exp sqrt isqrt log signum floor ceiling
+	  truncate round numerator denominator rational rationalize cis
+	  conjugate phase realpart imagpart ash integer-length ))
+
+(defl int (x) integer "truncate x to an integer (towards zero)" (truncate x))
+(defl + (x y) sum "add x to y" (+ x y))
+(defl - (x y) diff "subtract y from x" (- x y))
+(defl * (x y) prod "multiply x with y" (* x y))
+(defl / (x y) quot "divide x by y" (/ x y))
+(defl % (x y) mod "modulo of x by y" (mod x y))
+(defl mod (x y) mod "modulo of x by y" (mod x y))
+(defl rem (x y) rem "remainder of dividing x by y" (rem x y))
+(defl ** (x y) power "power of x by y" (expt x y))
+(defl ^ (x y) power "power of x by y" (expt x y))
+(defl ! (n) fac "faculty function" (fac n))
+(defl gcd (n m) gcd "greatest common denominator" (gcd n m))
+(defl lcm (n m) lcm "least common multiple" (lcm n m))
+(defl pi () pi "the number Pi" 3.141592653589793)
+(defl id (arg) arg "identity function" arg)
+(defl ln (arg) log "natural logarithm" (log arg))
+(defl log10 (arg) log "logarithm to base 10" (log arg 10))
+(defl log2 (arg) log "logarithm to base 2" (log arg 2))
+(defl logb (x base) log "logarithm to specified base" (log x base))
+(defl e () e "Euler's number" (exp 1))
+(defl factor (n) factors "factorize number" (factor n))
+(defl isprime (n) bool "1 if n is prime, 0 else" (if (prime-number-p n) 1 0))
+
+(defl freduce (num den) (rnum rden) "reduce fraction num/den"
+  (let ((gcd (gcd num den)))
+    (list (/ num gcd) (/ den gcd))))
+
+(defun to-minutes (timesym)
+  "Convert a timesym of the form hh:mm to minutes."
+  (let (((h min) (map #'read (split-string (symbol-string timesym) ":"))))
+    (+ (* h 60) min)))
+
+(defun to-time (minutes)
+  "Convert minutes to a timesym of the form hh:mm."
+  (intern (format nil "%02d:%02d"
+		  (truncate (/ minutes 60))
+                  (% minutes 60))))
+
+(defl time- (time-a time-b) diff-mins "subtract times in format 'hh:mm"
+  (let ((mins-a (to-minutes time-a))
+        (mins-b (to-minutes time-b)))
+    (to-time (- mins-a mins-b))))
+
+(defl time+ (time-a time-b) diff-mins "add times in format 'hh:mm"
+  (let ((mins-a (to-minutes time-a))
+        (mins-b (to-minutes time-b)))
+    (to-time (+ mins-a mins-b))))
+
+(defl 2time (mins) timesym "convert minutes to timesym"
+  (to-time mins))
+
+(defl nthrt (x n) result
+  "take the n-th root of x (n need not be integer)"
+  (expt x (/ 1 n)))
+
+(defl complex (realpart imagpart) complex
+  "make a complex number" (complex realpart imagpart))
+
+(defl boole-1 (int-1 int-2) result
+  "boolean operation returning int-1"
+  (boole boole-1 int-1 int-2))
+
+(defl boole-2 (int-1 int-2) result
+  "boolean operation returning int-2"
+  (boole boole-2 int-1 int-2))
+
+(defl boole-andc1 (int-1 int-2) result
+  "boolean operation returning and complement of int-1 with int-2"
+  (boole boole-andc1 int-1 int-2))
+
+(defl boole-andc2 (int-1 int-2) result
+  "boolean operation returning and int-1 with complement of int-2"
+  (boole boole-andc2 int-1 int-2))
+
+(defl boole-and (int-1 int-2) result
+  "boolean operation returning and" (boole boole-and int-1 int-2))
+
+(defl boole-c1 (int-1 int-2) result
+  "boolean operation returning complement of int-1"
+  (boole boole-c1 int-1 int-2))
+
+(defl boole-c2 (int-1 int-2) result
+  "boolean operation returning complement of int-2"
+  (boole boole-c2 int-1 int-2))
+
+(defl boole-clr (int-1 int-2) result
+  "boolean operation returning always 0 (all zero bits)"
+  (boole boole-clr int-1 int-2))
+
+(defl boole-eqv (int-1 int-2) result
+  "boolean operation returning equivalence (exclusive nor)"
+  (boole boole-eqv int-1 int-2))
+
+(defl boole-ior (int-1 int-2) result
+  "boolean operation returning inclusive or"
+  (boole boole-ior int-1 int-2))
+
+(defl boole-nand (int-1 int-2) result
+  "boolean operation returning not-and" (boole boole-nand int-1 int-2))
+
+(defl boole-nor (int-1 int-2) result
+  "boolean operation returning not-or"
+  (boole boole-nor int-1 int-2))
+
+(defl boole-orc1 (int-1 int-2) result
+  "boolean operation returning or complement of int-1 with int-2"
+  (boole boole-orc1 int-1 int-2))
+
+(defl boole-orc2 (int-1 int-2) result
+  "boolean operation returning or int-1 with complement of int-2"
+  (boole boole-orc2 int-1 int-2))
+(defl boole-set (int-1 int-2) result
+  "boolean operation returning always -1 (all one bits)"
+  (boole boole-set int-1 int-2))
+
+(defl boole-xor (int-1 int-2) result
+  "boolean operation returning exclusive or"
+  (boole boole-xor int-1 int-2))
+
+(defl logandc1 (int-1 int-2) result
+  "bitwise logical and complement of int-1 with int-2"
+  (logandc1 int-1 int-2))
+
+(defl logandc2 (int-1 int-2) result
+  "bitwise logical and int-1 with complement of int-2"
+  (logandc2 int-1 int-2))
+
+(defl logand (int-1 int-2) result
+  "bitwise logical and"
+  (logand int-1 int-2))
+
+(defl logeqv (int-1 int-2) result
+  "bitwise logical equivalence (exclusive nor)"
+  (logeqv int-1 int-2))
+
+(defl logior (int-1 int-2) result
+  "bitwise logical inclusive or"
+  (logior int-1 int-2))
+
+(defl lognand (int-1 int-2) result
+  "bitwise logical complement of int-1 and int-2"
+  (lognand int-1 int-2))
+
+(defl lognor (int-1 int-2) result
+  "bitwise logical complement of int-1 or int-2"
+  (lognor int-1 int-2))
+
+(defl lognot (integer) result
+  "bitwise logical complement"
+  (lognot integer))
+
+(defl logorc1 (int-1 int-2) result
+  "bitwise logical or complement of int-1 with int-2"
+  (logorc1 int-1 int-2))
+
+(defl logorc2 (int-1 int-2) result
+  "bitwise logical or int-1 with complement of int-2"
+  (logorc2 int-1 int-2))
+
+(defl logxor (int-1 int-2) result
+  "bitwise logical exclusive or"
+  (logxor int-1 int-2))
+
+(defl logcount (integer) number-of-on-bits
+  "count the number of bits set (or unset, if negative) in integer"
+  (logcount integer))
+
+(defl f2c (fahrenheit) celsius
+  "convert degrees fahrenheit to celsius"  (* (- fahrenheit 32) (/ 5 9)))
+(defl c2f (celsius) fahrenheit
+  "convert degrees celsius to fahrenheit"  (+ (* celsius (/ 9 5)) 32))
+
+(defl fi2m (feet inches) meters "convert feet and inches to meters"
+  (* 2.54 (+ inches (* 12 feet))))
+
+(defl feetin (ft in) meters "convert feet and inches to meters"
+  (* 2.54 (+ in (* 12 ft))))
+(defl feet (ft) meters "convert feet to meters" (* 0.0254 12 ft))
+(defl inches (in) meters "convert inches to meters" (* 0.0254 in))
+
+(defl drop (x) nil "drop and ignore tos")
+(defl dup (x) "x x" "duplicate tos" (list x x))
+(defl swap (x y) "y x" "swap tos and 2nd" (list y x))
+(defl cls () nil "clear stack" (setf *lic-stack* nil))
+(defl clv () nil "clear value list" (setf *lic-values* nil))
+(defl rot () nil "rotate stack up"
+    (setf *lic-stack* (append (cdr *lic-stack*)
+			      (list (car *lic-stack*)))))
+(defl tor () nil "rotate stack down"
+  (let ((lastel (car (last *lic-stack*))))
+    (setf *lic-stack* (cons lastel (butlast *lic-stack*)))))
+
+(defl functions () nil
+  "show all functions"
+  (format t *fstring-functions* (join " " (sort *lic-functions* #'string<))))
+
+(defl describe-functions () nil
+  "show all functions"
+  (dolist (f (sort *lic-functions* #'string<))
+    (let* ((ellipsis "[...]")
+           (elllen (length ellipsis))
+           (outs (format nil *fstring-describe-functions* f
+                         (car (split-string (get f 'lic-help) "\n")))))
+      (if (> (length outs) 80)
+          (setf outs (string (substring outs 0 (- 80 elllen)) ellipsis)))
+      (if (#/:$/ outs)
+          (setf outs
+                (string (string-right-trim ":" (substring outs 0 (- 79 elllen)))
+                        " " ellipsis)))
+      (princ (string outs "\n")))))
+
+(defl apropos (search) nil
+  "print all function descriptions matching `search'"
+  (dolist (f (sort *lic-functions* #'string<))
+    (let* ((doc (get f 'lic-help)))
+      (if (regex-match search doc)
+          (format t (string *fstring-describe-functions* "\n") f doc)))))
+  
+
+(defl ? () nil "print some help" (lic-help))
+(defl h () nil "print some help" (lic-help))
+(defl help () nil "print some help" (lic-help))
+(defl values () nil "show all computed values"
+  (format t *fstring-simple* (join " " (reverse *lic-values*))))
+(defl desc (symbol) nil "describe a function" (lic-describe symbol))
+(defl exit () nil "exit lic" (exit))
+
+(defl history () nil "print input history"
+  (format t *fstring-simple-nl* (join " " (reverse *lic-history*))))
+
+(defl acc (func) result
+  "accumulate all values with `func', leaving only result"
+  (let ((func (get func 'lic-function))
+        (result (pop *lic-stack*)))
+    (while *lic-stack*
+      (setf result (funcall func result (pop *lic-stack*))))
+    result))
+
+(defl { () nil "push the opening brace on the stack"
+  (progn (push '{ *lic-stack*)))
+
+(defun {-accumulate (funcsym)
+  "Accumulate all values on the stack since { with FUNCSYM.
+Helper for }, +}, and *}."
+  (let ((func (get funcsym 'lic-function))
+        (result (pop *lic-stack*))
+        arg)
+    (while (and *lic-stack*
+                (progn (setf arg (pop *lic-stack*))
+                       (not (eq arg '{))))
+      (setf result (funcall func result arg)))
+    result))
+
+(defl } (func) result
+  "accumulate all values on the stack since { with 'func"
+  ({-accumulate func))
+
+(defl +} () result
+  "sum up all values on the stack since {"
+  ({-accumulate '+))
+
+(defl *} () result
+  "multiply all values on the stack since {"
+  ({-accumulate '*))
+
+(defl hours (m) hh:mm
+  "Assume the TOS value as minutes and convert it to an hh:mm symbol."
+  (intern (string (div m 60) ":" (mod m 60))))
+
+(defl minutes (hh:mm) mm
+  "Assume the TOS value as an hh:mm symbol and convert it to minutes."
+  (let ((match (regex-match #/^([0-9]+):([0-9]+)$/
+                            (symbol-name hh:mm))))
+    (if match
+        (let (((_ hours minutes) (map #'read match)))
+          (+ (* hours 60) minutes))
+      (error "TOS not an hh:mm symbol"))))
+
+(defun repl ()
+  (let (expr)
+    (while (not (eq expr 'exit))
+      (format t *fstring-repl*)
+      (setf expr (read))
+      (prin1 (eval expr)))))
+
+;; User variables, to be accessed with a variable name an STO/RCL
+
+(defl sto (x symbol) x "store value in user variable"
+  (table-put *lic-user-variables* symbol x))
+(defl rcl (symbol) x "recall value from user variable"
+  (table-get *lic-user-variables* symbol))
+;; (defl vars () nil "show all user variables"
+;;   (format t *fstring-simple*
+;; 	  (join " "
+;;                 (sort (loop for key being the hash-keys in *lic-user-variables*
+;;                         using (hash-value val)
+;;                         collect (format nil *fstring-vars* key val))
+;;                       #'string<))))
+
+(defl vars () nil "show all user variables"
+  (format t *fstring-simple*
+	  (join " "
+                (sort (let (descs)
+                        (dolist (key (table-keys *lic-user-variables*))
+                          (push (format nil *fstring-vars*
+                                        key (*lic-user-variables* key))
+                                descs))
+                        descs)
+                      #'string<))))
+
+
+;; run a function; return non-nil if we have a value worth showing
+(defun lic-run-function (sym)
+  ;;(ldebug "function-symbol" sym)
+  (let ((fun (get sym 'lic-function)))
+    ;;(ldebug "function-function" fun)
+    (if fun
+	(let ((arity (get sym 'lic-arity)))
+	  (if (>= (length *lic-stack*) arity)
+	      (let ((args (reverse (subseq *lic-stack* 0 arity))))
+		(setf *lic-stack* (subseq *lic-stack* arity))
+		(let ((result (apply fun args)))
+		  (when (get sym 'lic-resultsp)
+		    (lic-push-result result))))
+	    (error *fstring-too-few-args* sym arity)))
+      (error *fstring-error-nosymbol* sym))))
+
+;; return non-nil for a non-nil result
+(defun lic-push-result (result)
+  (if (listp result)			;may be nil, too
+      (setf *lic-stack*
+	    (append (reverse result) *lic-stack*))
+    (push result *lic-stack*))
+  (push result *lic-values*)
+  result)
+
+
+;; return the index of the dot in the printed representation of the argument; if
+;; there is none, return the length of the printed representation.
+(defun get-dot-position (x)
+  (let ((x-as-string (format nil *fstring-simple* x)))
+    (or (position *period-char* x-as-string) (length x-as-string))))
+
+;; for the list l, return a list where each element is a string with the number
+;; of spaces needed to print before the corresponding member of l such that the
+;; dots of the elements of l line up; 
+(defun make-paddings (l)
+  (let* ((posl (mapcar #'get-dot-position l))
+	 (maxlen (if posl
+		     (apply #'max posl)
+		   0)))
+    (mapcar (lambda (pos)
+              (make-blanks-string (min *lic-max-padding* (- maxlen pos))))
+	    posl)))
+
+(defun lic-print-stack ()
+  (let* ((revstack (reverse *lic-stack*))
+         (paddings (make-paddings revstack))
+         (n 1)
+         (el revstack)
+         (pad paddings))
+    
+    (while revstack
+      (let ((el (car revstack))
+            (pad (car paddings)))
+        (format t *fstring-stackframe* n pad el)
+        (incf n)
+        (pop revstack)
+        (pop paddings)))))
+
+(defl p () nil "print the whole stack" (lic-print-stack))
+(defl fp () nil "print the top of the stack as float"
+	    (format t *fstring-simple-nl* (car *lic-stack*)))
+
+;; to accept floating point numbers with a comma instead of a period,
+;; try to replace the comma with a period in a symbol and see if that
+;; results in a number
+(defun maybe-number (e)
+  (if (symbolp e)
+      (let ((new (read (regex-replace "," (symbol-name e) ".") nil)))
+        (if (numberp new)
+            new
+          e))
+    e))
+
+;; handle all expressions in a string; return the last result
+(defun lic-do-string (string)
+  (let ((result nil))
+    (with-input-from-string (s string)
+      (let ((exp t))
+        (while (setf exp (maybe-number (read s nil)))
+          (push exp *lic-history*)
+          (setf result
+                (cond ((numberp exp) (push exp *lic-stack*))
+                      ((symbolp exp)
+                       (let ((match (regex-match #/^([0-9]+):([0-9]+)$/
+                                                 (symbol-name exp))))
+                         ;; special-casing for hh:mm symbols
+                         (if match
+                             (let (((_ hours minutes) (map #' read match)))
+                               (push (+ (* 60 hours) minutes) *lic-stack*))
+                           (lic-run-function exp))))
+                      (t (lic-push-result (eval exp))))))))
+    result))
+
+;; now the action: process command line arguments, if any, or go into repl
+(if sys:args
+    (progn
+      (dolist (arg sys:args)
+	(lic-do-string arg))
+      (format t *fstring-simple-nl* (car *lic-stack*))
+      (exit))
+  (while t                              ;repl
+    (let ((line (read-line t nil nil))
+	  (presultp nil))		;non-nil if there is a non-nil result
+      (unless line
+        (terpri)
+        (exit))
+      (handle-error
+          (setf presultp (or presultp (lic-do-string line)))
+        (format t *fstring-error* error-condition))
+      ;; print the last result only after a line, not after each expression
+      (if *lic-print-stack*
+	  (lic-print-stack)
+	(when presultp
+	    (format t *fstring-simple-nl* (car *lic-stack*)))))))
+
+;;; EOF

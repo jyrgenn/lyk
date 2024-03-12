@@ -1,0 +1,21 @@
+(require 'regtests)
+
+(test-is "mapcar 1" (mapcar #'identity nil) "nil")
+(test-is "mapcar 2" (mapcar #'list nil nil) "nil")
+(test-is "mapcar 3" (mapcar #'list '(3 4) '(5 6)) "((3 5) (4 6))")
+(test-is "mapcar 4" (mapcar #'+ '(3 4) '(5 6)) "(8 10)")
+
+(test-is "mapcar 5" (mapcar #'zerop '(0 1 2 3 0 4 5 0))
+         "(t nil nil nil t nil nil t)")
+(test-is "mapcar 6" (mapcar (lambda (n) (+ n 1)) '(0 1 2 3 0 4 5 0))
+         "(1 2 3 4 1 5 6 1)")
+(test-is "mapcar 7" (mapcar (lambda (n) (+ n 1)) '()) "nil")
+(test-is "mapcar 8" (mapcar #'+ '(3 4 7) '(5 6) '(9 10 11 12)) "(17 20)")
+(test-is "mapcar 9" (mapcar '+ '(3 4 5 6) '(7 8 9)) '(10 12 14))
+(defvar ^)
+(makunbound '^)
+(fmakunbound '^)
+(test-is "mapcar 10" (errset (mapcar '^ '(3 4 5 6) '(7 8 9))
+                              nil) nil)
+
+(done-testing)
