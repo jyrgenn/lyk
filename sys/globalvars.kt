@@ -45,6 +45,7 @@ val debugIOSym = Symbol.intern("io")
 val debugBindParSym = Symbol.intern("bindpar")
 val debugReaderSym = Symbol.intern("reader")
 
+val commandLineArgs = Symbol.makeGlobal("*command-line-args*")
 
 val currentLoadFile = Symbol.makeGlobal("*current-load-file*")
 

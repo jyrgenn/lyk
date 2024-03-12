@@ -45,4 +45,14 @@ class Cons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
     }
 
     fun cxr() = Pair(car, cdr)
+
+    override fun length(): Int {
+        var len = 0
+        var cell: LispObject = this
+        while (cell is Cons) {
+            len++
+            cell = cell.cdr()
+        }
+        return len
+    }
 }

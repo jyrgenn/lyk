@@ -1,7 +1,7 @@
 (provide 'factor)
 
-(when (not (fboundp 'builtin-factor))
-  (fset 'builtin-factor #'factor))
+;; (when (not (fboundp 'builtin-factor))
+;;   (fset 'builtin-factor #'factor))
 
 (defvar *primes* '(2 3)
   "List of continuous prime numbers known so far") 
@@ -14,8 +14,8 @@
 
 (defun add-next-prime (n)
   (let ((newlast (list n)))
-    (setf (cdr *last-prime-pair*) newlast)
-    (setf *last-prime-pair* newlast)))
+    (rplacd *last-prime-pair* newlast)
+    (setq *last-prime-pair* newlast)))
 
 (defun highest-prime ()
   (car *last-prime-pair*))
@@ -26,25 +26,25 @@
         result)
     (while (and p (<= (car p) limit))
       (if (zerop (% n (car p)))
-          (progn (setf result t)
-                 (setf p nil)))
-      (setf p (cdr p)))
+          (progn (setq result t)
+                 (setq p nil)))
+      (setq p (cdr p)))
     result))
 
 (defun grow-primes ()
   (let ((candidate (+ (highest-prime) 2)))
     (while (have-divisor candidate)
-      (incf candidate 2))
+      (setq candidate (+  candidate 2)))
     (add-next-prime candidate)))
 
 (defun reset-primes ()
-  (setf next-p *primes*))
+  (setq next-p *primes*))
 
 (defun next-prime ()
   (while (null (cdr next-p))
     (grow-primes))
   (let ((this-one (car next-p)))
-    (setf next-p (cdr next-p))
+    (setq next-p (cdr next-p))
     this-one))
 
 (defun factor (n &optional print-factor)
@@ -57,14 +57,14 @@
         (if (<= p limit)
             (while (and (> n 1)
                         (zerop (% n p)))
-              (setf result (cons p result))
+              (setq result (cons p result))
               (if print-factor
                   (format t " %d" p))
-              (setf n (/ n p)))
-          (setf working nil))))
+              (setq n (/ n p)))
+          (setq working nil))))
     (if (> n 1)
         (progn 
-          (setf result (cons n result))
+          (setq result (cons n result))
           (if print-factor
                   (format t " %d" n))))
     (if print-factor (terpri))
@@ -72,23 +72,23 @@
 
 (defun factor-loop (&optional max pause)
   (let ((n 1))
-    (setf pause (or pause 1))
+    (setq pause (or pause 1))
     (while (or (null max) (<= n max))
       (let ((factors (factor n)))
         (if (or (not (zerop pause)) (zerop (% n 1000)))
             (format t "%d: %v\n" n factors))
         (sleep pause))
-      (incf n))))
+      (setq n (+ n 1)))))
 
-(if sys:args
-    (let ((max (read (car sys:args)))
-          (pause (read (car (cdr sys:args)))))
+(if *command-line-args*
+    (let ((max (read (car *command-line-args*)))
+          (pause (read (cadr *command-line-args*))))
       (factor-loop max pause)))
 
 (defun 101s (n)
   (let ((zeros ""))
     (while (> n 0)
-      (setf zeros (string-concat zeros "0"))
+      (setq zeros (string-concat zeros "0"))
       (decf n))
     (read (format nil "1%s1" zeros))))
 
@@ -97,4 +97,4 @@
     (while (<= i n)
       (let ((n (101s i)))
         (format t "%d: %v\n" n (factor n)))
-      (incf i))))
+      (setq i (+ i 1)))))

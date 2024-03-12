@@ -103,7 +103,13 @@ fun main(args: Array<String>) {
         }
     }
 
-    init_Builtins()    
+    init_Builtins()
+
+    val lc = ListCollector()
+    for (arg in argl) {
+        lc.add(LispString(arg))
+    }
+    commandLineArgs.setValue(lc.list())
     
     for (file in load_files) {
         try {

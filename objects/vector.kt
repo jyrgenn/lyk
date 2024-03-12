@@ -35,6 +35,8 @@ class Vector(): LispObject() {
     }
     override fun toString() = desc()
     
+    override fun length() = the_vector.size
+
     fun get(index: Int): LispObject {
             if (index >= 0 && index < the_vector.size) {
                 return the_vector[index]

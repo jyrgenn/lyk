@@ -526,6 +526,18 @@ fun bi_defun(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// Return t if `expr` is nil, else nil.
 /// }
 /// end builtin
+/// builtin not
+/// fun     bi_null
+/// std     expr
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if `expr` is nil, else nil.
+/// }
+/// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_null(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     return bool2ob(arg1(args) === Nil)
@@ -1539,4 +1551,34 @@ fun bi_remprop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val sym = symbolArg(symbol, "put symbol")
     val prop = symbolArg(property, "put property")
     return sym.remProp(prop)
+}
+
+/// builtin nreverse
+/// fun     bi_nreverse
+/// std     list
+/// key     
+/// opt     
+/// rest    
+/// ret     list
+/// special no
+/// doc {
+/// Reverse `list` (maybe by modifying a list's cdrs) and return the result.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_nreverse(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    var cell = arg1(args)
+    var next = cell.cdr()
+
+    if (cell === Nil) {
+        return Nil
+    }
+    (cell as Cons).rplacd(Nil)
+    while (next is Cons) {
+        val nextPair = next
+        next = nextPair.cdr()
+        nextPair.rplacd(cell)
+        cell = nextPair
+    }
+    return cell
 }

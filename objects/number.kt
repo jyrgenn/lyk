@@ -9,11 +9,13 @@ package org.w21.lyk
 class Number(val value: Double): LispObject() {
     // this is a rudimentary number implementation for now
 
+    constructor(longValue: Long) : this(longValue.toDouble()) {}
     constructor(intValue: Int) : this(intValue.toDouble()) {}
 
     companion object {
         val numberTable = mutableMapOf<Double, Number>()
 
+        fun makeNumber(value: Long) = makeNumber(value.toDouble())
         fun makeNumber(value: Int) = makeNumber(value.toDouble())
         
         fun makeNumber(value: Double): Number {
@@ -44,8 +46,8 @@ class Number(val value: Double): LispObject() {
     fun isInt() = value == value.toInt().toDouble()
     
     override fun desc(): String {
-        if (value <= Int.MAX_VALUE.toDouble()
-                && value >= Int.MIN_VALUE.toDouble()) {
+        if (value <= Long.MAX_VALUE.toDouble()
+                && value >= Long.MIN_VALUE.toDouble()) {
             val intVal = value.toInt()
             if (value == intVal.toDouble()) {
                 return intVal.toString()
