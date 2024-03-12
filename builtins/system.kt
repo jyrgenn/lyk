@@ -274,4 +274,87 @@ fun bi_build_info(args: LispObject, kwArgs: Map<Symbol, LispObject>
     return lc.list()
 }
 
+/// builtin desc
+/// fun     bi_describe
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     description-list
+/// special no
+/// doc {
+/// Describe `object` -- return a alist with the object's attributes.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_describe(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    val obj = arg1(args)
+    var lc = ListCollector()
+
+    fun entry(name: String, s: String, asSym: Boolean) {
+        if (asSym) {
+            lc.add(Cons(Symbol.intern(name), Symbol.intern(s)))
+        } else {
+            lc.add(Cons(Symbol.intern(name), LispString.makeString(s)))
+        }
+    }
+    fun entry(name: String, obj: LispObject) {
+        lc.add(Cons(Symbol.intern(name), obj))
+    }
+    fun entry(name: String, value: Double) {
+        lc.add(Cons(Symbol.intern(name), Number.makeNumber(value)))
+    }
+    fun entry(name: String, value: Int) {
+        lc.add(Cons(Symbol.intern(name), Number.makeNumber(value)))
+    }
+    
+    entry("type", typeOf(obj), true)
+    when (obj) {
+        is Symbol -> {
+            entry("name", obj.name, false)
+            entry("immutable", bool2ob(obj.immutable))
+            entry("desc-name", obj.descName, false)
+            entry("function", obj.function ?: Nil)
+            entry("props", collectedList() { c ->
+                               for ((prop, value) in obj.props) {
+                                   c.add(Cons(prop, value))
+                               }
+                           })
+            entry("boundp", bool2ob(obj.getValueOptional() == null))
+            entry("value", obj.getValueOptional() ?: Nil)
+        }
+        is Function -> {
+            entry("name", obj.name)
+            entry("synopsis",
+                  obj.parlist() + " => " + obj.retval.toString(),
+                  false)
+            entry("special", bool2ob(obj.isSpecial))
+        }
+        is LispString -> {
+            entry("len", obj.value.length)
+            entry("value", obj)
+        }
+        is Environment -> {
+            entry("level", obj.level)
+            entry("size", obj.map.size)
+        }
+        is Number -> {
+            entry("value", obj)
+            entry("intp", bool2ob(obj.isInt()))
+        }
+        is Vector -> {
+            entry("size", obj.the_vector.size)
+        }
+        is Table -> {
+             entry("size", obj.the_table.size)
+        }
+        is Regexp -> {
+            entry("pattern", obj.regex.toString(), false)
+        }
+        else -> Nil
+    }
+    return lc.list()
+}
+
+
 // EOF
