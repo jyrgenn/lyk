@@ -177,45 +177,9 @@ fun bi_warning(args: LispObject, kwArgs: Map<Symbol, LispObject>
 fun bi_load(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val fname = arg1(args).toString()
     val verbose = kwArgs[verboseSym] !== Nil
-    val throw_error = kwArgs[errorSym] ?: T
-    val pairsBefore = pairCounter
-    val evalsBefore = evalCounter
-
-    var success = Nil
+    val throw_error = ob2bool(kwArgs[errorSym] ?: T)
     
-    withVariableAs(currentLoadFile, LispString.makeString(fname)) {
-        var load_file = FileReaderStream(fname)
-        try {
-            val error = repl(Reader(load_file, fname))
-            if (error != null) {
-                if (verbose) {
-                    stderr.println(error.toString())
-                }
-                if (throw_error !== Nil) {
-                    throw error
-                }
-                success = Nil
-            } else {
-                success = T
-                if (verbose) {
-                    val pairs = pairCounter - pairsBefore
-                    val evals = evalCounter - evalsBefore
-                    stderr.println("; load $fname: $pairs pairs, $evals evals")
-                }
-            }
-        } catch (e: Exception) {
-            if (verbose) {
-                stderr.println(e.toString())
-            }
-            if (throw_error !== Nil) {
-                throw e
-            }
-            success = Nil
-        } finally {
-            load_file.close()
-        }
-    }
-    return success
+    return load_file(fname, verbose, throw_error)
 }
 
 /// builtin make-string-input-stream

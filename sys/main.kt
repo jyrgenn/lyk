@@ -35,14 +35,14 @@ fun usage() {
     println(buildtag())
     println("\nUsage: lyk [-EWh?] [-d debug-options] [-e expression] [-R maxrecurse]")
 
-    print("""
-    -E               : print exception stack
-    -q               : suppress warnings
+    println("""
     -d debug-options : set debug options, comma separated, see below
     -e expression    : evaluate Lisp expression, print result, and exit
+    -l load-file     : load the named Lisp files (multiple possible)
     -h, -?           : print this help on options
+    -q               : suppress warnings
+    -E               : print exception stack
     -R maxrecurse    : maximum eval recursion depth 
-
 """)
     print("Available debug options:")
     for (opt in Options.debug.keys.sorted()) {
@@ -55,6 +55,7 @@ fun usage() {
 
 fun main(args: Array<String>) {
     val argl = mutableListOf<String>(*args)
+    val load_files = mutableListOf<String>()
     var lispExpression: String? = null
     var opterrors = false
     
@@ -91,6 +92,12 @@ fun main(args: Array<String>) {
                 'q' -> { Options.warnings = false }
                 'd' -> { setDebug(getOptVal("debug options")) }
                 'e' -> { lispExpression = getOptVal("Lisp expression") }
+                'l' -> {
+                    val fname = getOptVal("load file")
+                    if (fname != null) {
+                        load_files.add(fname)
+                    }
+                }
                 'h', '?' -> { usage() }
                 'R' -> { Options.maxrecurse = getOptValInt("maxrecurse") ?: 0 }
                 else -> {
@@ -106,6 +113,14 @@ fun main(args: Array<String>) {
 
     init_Builtins()    
     
+    for (file in load_files) {
+        try {
+            load_file(file)
+        } catch (e: Exception) {
+            errExit(e.toString())
+        }
+    }
+
     if (lispExpression != null) {
         try {
             println("-e arg: $lispExpression")

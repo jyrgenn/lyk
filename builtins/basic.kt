@@ -829,7 +829,8 @@ fun bi_funcall(args: LispObject, kwArgs: Map<Symbol, LispObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_apply(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val (function, rest) = args
-    return functionArg(function, "funcall").call(spreadArglist(rest))
+    val allargs = spreadArglist(rest)
+    return functionArg(function, "funcall").call(allargs)
 }
 
 /// builtin environmentp

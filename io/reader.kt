@@ -609,7 +609,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
         // arrives here only if we actually had a macroSymbol
         val macroArg = read() ?:
             throw ParseError("unexpected EOF after $macroSymbol", this)
-        return ListCollector(macroSymbol, macroArg).list()
+        return Cons(macroSymbol, Cons(macroArg, Nil))
     }
             
 

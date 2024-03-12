@@ -74,26 +74,34 @@ abstract class LispObject: Iterable<LispObject>, Comparable<LispObject> {
 
 class ObjectIterator(var theObject: LispObject): Iterator<LispObject> {
     val original = theObject
+    var nextIndex = 0
 
     override fun hasNext(): Boolean {
-        when (theObject) {
+        val ob = theObject
+        when (ob) {
             Nil -> return false
             is Cons -> return true
+            is Vector -> return nextIndex < ob.the_vector.size
             else ->
                 throw ValueError("iterating over not a proper list: $original")
         }
     }
 
     override fun next(): LispObject {
-        if (theObject is Cons) {
-            val ob = theObject as Cons
-            val retVal = ob.car()
-            theObject = ob.cdr()
-            return retVal
+        val ob = theObject
+        when (ob) {
+            Nil ->
+                throw ValueError("called next() after end of list: $original")
+            is Cons -> {
+                val retVal = ob.car()
+                theObject = ob.cdr()
+                return retVal
+            }
+            is Vector -> {
+                return ob.get(nextIndex++)
+            }
+            else -> ValueError("iterating over non-sequence: $original")
         }
-        if (theObject === Nil) {
-            throw ValueError("called next() after end of list: $original")
-        }
-        throw ValueError("iterating over improper list: $original")
+        return Nil
     }
 }

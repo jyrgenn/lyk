@@ -36,11 +36,11 @@ class Vector(): LispObject() {
     override fun toString() = desc()
     
     fun get(index: Int): LispObject {
-             if (index >= 0 && index < the_vector.size) {
-            return the_vector[index]
+            if (index >= 0 && index < the_vector.size) {
+                return the_vector[index]
+            }
+            throw ValueError("invalid index $index for vector $this")
         }
-        throw ValueError("invalid index $index for vector $this")
-    }
 
     fun atIndex(index: Int): LispObject? {
         if (index >= 0 && index < the_vector.size) {

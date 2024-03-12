@@ -44,15 +44,9 @@ class ListIterator(var l: LispObject): Iterator<LispObject> {
 }
 
 
-class ListCollector(vararg objects: LispObject) {
+class ListCollector() {
     var head: LispObject = Nil
     var last: LispObject? = null
-
-    init {
-        for (obj in objects) {
-            add(obj)
-        }
-    }
 
     fun add(arg: LispObject) {
         val newpair = Cons(arg, Nil)

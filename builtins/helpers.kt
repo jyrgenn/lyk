@@ -22,7 +22,7 @@ fun envArg(arg: LispObject, what: String): Environment {
 
 fun numberArg(arg: LispObject, what: String): Double {
     return (arg as? Number)?.value ?:
-        throw ArgumentError("$what argument not a number: $arg (${typeOf(arg)}")
+        throw ArgumentError("$what argument not a number: $arg (${typeOf(arg)})")
 }
 
 // fun intArg(arg: LispObject, what: String): Int {
@@ -122,20 +122,28 @@ fun spreadArglist(args: LispObject): LispObject {
     // list L1 of length n, whose last element is a list L2 of length m
     // (denoting a list L3 of length m+n-1 whose elements are L1i for i < n-1
     // followed by L2j for j < m). ``The list (1 2 (3 4 5)) is a spreadable
-    // argument list designator for the list (1 2 3 4 5).''
+    // argument list designator for the list (1 2 3 4 5).'' [CLHS Glossary]
 
-    val lc = ListCollector()
-    var list = args
-    while (list is Cons) {
-        if (list.cdr() is Cons) {
-            lc.add(list.car())
-        } else {
-            break
-        }
-        list = list.cdr()
+    if (args === Nil) {
+        return Nil
     }
-    lc.lastcdr(list)
-    return lc.list()
+    var arglist = args
+    var last: LispObject = Nil
+    var lastBut2nd: LispObject = Nil
+    var next = arglist
+
+    while (next is Cons) {
+        lastBut2nd = last
+        last = next
+        next = next.cdr()
+    }
+    val tail = last.car()
+    if (lastBut2nd === Nil) {
+        arglist = tail
+    } else {
+        (lastBut2nd as Cons).rplacd(tail)
+    }
+    return arglist
 }
 
 fun environmentArg(arg: LispObject, what: String): Environment {
@@ -152,15 +160,15 @@ fun ob2bool(value: LispObject): Boolean {
 }
 
 fun lastCons(list: Cons): Cons {
-    var last = list
-    do {
-        val next = last.cdr()
+    var last2b = list
+    while (true) {
+        val next = last2b.cdr()
         if (next is Cons) {
-            last = next
+            last2b = next
         } else {
-            return last
+            return last2b
         }
-    } while (true)
+    }
 }
 
 fun lastCons2(list: Cons): Cons {
