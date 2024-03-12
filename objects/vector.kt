@@ -49,9 +49,10 @@ class Vector(): LispObject() {
         return null
     }
 
-    fun set(index: Int, value: LispObject) {
+    fun set(index: Int, value: LispObject): LispObject {
             if (index >= 0 && index < the_vector.size) {
                 the_vector[index] = value
+                return value
             }
             throw ValueError("invalid index $index for vector $this")
         }
