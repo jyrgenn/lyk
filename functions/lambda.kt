@@ -62,11 +62,12 @@ open class Lambda(                           // Macro will inherit this
                 continue
             }
             if (arg.isKeyword()) {
-                if (arg !in kwArgs.keys) {
+                val sym = key2var(arg as Symbol)
+                if (sym !in kwArgs.keys) {
                     throw ArgumentError("keyword $arg invalid"
                                         + " for function `${this.name}'")
                 }
-                wantKeywordParam = arg as Symbol
+                wantKeywordParam = sym
                 continue
             }
             if (hadStdArgs < wantStdArgs) {
@@ -106,6 +107,9 @@ open class Lambda(                           // Macro will inherit this
         while (hadOptArgs < wantOptArgs) {
             currentEnv.bind(optPars[hadOptArgs].first,
                             optPars[hadOptArgs++].second)
+        }
+        if (restPar != null) {
+            currentEnv.bind(restPar, restArgs.list())
         }
         // bind keyword arguments
         for ((symbol, value) in kwArgs) {

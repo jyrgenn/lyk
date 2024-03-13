@@ -398,5 +398,40 @@ fun bi_require(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     throw NotProvidedError(feature) 
 }
 
+val k1Sym = Symbol.intern(":k1")
+val k2Sym = Symbol.intern(":k2")
+
+/// builtin barams
+/// fun     bi_barams
+/// std     a b c
+/// key     "k1" to Number.makeNumber(3), "k2" to Nil
+/// opt     d, e Number.makeNumber(4)
+/// rest    grabbelsack
+/// ret     t
+/// special no
+/// doc {
+/// Exercise all kinds of function parameters and return t.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_barams(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    val (a, rest1) = args
+    val (b, rest2) = rest1
+    val (c, rest3) = rest2
+    val (d, rest4) = rest3
+    val (e, rest5) = rest4
+    val grabbelsack = rest5
+    val k1 = kwArgs[k1Sym]
+    val k2 = kwArgs[k2Sym]
+    println("a = $a")
+    println("b = $b")
+    println("c = $c")
+    println("d = $d")
+    println("e = $e")
+    println("grabbelsack = $grabbelsack")
+    println("k1 = $k1")
+    println("k2 = $k2")
+    return T    
+}
 
 // EOF

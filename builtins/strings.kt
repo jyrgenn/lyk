@@ -28,7 +28,6 @@ fun string_from_list(items: LispObject, sep: String): LispObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_string(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    println(kwArgs)
     val sep = kwArgs[stringSeparatorKey].toString()
     return string_from_list(args, sep)
 }
