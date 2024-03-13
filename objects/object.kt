@@ -83,7 +83,7 @@ class ObjectIterator(var theObject: LispObject): Iterator<LispObject> {
             is Cons -> return true
             is Vector -> return nextIndex < ob.the_vector.size
             else ->
-                throw ValueError("iterating over not a proper list: $original")
+                throw ValueError("iterating over improper list: $original")
         }
     }
 

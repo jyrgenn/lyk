@@ -52,7 +52,7 @@ fun bi_elements(args: LispObject, kwArgs: Map<Symbol, LispObject>
 fun bi_elt(args: LispObject, kwArgs: Map<Symbol, LispObject>
 ): LispObject {
     val (seq, ind) = args2(args)
-    val index = intArg(ind, "elt index")
+    val index = longArg(ind, "elt index")
 
     return seq.elementAt(index)
 }

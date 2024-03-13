@@ -37,77 +37,79 @@ open class Lambda(                           // Macro will inherit this
 
 
     fun bindPars(arglist: LispObject) {
-        if (!arglist.isList()) {
-            throw CallError("Lambda $name called with invalid argument"
-                            +" list ($arglist)")
-        }
-        var argsi = ListIterator(arglist)
-        for (param in stdPars) {
-            if (argsi.hasNext()) {
-                val value = argsi.next()
-                debug(debugBindParSym, "$this: bind $param = arg $value")
-                currentEnv.bind(param, value)
-            } else {
-                val atleast = if (minargs == maxargs) "" else "at least "
-                throw ArgumentError("too few args for $lambdatype `$name`;"
-                                    + " needs $atleast$minargs")
-            }
-        }
-        for ((sym, defval) in optPars) {
-            if (argsi.hasNext()) {
-                val value = argsi.next()
-                debug(debugBindParSym, "$this: bind $sym = opt $value")
-                currentEnv.bind(sym, value)
-            } else {
-                val value = eval(defval)
-                debug(debugBindParSym, "$this: bind $sym = default $value")
-                currentEnv.bind(sym, value)
-            }
-        }
-        if (!argsi.hasNext()) {
-            return
-        }
-        // keywords and rest
-        var keyBound = mutableSetOf<LispObject>()
-        var wantKeywordParam: Symbol? = null
+       // first establish the kwArgs[] with the default values
+        var kwArgs = keyPars.toMutableMap()
+        var wantStdArgs = stdPars.size
+        var hadStdArgs = 0              // stdPars seen
+        var wantOptArgs = optPars.size
+        var hadOptArgs = 0              // optPars seen
+        var hadArgs = 0                 // args seen at all
+
         var restArgs = ListCollector()
-        for (arg in argsi) {
+
+        if (arglist !is Cons && arglist !== Nil) {
+            throw CallError("$this called with improper arglist: $arglist")
+        }
+
+        var wantKeywordParam: Symbol? = null  // i.e. have seen this keyword
+        for (arg in arglist) {
+            hadArgs++
             if (wantKeywordParam != null) {
-                val variable = wantKeywordParam
-                debug(debugBindParSym, "$this: bind $variable = key $arg")
-                currentEnv.bind(variable, arg)
-                keyBound.add(variable)
+                // these will be bound later together with the default values
+                // for keys we did not see
+                kwArgs[wantKeywordParam] = arg
                 wantKeywordParam = null
-            } else if (arg.isKeyword()) {
-                if ((arg as Symbol) in keyPars.keys) {
-                    wantKeywordParam = arg
-                } else {
-                    throw ArgumentError("&key `$wantKeywordParam` not "
-                                        + "valid for $lambdatype `$name`")
+                continue
+            }
+            if (arg.isKeyword()) {
+                if (arg !in kwArgs.keys) {
+                    throw ArgumentError("keyword $arg invalid"
+                                        + " for function `${this.name}'")
                 }
-            } else {
+                wantKeywordParam = arg as Symbol
+                continue
+            }
+            if (hadStdArgs < wantStdArgs) {
+                currentEnv.bind(stdPars[hadStdArgs], arg)
+                hadStdArgs++
+                continue
+            }
+            if (hadOptArgs < wantOptArgs) {
+                currentEnv.bind(optPars[hadOptArgs].first, arg)
+                hadOptArgs++
+                continue
+            }
+            if (restPar != null) {
                 restArgs.add(arg)
             }
         }
+        // was it enough?
+        if (hadStdArgs < wantStdArgs) {
+            val atleast = if (minargs == maxargs) "" else "at least "
+            throw ArgumentError("too few args for function `$name`; have "
+                                + "$hadArgs, needs $atleast$minargs")
+        }
+        // and not too much?
+        if (maxargs >= 0 && hadArgs > maxargs) {
+            val atmost = if (minargs == maxargs) "" else "at most "
+            throw ArgumentError("too many args for function `$name`;"
+                                + " have $hadArgs, takes $atmost"
+                                + "$maxargs")
+        }
+        // a :keyword left dangling?
         if (wantKeywordParam != null) {
-            throw ArgumentError("&key `$wantKeywordParam` argument missing "
-                                + "calling $lambdatype `$name`")
+            throw ArgumentError("&key `:$wantKeywordParam` argument missing "
+                                + "calling builtin `$name`")
         }
-        for ((key, defval) in keyPars) {
-            var sym = key2var(key)
-            if (sym !in keyBound) {
-                debug(debugBindParSym, "$this: bind $sym = keydef $defval")
-                currentEnv.bind(sym, defval)
-            }
+
+        // fill in optArgs with default values if necessary
+        while (hadOptArgs < wantOptArgs) {
+            currentEnv.bind(optPars[hadOptArgs].first,
+                            optPars[hadOptArgs++].second)
         }
-        if (restPar != null) {
-            val value = restArgs.list()
-            debug(debugBindParSym, "$this: bind $restPar = rest $value")
-            currentEnv.bind(restPar, value)
-        } else {
-            if (restArgs.list() !== Nil) {
-                throw ArgumentError("too many args for $lambdatype `$name`")
-            }
+        // bind keyword arguments
+        for ((symbol, value) in kwArgs) {
+            currentEnv.bind(symbol, value)
         }
     }
 

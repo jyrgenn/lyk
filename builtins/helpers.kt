@@ -25,7 +25,7 @@ fun numberArg(arg: LispObject, what: String): Double {
         throw ArgumentError("$what argument not a number: $arg (${typeOf(arg)})")
 }
 
-// fun intArg(arg: LispObject, what: String): Int {
+// fun longArg(arg: LispObject, what: String): Int {
 //     if let num = arg as? Number {
 //         let intval = Int(num.value)
 //         if num.value == Double(intval) {
@@ -35,7 +35,7 @@ fun numberArg(arg: LispObject, what: String): Double {
 //     throw ArgumentError("$what argument not an integer: $arg")
 // }
 
-fun intArg(arg: LispObject, what: String): Int {
+fun longArg(arg: LispObject, what: String): Int {
     if (arg is Number && arg.isInt()) {
         return arg.value.toInt()
     }

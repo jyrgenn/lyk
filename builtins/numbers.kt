@@ -398,7 +398,7 @@ fun bi_cmp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_modulo(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val (value1, value2) = args2(args)
-    return Number.makeNumber(intArg(value1, "%") % intArg(value2, "%"))
+    return Number.makeNumber(longArg(value1, "%") % longArg(value2, "%"))
 }
 
 /// builtin **
@@ -506,8 +506,8 @@ fun bi_isqrt(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_ash(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val (int, n) = args2(args)
-    val value = intArg(int, "ash integer")
-    val count = intArg(n, "ash count")
+    val value = longArg(int, "ash integer")
+    val count = longArg(n, "ash count")
 
     if (count < 0) {
         return Number.makeNumber(value shr -count)
@@ -605,7 +605,7 @@ fun bi_atanh(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_easter(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    val X = intArg(arg1(args), "easter year")
+    val X = longArg(arg1(args), "easter year")
     val K = X / 100
     val M = 15 + (3*K+3)/4 - (8*K+13)/25
     val S = 2 - (3*K+3)/4

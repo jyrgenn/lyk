@@ -5,6 +5,10 @@ package org.w21.lyk
 
 class Cons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
 
+    init {
+        consCounter++
+    }
+
     override fun toString(): String {
         val result = StrBuf("(")
 

@@ -43,14 +43,14 @@ class Number(val value: Double): LispObject() {
     // Return true iff object is an atom
     override fun isAtom() = true 
 
-    fun isInt() = value == value.toInt().toDouble()
+    fun isInt() = value == value.toLong().toDouble()
     
     override fun desc(): String {
         if (value <= Long.MAX_VALUE.toDouble()
                 && value >= Long.MIN_VALUE.toDouble()) {
-            val intVal = value.toInt()
-            if (value == intVal.toDouble()) {
-                return intVal.toString()
+            val longVal = value.toLong()
+            if (value == longVal.toDouble()) {
+                return longVal.toString()
             }
         }
         return value.toString()

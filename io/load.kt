@@ -11,28 +11,26 @@ fun load_file(fname: String, verbose: Boolean = false,
 
 fun load(load_stream: Stream, name: String, verbose: Boolean = false,
          throw_error: Boolean = true): LispObject {
-    val pairsBefore = pairCounter
-    val evalsBefore = evalCounter
-
     var success = Nil
     
     withVariableAs(currentLoadFile, LispString.makeString(name)) {
         try {
-            val error = repl(Reader(load_stream, name))
+            var error: LispError? = null
+            val perfdata = measurePerfdata {
+                error = repl(Reader(load_stream, name))
+            }
             if (error != null) {
                 if (verbose) {
                     stderr.println(error.toString())
                 }
                 if (throw_error) {
-                    throw error
+                    throw error as LispError
                 }
                 success = Nil
             } else {
                 success = T
                 if (verbose) {
-                    val pairs = pairCounter - pairsBefore
-                    val evals = evalCounter - evalsBefore
-                    stderr.println("; load $name: $pairs pairs, $evals evals")
+                    stderr.println("; load $name: " + perfdata)
                 }
             }
         } catch (e: Exception) {

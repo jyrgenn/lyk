@@ -13,7 +13,26 @@ val supersedeKeyw = Symbol.intern(":supersede")
 val errorKeyw = Symbol.intern(":error")
 val if_does_not_existKeyw = Symbol.intern(":if-does-not-exist")
 val createKeyw = Symbol.intern(":create")
+val sepKeyw = Symbol.intern(":sep")
 
+
+/// builtin println
+/// fun     bi_println
+/// std     
+/// key     "sep" to LispString.makeString(" ")
+/// opt     
+/// rest    args
+/// ret     *the-non-printing-object*
+/// special no
+/// doc {
+/// Print all arguments, separated by :sep, terminated by a newline.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_println(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    stdout.println(args.joinToString(kwArgs[sepKeyw].toString()))
+    return theNonPrintingObject
+}
 
 /// builtin print
 /// fun     bi_print
@@ -174,6 +193,22 @@ fun bi_warning(args: LispObject, kwArgs: Map<Symbol, LispObject>
     return Nil
 }
 
+/// builtin load
+/// fun     bi_load
+/// std     filename
+/// key     "verbose" to T, "error" to T
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Load specified file; return t if the contents was evaluated without error.
+/// If keyword ERROR is nil (the default is true), do not raise an error for
+/// an unfound file. If keyword verbose is nil (the default is true), do not
+/// print an informational message after loading.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
 fun bi_load(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val fname = arg1(args).toString()
     val verbose = kwArgs[verboseSym] !== Nil

@@ -11,120 +11,97 @@ fun maybeIntern(word: String?): Symbol? {
 
 
 class Builtin(
-    name: String,
+    // marked with S as kotlin String, not LispString, for clarity
+    nameS: String,
     val bfun: (LispObject, Map<Symbol, LispObject>) -> LispObject,
-    stdPars: Array<String>,
-    keyPars: Map<String, LispObject>,
-    optPars: Array<Pair<String, LispObject>>,
-    restPars: String?,
-    retval: String?,
+    stdParsS: Array<String>,
+    keyParsS: Map<String, LispObject>,
+    optParsS: Array<Pair<String, LispObject>>,
+    restParsS: String?,
+    retvalS: String?,
     isSpecial: Boolean = false,
-    docBody: String,
+    docBodyS: String,
 ): Function(
-       Symbol.intern(name),
-       arrayIntern(stdPars),
-       mapInternKeys(keyPars),
-       pairsInternFirst(optPars),
-       maybeIntern(restPars),
-       maybeIntern(retval),
+       Symbol.intern(nameS),
+       arrayIntern(stdParsS),
+       mapInternKeys(keyParsS),
+       pairsInternFirst(optParsS),
+       maybeIntern(restParsS),
+       maybeIntern(retvalS),
        isSpecial,
-       LispString.makeString(docBody),
+       LispString.makeString(docBodyS),
    ) {
 
     override fun call(arglist: LispObject): LispObject {
        // first establish the kwArgs[] with the default values
         var kwArgs = keyPars.toMutableMap()
+        var wantStdArgs = stdPars.size
+        var hadStdArgs = 0              // stdPars seen
+        var wantOptArgs = optPars.size
+        var hadOptArgs = 0              // optPars seen
+        var hadArgs = 0                 // args seen at all
 
-        var nargs = 0                   // # of normal args seen
-        var larglist = arglist          // local arglist; we may need to assign
-                                        // a new one
-        var argptr = larglist            // iterate through larglist
-        var lastargpair: Cons? = null   // keep track 
+        var newArglist = ListCollector()
 
-        if (argptr !is Cons && argptr !== Nil) {
-            throw CallError("$this called with improper arglist: $larglist")
-        }
-
-        // Walk along the larglist to check for presence of all the stdPars
-        for (p in stdPars) {
-            if (argptr !is Cons) {
-                val atleast = if (minargs == maxargs) "" else "at least "
-                throw ArgumentError("too few args for function `$name`; have "
-                                    + "$nargs, needs $atleast$minargs")
-                
-            }
-            lastargpair = argptr
-            argptr = argptr.cdr()
-            nargs += 1
-        }
-        // Further, append defaults for &optional params if necessary
-        for (op in optPars) {
-            if (argptr is Cons) {
-                lastargpair = argptr
-                argptr = argptr.cdr()
-            } else {
-                val newpair = Cons(op.second, Nil)
-                if (lastargpair != null) {
-                    lastargpair.rplacd(newpair)
-                } else {                // larglist was Nil to begin with
-                    larglist = newpair
-                }
-                lastargpair = newpair
-            }
-            nargs += 1
-        }
-
-        // any more present? must be keywords and rest; so first detach them
-        // from the actual arg list
-        if (argptr is Cons && lastargpair != null) {
-            lastargpair.rplacd(Nil)
+        if (arglist !is Cons && arglist !== Nil) {
+            throw CallError("$this called with improper arglist: $arglist")
         }
 
         var wantKeywordParam: Symbol? = null  // i.e. have seen this keyword
-        
-        while (argptr is Cons) {
-            val arg = argptr.car()
+        for (arg in arglist) {
+            hadArgs++
             if (wantKeywordParam != null) {
-                // here we have :key => value, meaning the colon is part of the
-                // key in the map (other than in the Lambda, where only 'key is
-                // bound to the value, not :key)
                 kwArgs[wantKeywordParam] = arg
                 wantKeywordParam = null
-                argptr = argptr.cdr()
-            } else if (arg.isKeyword()) {
-                if (arg in keyPars.keys) {
-                    wantKeywordParam = arg as Symbol
-                    argptr = argptr.cdr()
-                } else {
+                continue
+            }
+            if (arg.isKeyword()) {
+                if (arg !in kwArgs.keys) {
                     throw ArgumentError("keyword $arg invalid"
                                         + " for function `${this.name}'")
                 }
-            } else if (restPar != null) {
-                if (lastargpair != null) {
-                    lastargpair.rplacd(argptr)
-                } else {
-                    // had no lastargpair to append to, so the whole
-                    // larglist must have been nil
-                    larglist = argptr
-                }
-                argptr = Nil
-                break
-            } else {
-                val atmost = if (minargs == maxargs) "" else "at most "
-                throw ArgumentError("too many args for function `$name`;"
-                                      + " have $nargs, takes $atmost"
-                                      + "$maxargs")
+                wantKeywordParam = arg as Symbol
+                continue
+            }
+            if (hadStdArgs < wantStdArgs) {
+                newArglist.add(arg)
+                hadStdArgs++
+                continue
+            }
+            if (hadOptArgs < wantOptArgs) {
+                newArglist.add(arg)
+                hadOptArgs++
+                continue
+            }
+            if (restPar != null) {
+                newArglist.add(arg)
             }
         }
-        if (argptr !== Nil) {
-            throw CallError("$this called with improper arglist: $arglist")
+        // was it enough?
+        if (hadStdArgs < wantStdArgs) {
+            val atleast = if (minargs == maxargs) "" else "at least "
+            throw ArgumentError("too few args for function `$name`; have "
+                                + "$hadArgs, needs $atleast$minargs")
         }
+        // and not too much?
+        if (maxargs >= 0 && hadArgs > maxargs) {
+            val atmost = if (minargs == maxargs) "" else "at most "
+            throw ArgumentError("too many args for function `$name`;"
+                                + " have $hadArgs, takes $atmost"
+                                + "$maxargs")
+        }
+        // a :keyword left dangling?
         if (wantKeywordParam != null) {
             throw ArgumentError("&key `:$wantKeywordParam` argument missing "
                                 + "calling builtin `$name`")
         }
+
+        // fill in optArgs with default values if necessary
+        while (hadOptArgs < wantOptArgs) {
+            newArglist.add(optPars[hadOptArgs++].second)
+        }
         // finally, call the actual function
-        return bfun(larglist, kwArgs)
+        return bfun(newArglist.list(), kwArgs)
     }
 
     override fun typeDesc() = if (isSpecial) "Special form" else "Builtin"

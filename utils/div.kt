@@ -1,5 +1,6 @@
 package org.w21.lyk
 
+import kotlin.time.measureTime
 import kotlin.system.exitProcess
 
 fun padString(s: String, width: Int, pad: Char = ' '): String {
@@ -67,7 +68,7 @@ fun arrayIntern(array: Array<String>): List<Symbol> {
 fun mapInternKeys(map: Map<String, LispObject>): Map<Symbol, LispObject> {
     val result = mutableMapOf<Symbol, LispObject>()
     for ((key, value) in map) {
-        result[Symbol.intern(key)] = value
+        result[Symbol.intern(":" + key)] = value
     }
     return result
 }
@@ -104,4 +105,24 @@ fun warn(warning: String) {
     if (Options.warnings) {
         System.err.println(";; " + warning )
     }
+}
+
+// Measure performance data while executing the passed closure. The returned
+// value is a Pair of the string with the performance data and the returned
+// value.
+fun measurePerfdata(closure: () -> Unit): String {
+    val consCountBefore = consCounter
+    val evalCountBefore = evalCounter
+
+    val timeTaken = measureTime {
+        closure()
+    }
+    val conses = consCounter - consCountBefore
+    val evals  = evalCounter - evalCountBefore
+    val millis = timeTaken.inWholeMilliseconds
+    val eval_s =
+        (evals.toDouble() / timeTaken.inWholeMicroseconds * 1000000).toLong()
+
+    // 347 pairs 558 evals in 0 ms, 844974 evals/s
+    return "$conses conses $evals evals in $millis ms, $eval_s evals/s"
 }

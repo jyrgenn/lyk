@@ -33,7 +33,7 @@ var debug_out = console
 val verboseSym = Symbol.intern("verbose")
 val errorSym = Symbol.intern("error")
 
-var pairCounter = 0
+var consCounter = 0
 var evalCounter = 0
 
 // debug and trace topic names

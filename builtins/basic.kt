@@ -219,10 +219,10 @@ fun bi_let(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
         } else if (binding is Cons) {
 	    val (sym, rest) = binding
 	    if (rest !is Cons) {
-		throw ArgumentError("let: malformed variable clause") 
+		throw ArgumentError("let: malformed variable clause for `$sym`")
 	    }
 	    if (rest.cdr() != Nil) {
-		throw ArgumentError("let: malformed binding clause") 
+		throw ArgumentError("let: malformed binding clause for `$sym`") 
 	    }
 	    val form = rest.car()
 	    val value = eval(form)
@@ -465,6 +465,26 @@ fun bi_unless(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_progn(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     return evalProgn(args)
+}
+
+/// builtin prog1
+/// fun     bi_prog1
+/// std     result-form
+/// key     
+/// opt     
+/// rest    bodyforms
+/// ret     first-value
+/// special yes
+/// doc {
+/// Evaluate all forms and return the value of the first one.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_prog1(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    val (form1, rest) = args
+    val result = eval(form1)
+    evalProgn(rest)
+    return result
 }
 
 // construct and return a lambda function
@@ -1111,11 +1131,11 @@ fun bi_typeof(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 
 /// builtin loop
 /// fun     bi_loop
-/// std     bodyform
+/// std     
 /// key     
 /// opt     
-/// rest    more-bodyforms
-/// ret     no-return
+/// rest    bodyforms
+/// ret     none
 /// special yes
 /// doc {
 /// Eval `bodyforms` again and again.
@@ -1145,6 +1165,28 @@ fun bi_while(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val (condition, _) = args
     
     while (eval(condition) !== Nil) {
+        evalProgn(args)
+    }
+    return Nil
+}
+
+/// builtin until
+/// fun     bi_until
+/// std     condition
+/// key     
+/// opt     
+/// rest    bodyforms
+/// ret     value
+/// special yes
+/// doc {
+/// If `condition` evaluates nil, evaluate `bodyforms`; repeat.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_until(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+    val (condition, _) = args
+    
+    while (eval(condition) === Nil) {
         evalProgn(args)
     }
     return Nil
@@ -1582,3 +1624,4 @@ fun bi_nreverse(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     }
     return cell
 }
+
