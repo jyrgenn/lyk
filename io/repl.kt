@@ -31,15 +31,20 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
     while (true) {
         iprint(promptString, true)
         try {
+            // Read, 
             val obj = reader.read()
             iprintln()
             if (obj == null) {
                 break
             }
+
+            // Eval,
             var result: LispObject = Nil
             val perfdata = measurePerfdata {
                 result = eval(obj)
-            }             
+            }
+
+            // Print,
             if (result !== theNonPrintingObject) {
                 iprintln(result.desc())
             }
@@ -61,6 +66,6 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
             e.printStackTrace()
             return OtherError("unexpected exception in REPL", e)
         }
-    }
+    }                           // and Loop
     return null
 }
