@@ -23,15 +23,11 @@ NATIVECOMP = kotlinc-native
 # rm -f $JAR
 
 
-build: Makefile buildtag generated/init-builtins.kt lyk.jar
+build: Makefile generated/init-builtins.kt lyk.jar
 
 lyk.jar: $(SRCS)
-	$(COMP) $(SRCS) -include-runtime -d lyk.jar
-
-generated/buildtag.kt: buildtag
-buildtag:
-	mkdir -p generated
 	scripts/buildtag.sh lyk > generated/buildtag.kt
+	$(COMP) $(SRCS) -include-runtime -d lyk.jar
 
 generated/init-builtins.kt: scripts/gen-bi-init Makefile $(BUILTINSRC)
 	mkdir -p generated
