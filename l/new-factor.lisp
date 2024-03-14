@@ -18,8 +18,7 @@
       (if pos
           (prog1
               (car pos)
-            (setq pos (cdr pos)))
-          nil))))
+            (setq pos (cdr pos)))))))
 
 (defun try-candidate (candidate)
   "Try a prime number candidate. Return t if it is prime, nil else."
@@ -36,15 +35,16 @@
 
 
 (defun expand-primes ()
-  "Expand the list of prime numbers by one."
+  "Expand the list of prime numbers by one and return it."
   (let ((candidate (car last-pair))
         found-one)
     (while (not found-one)
       (setq candidate (+ candidate 2))
       (setq found-one (try-candidate candidate)))
-    (append-prime candidate))
-  *the-primes*)
+    (append-prime candidate)
+    candidate))
 
+;; defun a prinln function in case we don't have one
 (when (not (fboundp 'println))
   (defun println (&rest args)
     (while args
@@ -58,13 +58,11 @@
 Well, in theory."
   (let ((pos *the-primes*))             ; pointer into *the-primes*, moving
     (lambda ()
-      (unless pos
-        (expand-primes)
-        (setq pos last-pair))
-      (prog1
-          (let ((next (car pos)))
-            next)
-        (setq pos (cdr pos))))))
+      (if pos
+          (prog1
+              (car pos)
+            (setq pos (cdr pos))))
+      (expand-primes))))
 
 (defun factors (n)
   "Return a list of the prime factors of `n`."
