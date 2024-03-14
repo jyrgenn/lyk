@@ -11,7 +11,7 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	builtins/tables.kt builtins/utils.kt builtins/vectors.kt \
 	builtins/sequences.kt \
 	utils/lists.kt utils/div.kt utils/interfaces.kt \
-	sys/debug.kt sys/main.kt sys/globalvars.kt \
+	sys/messages.kt sys/main.kt sys/globalvars.kt \
 	generated/buildtag.kt generated/init-builtins.kt
 
 BUILTINSRC = $(shell ls builtins/*.kt | egrep -v '(helpers)\.kt')

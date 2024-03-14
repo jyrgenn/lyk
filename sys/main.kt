@@ -3,6 +3,9 @@ package org.w21.lyk
 
 import kotlin.system.exitProcess
 
+val verbosityNotice = 1
+val verbosityInfo = 2
+
 object Options {
     var debug = mutableMapOf<Symbol, Boolean>(
         traceEvalSym to false,
@@ -18,22 +21,22 @@ object Options {
         debugReaderSym to false,
         debugConsSym to false,
     )
-    var warnings = true
     var print_estack = false
     var maxrecurse = 0
+    var verbosity = 2           // 0: errors-only, 1: notice, 2: info
 }
 
 
 fun usage() {
     println(buildtag())
-    println("\nUsage: lyk [-EWh?] [-d debug-options] [-e expression] [-R maxrecurse]")
+    println("\nUsage: lyk [-Ehq?] [-d debug-options] [-e expression] [-R maxrecurse]")
 
     println("""
     -d debug-options : set debug options, comma separated, see below
     -e expression    : evaluate Lisp expression, print result, and exit
     -l load-file     : load the named Lisp files (multiple possible)
     -h, -?           : print this help on options
-    -q               : suppress warnings
+    -q               : suppress info messages (-qq: also notice/warning)
     -E               : print exception stack
     -R maxrecurse    : maximum eval recursion depth 
 """)
@@ -82,7 +85,7 @@ fun main(args: Array<String>) {
         for (ch in arg.substring(1)) {
             when (ch) {
                 'E' -> { Options.print_estack = true }
-                'q' -> { Options.warnings = false }
+                'q' -> { Options.verbosity -= 1 }
                 'd' -> { setDebug(getOptVal("debug options")) }
                 'e' -> { lispExpression = getOptVal("Lisp expression") }
                 'l' -> {
@@ -137,6 +140,6 @@ fun main(args: Array<String>) {
         }
         exitProcess(0)
     }
-    warn(buildtag())
+    notice(buildtag())
     repl(Reader(stdin), "> ")
 }

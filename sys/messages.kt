@@ -1,6 +1,44 @@
-// Debugging stuff
+// system messages printed to the user, including debugging
 
 package org.w21.lyk
+
+import kotlin.system.exitProcess
+
+
+fun printErr(vararg things: Any) {
+    stderr.print("ERROR:")
+    for (thing in things) {
+        stderr.print(" " + thing)
+    }
+    stderr.println()
+}
+
+fun printErr(e: LispError) {
+    stderr.println(e.toString())
+}
+
+fun errExit(message: String? = null) {
+    if (message != null) {
+        printErr(message)
+    }
+    exitProcess(1)
+}
+
+fun info(message: String) {
+    if (Options.verbosity >= verbosityInfo) {
+        stderr.println("; " + message)
+    }
+}
+
+fun notice(message: String) {
+    if (Options.verbosity >= verbosityNotice) {
+        stderr.println("; " + message)
+    }
+}
+
+fun warn(warning: String) {
+    notice("WARNING " + warning)
+}
 
 //
 fun anyDebugOn(): Boolean {

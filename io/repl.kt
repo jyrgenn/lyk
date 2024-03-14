@@ -43,7 +43,9 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
             if (result !== theNonPrintingObject) {
                 iprintln(result.desc())
             }
-            iprintln("; " + perfdata)
+            if (interactive) {
+                info(perfdata)
+            }
         } catch (e: LispError) {
             reader.skipRestOfLine()
             if (Options.print_estack) {

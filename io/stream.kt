@@ -118,6 +118,13 @@ open class FileWriterStream(path: String,
         }
     }
 
+    override fun println() {
+        fileWriter.write(newLine)
+        if (flushch || flushln) {
+            fileWriter.flush()
+        }
+    }
+    
     fun flush() {
         try {
             fileWriter.flush()
@@ -161,6 +168,9 @@ abstract class Stream(
         throw ArgumentError("write on $this")
     }
     open fun println(s: String) {
+        throw ArgumentError("write on $this")
+    }
+    open fun println() {
         throw ArgumentError("write on $this")
     }
     

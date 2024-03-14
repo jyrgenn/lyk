@@ -82,31 +82,6 @@ fun pairsInternFirst(pairs: Array<Pair<String, LispObject>>
     return result
 }
 
-fun printErr(vararg things: Any) {
-    System.err.print("Error:")
-    for (thing in things) {
-        System.err.print(" " + thing)
-    }
-    System.err.println()
-}
-
-fun printErr(e: LispError) {
-    System.err.println(e)
-}
-
-fun errExit(message: String? = null) {
-    if (message != null) {
-        printErr(message)
-    }
-    exitProcess(1)
-}
-
-fun warn(warning: String) {
-    if (Options.warnings) {
-        System.err.println(";; " + warning )
-    }
-}
-
 // Measure performance data while executing the passed closure. The returned
 // value is a Pair of the string with the performance data and the returned
 // value.
