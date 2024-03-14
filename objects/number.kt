@@ -2,7 +2,7 @@
 
 package org.w21.lyk
 
-// import java.util.WeakHashMap
+import java.util.WeakHashMap
 
 
 // class Number: LispObject, Comparable {
@@ -13,7 +13,9 @@ class Number(val value: Double): LispObject() {
     constructor(intValue: Int) : this(intValue.toDouble()) {}
 
     companion object {
-        val numberTable = mutableMapOf<Double, Number>()
+        // val numberTable = mutableMapOf<Double, Number>()
+
+        val numberTable = WeakHashMap(mutableMapOf<Double, Number>())
 
         fun makeNumber(value: Long) = makeNumber(value.toDouble())
         fun makeNumber(value: Int) = makeNumber(value.toDouble())
@@ -72,11 +74,6 @@ class Number(val value: Double): LispObject() {
         }
     }
 }
-
-// struct WeakNumRef {
-//     weak var number: Number?
-//     init(_ number: Number) { self.number = number }
-// }
 
 
 

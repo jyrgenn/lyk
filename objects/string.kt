@@ -1,7 +1,9 @@
+// strings
 
 package org.w21.lyk
 
-// strings
+import java.util.WeakHashMap
+
 
 class LispString(val value: String): LispObject() {
 
@@ -10,7 +12,8 @@ class LispString(val value: String): LispObject() {
     // }
 
     companion object {
-        val stringTable = mutableMapOf<String, LispString>()
+        // val stringTable = mutableMapOf<String, LispString>()
+        val stringTable = WeakHashMap(mutableMapOf<String, LispString>())
 
         fun makeString(value: String): LispString {
             var strob = stringTable.get(value)
