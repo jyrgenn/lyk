@@ -27,10 +27,15 @@
         (divisor 0)
         (prime-gen (return-existing-primes-func))
         (still-good t))
-    (while (and still-good (<= divisor limit))
-      (let ((divisor (prime-gen)))
-        (when (zerop (% candidate divisor))
-          (setq still-good nil))))
+    (while (and still-good
+                (setq divisor (prime-gen))
+                (<= divisor limit))
+      ;; (println 'still-good still-good
+      ;;          'candidate candidate
+      ;;          'divisor divisor
+      ;;          'limit limit)
+      (when (zerop (% candidate divisor))
+        (setq still-good nil)))
     still-good))
 
 
@@ -38,10 +43,20 @@
   "Expand the list of prime numbers by one."
   (let ((candidate (car last-pair))
         found-one)
-    (until found-one
+    (while (not found-one)
       (setq candidate (+ candidate 2))
-      (setq found-one (try-candidate candidate)))))
-    
+      (setq found-one (try-candidate candidate)))
+    (append-prime candidate))
+  ;; (println "P:" *the-primes*)
+  *the-primes*)
+
+(when (not (fboundp 'println))
+  (defun println (&rest args)
+    (while args
+      (princ (car args))
+      (princ " ")
+      (setq args (cdr args)))
+    (terpri)))
 
 (defun next-prime-func ()
   "Return a function that, when called, returns all prime numbers, in order.
@@ -49,8 +64,30 @@ Well, in theory."
   (let ((pos *the-primes*))             ; pointer into *the-primes*, moving
     (lambda ()
       (unless pos
-        (expand-primes))
+        (expand-primes)
+        (setq pos last-pair))
       (prog1
           (car pos)
         (setq pos (cdr pos))))))
 
+(defun factors (n)
+  "Return a list of the prime factors of `n`."
+  (let ((factors ())
+        (limit (isqrt n))
+        (report-threshold 0)
+        (report-interval 10000)
+        (next-p (next-prime-func)))
+    (while (> n 1)
+      (let ((divisor (next-p)))
+        (when (> divisor limit)
+          (setq divisor n))
+        (when (> divisor report-threshold)
+          (println "next prime:" divisor)
+          (setq report-threshold (+ report-threshold report-interval)))
+        (when (zerop (% n divisor))
+          (setq factors (cons divisor factors))
+          (setq n (/ n divisor)))))
+    (nreverse factors)))
+
+      
+        

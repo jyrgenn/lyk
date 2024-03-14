@@ -121,15 +121,16 @@ fun main(args: Array<String>) {
 
     if (lispExpression != null) {
         try {
-            val stream = StringReaderStream(lispExpression,
-                                            "\"$lispExpression\"")
             val reader = Reader(StringReaderStream(lispExpression),
                                 "*command-arg*")
             val expr = reader.read()
             if (expr == null) {
                 throw EOFError("no Lisp expression to eval")
             }
-            println(eval(expr))
+            val perfdata = measurePerfdata {
+                println(eval(expr))
+            }
+            println(";; " + perfdata)
         } catch (e: Exception) {
             errExit(e.toString())
         }

@@ -61,7 +61,7 @@ class LispString(val value: String): LispObject() {
                 return 0
             }
         } else {
-            throw TypeError("cannot compare string to ${typeOf(other)}")
+            throw compareError(other)
         }
     }
 }

@@ -190,7 +190,7 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
 		return 0
 	    }
 	} else {
-	    throw TypeError("cannot compare symbol to ${typeOf(other)}")
+	    throw compareError(other)
 	}
     }
 }

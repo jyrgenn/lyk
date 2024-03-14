@@ -67,7 +67,12 @@ abstract class LispObject: Iterable<LispObject>, Comparable<LispObject> {
     }
 
     open override fun compareTo(other: LispObject): Int {
-        throw TypeError("cannot compare ${typeOf(this)} to ${typeOf(other)}")
+        throw compareError(other)
+    }
+
+    fun compareError(other: LispObject): Throwable {
+        return TypeError("cannot compare ${typeOf(this)} `$this`"
+                         +" to ${typeOf(other)} `$other`")
     }
 }
 

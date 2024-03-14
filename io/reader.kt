@@ -36,9 +36,9 @@ fun closingOf(opening: Char): Char {
     return matching_bracket[opening] ?: opening
 }
 
-fun the_int(s: String, radix: Int = 10): Int? {
+fun the_int(s: String, radix: Int = 10): Long? {
     try {
-        return s.toInt(radix)
+        return s.toLong(radix)
     } catch (e: NumberFormatException) {
         return null
     }
@@ -473,7 +473,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
             }
             val cvalue = the_int(digits.toString(), 8)
             if (cvalue != null) {
-                return cvalue.toChar()
+                return cvalue.toInt().toChar()
             }
             throw SyntaxError("cannot convert octal $digits to char",
                               this)
@@ -495,7 +495,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
             }
             val cvalue = the_int(digits.toString(), 16)
             if (cvalue != null) {
-                return cvalue.toChar()
+                return cvalue.toInt().toChar()
             }
             throw SyntaxError("cannot convert hex '${digits}' to char",
                               this)

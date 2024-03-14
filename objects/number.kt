@@ -68,7 +68,7 @@ class Number(val value: Double): LispObject() {
                 return 0
             }
         } else {
-            throw TypeError("cannot compare number to ${typeOf(other)}")
+            throw compareError(other)
         }
     }
 }
