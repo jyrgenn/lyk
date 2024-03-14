@@ -215,7 +215,9 @@ fun bi_let(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
         if (binding is Symbol) {
             syms.add(binding)
             vals.add(Nil)
-	    debug(letBindSym, "will bind lone $binding to nil")
+	    debug(letBindSym) {
+                "will bind lone $binding to nil"
+            }
         } else if (binding is Cons) {
 	    val (sym, rest) = binding
 	    if (rest !is Cons) {
@@ -228,7 +230,9 @@ fun bi_let(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 	    val value = eval(form)
             syms.add(symbolArg(sym, "let binding variable"))
 	    vals.add(value)
-	    debug(letBindSym, "will bind $sym to $value, was $form")
+	    debug(letBindSym) {
+                "will bind $sym to $value, was $form"
+            }
         } else {
             throw ArgumentError("let: malformed variables list")
         }
@@ -288,7 +292,9 @@ fun bi_letrec(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject{
 	    val value = rest.car()
 	    syms.add(symbolArg(sym, "let* binding variable"))
 	    vals.add(value)
-	    debug(letBindSym, "will bind $sym to eval($value)")
+	    debug(letBindSym) {
+                "will bind $sym to eval($value)"
+            }
         } else {
             throw ArgumentError("let*: malformed variables list")
         }
@@ -674,16 +680,24 @@ fun bi_catch(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val tag = eval(tagform)
     
     try {
-	debug(catchThrowSym, "catch ($tag) opened")
+	debug(catchThrowSym) {
+            "catch ($tag) opened"
+        }
         val result = evalProgn(bodyforms)
-	debug(catchThrowSym, "catch ($tag) closed")
+	debug(catchThrowSym) {
+            "catch ($tag) closed"
+        }
 	return result
     } catch (sig: ThrowSignal) {
         if (sig.tag === tag) {
-	    debug(catchThrowSym, "catch ($tag) caught $sig, will return")
+	    debug(catchThrowSym) {
+                "catch ($tag) caught $sig, will return"
+            }
             return sig.value
         } else {
-	    debug(catchThrowSym, "catch ($tag) caught $sig, will rethrow")
+	    debug(catchThrowSym) {
+                "catch ($tag) caught $sig, will rethrow"
+            }
             throw sig
 	}
     }
@@ -705,7 +719,9 @@ fun bi_catch(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_throw(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val (tag, value) = args2(args)
-    debug(catchThrowSym, "throw tag ($tag) with $value")
+    debug(catchThrowSym) {
+         "throw ($tag) with $value"
+    }
     throw ThrowSignal(tag, value)
 }
 

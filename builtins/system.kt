@@ -26,7 +26,9 @@ val debugDebugSym = Symbol.intern("debug")
 fun bi_debug(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val lc = ListCollector()
     for (arg in args) {
-        debug(debugDebugSym, "debug sym is", arg, typeOf(arg))
+        debug(debugDebugSym) {
+            "debug sym is $arg, ${typeOf(arg)}"
+        }
         when (arg) {
             debugOffSym -> {
                 for (key in Options.debug.keys) {

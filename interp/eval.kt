@@ -7,7 +7,9 @@ package org.w21.lyk
 
 fun evalProgn(forms: LispObject): LispObject {
     var result: LispObject = Nil
-    debug(traceEvalSym, "evalProgn $forms")
+    debug(traceEvalSym) {
+         "evalProgn $forms"
+    }
 
     for (form in forms) {
         result = eval(form)
@@ -19,7 +21,9 @@ fun evalFun(obj: LispObject?,
             reclevel: Int = 0,
             show: LispObject? = null): Function
 {
-    debug(traceEvalFunSym, "evalFun(${obj?.dump() ?: "nil"}, $reclevel)")
+    debug(traceEvalFunSym) {
+        "evalFun(${obj?.dump() ?: "nil"}, $reclevel)"
+    }
     if (obj != null && reclevel <= 2) {
         // dump(obj)
         if (obj is Function) {
@@ -27,7 +31,9 @@ fun evalFun(obj: LispObject?,
         }
         if (obj is Symbol) {
             obj.dump()
-            debug(traceEvalSym, "$obj is symbol, function ${obj.function}")
+            debug(traceEvalSym) {
+                  "$obj is symbol, function ${obj.function}"
+            }
             return evalFun(obj.function ?: obj.getValueOptional(),
                            reclevel + 1, show ?: obj)
         }
@@ -62,7 +68,9 @@ fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
     val savedLevel: Int = current_eval_level
     val deferList = listOf({ current_eval_level = savedLevel })
     
-    debug(traceEvalSym, "eval $form, ${typeOf(form)}")
+    debug(traceEvalSym) {
+        "eval $form, ${typeOf(form)}"
+    }
     try {
         current_eval_level += 1
         debug(traceEvalSym) {
@@ -118,14 +126,15 @@ fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
             if (form is Symbol) {
                 value = form.getValue()
             } else if (form is Cons) {
-                var func = form.car()
-                var args = form.cdr()
+                var (func, args) = form
                 val function = evalFun(func)
                 // print("function is", function)
                 if (!function.isSpecial) {
                     args = evalArgs(args)
                 }
-                debug(traceCallSym, function, args)
+                debug(traceCallSym) {
+                    "$function, args"
+                }
                 value = function.call(args)
             } else {
                 value = form

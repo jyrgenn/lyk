@@ -50,7 +50,9 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
                 e.printStackTrace()
             } else {
                 printErr(e)
-                debug(debugErrorSym, e.asObject().desc())
+                debug(debugErrorSym) {
+                    e.asObject().desc()
+                }
             }
         } catch (e: Exception) {
             printErr("unexpected exception:", e)
