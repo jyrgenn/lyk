@@ -30,7 +30,8 @@ package org.w21.lyk
 @Suppress("UNUSED_PARAMETER")
 fun bi_aref(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val (vector, index) = args2(args)
-    return vectorArg(vector, "aref vector").get(longArg(index, "aref index"))
+    return vectorArg(vector, "aref vector").get(longArg(index,
+                                                        "aref index").toInt())
 }
 
 /// builtin make-vector
@@ -72,7 +73,8 @@ fun bi_make_vector(args: LispObject, kwArgs: Map<Symbol, LispObject>
 fun bi_vector_set(args: LispObject, kwArgs: Map<Symbol, LispObject>
 ): LispObject {
     val (vector, index, value) = args3(args)
-    vectorArg(vector, "aref vector").set(longArg(index, "aref index"), value)
+    vectorArg(vector, "aref vector").set(longArg(index, "aref index").toInt(),
+                                         value)
     return value
 }
 

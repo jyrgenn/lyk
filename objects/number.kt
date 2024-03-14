@@ -43,7 +43,7 @@ class Number(val value: Double): LispObject() {
     // Return true iff object is an atom
     override fun isAtom() = true 
 
-    fun isInt() = value == value.toLong().toDouble()
+    fun isLong() = value == value.toLong().toDouble()
     
     override fun desc(): String {
         if (value <= Long.MAX_VALUE.toDouble()

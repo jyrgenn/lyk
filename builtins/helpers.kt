@@ -35,9 +35,9 @@ fun numberArg(arg: LispObject, what: String): Double {
 //     throw ArgumentError("$what argument not an integer: $arg")
 // }
 
-fun longArg(arg: LispObject, what: String): Int {
-    if (arg is Number && arg.isInt()) {
-        return arg.value.toInt()
+fun longArg(arg: LispObject, what: String): Long {
+    if (arg is Number && arg.isLong()) {
+        return arg.value.toLong()
     }
     throw ArgumentError("$what argument not an integer: $arg")
 }

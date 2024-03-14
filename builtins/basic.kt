@@ -359,7 +359,7 @@ fun bi_or(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 // For each clause of the form (condition expr1 ...) evaluate condition, and for the
 // first one that is non-nil, return the value of evaluating expr.
 /// builtin cond
-/// fun     bi_cons
+/// fun     bi_cond
 /// std     
 /// key     
 /// opt     

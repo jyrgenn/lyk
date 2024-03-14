@@ -54,5 +54,5 @@ fun bi_elt(args: LispObject, kwArgs: Map<Symbol, LispObject>
     val (seq, ind) = args2(args)
     val index = longArg(ind, "elt index")
 
-    return seq.elementAt(index)
+    return seq.elementAt(index.toInt())
 }

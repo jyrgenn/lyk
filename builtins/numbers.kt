@@ -121,20 +121,6 @@ fun bi_zerop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 
 val numberZero = Number.makeNumber(0)
 
-// /// builtin 
-// /// fun     
-// /// std     
-// /// key     
-// /// opt     
-// /// rest    
-// /// ret     
-// /// special 
-// /// doc {
-// /// 
-// /// }
-// /// end builtin
-
-
 /// builtin abs
 /// fun     bi_abs
 /// std     number
@@ -375,9 +361,6 @@ fun bi_cmp_le(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_cmp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    // var args = args
-    // val value1 = comparableArg(pop(&args), "<=>")
-    // val value2 = comparableArg(pop(&args), "<=>")
     val (v1, v2) = args2(args)
     return Number.makeNumber(v1.compareTo(v2))
 }
@@ -398,7 +381,10 @@ fun bi_cmp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_modulo(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val (value1, value2) = args2(args)
-    return Number.makeNumber(longArg(value1, "%") % longArg(value2, "%"))
+    val long1: Long = longArg(value1, "%")
+    val long2: Long = longArg(value2, "%")
+    val result = Number.makeNumber(long1 % long2)
+    return result
 }
 
 /// builtin **
@@ -471,14 +457,14 @@ fun bi_1minus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_isqrt(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val n = numberArg(arg1(args), "isqrt")
-    var op = n.toInt()
-    var res = 0
-    var one = 1 shl 62
+    var op = n.toLong()
+    var res = 0L
+    var one = 1L shl 62
 
     while (one > op) {
         one = one shr 2
     }
-    while (one != 0) {
+    while (one != 0L) {
         if (op >= res+one) {
             op -= res + one
             res += one shl 1 // <-- faster than 2 * one
@@ -510,9 +496,9 @@ fun bi_ash(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val count = longArg(n, "ash count")
 
     if (count < 0) {
-        return Number.makeNumber(value shr -count)
+        return Number.makeNumber(value shr -count.toInt())
     }
-    return Number.makeNumber(value shl count)
+    return Number.makeNumber(value shl count.toInt())
 }
 
 /// builtin asin

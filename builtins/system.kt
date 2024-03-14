@@ -340,7 +340,7 @@ fun bi_describe(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
         }
         is Number -> {
             entry("value", obj)
-            entry("intp", bool2ob(obj.isInt()))
+            entry("intp", bool2ob(obj.isLong()))
         }
         is Vector -> {
             entry("size", obj.the_vector.size)
