@@ -44,6 +44,9 @@ val debugErrorSym = Symbol.intern("error")
 val debugIOSym = Symbol.intern("io")
 val debugBindParSym = Symbol.intern("bindpar")
 val debugReaderSym = Symbol.intern("reader")
+val debugConsSym = Symbol.intern("cons")
+
+var debugOn = false             // set iff any debug topic is "on"
 
 val commandLineArgs = Symbol.makeGlobal("*command-line-args*")
 

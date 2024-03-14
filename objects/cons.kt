@@ -6,6 +6,9 @@ package org.w21.lyk
 class Cons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
 
     init {
+        debug(debugConsSym) {
+            "(cons $car $cdr)"
+        }
         consCounter++
     }
 

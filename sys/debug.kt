@@ -2,9 +2,18 @@
 
 package org.w21.lyk
 
+//
+fun anyDebugOn(): Boolean {
+    for (value in Options.debug.values) {
+        if (value) return true
+    }
+    return false
+}
+
 fun setDebug(sym: Symbol, value: Boolean = true): Boolean { // false if error
     if (sym in Options.debug.keys) {
         Options.debug[sym] = value
+        debugOn = anyDebugOn()
         return true
     }
     return false
@@ -33,13 +42,9 @@ fun setDebug(options: String?): Boolean {
     return isgood
 }
 
-fun clearDebug(sym: Symbol) {
-    Options.debug[sym] = false
-}
-
 
 fun debug(topic: Symbol, closure: () -> Any) {
-    if (Options.debug[topic] ?: false) {
+    if (debugOn && Options.debug[topic] ?: false) {
         debug_out.println("DBG:$topic " + closure().toString())
     }
 }

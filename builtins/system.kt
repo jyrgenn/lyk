@@ -32,7 +32,7 @@ fun bi_debug(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
         when (arg) {
             debugOffSym -> {
                 for (key in Options.debug.keys) {
-                    Options.debug[key] = false
+                    setDebug(key, false)
                 }
                 break
             }

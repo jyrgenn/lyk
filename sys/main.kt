@@ -16,6 +16,7 @@ object Options {
         debugIOSym to false,
         debugBindParSym to false,
         debugReaderSym to false,
+        debugConsSym to false,
     )
     var warnings = true
     var print_estack = false
