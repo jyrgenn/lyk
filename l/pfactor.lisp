@@ -19,11 +19,10 @@
               (let ((prime (car primes)))
                 (setq primes (cdr primes))
                 (cond ((> prime limit)
-                       ;; (print (string "next prime is " candidate))
                        (throw 'return (append-prime candidate)))
                       ((zerop (% candidate prime))
                        (throw 'divisible nil)))))))
-       (setq candidate (+ 2 candidate))))))
+      (setq candidate (+ 2 candidate))))))
         
 
 (defun all-primes ()

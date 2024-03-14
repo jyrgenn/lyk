@@ -30,10 +30,6 @@
     (while (and still-good
                 (setq divisor (prime-gen))
                 (<= divisor limit))
-      ;; (println 'still-good still-good
-      ;;          'candidate candidate
-      ;;          'divisor divisor
-      ;;          'limit limit)
       (when (zerop (% candidate divisor))
         (setq still-good nil)))
     still-good))
@@ -47,7 +43,6 @@
       (setq candidate (+ candidate 2))
       (setq found-one (try-candidate candidate)))
     (append-prime candidate))
-  ;; (println "P:" *the-primes*)
   *the-primes*)
 
 (when (not (fboundp 'println))
@@ -67,23 +62,19 @@ Well, in theory."
         (expand-primes)
         (setq pos last-pair))
       (prog1
-          (car pos)
+          (let ((next (car pos)))
+            next)
         (setq pos (cdr pos))))))
 
 (defun factors (n)
   "Return a list of the prime factors of `n`."
   (let ((factors ())
         (limit (isqrt n))
-        (report-threshold 0)
-        (report-interval 10000)
         (next-p (next-prime-func)))
     (while (> n 1)
       (let ((divisor (next-p)))
         (when (> divisor limit)
           (setq divisor n))
-        (when (> divisor report-threshold)
-          (println "next prime:" divisor)
-          (setq report-threshold (+ report-threshold report-interval)))
         (when (zerop (% n divisor))
           (setq factors (cons divisor factors))
           (setq n (/ n divisor)))))
