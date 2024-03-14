@@ -11,23 +11,34 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	builtins/tables.kt builtins/utils.kt builtins/vectors.kt \
 	builtins/sequences.kt \
 	utils/lists.kt utils/div.kt utils/interfaces.kt \
-	sys/messages.kt sys/main.kt sys/globalvars.kt \
-	generated/buildtag.kt generated/init-builtins.kt
+	sys/messages.kt sys/main.kt sys/globalvars.kt
+GENSRCS = generated/buildtag.kt generated/init-builtins.kt
+ALLSRCS = $(SRCS) $(GENSRCS)
+
+BUILDSCRIPTS = scripts/buildtag.sh scripts/gen-bi-init
 
 BUILTINSRC = $(shell ls builtins/*.kt | egrep -v '(helpers)\.kt')
+
 COMP = kotlinc
 NATIVECOMP = kotlinc-native
+
+INSTALLDIR=/opt/w21/lyk
+INSTALLBIN=/opt/w21/bin
 
 # JAR=$(basename $1 .kt).jar
 # kotlinc $1 -include-runtime -d $JAR && java -jar $JAR
 # rm -f $JAR
 
 
-build: Makefile generated/init-builtins.kt lyk.jar
+build: lyk.jar
 
-lyk.jar: $(SRCS)
+lyk.jar: $(ALLSRCS) Makefile
+	$(COMP) $(ALLSRCS) -include-runtime -d lyk.jar
+	java -jar lyk.jar -qe '(build-info t)'
+
+generated/buildtag.kt: Makefile $(SRCS) $(BUILDSCRIPTS)
+	mkdir -p generated
 	scripts/buildtag.sh lyk > generated/buildtag.kt
-	$(COMP) $(SRCS) -include-runtime -d lyk.jar
 
 generated/init-builtins.kt: scripts/gen-bi-init Makefile $(BUILTINSRC)
 	mkdir -p generated
@@ -44,3 +55,9 @@ native: $(SRCS) Makefile
 
 clean:
 	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar generated/* META-INF lyk
+
+install: lyk.jar
+	mkdir -p $(INSTALLDIR)
+	-rm -rf $(INSTALLDIR)/*
+	install -c lyk.jar $(INSTALLDIR)
+	install -c scripts/lyk $(INSTALLBIN)
