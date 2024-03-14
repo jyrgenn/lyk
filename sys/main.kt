@@ -134,7 +134,7 @@ fun main(args: Array<String>) {
             val perfdata = measurePerfdata {
                 println(eval(expr))
             }
-            println(";; " + perfdata)
+            info(perfdata)
         } catch (e: Exception) {
             errExit(e.toString())
         }

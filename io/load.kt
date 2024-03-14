@@ -1,4 +1,4 @@
-// load a file of Lips source
+// load a file or string of Lisp source
 
 package org.w21.lyk
 
