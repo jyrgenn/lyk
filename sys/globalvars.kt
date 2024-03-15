@@ -50,6 +50,9 @@ val debugCatchThrowSym = Symbol.intern("catch-throw")
 val debugLetBindSym = Symbol.intern("let")
 val debugBindSymSym = Symbol.intern("bind")
 val debugStepEval = Symbol.intern("stepeval")
+val unquoteSymbol = Symbol.intern("unquote")
+val unquoteSplicingSymbol = Symbol.intern("unquote-splicing")
+
 
 
 var debugOn = false             // set iff any debug topic is "on"

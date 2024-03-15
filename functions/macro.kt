@@ -2,9 +2,63 @@
 
 package org.w21.lyk
 
-// class Macro: Lambda {
+class Macro(
+    macroName: Symbol?,                      // present if non anonymous
+    stdPars: List<Symbol>,                   // normal parameters
+    keyPars: Map<Symbol, LispObject>,        // &key name => default
+    optPars: List<Pair<Symbol, LispObject>>, // &optional name, default
+    restPar: Symbol?,                        // &rest parameters
+    bodyForms: LispObject,                   //
+    docBody: LispString,                     // docstring sans signature
+): Lambda(macroName, stdPars, keyPars, optPars, restPar, bodyForms,
+          docBody, currentEnv)
+{
+    fun expand(arglist: LispObject) = call(arglist)
+}
 
-//     override fun call(arglist: LispObject): LispObject {
-//         throw FunctionError("macro $name called before being defined")
-//     }
-// }
+fun macroExpandList(form: LispObject): Pair<LispObject, Boolean> {
+    var haveExpanded = false
+    val lc = ListCollector()
+
+    var elems = form
+    while (elems is Cons) {
+        val elem = elems.car()
+        val (newelem, expanded) = macroExpandFormRecurse(elem)
+        lc.add(newelem)
+        haveExpanded = haveExpanded || expanded
+        elems = elems.cdr()
+    }
+    if (elems !== Nil) {
+        val (newrest, expanded) = macroExpandFormRecurse(elems)
+        lc.lastcdr(newrest)
+        haveExpanded = haveExpanded || expanded
+    }
+    return Pair(lc.list(), haveExpanded)
+}
+
+fun macroExpandFormRecurse(form: LispObject): Pair<LispObject, Boolean> {
+    if (form is Cons) {
+        val (head, args) = form
+        if (head is Symbol) {
+            val maybeMacro = head.function
+            if (maybeMacro is Macro) {
+                return Pair(maybeMacro.expand(args), true)
+            }
+        }
+        return macroExpandList(form)
+    } else {
+        return Pair(form, false)
+    }
+}
+
+fun macroExpandForm(form: LispObject): LispObject {
+    var needExpansion = true
+    var formvar = form
+    while (needExpansion) {
+        val (newForm, stillNeedExpansion) = macroExpandFormRecurse(formvar)
+        formvar = newForm
+        needExpansion = stillNeedExpansion
+    }
+    return form
+}
+
