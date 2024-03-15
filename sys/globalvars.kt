@@ -37,14 +37,20 @@ var consCounter = 0
 var evalCounter = 0
 
 // debug and trace topic names
-val traceEvalSym = Symbol.intern("eval")
-val traceEvalFunSym = Symbol.intern("evalfun")
-val traceCallSym = Symbol.intern("call")
+val debugEvalSym = Symbol.intern("eval")
+val debugEvalPrognSym = Symbol.intern("evalprogn")
+val debugEvalFunSym = Symbol.intern("evalfun")
+val debugCallSym = Symbol.intern("call")
 val debugErrorSym = Symbol.intern("error")
 val debugIOSym = Symbol.intern("io")
 val debugBindParSym = Symbol.intern("bindpar")
 val debugReaderSym = Symbol.intern("reader")
 val debugConsSym = Symbol.intern("cons")
+val debugCatchThrowSym = Symbol.intern("catch-throw")
+val debugLetBindSym = Symbol.intern("let")
+val debugBindSymSym = Symbol.intern("bind")
+val debugStepEval = Symbol.intern("stepeval")
+
 
 var debugOn = false             // set iff any debug topic is "on"
 

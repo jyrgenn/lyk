@@ -57,8 +57,11 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
                 e.printStackTrace()
             } else {
                 printErr(e)
+                for (frame in evalStack) {
+                    stderr.println(frame)
+                }
                 debug(debugErrorSym) {
-                    e.asObject().desc()
+                    e.toObject().desc()
                 }
             }
         } catch (e: Exception) {

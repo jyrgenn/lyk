@@ -161,7 +161,7 @@ fun bi_princs(args: LispObject, kwArgs: Map<Symbol, LispObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_terpri(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val stream = arg1(args)
-    outputStreamArg(stream, "terpri stream").write('\n')
+    outputStreamArg(stream, "terpri stream").println()
     return Nil
 }
 

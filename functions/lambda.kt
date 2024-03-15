@@ -118,8 +118,7 @@ open class Lambda(                           // Macro will inherit this
     }
 
     override fun call(arglist: LispObject): LispObject {
-        // print("$self.call($arglist)")
-        return with_new_environment(environment) {
+        return withNewEnvironment(environment) {
             bindPars(arglist)
             evalProgn(bodyForms)
         }

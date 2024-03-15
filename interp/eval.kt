@@ -2,12 +2,23 @@
 
 package org.w21.lyk
 
+import kotlin.system.exitProcess
 
-// var breakSymbol = Symbol.uninterned("*break-eval*")
+
+// debug frame marker; if there is a second object, it is a return
+fun markFrame(level: Int, ob1: LispObject, ob2: LispObject? = null): String {
+    var s = "%3d: ${mulString("| ", level)}" + ob1.toString()
+    if (ob2 != null) {
+        s += " => $ob2"
+    }
+    return s.format(level)
+}
+    
+
 
 fun evalProgn(forms: LispObject): LispObject {
     var result: LispObject = Nil
-    debug(traceEvalSym) {
+    debug(debugEvalPrognSym) {
          "evalProgn $forms"
     }
 
@@ -21,7 +32,7 @@ fun evalFun(obj: LispObject?,
             reclevel: Int = 0,
             show: LispObject? = null): Function
 {
-    debug(traceEvalFunSym) {
+    debug(debugEvalFunSym) {
         "evalFun(${obj?.dump() ?: "nil"}, $reclevel)"
     }
     if (obj != null && reclevel <= 2) {
@@ -31,7 +42,7 @@ fun evalFun(obj: LispObject?,
         }
         if (obj is Symbol) {
             obj.dump()
-            debug(traceEvalSym) {
+            debug(debugEvalFunSym) {
                   "$obj is symbol, function ${obj.function}"
             }
             return evalFun(obj.function ?: obj.getValueOptional(),
@@ -54,7 +65,7 @@ fun evalArgs(arglist: LispObject): LispObject {
     return lc.list()
 }
 
-var current_eval_level: Int = 0
+var evalLevel: Int = 0
 var maxEvalLevel: Int = 0
 var maxRecursionDepth: Int = 1_000_000_000
 var abortEval: Boolean = false
@@ -63,93 +74,75 @@ var evalStack: LispObject = Nil
 
 
 
-fun eval(form: LispObject /* , expandMacros: Boolean = false */): LispObject {
+fun eval(form: LispObject): LispObject {
     evalCounter += 1
-    val savedLevel: Int = current_eval_level
-    val deferList = listOf({ current_eval_level = savedLevel })
     
-    debug(traceEvalSym) {
-        "eval $form, ${typeOf(form)}"
+    val savedLevel: Int = evalLevel
+    val deferList = listOf({ evalLevel = savedLevel })
+    evalLevel += 1
+    if (evalLevel > maxEvalLevel) {
+        maxEvalLevel = evalLevel
+    }
+    
+    debug(debugEvalSym) {
+        markFrame(evalLevel, form)
+    }
+    debug(debugStepEval) {
+        stderr.print("enter\n")
+        stderr.print("${markFrame(evalLevel, form)}\n: ")
+        val line = readLine()
+        if (line == null) {
+            exitProcess(0)
+        }
+        null
     }
     try {
-        current_eval_level += 1
-        debug(traceEvalSym) {
-            println("TRC eval[$current_eval_level] $form")
-        }
-        if (current_eval_level > maxEvalLevel) {
-            maxEvalLevel = current_eval_level
-        }
-        if (current_eval_level > maxRecursionDepth) {
+        if (evalLevel > maxRecursionDepth) {
             throw AbortEvalSignal("max recursion depth reached "
                                   + "($maxRecursionDepth)")
         }
-        // if expandMacros {
-        //     form = macroexpandForm(form)
-        // }
-        // break_if(breakSymbol, "eval[{}]: {:r}", current_eval_level, form)
-        try {
-            if (abortEval) {
-                throw AbortEvalSignal("eval aborted")
-            }
-            // if (stepEval) {
-            //     var done = false
-            //     stdout.println("\n; eval[$current_eval_level] $form")
-            //     while (!done) {
-            //         stdout.print("**step eval :o off; :x exit; eval or [step]: ")
-            //         val answer = Reader(StringStream(stdin.readline()
-            //                                                     ?: ""),
-            //                             "<stdin>").read()
-            //         if val ob = answer {
-            //             switch ob {
-            //                 case intern(":o"):
-            //                     stepEval = false
-            //                 done = true
-            //                 case intern(":x"):
-            //                     print("abort")
-            //                 throw AbortEvalSignal("abort step eval")
-            //                 default:
-            //                     try { () -> Void in
-            //                                     val savedStepEval = stepEval
-            //                                 deferList.add({
-            //                                                   stepEval = savedStepEval })
-            //                                 stepEval = false
-            //                                 print(" => ", eval(ob))
-            //                     }()
-            //             }
-            //         } else {
-            //             done = true
-            //         }
-            //     }
-            // }
-
-            var value: LispObject
-            if (form is Symbol) {
-                value = form.getValue()
-            } else if (form is Cons) {
-                var (func, args) = form
-                val function = evalFun(func)
-                // print("function is", function)
-                if (!function.isSpecial) {
-                    args = evalArgs(args)
-                }
-                debug(traceCallSym) {
-                    "$function, args"
-                }
-                value = function.call(args)
-            } else {
-                value = form
-            }
-            if (stepEval) {
-                print("[$current_eval_level] => $value")
-            }
-            debug(traceEvalSym) {
-                println("TRC eval[$current_eval_level] $form => $value")
-            }
-            return value
-        } catch (err: LispError) {
-            err.pushFrame(current_eval_level, form, currentEnv)
-            throw err
+        if (abortEval) {
+            throw AbortEvalSignal("eval aborted")
         }
+
+        var value: LispObject
+        if (form is Symbol) {
+            value = form.getValue()
+        } else if (form is Cons) {
+            var (func, args) = form
+            val function = evalFun(func)
+
+            if (!function.isSpecial) {
+                args = evalArgs(args)
+            }
+            debug(debugCallSym) {
+                val indent = mulString("| ", evalLevel)
+                "%3d: $indent$function $args".format(evalLevel - 1)
+            }
+            value = function.call(args)
+            // debug(debugCallSym) {
+            //     val indent = mulString("| ", evalLevel)
+            //     "%3d: $indent$function $args => $value".format(
+            //         evalLevel - 1)
+        } else {
+            value = form
+        }
+        debug(debugEvalSym) {
+            markFrame(evalLevel, form, value)
+        }
+        debug(debugStepEval) {
+            stderr.print("return\n")
+            stderr.print(markFrame(evalLevel, form, value) + "\n: ")
+            val line = readLine()
+            if (line == null) {
+                exitProcess(0)
+            }
+            null
+        }
+        return value
+    } catch (err: LispError) {
+        err.pushFrame(evalLevel, form, currentEnv)
+        throw err
     } finally {
         for (defer in deferList) {
             defer()

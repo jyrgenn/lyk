@@ -2,9 +2,6 @@
 
 package org.w21.lyk
 
-val catchThrowSym = Symbol.intern("catch-throw")
-val letBindSym = Symbol.intern("let")
-
 /// builtin car
 /// fun     bi_car
 /// std     list
@@ -215,7 +212,7 @@ fun bi_let(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
         if (binding is Symbol) {
             syms.add(binding)
             vals.add(Nil)
-	    debug(letBindSym) {
+	    debug(debugLetBindSym) {
                 "will bind lone $binding to nil"
             }
         } else if (binding is Cons) {
@@ -230,7 +227,7 @@ fun bi_let(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 	    val value = eval(form)
             syms.add(symbolArg(sym, "let binding variable"))
 	    vals.add(value)
-	    debug(letBindSym) {
+	    debug(debugLetBindSym) {
                 "will bind $sym to $value, was $form"
             }
         } else {
@@ -238,7 +235,7 @@ fun bi_let(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
         }
     }
     // do the bindings
-    return with_new_environment() {
+    return withNewEnvironment() {
         val sym_i = syms.iterator()
         val val_i = vals.iterator()
 
@@ -292,7 +289,7 @@ fun bi_letrec(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject{
 	    val value = rest.car()
 	    syms.add(symbolArg(sym, "let* binding variable"))
 	    vals.add(value)
-	    debug(letBindSym) {
+	    debug(debugLetBindSym) {
                 "will bind $sym to eval($value)"
             }
         } else {
@@ -300,7 +297,7 @@ fun bi_letrec(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject{
         }
     }
     // do the bindings
-    return with_new_environment() {
+    return withNewEnvironment() {
         val sym_i = syms.iterator()
         val val_i = vals.iterator()
 
@@ -680,22 +677,22 @@ fun bi_catch(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val tag = eval(tagform)
     
     try {
-	debug(catchThrowSym) {
+	debug(debugCatchThrowSym) {
             "catch ($tag) opened"
         }
         val result = evalProgn(bodyforms)
-	debug(catchThrowSym) {
+	debug(debugCatchThrowSym) {
             "catch ($tag) closed"
         }
 	return result
     } catch (sig: ThrowSignal) {
         if (sig.tag === tag) {
-	    debug(catchThrowSym) {
+	    debug(debugCatchThrowSym) {
                 "catch ($tag) caught $sig, will return"
             }
             return sig.value
         } else {
-	    debug(catchThrowSym) {
+	    debug(debugCatchThrowSym) {
                 "catch ($tag) caught $sig, will rethrow"
             }
             throw sig
@@ -719,7 +716,7 @@ fun bi_catch(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_throw(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     val (tag, value) = args2(args)
-    debug(catchThrowSym) {
+    debug(debugCatchThrowSym) {
          "throw ($tag) with $value"
     }
     throw ThrowSignal(tag, value)
@@ -790,10 +787,10 @@ fun bi_errset(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     try {
         return Cons(eval(expr), Nil)
     } catch (lerror: LispError) {
-        val errObj = lerror.asObject()
+        val errObj = lerror.toObject()
         Symbol.intern("*last-error*").setValue(errObj, silent = true)
         if (print_error != Nil) {
-            print(errObj)
+            stderr.println(errObj)
         }
         return Nil
     } finally {
@@ -1355,7 +1352,7 @@ fun bi_defvar(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// opt     initial-value, docstring
 /// rest    
 /// ret     symbl
-/// special no
+/// special yes
 /// doc {
 /// Define variable `symbol` with optional `initial-value` and `docstring`.
 /// If the variable is already bound, its value is changed nonetheless.
@@ -1545,7 +1542,7 @@ fun bi_eval(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     if (env === Nil) {
         return eval(expr)
     }
-    return with_environment(envArg(env, "eval environment")) {
+    return withEnvironment(envArg(env, "eval environment")) {
         eval(expr)
     }
 }

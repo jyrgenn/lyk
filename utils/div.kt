@@ -1,7 +1,18 @@
+// diverse utility functions
+
 package org.w21.lyk
 
 import kotlin.time.measureTime
 import kotlin.system.exitProcess
+
+fun mulString(s: String, n: Int): String {
+    val sb = StringBuilder()
+
+    for (a in 1..n) {
+        sb.append(s)
+    }
+    return sb.toString()
+}
 
 fun padString(s: String, width: Int, pad: Char = ' '): String {
     val result = s.padEnd(width, pad).toString()

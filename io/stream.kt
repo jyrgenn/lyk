@@ -49,16 +49,6 @@ open class FileReaderStream(path: String, name: String? = null,
         }
     }
     
-    override fun write(ch: Char) {
-        throw ArgumentError("write on input stream $this")
-    }
-    override fun write(s: String) {
-        throw ArgumentError("write on input stream $this")
-    }
-    override fun println(s: String) {
-        throw ArgumentError("write on input stream $this")
-    }
-
     override fun close(): Boolean {
         fileReader.close()
         return super.close()
@@ -81,9 +71,9 @@ open class FileWriterStream(path: String,
         throw ArgumentError("read on output stream $this")
     }
     
-    override fun write(ch: Char) {
+    override fun write(code: Int) {
         try {
-            fileWriter.write(ch.code)
+            fileWriter.write(code)
             if (flushch) {
                 fileWriter.flush()
             }
@@ -102,14 +92,9 @@ open class FileWriterStream(path: String,
         }
     }
 
-    override fun print(s: String) {
-        write(s)
-    }
-
-    override fun println(s: String) {
+    override fun println(thing: Any) {
         try {
-            fileWriter.write(s)
-            fileWriter.write(newLine)
+            super.println(thing)
             if (flushch || flushln) {
                 fileWriter.flush()
             }
@@ -119,9 +104,13 @@ open class FileWriterStream(path: String,
     }
 
     override fun println() {
-        fileWriter.write(newLine)
-        if (flushch || flushln) {
-            fileWriter.flush()
+        try{
+            super.println()
+            if (flushch || flushln) {
+                fileWriter.flush()
+            }
+        } catch (e: Exception) {
+            throw IOError("writing $this", e)
         }
     }
     
@@ -156,22 +145,28 @@ abstract class Stream(
     var charUnread: Char? = null
     var is_open = true
 
-    abstract fun read(): Char?          // the actual reading
-
-    open fun write(ch: Char) {
+    open fun read(): Char? {          // the actual reading
+        throw ArgumentError("write on $this")
+    }
+    open fun write(code: Int) {
         throw ArgumentError("write on $this")
     }
     open fun write(s: String) {
         throw ArgumentError("write on $this")
     }
-    open fun print(s: String) {
-        throw ArgumentError("write on $this")
+    open fun write(ch: Char) {
+        write(ch.code)
     }
-    open fun println(s: String) {
-        throw ArgumentError("write on $this")
+    
+    open fun print(thing: Any) {
+        write(thing.toString())
+    }
+    open fun println(thing: Any) {
+        print(thing)
+        write(newLine)
     }
     open fun println() {
-        throw ArgumentError("write on $this")
+        write(newLine)
     }
     
     fun readChar(): Char? {

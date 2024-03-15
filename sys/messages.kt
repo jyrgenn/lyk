@@ -81,9 +81,13 @@ fun setDebug(options: String?): Boolean {
 }
 
 
-fun debug(topic: Symbol, closure: () -> Any) {
+fun debug(topic: Symbol, closure: () -> Any?) {
     if (debugOn && Options.debug[topic] ?: false) {
-        debug_out.println("DBG:$topic " + closure().toString())
+        debug_out.print("DBG:$topic ")
+        val value = closure()
+        if (value != null) {
+            debug_out.println(value.toString())
+        }
     }
 }
 

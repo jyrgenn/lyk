@@ -8,7 +8,7 @@ class ErrorObject(val error: LispError): LispObject() {
 }
 
 open class LispError(message: String): Exception(message) {
-    fun asObject() = ErrorObject(this)
+    fun toObject() = ErrorObject(this)
 
     open override fun toString() = "${typeOf(this)}: $message"
 

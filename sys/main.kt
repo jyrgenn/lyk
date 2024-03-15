@@ -8,18 +8,19 @@ val verbosityInfo = 2
 
 object Options {
     var debug = mutableMapOf<Symbol, Boolean>(
-        traceEvalSym to false,
-        traceCallSym to false,
+        debugEvalSym to false,
+        debugCallSym to false,
         debugErrorSym to false,
         debugDebugSym to false,
-        traceEvalFunSym to false,
-	catchThrowSym to false,
-	bindSymSym to false,
-	letBindSym to false,
+        debugEvalFunSym to false,
+	debugCatchThrowSym to false,
+	debugBindSymSym to false,
+	debugLetBindSym to false,
         debugIOSym to false,
         debugBindParSym to false,
         debugReaderSym to false,
         debugConsSym to false,
+        debugStepEval to false,
     )
     var print_estack = false
     var maxrecurse = 0

@@ -1,4 +1,3 @@
-
 // The symbol
 
 package org.w21.lyk
