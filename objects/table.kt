@@ -1,8 +1,8 @@
 package org.w21.lyk
 
-class Table(elems: LispObject): LispObject(), Callable {
-    // key: value pairs, backed by a dictionary [LispObject: LispObject]
-    val the_table = mutableMapOf<LispObject, LispObject>()
+class Table(elems: LObject): LObject(), Callable {
+    // key: value pairs, backed by a dictionary [LObject: LObject]
+    val the_table = mutableMapOf<LObject, LObject>()
 
     init {
         if (!elems.isList()) {
@@ -17,7 +17,7 @@ class Table(elems: LispObject): LispObject(), Callable {
         }
     }
 
-    fun get(key: LispObject, defaultvalue: LispObject = Nil): LispObject {
+    fun get(key: LObject, defaultvalue: LObject = Nil): LObject {
         val value = the_table[key]
         if (value != null) {
             return value
@@ -25,10 +25,10 @@ class Table(elems: LispObject): LispObject(), Callable {
         return defaultvalue
     }
 
-    fun exists(key: LispObject): LispObject =
+    fun exists(key: LObject): LObject =
         if (the_table[key] == null) Nil else T
 
-    fun remove(key: LispObject): LispObject? {
+    fun remove(key: LObject): LObject? {
         val value = the_table[key]
         the_table.remove(key)
         return value ?: Nil
@@ -36,11 +36,11 @@ class Table(elems: LispObject): LispObject(), Callable {
 
     fun count() = the_table.size
 
-    fun put(key: LispObject, value: LispObject) {
+    fun put(key: LObject, value: LObject) {
         the_table[key] = value
     }
 
-    fun keys(): LispObject {
+    fun keys(): LObject {
         val lc = ListCollector()
         for (key in the_table.keys) {
             lc.add(key)
@@ -48,7 +48,7 @@ class Table(elems: LispObject): LispObject(), Callable {
         return lc.list()
     }
 
-    fun values(): LispObject {
+    fun values(): LObject {
         val lc = ListCollector()
         for (value in the_table.values) {
             lc.add(value)
@@ -56,7 +56,7 @@ class Table(elems: LispObject): LispObject(), Callable {
         return lc.list()
     }
 
-    fun items(): LispObject {
+    fun items(): LObject {
         val lc = ListCollector()
         for ((key, value) in the_table) {
             lc.add(LCons(key, value))
@@ -64,7 +64,7 @@ class Table(elems: LispObject): LispObject(), Callable {
         return lc.list()
     }
 
-    override fun equal(other: LispObject): Boolean {
+    override fun equal(other: LObject): Boolean {
         if (this === other) {
             return true
         }
@@ -82,7 +82,7 @@ class Table(elems: LispObject): LispObject(), Callable {
         return true
     }
 
-    override fun call(arglist: LispObject): LispObject {
+    override fun call(arglist: LObject): LObject {
         return Nil
     }
 

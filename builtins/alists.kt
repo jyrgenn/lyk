@@ -3,15 +3,15 @@
 package org.w21.lyk
 
 
-fun assoc_check_function(pred: LispObject, what: String): Function {
+fun assoc_check_function(pred: LObject, what: String): Function {
     if (pred is Function) {
         return pred
     }
     throw ArgumentError("predicate arg to $what is not a function: $pred")
 }
 
-fun assoc_iter_elems(alist: LispObject, what: String,
-                     closure: (elem_car: LispObject) -> Boolean): LispObject {
+fun assoc_iter_elems(alist: LObject, what: String,
+                     closure: (elem_car: LObject) -> Boolean): LObject {
     if (alist === Nil) {
         return Nil
     }
@@ -45,7 +45,7 @@ fun assoc_iter_elems(alist: LispObject, what: String,
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assoc(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
+fun bi_assoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (item, alist) = args2(args)
 
     return assoc_iter_elems(alist, "assoc") {
@@ -67,7 +67,7 @@ fun bi_assoc(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assq(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
+fun bi_assq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (item, alist) = args2(args)
 
     return assoc_iter_elems(alist, "assq") {
@@ -89,8 +89,8 @@ fun bi_assq(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assoc_if(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_assoc_if(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (pred, alist) = args2(args)
     var predicate = assoc_check_function(pred, "assoc-if")
 
@@ -113,8 +113,8 @@ fun bi_assoc_if(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assoc_if_not(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_assoc_if_not(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (pred, alist) = args2(args)
     var predicate = assoc_check_function(pred, "assoc-if-not")
 

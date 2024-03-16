@@ -6,7 +6,7 @@ import kotlin.system.exitProcess
 
 
 // debug frame marker; if there is a second object, it is a return
-fun markFrame(level: Int, ob1: LispObject, ob2: LispObject? = null): String {
+fun markFrame(level: Int, ob1: LObject, ob2: LObject? = null): String {
     var s = "%3d: ${mulString("| ", level)}" + ob1.toString()
     if (ob2 != null) {
         s += " => $ob2"
@@ -16,8 +16,8 @@ fun markFrame(level: Int, ob1: LispObject, ob2: LispObject? = null): String {
     
 
 
-fun evalProgn(forms: LispObject): LispObject {
-    var result: LispObject = Nil
+fun evalProgn(forms: LObject): LObject {
+    var result: LObject = Nil
     debug(debugEvalPrognSym) {
          "evalProgn $forms"
     }
@@ -31,9 +31,9 @@ fun evalProgn(forms: LispObject): LispObject {
 
 // to allow for a variable with a function *value* (not function!) in the
 // function position, we recurse *once* at maximum
-fun evalFun(obj: LispObject?,
+fun evalFun(obj: LObject?,
             reclevel: Int = 0,
-            original: LispObject? = null): Function
+            original: LObject? = null): Function
 {
     debug(debugEvalFunSym) {
         "evalFun(${obj?.dump() ?: "nil"}, $reclevel)"
@@ -58,7 +58,7 @@ fun evalFun(obj: LispObject?,
 }
 
 
-fun evalArgs(arglist: LispObject): LispObject {
+fun evalArgs(arglist: LObject): LObject {
     val lc = ListCollector()
 
     for (arg in arglist) {
@@ -72,11 +72,11 @@ var maxEvalLevel: Int = 0
 var maxRecursionDepth: Int = 1_000_000_000
 var abortEval: Boolean = false
 var stepEval: Boolean = false
-var evalStack: LispObject = Nil
+var evalStack: LObject = Nil
 
 
 
-fun eval(form: LispObject): LispObject {
+fun eval(form: LObject): LObject {
     evalCounter += 1
     
     val savedLevel: Int = evalLevel
@@ -107,7 +107,7 @@ fun eval(form: LispObject): LispObject {
             throw AbortEvalSignal("eval aborted")
         }
 
-        var value: LispObject
+        var value: LObject
         if (form is LSymbol) {
             value = form.getValue()
         } else if (form is LCons) {

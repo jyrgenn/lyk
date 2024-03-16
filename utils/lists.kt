@@ -1,13 +1,13 @@
 
 package org.w21.lyk
 
-fun collectedList(closure: (lc: ListCollector) -> Unit): LispObject {
+fun collectedList(closure: (lc: ListCollector) -> Unit): LObject {
     val lc = ListCollector()
     closure(lc)
     return lc.list()
 }
 
-fun list2lisp(elems: Collection<LispObject>): LispObject {
+fun list2lisp(elems: Collection<LObject>): LObject {
     val lc = ListCollector()
     for (elem in elems) {
         lc.add(elem)
@@ -15,7 +15,7 @@ fun list2lisp(elems: Collection<LispObject>): LispObject {
     return lc.list()
 }
 
-fun valueList(elems: LispObject): List<Any> {
+fun valueList(elems: LObject): List<Any> {
     val l = mutableListOf<Any>()
 
     for (elem in elems) {
@@ -27,7 +27,7 @@ fun valueList(elems: LispObject): List<Any> {
     return l
 }
 
-class ListIterator(var l: LispObject): Iterator<LispObject> {
+class ListIterator(var l: LObject): Iterator<LObject> {
     val original = l                    // keep the original list for an error
 
     override fun hasNext() =
@@ -36,7 +36,7 @@ class ListIterator(var l: LispObject): Iterator<LispObject> {
             else -> false
         }
 
-    override fun next(): LispObject {
+    override fun next(): LObject {
         val obj = l.car()
         l = l.cdr()
         return obj
@@ -45,10 +45,10 @@ class ListIterator(var l: LispObject): Iterator<LispObject> {
 
 
 class ListCollector() {
-    var head: LispObject = Nil
-    var last: LispObject? = null
+    var head: LObject = Nil
+    var last: LObject? = null
 
-    fun add(arg: LispObject) {
+    fun add(arg: LObject) {
         val newpair = LCons(arg, Nil)
         if (last is LCons) {
             (last as LCons).rplacd(newpair)
@@ -58,7 +58,7 @@ class ListCollector() {
         last = newpair
     }
 
-    fun lastcdr(arg: LispObject) {
+    fun lastcdr(arg: LObject) {
         if (last is LCons) {
             (last as LCons).rplacd(arg)
         } else {

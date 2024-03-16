@@ -1,10 +1,10 @@
 package org.w21.lyk
 
-class Vector(): LispObject() {
+class Vector(): LObject() {
     // key: int, backed by an array [Object]
-    val the_vector = mutableListOf<LispObject>()
+    val the_vector = mutableListOf<LObject>()
 
-    constructor(elems: LispObject) : this() {
+    constructor(elems: LObject) : this() {
         if (!elems.isList()) {
             throw TypeError("Vector constructor called with "
                             + "non-list arg $elems")
@@ -14,13 +14,13 @@ class Vector(): LispObject() {
         }
     }
 
-    constructor(vararg elems: LispObject) : this() {
+    constructor(vararg elems: LObject) : this() {
         for (elem in elems) {
             the_vector.add(elem)
         }
     }
 
-    constructor(length: Int, elem: LispObject) : this() {
+    constructor(length: Int, elem: LObject) : this() {
         for (n in 1..length) {
             the_vector.add(elem)
         }
@@ -37,21 +37,21 @@ class Vector(): LispObject() {
     
     override fun length() = the_vector.size
 
-    fun get(index: Int): LispObject {
+    fun get(index: Int): LObject {
             if (index >= 0 && index < the_vector.size) {
                 return the_vector[index]
             }
             throw ValueError("invalid index $index for vector $this")
         }
 
-    fun atIndex(index: Int): LispObject? {
+    fun atIndex(index: Int): LObject? {
         if (index >= 0 && index < the_vector.size) {
             return the_vector[index]
         }
         return null
     }
 
-    fun set(index: Int, value: LispObject): LispObject {
+    fun set(index: Int, value: LObject): LObject {
             if (index >= 0 && index < the_vector.size) {
                 the_vector[index] = value
                 return value
@@ -59,7 +59,7 @@ class Vector(): LispObject() {
             throw ValueError("invalid index $index for vector $this")
         }
 
-    override fun equal(other: LispObject): Boolean {
+    override fun equal(other: LObject): Boolean {
         if (this === other) {
             return true
         }

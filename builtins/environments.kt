@@ -21,8 +21,8 @@ package org.w21.lyk
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 
-fun bi_new_environment(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_new_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (parent, value_table) = args2(args)
     
     val parent_env = when (parent) {
@@ -63,8 +63,8 @@ fun bi_new_environment(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_the_environment(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_the_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     return currentEnv
 }
 
@@ -81,8 +81,8 @@ fun bi_the_environment(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_with_environment(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_with_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (env_arg, bodyforms) = args
 
     val savedEnv = currentEnv

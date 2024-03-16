@@ -22,8 +22,8 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_defmacro(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject
+fun bi_defmacro(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject
 {
     var (name, rest1) = args
     var (params, bodyForms) = rest1
@@ -45,13 +45,13 @@ fun bi_defmacro(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_macroexpand(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_macroexpand(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     return macroExpandForm(arg1(args))
 }
 
 // Core of quasiquote, the internal recursion.
-fun qq_recurse(form: LispObject): LispObject {
+fun qq_recurse(form: LObject): LObject {
     if (form !is LCons) {
         return form
     }
@@ -101,8 +101,8 @@ fun qq_recurse(form: LispObject): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_quasiquote(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_quasiquote(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     return qq_recurse(arg1(args))
 }
 
@@ -119,8 +119,8 @@ fun bi_quasiquote(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_unquote(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_unquote(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     throw FunctionError("unquote outside of a quasiquote context")
 }
 
@@ -137,8 +137,8 @@ fun bi_unquote(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_unquote_splicing(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_unquote_splicing(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     throw FunctionError("unquote-splicing outside of a quasiquote context")
 }
 

@@ -28,7 +28,7 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_aref(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
+fun bi_aref(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (vector, index) = args2(args)
     return vectorArg(vector, "aref vector").get(longArg(index,
                                                         "aref index").toInt())
@@ -47,8 +47,8 @@ fun bi_aref(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_make_vector(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_make_vector(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (len, value) = args2(args)
     val length = longArg(len, "make-vector length")
     if (length < 0) {
@@ -70,8 +70,8 @@ fun bi_make_vector(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_vector_set(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_vector_set(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (vector, index, value) = args3(args)
     vectorArg(vector, "aref vector").set(longArg(index, "aref index").toInt(),
                                          value)
@@ -91,6 +91,6 @@ fun bi_vector_set(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_vector(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
+fun bi_vector(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return Vector(args)
 }

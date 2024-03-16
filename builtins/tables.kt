@@ -17,8 +17,8 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_get(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_table_get(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (tbl, key, defaultvalue) = args3(args)
     val table = tableArg(tbl, "table-get table")
     return table.get(key, defaultvalue)
@@ -37,8 +37,8 @@ fun bi_table_get(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_put(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_table_put(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (tbl, key, value) = args3(args)
     val table = tableArg(tbl, "table-get table")
     table.put(key, value)
@@ -58,8 +58,8 @@ fun bi_table_put(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_make_table(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_make_table(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     return Table(Nil)
 }
 
@@ -76,8 +76,8 @@ fun bi_make_table(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_count(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_table_count(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val table = arg1(args)
     return makeNumber(tableArg(table, "table-count").the_table.size)
 }
@@ -95,8 +95,8 @@ fun bi_table_count(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_exists(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_table_exists(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (table, key) = args2(args)
     return tableArg(table, "table-exists").exists(key)
 }
@@ -120,8 +120,8 @@ val createKeySym = intern("create")
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_inc(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_table_inc(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (tbl, key, inc) = args3(args)
     val table = tableArg(tbl, "table-inc table")
     val increment = numberArg(inc, "table-inc increment")
@@ -158,8 +158,8 @@ fun bi_table_inc(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_keys(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_table_keys(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     return tableArg(arg1(args), "table-keys table").keys()
     
 }
@@ -177,8 +177,8 @@ fun bi_table_keys(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_values(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_table_values(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     return tableArg(arg1(args), "table-values table").values()
 }
 
@@ -195,8 +195,8 @@ fun bi_table_values(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_pairs(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_table_pairs(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     return tableArg(arg1(args), "table-pairs table").items()
     
 }
@@ -214,8 +214,8 @@ fun bi_table_pairs(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_remove(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_table_remove(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (tbl, key) = args2(args)
     val table = tableArg(tbl, "table-remove table")
 

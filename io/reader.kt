@@ -584,7 +584,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
     }
 
 
-    fun read(): LispObject? {
+    fun read(): LObject? {
         // Read an expression from the input and return it.
         val token = nextToken()
         var macroSymbol: LSymbol?
@@ -631,7 +631,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
     }
             
 
-    fun readTable(): LispObject {
+    fun readTable(): LObject {
         // Read the body of a table. '#:' has already been read.
         var token = nextToken()
         if (token !is OparenToken) {
@@ -653,7 +653,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
     }
 
 
-    fun readVector(): LispObject {
+    fun readVector(): LObject {
         // Read a vector from the input and return it.
         val lc = ListCollector()
         while (true) {
@@ -677,7 +677,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
     }
 
 
-    fun readList(): LispObject {
+    fun readList(): LObject {
         // Read a list from the input and return it.
         val lc = ListCollector()
         while (true) {

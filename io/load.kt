@@ -4,13 +4,13 @@ package org.w21.lyk
 
 
 fun load_file(fname: String, verbose: Boolean = false,
-              throw_error: Boolean = true): LispObject {
+              throw_error: Boolean = true): LObject {
     var load_stream = FileReaderStream(fname)
     return load(load_stream, fname, verbose, throw_error)
 }
 
 fun load(load_stream: Stream, name: String, verbose: Boolean = false,
-         throw_error: Boolean = true): LispObject {
+         throw_error: Boolean = true): LObject {
     var success = Nil
     
     withVariableAs(currentLoadFile, makeString(name)) {

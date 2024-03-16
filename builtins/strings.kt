@@ -5,7 +5,7 @@ package org.w21.lyk
 val stringSeparatorKey = intern(":sep")
 val defaultStringSep = makeString(" ")
 
-fun string_from_list(items: LispObject, sep: String): LispObject {
+fun string_from_list(items: LObject, sep: String): LObject {
     var strings = mutableListOf<String>()
     for (item in items) {
         strings.add(item.toString())
@@ -27,7 +27,7 @@ fun string_from_list(items: LispObject, sep: String): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string(args: LispObject, kwArgs: Map<LSymbol , LispObject>): LispObject {
+fun bi_string(args: LObject, kwArgs: Map<LSymbol , LObject>): LObject {
     val sep = kwArgs[stringSeparatorKey].toString()
     return string_from_list(args, sep)
 }
@@ -45,7 +45,7 @@ fun bi_string(args: LispObject, kwArgs: Map<LSymbol , LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_join(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
+fun bi_join(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (items, sep) = args2(args)
     return string_from_list(items, sep.toString())
 }
@@ -63,7 +63,7 @@ fun bi_join(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_regexp(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
+fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val re = arg1(args)
     if (re is Regexp) {
         return re
@@ -84,8 +84,8 @@ fun bi_regexp(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_regexp_match(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_regexp_match(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (re, string) = args2(args)
     val regex = regexpArg(re, "regexp-match regepx")
     val s = string.toString()

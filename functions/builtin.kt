@@ -13,10 +13,10 @@ fun maybeIntern(word: String?): LSymbol? {
 class Builtin(
     // marked with S as kotlin String, not LispString, for clarity
     nameS: String,
-    val bfun: (LispObject, Map<LSymbol, LispObject>) -> LispObject,
+    val bfun: (LObject, Map<LSymbol, LObject>) -> LObject,
     stdParsS: Array<String>,
-    keyParsS: Map<String, LispObject>,
-    optParsS: Array<Pair<String, LispObject>>,
+    keyParsS: Map<String, LObject>,
+    optParsS: Array<Pair<String, LObject>>,
     restParsS: String?,
     retvalS: String?,
     isSpecial: Boolean = false,
@@ -32,7 +32,7 @@ class Builtin(
        makeString(docBodyS),
    ) {
 
-    override fun call(arglist: LispObject): LispObject {
+    override fun call(arglist: LObject): LObject {
        // first establish the kwArgs[] with the default values
         var kwArgs = keyPars.toMutableMap()
         var wantStdArgs = stdPars.size

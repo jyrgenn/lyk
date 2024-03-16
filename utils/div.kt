@@ -82,19 +82,19 @@ fun arrayIntern(array: Array<String>): List<LSymbol> {
     return symbols
 }
 
-fun mapInternKeys(map: Map<String, LispObject>): Map<LSymbol, LispObject> {
-    val result = mutableMapOf<LSymbol, LispObject>()
+fun mapInternKeys(map: Map<String, LObject>): Map<LSymbol, LObject> {
+    val result = mutableMapOf<LSymbol, LObject>()
     for ((key, value) in map) {
         result[intern(":" + key)] = value
     }
     return result
 }
 
-fun pairsInternFirst(pairs: Array<Pair<String, LispObject>>
-): List<Pair<LSymbol, LispObject>> {
-    var result = mutableListOf<Pair<LSymbol, LispObject>>()
+fun pairsInternFirst(pairs: Array<Pair<String, LObject>>
+): List<Pair<LSymbol, LObject>> {
+    var result = mutableListOf<Pair<LSymbol, LObject>>()
     for ((key, value) in pairs) {
-        result.add(Pair<LSymbol, LispObject>(intern(key), value))
+        result.add(Pair<LSymbol, LObject>(intern(key), value))
     }
     return result
 }
@@ -102,8 +102,8 @@ fun pairsInternFirst(pairs: Array<Pair<String, LispObject>>
 // Measure performance data while executing the passed closure. The returned
 // value is a Pair of the string with the performance data and the returned
 // value.
-fun measurePerfdataValue(closure: () -> LispObject): Pair<String, LispObject> {
-    var result: LispObject = Nil
+fun measurePerfdataValue(closure: () -> LObject): Pair<String, LObject> {
+    var result: LObject = Nil
 
     val perfdata = measurePerfdata {
         result = closure()

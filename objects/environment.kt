@@ -4,13 +4,13 @@
 package org.w21.lyk
 
 
-class LEnv(val parent: LEnv? = null): LispObject() {
+class LEnv(val parent: LEnv? = null): LObject() {
     val level: Int = if (parent == null) 0 else parent.level + 1
     val levelstring = if (level > 0) "$level" else "root"
-    val map: MutableMap<LSymbol, LispObject> = mutableMapOf()
+    val map: MutableMap<LSymbol, LObject> = mutableMapOf()
 
     // must only be called by symbol.bind
-    fun bind(symbol: LSymbol, value: LispObject) {
+    fun bind(symbol: LSymbol, value: LObject) {
 	debug(debugBindSymSym) {
              "$symbol <= $value in $this"
         }
@@ -31,7 +31,7 @@ class LEnv(val parent: LEnv? = null): LispObject() {
         }
     }
     
-    fun getValueMaybe(symbol: LSymbol): LispObject? {
+    fun getValueMaybe(symbol: LSymbol): LObject? {
         var env: LEnv? = this
         while (env != null) {
             val maybe = env.map[symbol]
@@ -43,12 +43,12 @@ class LEnv(val parent: LEnv? = null): LispObject() {
         return null
     }
 
-    fun getValue(symbol: LSymbol): LispObject {
+    fun getValue(symbol: LSymbol): LObject {
         return getValueMaybe(symbol) ?:
             throw ValueError("value of symbol `$symbol` is undefined")
     }
 
-    fun setValue(symbol: LSymbol, value: LispObject): Boolean {
+    fun setValue(symbol: LSymbol, value: LObject): Boolean {
         var env: LEnv? = this
         while (env != null) {
             if (symbol in env.map.keys) {
@@ -67,11 +67,11 @@ class LEnv(val parent: LEnv? = null): LispObject() {
 }
 
 fun withNewEnvironment(parent: LEnv = currentEnv,
-                       closure: () -> LispObject): LispObject {
+                       closure: () -> LObject): LObject {
     return withEnvironment(LEnv(parent), closure)
 }
 
-fun withEnvironment(env: LEnv, closure: () -> LispObject): LispObject {
+fun withEnvironment(env: LEnv, closure: () -> LObject): LObject {
     val savedEnv = currentEnv
     currentEnv = env
     try {

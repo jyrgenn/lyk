@@ -8,13 +8,13 @@ val anonLambdaSym = intern("*anon-lambda*")
 abstract class Function(
     functionName: LSymbol?,                       // present if non anonymous
     val stdPars: List<LSymbol>,                   // normal parameters
-    val keyPars: Map<LSymbol, LispObject>,        // &key name => default
-    val optPars: List<Pair<LSymbol, LispObject>>, // &optional name, default
+    val keyPars: Map<LSymbol, LObject>,        // &key name => default
+    val optPars: List<Pair<LSymbol, LObject>>, // &optional name, default
     val restPar: LSymbol?,                       // &rest parameters
     val retval: LSymbol?,                         // return value description
     val isSpecial: Boolean,                      // used by Builtins only
     val docBody: LString,                     // docstring sans signature
-): LispObject(), Callable {
+): LObject(), Callable {
     val name: LSymbol
     val has_name: Boolean
     val minargs: Int
@@ -84,7 +84,7 @@ abstract class Function(
         return docHeader() + docBody.value + "\n"        
     }
 
-    fun myKeywordArg(maybeSym: LispObject): LSymbol? {
+    fun myKeywordArg(maybeSym: LObject): LSymbol? {
         // if sym is a keyword *and* in the keyPars, return the variable
         // symbol, used in both Builtins and Lambdas
         if (maybeSym is LSymbol && maybeSym.isKeyword() &&
@@ -94,7 +94,7 @@ abstract class Function(
         return null
     }
 
-    open override fun call(arglist: LispObject): LispObject {
+    open override fun call(arglist: LObject): LObject {
         throw InternalError("calling $this, not Subclass")
     }
 

@@ -5,8 +5,8 @@ package org.w21.lyk
 import java.util.WeakHashMap
 
 
-// class LNumber: LispObject, Comparable {
-class LNumber(val value: Double): LispObject() {
+// class LNumber: LObject, Comparable {
+class LNumber(val value: Double): LObject() {
     // this is a rudimentary number implementation for now
 
     constructor(longValue: Long) : this(longValue.toDouble()) {}
@@ -26,7 +26,7 @@ class LNumber(val value: Double): LispObject() {
             return numob
         }
 
-        fun numbers(): LispObject {
+        fun numbers(): LObject {
             // return list2lisp(numberTable.values)
 
             val lc = ListCollector()
@@ -57,7 +57,7 @@ class LNumber(val value: Double): LispObject() {
 
     override fun toString() = desc()
 
-    override fun compareTo(other: LispObject): Int {
+    override fun compareTo(other: LObject): Int {
         if (other is LNumber) {
             if (value < other.value) {
                 return -1

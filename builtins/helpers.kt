@@ -3,29 +3,29 @@
 package org.w21.lyk
 
 
-fun outputStreamArg(arg: LispObject, what: String): Stream {
+fun outputStreamArg(arg: LObject, what: String): Stream {
     if (arg === Nil) {
         return stdout
     }
     return streamArg(arg, what)
 }
 
-fun streamArg(arg: LispObject, what: String): Stream { 
+fun streamArg(arg: LObject, what: String): Stream { 
     return (arg as? Stream) ?:
         throw ArgumentError("$what argument is not a stream: $arg")
 }
 
-fun envArg(arg: LispObject, what: String): LEnv {
+fun envArg(arg: LObject, what: String): LEnv {
     return (arg as? LEnv) ?:
         throw ArgumentError("$what argument is not an environment: $arg")
 }
 
-fun numberArg(arg: LispObject, what: String): Double {
+fun numberArg(arg: LObject, what: String): Double {
     return (arg as? LNumber)?.value ?:
         throw ArgumentError("$what argument not a number: $arg (${typeOf(arg)})")
 }
 
-// fun longArg(arg: LispObject, what: String): Int {
+// fun longArg(arg: LObject, what: String): Int {
 //     if let num = arg as? LNumber {
 //         let intval = Int(num.value)
 //         if num.value == Double(intval) {
@@ -35,19 +35,19 @@ fun numberArg(arg: LispObject, what: String): Double {
 //     throw ArgumentError("$what argument not an integer: $arg")
 // }
 
-fun longArg(arg: LispObject, what: String): Long {
+fun longArg(arg: LObject, what: String): Long {
     if (arg is LNumber && arg.isLong()) {
         return arg.value.toLong()
     }
     throw ArgumentError("$what argument not an integer: $arg")
 }
 
-fun functionArg(arg: LispObject, what: String): Function {
+fun functionArg(arg: LObject, what: String): Function {
     return arg as? Function ?:
         throw ArgumentError("$what argument not a function: $arg")
 }
 
-// fun comparableArg(arg: LispObject, what: String): CompObject {
+// fun comparableArg(arg: LObject, what: String): CompObject {
 //     if (arg is CompObject) {
 //         return arg
 //     }
@@ -55,31 +55,31 @@ fun functionArg(arg: LispObject, what: String): Function {
 //                           + " not comparable")
 // }
 
-fun consArg(arg: LispObject, what: String): LCons {
+fun consArg(arg: LObject, what: String): LCons {
     return arg as? LCons ?:
         throw ArgumentError("$what argument not a cons: $arg")
 }
 
-fun listArg(arg: LispObject, what: String): LispObject {
+fun listArg(arg: LObject, what: String): LObject {
     if (arg.isList()) {
         return arg
     }
     throw ArgumentError("$what argument not a list: $arg")
 }
 
-// fun sequenceArg(arg: LispObject, what: String): ObjectSequence {
+// fun sequenceArg(arg: LObject, what: String): ObjectSequence {
 //     if (arg is any) ObjectSequence {
 //         return arg
 //     }
 //     throw ArgumentError("$what argument not a sequence: $arg")
 // }
 
-fun stringArg(arg: LispObject, what: String): String {
+fun stringArg(arg: LObject, what: String): String {
     return (arg as? LString)?.value ?:
         throw ArgumentError("$what argument not a string: $arg")
 }
 
-fun stringlikeArg(arg: LispObject, what: String): String {
+fun stringlikeArg(arg: LObject, what: String): String {
     if (arg is LString) {
         return arg.value
     }
@@ -89,26 +89,26 @@ fun stringlikeArg(arg: LispObject, what: String): String {
     throw ArgumentError("$what argument not a string or symbol: $arg")
 }
 
-fun symbolArg(arg: LispObject, what: String): LSymbol {
+fun symbolArg(arg: LObject, what: String): LSymbol {
     return arg as? LSymbol ?:
         throw ArgumentError("$what argument not a symbol: $arg")
 }
 
-fun tableArg(arg: LispObject, what: String): Table {
+fun tableArg(arg: LObject, what: String): Table {
     if (arg is Table) {
         return arg
     }
     throw ArgumentError("$what argument not a table: $arg")
 }
 
-fun regexpArg(arg: LispObject, what: String): Regexp {
+fun regexpArg(arg: LObject, what: String): Regexp {
     if (arg is Regexp) {
         return arg
     }
     throw ArgumentError("$what argument not a regexp: $arg")
 }
 
-fun vectorArg(arg: LispObject, what: String): Vector {
+fun vectorArg(arg: LObject, what: String): Vector {
     if (arg is Vector) {
         return arg
     }
@@ -116,7 +116,7 @@ fun vectorArg(arg: LispObject, what: String): Vector {
 }
 
 
-fun spreadArglist(args: LispObject): LispObject {
+fun spreadArglist(args: LObject): LObject {
     // spreadable argument list designator n. a designator for a list of
     // objects; that is, an object that denotes a list and that is a non-null
     // list L1 of length n, whose last element is a list L2 of length m
@@ -128,8 +128,8 @@ fun spreadArglist(args: LispObject): LispObject {
         return Nil
     }
     var arglist = args
-    var last: LispObject = Nil
-    var lastBut2nd: LispObject = Nil
+    var last: LObject = Nil
+    var lastBut2nd: LObject = Nil
     var next = arglist
 
     while (next is LCons) {
@@ -146,16 +146,16 @@ fun spreadArglist(args: LispObject): LispObject {
     return arglist
 }
 
-fun environmentArg(arg: LispObject, what: String): LEnv {
+fun environmentArg(arg: LObject, what: String): LEnv {
     return arg as? LEnv ?:
         throw ArgumentError("$what argument not a environment: $arg")
 }
 
-fun bool2ob(value: Boolean): LispObject {
+fun bool2ob(value: Boolean): LObject {
     return if (value) T else Nil
 }
 
-fun ob2bool(value: LispObject): Boolean {
+fun ob2bool(value: LObject): Boolean {
     return value !== Nil
 }
 
@@ -183,28 +183,28 @@ fun lastCons2(list: LCons): LCons {
 // Return the first element of list. This is not checked -- if the list is
 // not a cons, return Nil for efficiency reasons. The caller must know or not
 // care.
-fun arg1(list: LispObject): LispObject {
+fun arg1(list: LObject): LObject {
     return (list as? LCons)?.car() ?: Nil
 }
 
 // Return the second element of list. This is not checked -- if the list is not
 // a cons or not long enough, return Nil for efficiency reasons. The caller must
 // know or not care.
-fun arg2(list: LispObject): LispObject {
+fun arg2(list: LObject): LObject {
     return ((list as? LCons)?.cdr() as? LCons)?.car() ?: Nil
 }
 
 // Return the third element of list. This is not checked -- if the list is not a
 // cons or not long enough, return Nil for efficiency reasons. The caller must
 // know or not care.
-fun arg3(list: LispObject): LispObject {
+fun arg3(list: LObject): LObject {
     return (((list as? LCons)?.cdr() as? LCons)?.cdr() as? LCons)?.car() ?: Nil
 }
 
 // Return the first two elements of list. This is not checked -- if the list is
 // not a cons or not long enough, return Nil for efficiency reasons. The caller
 // must know or not care.
-fun args2(list: LispObject): Pair<LispObject, LispObject> {
+fun args2(list: LObject): Pair<LObject, LObject> {
     val (a1, rest) = list
     return Pair(a1, arg1(rest))
 }
@@ -212,7 +212,7 @@ fun args2(list: LispObject): Pair<LispObject, LispObject> {
 // Return the first three elements of list. This is not checked -- if the list
 // is not a cons or not long enough, return Nil for efficiency reasons. The
 // caller must know or not care.
-fun args3(list: LispObject): Triple<LispObject, LispObject, LispObject> {
+fun args3(list: LObject): Triple<LObject, LObject, LObject> {
     val (a1, rest1) = list
     val (a2, rest2) = rest1
     return Triple(a1, a2, arg1(rest2))
@@ -234,7 +234,7 @@ fun var2key(sym: LSymbol): LSymbol {
     return intern(":" + sym.name)
 }
 
-fun itemList(args: LispObject): LispObject {
+fun itemList(args: LObject): LObject {
     return collectedList() { lc ->
         for (arg in args) {
             lc.add(arg)
@@ -242,7 +242,7 @@ fun itemList(args: LispObject): LispObject {
     }
 }
 
-fun withVariableAs(variable: LSymbol, value: LispObject, closure: () -> Unit) {
+fun withVariableAs(variable: LSymbol, value: LObject, closure: () -> Unit) {
     val previousValue = variable.getValueOptional()
     
     variable.setValue(value)

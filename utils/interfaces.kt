@@ -8,6 +8,6 @@ fun interface LocationHolder {
 }
 
 fun interface Callable {
-    fun call(arglist: LispObject): LispObject
+    fun call(arglist: LObject): LObject
 }
 

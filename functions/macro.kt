@@ -5,18 +5,18 @@ package org.w21.lyk
 class Macro(
     macroName: LSymbol?,                      // present if non anonymous
     stdPars: List<LSymbol>,                   // normal parameters
-    keyPars: Map<LSymbol, LispObject>,        // &key name => default
-    optPars: List<Pair<LSymbol, LispObject>>, // &optional name, default
+    keyPars: Map<LSymbol, LObject>,        // &key name => default
+    optPars: List<Pair<LSymbol, LObject>>, // &optional name, default
     restPar: LSymbol?,                        // &rest parameters
-    bodyForms: LispObject,                   //
+    bodyForms: LObject,                   //
     docBody: LString,                     // docstring sans signature
 ): Lambda(macroName, stdPars, keyPars, optPars, restPar, bodyForms,
           docBody, currentEnv, isSpecial = true)
 {
-    fun expand(arglist: LispObject) = call(arglist)
+    fun expand(arglist: LObject) = call(arglist)
 }
 
-fun macroExpandList(form: LispObject): Pair<LispObject, Boolean> {
+fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
     var haveExpanded = false
     val lc = ListCollector()
 
@@ -36,7 +36,7 @@ fun macroExpandList(form: LispObject): Pair<LispObject, Boolean> {
     return Pair(lc.list(), haveExpanded)
 }
 
-fun macroExpandFormRecurse(form: LispObject): Pair<LispObject, Boolean> {
+fun macroExpandFormRecurse(form: LObject): Pair<LObject, Boolean> {
     if (form is LCons) {
         val (head, args) = form
         if (head is LSymbol) {
@@ -51,7 +51,7 @@ fun macroExpandFormRecurse(form: LispObject): Pair<LispObject, Boolean> {
     }
 }
 
-fun macroExpandForm(form: LispObject): LispObject {
+fun macroExpandForm(form: LObject): LObject {
     var needExpansion = true
     var formvar = form
     while (needExpansion) {
@@ -65,8 +65,8 @@ fun macroExpandForm(form: LispObject): LispObject {
     return formvar
 }
 
-fun makeMacro(params: LispObject,
-              body: LispObject,
+fun makeMacro(params: LObject,
+              body: LObject,
               name: LSymbol? = null): Macro {
     return makeLambda(params, body, currentEnv, name, isMacro = true)
         as Macro

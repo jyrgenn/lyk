@@ -17,8 +17,8 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_elements(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_elements(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val seq = arg1(args)
 
     if (seq === Nil) {
@@ -49,8 +49,8 @@ fun bi_elements(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_elt(args: LispObject, kwArgs: Map<LSymbol, LispObject>
-): LispObject {
+fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
     val (seq, ind) = args2(args)
     val index = longArg(ind, "elt index")
 

@@ -12,8 +12,8 @@ print("""\
 package org.w21.lyk
 
 val noStd = arrayOf<String>()
-val noKey = mapOf<String, LispObject>()
-val noOpt = arrayOf<Pair<String, LispObject>>()
+val noKey = mapOf<String, LObject>()
+val noOpt = arrayOf<Pair<String, LObject>>()
 val noRest = null
 val noRet = "nil"
 
@@ -53,7 +53,7 @@ def print_init(builtin):
 
     if builtin.key:
         prin("/* key */ ")
-        prin("mapOf<String, LispObject>(")
+        prin("mapOf<String, LObject>(")
         prin(" ".join(builtin.key))
         prin(")")
     else:
@@ -62,7 +62,7 @@ def print_init(builtin):
 
     if builtin.opt:
         prin("/* opt */ ")
-        prin("arrayOf<Pair<String, LispObject>>(")
+        prin("arrayOf<Pair<String, LObject>>(")
         for vardef in builtin.opt.split(","):
             parts = vardef.split()
             var = parts[0]

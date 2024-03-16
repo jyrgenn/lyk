@@ -140,7 +140,7 @@ abstract class Stream(
                                         // network something
     val path: String? = null,           // file pathname
     val append: Boolean = false,        // "a"
-): LispObject()
+): LObject()
 {
     var charUnread: Char? = null
     var is_open = true

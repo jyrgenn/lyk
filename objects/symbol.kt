@@ -16,9 +16,9 @@ fun isNumberString(s: String): Boolean {
     }
 }
 
-class LSymbol(val name: String, val immutable: Boolean): LispObject()
+class LSymbol(val name: String, val immutable: Boolean): LObject()
 {
-    val props = mutableMapOf<LSymbol, LispObject>()
+    val props = mutableMapOf<LSymbol, LObject>()
     val descName = makeDescName()
     var function: Function? = null
 
@@ -45,7 +45,7 @@ class LSymbol(val name: String, val immutable: Boolean): LispObject()
             return sym
         }
 
-        fun makeGlobal(name: String, value: LispObject = Nil): LSymbol {
+        fun makeGlobal(name: String, value: LObject = Nil): LSymbol {
             val symbol = intern(name)
             rootEnv.map[symbol] = value
             return symbol
@@ -97,12 +97,12 @@ class LSymbol(val name: String, val immutable: Boolean): LispObject()
     }
 
     // Get the value of a property of LSymbol. If it is not defined, return Nil.
-    fun getprop(name: LSymbol): LispObject {
+    fun getprop(name: LSymbol): LObject {
         return props[name] ?: Nil
     }
     
     // Set the value of a property of LSymbol.
-    fun putprop(name: LSymbol, value: LispObject) {
+    fun putprop(name: LSymbol, value: LObject) {
         props[name] = value
     }
 
@@ -118,7 +118,7 @@ class LSymbol(val name: String, val immutable: Boolean): LispObject()
         function = func
     }
 
-    fun setValue(newvalue: LispObject, silent: Boolean = false) {
+    fun setValue(newvalue: LObject, silent: Boolean = false) {
         if (immutable) {
             throw ImmutableError(this, false)
         } else {
@@ -128,7 +128,7 @@ class LSymbol(val name: String, val immutable: Boolean): LispObject()
         }
     }
 
-    fun bind(newValue: LispObject) {
+    fun bind(newValue: LObject) {
         if (this.immutable) {
             throw Exception("symbol $this is immutable")
         }
@@ -139,28 +139,28 @@ class LSymbol(val name: String, val immutable: Boolean): LispObject()
 
     fun getValueOptional() = currentEnv.getValueMaybe(this)
 
-    fun setProp(name: LSymbol, value: LispObject) {
+    fun setProp(name: LSymbol, value: LObject) {
         props[name] = value
     }
 
-    fun getProp(name: LSymbol, default: LispObject): LispObject {
+    fun getProp(name: LSymbol, default: LObject): LObject {
         return props[name] ?: default
     }
 
-    fun remProp(name: LSymbol): LispObject {
+    fun remProp(name: LSymbol): LObject {
         val result = props[name] ?: Nil
         props.remove(name)
         return result
     }
 
-    override fun car(): LispObject {
+    override fun car(): LObject {
         if (this === Nil) {
             return Nil
         }
         throw ValueError("called car() of non-nil symbol $descName")
     }
 
-    override fun cdr(): LispObject {
+    override fun cdr(): LObject {
         if (this === Nil) {
             return Nil
         }
@@ -179,7 +179,7 @@ class LSymbol(val name: String, val immutable: Boolean): LispObject()
         return super.dump() + "($descName:$function:$props)"
     }
 
-    override fun compareTo(other: LispObject): Int {
+    override fun compareTo(other: LObject): Int {
 	if (other is LSymbol) {
 	    if (name < other.name) {
 		return -1

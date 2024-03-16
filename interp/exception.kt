@@ -1,7 +1,7 @@
 package org.w21.lyk
 
 
-class ErrorObject(val error: LispError): LispObject() {
+class ErrorObject(val error: LispError): LObject() {
     override fun toString() = error.toString()
 
     override fun desc() = "#<${typeOf(this)}: {error.toString()}>"
@@ -12,7 +12,7 @@ open class LispError(message: String): Exception(message) {
 
     open override fun toString() = "${typeOf(this)}: $message"
 
-    fun pushFrame(level: Int, form: LispObject, env: LEnv) {
+    fun pushFrame(level: Int, form: LObject, env: LEnv) {
         evalStack = LCons(Vector(makeNumber(level), form, env),
                          evalStack)
     }
@@ -35,7 +35,7 @@ class InternalReaderError(message: String,
 class ImmutableError(val symbol: LSymbol, val function: Boolean): 
     LispError("symbol $symbol is immutable")
 
-class UserError(message: String, val data: LispObject = Nil): Exception(message)
+class UserError(message: String, val data: LObject = Nil): Exception(message)
 
 open class ValueError(message: String,
                       lh: LocationHolder?): LispError(message) {
@@ -72,7 +72,7 @@ class FunctionError(message: String): LispError(message)
 
 class AbortEvalSignal(message: String): LispError(message)
 
-class ThrowSignal(val tag: LispObject, val value: LispObject):
+class ThrowSignal(val tag: LObject, val value: LObject):
     LispError("uncaught; tag $tag value $value")
 
 class EOFError(message: String): LispError(message)
@@ -85,7 +85,7 @@ class NotProvidedError(val feature: LSymbol):
     LispError("Required feature `$feature` has not been provided") {
 }
 
-class AssertionFail(form: LispObject, val moreInfo: LispObject):
+class AssertionFail(form: LObject, val moreInfo: LObject):
     LispError(form.toString())
 {
     override fun toString(): String =

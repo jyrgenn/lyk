@@ -11,10 +11,10 @@ val emptyString = makeString("")
 open class Lambda(                           // Macro will inherit this
     functionName: LSymbol?,                   // present if non anonymous
     stdPars: List<LSymbol>,                   // normal parameters
-    keyPars: Map<LSymbol, LispObject>,        // &key name => default
-    optPars: List<Pair<LSymbol, LispObject>>, // &optional name, default
+    keyPars: Map<LSymbol, LObject>,        // &key name => default
+    optPars: List<Pair<LSymbol, LObject>>, // &optional name, default
     restPar: LSymbol?,                       // &rest parameters
-    val bodyForms: LispObject,               //
+    val bodyForms: LObject,               //
     docBody: LString,                     // docstring sans signature
     val environment: LEnv,
     isSpecial: Boolean = false          // for Macros only
@@ -37,7 +37,7 @@ open class Lambda(                           // Macro will inherit this
     }
 
 
-    fun bindPars(arglist: LispObject) {
+    fun bindPars(arglist: LObject) {
        // first establish the kwArgs[] with the default values
         var kwArgs = keyPars.toMutableMap()
         var wantStdArgs = stdPars.size
@@ -118,7 +118,7 @@ open class Lambda(                           // Macro will inherit this
         }
     }
 
-    override fun call(arglist: LispObject): LispObject {
+    override fun call(arglist: LObject): LObject {
         return withNewEnvironment(environment) {
             bindPars(arglist)
             debug(debugLambdaParamsSym) {
@@ -193,8 +193,8 @@ val action_table = arrayOf( // [PLS, TC] => Ac
 )
 
 
-fun makeLambda(params: LispObject,
-               body: LispObject,
+fun makeLambda(params: LObject,
+               body: LObject,
                env: LEnv = currentEnv,
                name: LSymbol? = null,
                isMacro: Boolean = false): Lambda
@@ -202,9 +202,9 @@ fun makeLambda(params: LispObject,
     // sort params into the various params arrays
     var argptr = params
     val stdPars = mutableListOf<LSymbol>()
-    val optPars = mutableListOf<Pair<LSymbol, LispObject>>()
-    val keyPars = mutableMapOf<LSymbol, LispObject>()
-    var bodyForms: LispObject
+    val optPars = mutableListOf<Pair<LSymbol, LObject>>()
+    val keyPars = mutableMapOf<LSymbol, LObject>()
+    var bodyForms: LObject
     var docBody: LString = emptyString
     var rest_sym: LSymbol? = null
     val lambda_name = name?.toString() ?: "*anon-lambda*"
@@ -214,7 +214,7 @@ fun makeLambda(params: LispObject,
     // Nil, or a list of two elements, the name symbol and the default
     // value. Everything else will be flagged as an error. Return a tuple of
     // the name symbol and the default value.
-    fun parse_2parlist(parameter: LispObject): Pair<LSymbol, LispObject> {
+    fun parse_2parlist(parameter: LObject): Pair<LSymbol, LObject> {
         // print("parse_2parlist($parameter): ", terminator: "")
         if (parameter is LSymbol) {
             // print("LSymbol => $(sym, Nil)")
@@ -249,7 +249,7 @@ fun makeLambda(params: LispObject,
                              + " in $lambda_name definition")
     }
     
-    fun tokenClass(ob: LispObject): TC {
+    fun tokenClass(ob: LObject): TC {
         when (ob) {
             optionalPSym -> return TC.opt_sym
             keyPSym ->      return TC.key_sym

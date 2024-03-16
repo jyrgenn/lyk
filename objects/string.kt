@@ -5,7 +5,7 @@ package org.w21.lyk
 import java.util.WeakHashMap
 
 
-class LString(val value: String): LispObject() {
+class LString(val value: String): LObject() {
 
     // deinit {
     //     stringTable[value] = nil
@@ -24,7 +24,7 @@ class LString(val value: String): LispObject() {
             return strob
         }
 
-        fun strings(): LispObject {
+        fun strings(): LObject {
             // return list2lisp(stringTable.values)
 
             val lc = ListCollector()
@@ -54,7 +54,7 @@ class LString(val value: String): LispObject() {
         return result.toString()
     }
 
-    override fun compareTo(other: LispObject): Int {
+    override fun compareTo(other: LObject): Int {
         if (other is LString) {
             if (value < other.value) {
                 return -1

@@ -3,7 +3,7 @@
 package org.w21.lyk
 
 
-class LCons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
+class LCons(var car: LObject, var cdr: LObject = Nil): LObject() {
 
     init {
         debug(debugConsSym) {
@@ -15,7 +15,7 @@ class LCons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
     override fun toString(): String {
         val result = StrBuf("(")
 
-        var elem: LispObject = this
+        var elem: LObject = this
         while (elem is LCons) {
             result.add(elem.car().desc())
             if (elem.cdr !== Nil) {
@@ -35,19 +35,19 @@ class LCons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
 
     override fun desc() = toString()
 
-    fun rplaca(newcar: LispObject) {
+    fun rplaca(newcar: LObject) {
         car = newcar
     }
 
-    fun rplacd(newcdr: LispObject) {
+    fun rplacd(newcdr: LObject) {
         cdr = newcdr
     }
 
-    override fun car(): LispObject {
+    override fun car(): LObject {
         return car
     }
 
-    override fun cdr(): LispObject {
+    override fun cdr(): LObject {
         return cdr
     }
 
@@ -55,7 +55,7 @@ class LCons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
 
     override fun length(): Int {
         var len = 0
-        var cell: LispObject = this
+        var cell: LObject = this
         while (cell is LCons) {
             len++
             cell = cell.cdr()

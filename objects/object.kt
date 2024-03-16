@@ -5,7 +5,7 @@ package org.w21.lyk
 private var objectCounter = 0
 
 
-abstract class LispObject: Iterable<LispObject>, Comparable<LispObject> {
+abstract class LObject: Iterable<LObject>, Comparable<LObject> {
     val id: Int
     
     init {
@@ -42,42 +42,42 @@ abstract class LispObject: Iterable<LispObject>, Comparable<LispObject> {
     // be read by the reader to re-create the object.
     open fun desc() = toString()
 
-    open fun equal(other: LispObject) = false
+    open fun equal(other: LObject) = false
 
     override fun iterator() = ObjectIterator(this)
 
-    operator fun component1(): LispObject {
+    operator fun component1(): LObject {
         return (this as? LCons)?.car() ?:
             throw TypeError("$this is not a pair")
     }
 
-    operator fun component2(): LispObject {
+    operator fun component2(): LObject {
         return (this as? LCons)?.cdr() ?:
             throw TypeError("$this is not a pair")
     }
 
     fun toBoolean() = this != Nil
 
-    open fun car(): LispObject {
+    open fun car(): LObject {
         throw LispError("called car on non-list $this")
     }
 
-    open fun cdr(): LispObject {
+    open fun cdr(): LObject {
         throw LispError("called cdr on non-list $this")
     }
 
-    open override fun compareTo(other: LispObject): Int {
+    open override fun compareTo(other: LObject): Int {
         throw compareError(other)
     }
 
-    fun compareError(other: LispObject): Throwable {
+    fun compareError(other: LObject): Throwable {
         return TypeError("cannot compare ${typeOf(this)} `$this`"
                          +" to ${typeOf(other)} `$other`")
     }
 }
 
 
-class ObjectIterator(var theObject: LispObject): Iterator<LispObject> {
+class ObjectIterator(var theObject: LObject): Iterator<LObject> {
     val original = theObject
     var nextIndex = 0
 
@@ -92,7 +92,7 @@ class ObjectIterator(var theObject: LispObject): Iterator<LispObject> {
         }
     }
 
-    override fun next(): LispObject {
+    override fun next(): LObject {
         val ob = theObject
         when (ob) {
             Nil ->
