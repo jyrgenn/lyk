@@ -20,11 +20,11 @@ val specialChar2escaped = mapOf(
 // characters denoting the end of (most) tokens, besides whitespace
 val delimiter_chars = "(),'`\""
 
-val QuoteSymbol = LSymbol.intern("quote", true)
-val UnquoteSymbol = LSymbol.intern("unquote", true)
-val QuasiquoteSymbol = LSymbol.intern("quasiquote", true)
-val UnquoteSplicingSymbol = LSymbol.intern("unquote-splicing")
-val FunctionSymbol = LSymbol.intern("function", true)
+val QuoteSymbol = intern("quote", true)
+val UnquoteSymbol = intern("unquote", true)
+val QuasiquoteSymbol = intern("quasiquote", true)
+val UnquoteSplicingSymbol = intern("unquote-splicing")
+val FunctionSymbol = intern("function", true)
 
 fun closingOf(opening: Char): Char {
     // Return the closing character for the opening character. For brackets
@@ -591,7 +591,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
         
         when (token) {
             is SymbolToken ->
-                return LSymbol.intern(token.value)
+                return intern(token.value)
             is NumberToken ->
                 return Number.makeNumber(token.value)
             is StringToken ->

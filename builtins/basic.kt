@@ -88,7 +88,7 @@ fun bi_rplacd(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_intern(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
-    return LSymbol.intern(stringArg(arg1(args), "intern"))
+    return intern(stringArg(arg1(args), "intern"))
 }
 
 /// builtin list
@@ -788,7 +788,7 @@ fun bi_errset(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
         return Cons(eval(expr), Nil)
     } catch (lerror: LispError) {
         val errObj = lerror.toObject()
-        LSymbol.intern("*last-error*").setValue(errObj, silent = true)
+        intern("*last-error*").setValue(errObj, silent = true)
         if (print_error != Nil) {
             stderr.println(errObj)
         }
@@ -1139,7 +1139,7 @@ fun bi_length(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_typeof(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
-    return LSymbol.intern(typeOf(arg1(args)))
+    return intern(typeOf(arg1(args)))
 }
 
 /// builtin loop
@@ -1339,7 +1339,7 @@ fun bi_defvar(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     }
     if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
-        symbol.putprop(LSymbol.intern("docstring"),
+        symbol.putprop(intern("docstring"),
                        LispString.makeString(docstring))
     }
     return symbol
@@ -1365,7 +1365,7 @@ fun bi_defparameter(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObj
     symbol.setValue(eval(value), silent = true)
     if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
-        symbol.putprop(LSymbol.intern("docstring"),
+        symbol.putprop(intern("docstring"),
                        LispString.makeString(docstring))
     }
     return symbol

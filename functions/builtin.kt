@@ -6,7 +6,7 @@ fun maybeIntern(word: String?): LSymbol? {
     if (word == null) {
         return null
     }
-    return LSymbol.intern(word)
+    return intern(word)
 }
 
 
@@ -22,7 +22,7 @@ class Builtin(
     isSpecial: Boolean = false,
     docBodyS: String,
 ): Function(
-       LSymbol.intern(nameS),
+       intern(nameS),
        arrayIntern(stdParsS),
        mapInternKeys(keyParsS),
        pairsInternFirst(optParsS),

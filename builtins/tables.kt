@@ -101,8 +101,8 @@ fun bi_table_exists(args: LispObject, kwArgs: Map<LSymbol, LispObject>
     return tableArg(table, "table-exists").exists(key)
 }
 
-val initialKeySym = LSymbol.intern("initial")
-val createKeySym = LSymbol.intern("create")
+val initialKeySym = intern("initial")
+val createKeySym = intern("create")
 
 /// builtin table-inc
 /// fun     bi_table_inc

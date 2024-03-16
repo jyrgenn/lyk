@@ -23,7 +23,7 @@ class LSymbol(val name: String, val immutable: Boolean): LispObject()
     var function: Function? = null
 
     companion object {
-        fun intern(name: String, immutable_and_selfvalued: Boolean = false
+        fun interned(name: String, immutable_and_selfvalued: Boolean = false
         ): LSymbol {
             if (name in symbolTable.keys) {
                 return symbolTable[name] ?:
@@ -46,7 +46,7 @@ class LSymbol(val name: String, val immutable: Boolean): LispObject()
         }
 
         fun makeGlobal(name: String, value: LispObject = Nil): LSymbol {
-            val symbol = LSymbol.intern(name)
+            val symbol = intern(name)
             rootEnv.map[symbol] = value
             return symbol
         }
@@ -193,3 +193,6 @@ class LSymbol(val name: String, val immutable: Boolean): LispObject()
 	}
     }
 }
+
+fun intern(name: String, immutable_and_selfvalued: Boolean = false) =
+    LSymbol.interned(name, immutable_and_selfvalued)

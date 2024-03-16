@@ -47,7 +47,7 @@ fun bi_debug(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
                 var is_on = true
                 if (sym.name.startsWith("-")) {
                     is_on = false
-                    sym = LSymbol.intern(sym.name.substring(1))
+                    sym = intern(sym.name.substring(1))
                 }
                 if (!setDebug(sym, is_on)) {
                     throw ValueError("$sym is not a valid debug symbol")
@@ -265,7 +265,7 @@ fun bi_build_info(args: LispObject, kwArgs: Map<LSymbol, LispObject>
     var as_string = ob2bool(arg1(args))
     var lc = ListCollector()
     for ((key, value) in build_info) {
-        lc.add(Cons(LSymbol.intern(key), LispString.makeString(value)))
+        lc.add(Cons(intern(key), LispString.makeString(value)))
     }
     if (as_string) {
         return LispString.makeString(build_info.values.joinToString(" "))
@@ -292,19 +292,19 @@ fun bi_describe(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject 
 
     fun entry(name: String, s: String, asSym: Boolean) {
         if (asSym) {
-            lc.add(Cons(LSymbol.intern(name), LSymbol.intern(s)))
+            lc.add(Cons(intern(name), intern(s)))
         } else {
-            lc.add(Cons(LSymbol.intern(name), LispString.makeString(s)))
+            lc.add(Cons(intern(name), LispString.makeString(s)))
         }
     }
     fun entry(name: String, obj: LispObject) {
-        lc.add(Cons(LSymbol.intern(name), obj))
+        lc.add(Cons(intern(name), obj))
     }
     fun entry(name: String, value: Double) {
-        lc.add(Cons(LSymbol.intern(name), Number.makeNumber(value)))
+        lc.add(Cons(intern(name), Number.makeNumber(value)))
     }
     fun entry(name: String, value: Int) {
-        lc.add(Cons(LSymbol.intern(name), Number.makeNumber(value)))
+        lc.add(Cons(intern(name), Number.makeNumber(value)))
     }
     
     entry("type", typeOf(obj), true)
@@ -397,8 +397,8 @@ fun bi_require(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     throw NotProvidedError(feature) 
 }
 
-val k1Sym = LSymbol.intern(":k1")
-val k2Sym = LSymbol.intern(":k2")
+val k1Sym = intern(":k1")
+val k2Sym = intern(":k2")
 
 /// builtin barams
 /// fun     bi_barams

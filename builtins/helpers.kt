@@ -220,7 +220,7 @@ fun args3(list: LispObject): Triple<LispObject, LispObject, LispObject> {
 
 
 fun key2var(sym: LSymbol): LSymbol {
-    return LSymbol.intern(sym.name.substring(1))
+    return intern(sym.name.substring(1))
 }
 
 fun isKeysym(sym: LSymbol): LSymbol? {
@@ -231,7 +231,7 @@ fun isKeysym(sym: LSymbol): LSymbol? {
 }
 
 fun var2key(sym: LSymbol): LSymbol {
-    return LSymbol.intern(":" + sym.name)
+    return intern(":" + sym.name)
 }
 
 fun itemList(args: LispObject): LispObject {

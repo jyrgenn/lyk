@@ -74,7 +74,7 @@ fun setDebug(options: String?): Boolean {
     options ?: return false
     var isgood = true
     for (option in options.split(',')) {
-        val sym = LSymbol.intern(option)
+        val sym = intern(option)
         if (!setDebug(sym)) {
             isgood = false
             printErr("`$option` is not a valid debug option")

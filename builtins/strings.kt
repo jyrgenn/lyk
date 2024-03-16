@@ -2,7 +2,7 @@
 
 package org.w21.lyk
 
-val stringSeparatorKey = LSymbol.intern(":sep")
+val stringSeparatorKey = intern(":sep")
 val defaultStringSep = LispString.makeString(" ")
 
 fun string_from_list(items: LispObject, sep: String): LispObject {

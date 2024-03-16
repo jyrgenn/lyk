@@ -2,18 +2,18 @@
 
 package org.w21.lyk
 
-val directionKeyw = LSymbol.intern(":direction")
-val inputKeyw = LSymbol.intern(":input")
-val outputKeyw = LSymbol.intern(":output")
-val ioKeyw = LSymbol.intern(":io")
-val if_existsKeyw = LSymbol.intern(":if-exists")
-val new_versionKeyw = LSymbol.intern(":new-version")
-val overwriteKeyw = LSymbol.intern(":overwrite")
-val supersedeKeyw = LSymbol.intern(":supersede")
-val errorKeyw = LSymbol.intern(":error")
-val if_does_not_existKeyw = LSymbol.intern(":if-does-not-exist")
-val createKeyw = LSymbol.intern(":create")
-val sepKeyw = LSymbol.intern(":sep")
+val directionKeyw = intern(":direction")
+val inputKeyw = intern(":input")
+val outputKeyw = intern(":output")
+val ioKeyw = intern(":io")
+val if_existsKeyw = intern(":if-exists")
+val new_versionKeyw = intern(":new-version")
+val overwriteKeyw = intern(":overwrite")
+val supersedeKeyw = intern(":supersede")
+val errorKeyw = intern(":error")
+val if_does_not_existKeyw = intern(":if-does-not-exist")
+val createKeyw = intern(":create")
+val sepKeyw = intern(":sep")
 
 
 /// builtin println
@@ -297,7 +297,7 @@ fun bi_format(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 /// builtin open
 /// fun     bi_open
 /// std     fname
-/// key     ":if-does-not-exist" to LSymbol.intern(":error"), ":direction" to LSymbol.intern(":input"), ":if-exists" to LSymbol.intern(":overwrite")
+/// key     ":if-does-not-exist" to intern(":error"), ":direction" to intern(":input"), ":if-exists" to intern(":overwrite")
 /// opt     
 /// rest    
 /// ret     stream
