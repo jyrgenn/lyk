@@ -91,7 +91,7 @@ fun bi_doc(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     if (func is Function) {
         val doc = func.documentation()
         if (as_string) {
-            return LispString(doc)
+            return LString(doc)
         } else {
             print(doc)
             return theNonPrintingObject
@@ -265,10 +265,10 @@ fun bi_build_info(args: LispObject, kwArgs: Map<LSymbol, LispObject>
     var as_string = ob2bool(arg1(args))
     var lc = ListCollector()
     for ((key, value) in build_info) {
-        lc.add(Cons(intern(key), LispString.makeString(value)))
+        lc.add(Cons(intern(key), makeString(value)))
     }
     if (as_string) {
-        return LispString.makeString(build_info.values.joinToString(" "))
+        return makeString(build_info.values.joinToString(" "))
     }
     return lc.list()
 }
@@ -294,7 +294,7 @@ fun bi_describe(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject 
         if (asSym) {
             lc.add(Cons(intern(name), intern(s)))
         } else {
-            lc.add(Cons(intern(name), LispString.makeString(s)))
+            lc.add(Cons(intern(name), makeString(s)))
         }
     }
     fun entry(name: String, obj: LispObject) {
@@ -329,7 +329,7 @@ fun bi_describe(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject 
                   false)
             entry("special", bool2ob(obj.isSpecial))
         }
-        is LispString -> {
+        is LString -> {
             entry("len", obj.value.length)
             entry("value", obj)
         }

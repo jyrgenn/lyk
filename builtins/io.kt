@@ -19,7 +19,7 @@ val sepKeyw = intern(":sep")
 /// builtin println
 /// fun     bi_println
 /// std     
-/// key     "sep" to LispString.makeString(" ")
+/// key     "sep" to makeString(" ")
 /// opt     
 /// rest    args
 /// ret     *the-non-printing-object*
@@ -90,7 +90,7 @@ fun bi_prin1(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_prin1_to_string(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
-    return LispString.makeString(arg1(args).desc())
+    return makeString(arg1(args).desc())
 }
 
 /// builtin princ
@@ -142,7 +142,7 @@ fun bi_princ(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_princs(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
-    return LispString.makeString(arg1(args).toString())
+    return makeString(arg1(args).toString())
 }
 
 /// builtin terpri
@@ -284,7 +284,7 @@ fun bi_format(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val result = format.format(valueList(f_args))
     when (dest) {
         T -> stdout.write(result)
-        Nil -> return LispString.makeString(result)
+        Nil -> return makeString(result)
         is Stream ->
             dest.write(result)
         else ->

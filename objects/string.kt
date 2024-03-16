@@ -5,20 +5,20 @@ package org.w21.lyk
 import java.util.WeakHashMap
 
 
-class LispString(val value: String): LispObject() {
+class LString(val value: String): LispObject() {
 
     // deinit {
     //     stringTable[value] = nil
     // }
 
     companion object {
-        // val stringTable = mutableMapOf<String, LispString>()
-        val stringTable = WeakHashMap(mutableMapOf<String, LispString>())
+        // val stringTable = mutableMapOf<String, LString>()
+        val stringTable = WeakHashMap(mutableMapOf<String, LString>())
 
-        fun makeString(value: String): LispString {
+        fun mkString(value: String): LString {
             var strob = stringTable.get(value)
             if (strob == null) {
-                strob = LispString(value)
+                strob = LString(value)
                 stringTable.put(value, strob)
             }
             return strob
@@ -55,7 +55,7 @@ class LispString(val value: String): LispObject() {
     }
 
     override fun compareTo(other: LispObject): Int {
-        if (other is LispString) {
+        if (other is LString) {
             if (value < other.value) {
                 return -1
             } else if (value > other.value) {
@@ -68,6 +68,8 @@ class LispString(val value: String): LispObject() {
         }
     }
 }
+
+fun makeString(value: String) = LString.mkString(value)
 
 
 // EOF

@@ -16,7 +16,7 @@ class Regexp(pattern: String): LispObject() {
     fun match(s: String): LispObject {
         val lc = ListCollector()
         for (match in regex.findAll(s)) {
-            lc.add(LispString(match.value))
+            lc.add(LString(match.value))
         }
         return lc.list()
     }

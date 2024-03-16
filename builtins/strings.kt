@@ -3,14 +3,14 @@
 package org.w21.lyk
 
 val stringSeparatorKey = intern(":sep")
-val defaultStringSep = LispString.makeString(" ")
+val defaultStringSep = makeString(" ")
 
 fun string_from_list(items: LispObject, sep: String): LispObject {
     var strings = mutableListOf<String>()
     for (item in items) {
         strings.add(item.toString())
     }
-    return LispString.makeString(strings.joinToString(sep))
+    return makeString(strings.joinToString(sep))
 }
 
 /// builtin string

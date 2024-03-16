@@ -9,7 +9,7 @@ class Macro(
     optPars: List<Pair<LSymbol, LispObject>>, // &optional name, default
     restPar: LSymbol?,                        // &rest parameters
     bodyForms: LispObject,                   //
-    docBody: LispString,                     // docstring sans signature
+    docBody: LString,                     // docstring sans signature
 ): Lambda(macroName, stdPars, keyPars, optPars, restPar, bodyForms,
           docBody, currentEnv, isSpecial = true)
 {

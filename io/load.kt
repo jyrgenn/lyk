@@ -13,7 +13,7 @@ fun load(load_stream: Stream, name: String, verbose: Boolean = false,
          throw_error: Boolean = true): LispObject {
     var success = Nil
     
-    withVariableAs(currentLoadFile, LispString.makeString(name)) {
+    withVariableAs(currentLoadFile, makeString(name)) {
         try {
             var error: LispError? = null
             val perfdata = measurePerfdata {

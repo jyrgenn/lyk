@@ -928,7 +928,7 @@ fun bi_errorp(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_stringp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args) is LispString)
+    return bool2ob(arg1(args) is LString)
 }
 
 /// builtin numberp
@@ -1234,7 +1234,7 @@ fun bi_unwind_protect(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// fun     bi_gensym
 /// std     
 /// key     
-/// opt     prefix LispString.makeString("G#")
+/// opt     prefix makeString("G#")
 /// rest    
 /// ret     symbol
 /// special no
@@ -1340,7 +1340,7 @@ fun bi_defvar(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
         symbol.putprop(intern("docstring"),
-                       LispString.makeString(docstring))
+                       makeString(docstring))
     }
     return symbol
 }
@@ -1366,7 +1366,7 @@ fun bi_defparameter(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObj
     if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
         symbol.putprop(intern("docstring"),
-                       LispString.makeString(docstring))
+                       makeString(docstring))
     }
     return symbol
 }
@@ -1415,7 +1415,7 @@ fun bi_read(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
         input_stream = stdin
     } else if (tentative_stream is Stream) {
         input_stream = tentative_stream
-    } else if (tentative_stream is LispString) {
+    } else if (tentative_stream is LString) {
         input_stream = StringReaderStream(tentative_stream.value)
     }
     if (input_stream == null) {
@@ -1484,7 +1484,7 @@ fun bi_flet(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_symbol_name(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
-    return LispString.makeString(symbolArg(arg1(args), "symbol-name").name)
+    return makeString(symbolArg(arg1(args), "symbol-name").name)
 }
 
 /// builtin atom

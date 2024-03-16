@@ -13,7 +13,7 @@ abstract class Function(
     val restPar: LSymbol?,                       // &rest parameters
     val retval: LSymbol?,                         // return value description
     val isSpecial: Boolean,                      // used by Builtins only
-    val docBody: LispString,                     // docstring sans signature
+    val docBody: LString,                     // docstring sans signature
 ): LispObject(), Callable {
     val name: LSymbol
     val has_name: Boolean

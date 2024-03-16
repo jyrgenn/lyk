@@ -116,7 +116,7 @@ fun main(args: Array<String>) {
 
     val lc = ListCollector()
     for (arg in argl) {
-        lc.add(LispString(arg))
+        lc.add(LString(arg))
     }
     commandLineArgs.setValue(lc.list())
     

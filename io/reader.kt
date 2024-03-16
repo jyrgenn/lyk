@@ -595,7 +595,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
             is NumberToken ->
                 return makeNumber(token.value)
             is StringToken ->
-                return LispString.makeString(token.value)
+                return makeString(token.value)
             is OparenToken ->
                 return readList()
             is TableStartToken ->

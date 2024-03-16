@@ -5,7 +5,7 @@ package org.w21.lyk
 val optionalPSym = intern("&optional")
 val keyPSym = intern("&key")
 val restPSym = intern("&rest")
-val emptyString = LispString.makeString("")
+val emptyString = makeString("")
 
 
 open class Lambda(                           // Macro will inherit this
@@ -15,7 +15,7 @@ open class Lambda(                           // Macro will inherit this
     optPars: List<Pair<LSymbol, LispObject>>, // &optional name, default
     restPar: LSymbol?,                       // &rest parameters
     val bodyForms: LispObject,               //
-    docBody: LispString,                     // docstring sans signature
+    docBody: LString,                     // docstring sans signature
     val environment: Environment,
     isSpecial: Boolean = false          // for Macros only
 ): Function(functionName, stdPars, keyPars, optPars, restPar,
@@ -205,7 +205,7 @@ fun makeLambda(params: LispObject,
     val optPars = mutableListOf<Pair<LSymbol, LispObject>>()
     val keyPars = mutableMapOf<LSymbol, LispObject>()
     var bodyForms: LispObject
-    var docBody: LispString = emptyString
+    var docBody: LString = emptyString
     var rest_sym: LSymbol? = null
     val lambda_name = name?.toString() ?: "*anon-lambda*"
 
@@ -302,7 +302,7 @@ fun makeLambda(params: LispObject,
     }
     if (body is Cons) {
         val maybeDoc = body.car()
-        if (maybeDoc is LispString) {
+        if (maybeDoc is LString) {
             docBody = maybeDoc
             bodyForms = body.cdr()
         } else {

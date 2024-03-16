@@ -20,10 +20,14 @@ fun padString(s: String, width: Int, pad: Char = ' '): String {
 }
 
 fun typeOf(obj: Any): String {
-    if (obj is LispString) {
+    if (obj is LString) {
         return "string"
     }
-    return "${obj::class.simpleName}"//.lowercase()
+    val typ = "${obj::class.simpleName}"
+    if (typ.startsWith("L")) {
+        return typ.substring(1)
+    }
+    return typ
 }
 
 

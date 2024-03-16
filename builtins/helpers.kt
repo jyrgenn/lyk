@@ -75,12 +75,12 @@ fun listArg(arg: LispObject, what: String): LispObject {
 // }
 
 fun stringArg(arg: LispObject, what: String): String {
-    return (arg as? LispString)?.value ?:
+    return (arg as? LString)?.value ?:
         throw ArgumentError("$what argument not a string: $arg")
 }
 
 fun stringlikeArg(arg: LispObject, what: String): String {
-    if (arg is LispString) {
+    if (arg is LString) {
         return arg.value
     }
     if (arg is LSymbol) {
