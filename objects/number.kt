@@ -17,10 +17,7 @@ class Number(val value: Double): LispObject() {
 
         val numberTable = WeakHashMap(mutableMapOf<Double, Number>())
 
-        fun makeNumber(value: Long) = makeNumber(value.toDouble())
-        fun makeNumber(value: Int) = makeNumber(value.toDouble())
-        
-        fun makeNumber(value: Double): Number {
+        fun mkNumber(value: Double): Number {
             var numob = numberTable.get(value)
             if (numob == null) {
                 numob = Number(value)
@@ -75,6 +72,9 @@ class Number(val value: Double): LispObject() {
     }
 }
 
+fun makeNumber(value: Long) = Number.mkNumber(value.toDouble())
+fun makeNumber(value: Int) = Number.mkNumber(value.toDouble())
+fun makeNumber(value: Double) = Number.mkNumber(value)
 
 
 // EOF

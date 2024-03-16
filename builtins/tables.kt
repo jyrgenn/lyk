@@ -79,7 +79,7 @@ fun bi_make_table(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 fun bi_table_count(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val table = arg1(args)
-    return Number.makeNumber(tableArg(table, "table-count").the_table.size)
+    return makeNumber(tableArg(table, "table-count").the_table.size)
 }
 
 /// builtin table-exists
@@ -107,8 +107,8 @@ val createKeySym = intern("create")
 /// builtin table-inc
 /// fun     bi_table_inc
 /// std     table key
-/// key     "create" to Nil, "initial" to Number.makeNumber(0)
-/// opt     increment Number.makeNumber(1)
+/// key     "create" to Nil, "initial" to makeNumber(0)
+/// opt     increment makeNumber(1)
 /// rest    
 /// ret     value
 /// special no
@@ -131,13 +131,13 @@ fun bi_table_inc(args: LispObject, kwArgs: Map<LSymbol, LispObject>
         if (value !is Number) {
             throw TypeError("key value $value in table $table not a number")
         }
-        val new_value = Number.makeNumber(value.value + increment)
+        val new_value = makeNumber(value.value + increment)
         table.put(key, new_value)
         return new_value
     } else if (kwArgs[createKeySym] !== Nil) {
         val initial = numberArg(kwArgs[initialKeySym] ?: Nil,
                                 "table-inc initial")
-        val new_value = Number.makeNumber(initial + increment)
+        val new_value = makeNumber(initial + increment)
         table.put(key, new_value)
         return new_value
     } else {

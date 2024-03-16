@@ -1122,7 +1122,7 @@ fun bi_builtinp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_length(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
-    return Number.makeNumber(arg1(args).length())
+    return makeNumber(arg1(args).length())
 }
 
 /// builtin typeof

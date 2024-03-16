@@ -593,7 +593,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
             is SymbolToken ->
                 return intern(token.value)
             is NumberToken ->
-                return Number.makeNumber(token.value)
+                return makeNumber(token.value)
             is StringToken ->
                 return LispString.makeString(token.value)
             is OparenToken ->

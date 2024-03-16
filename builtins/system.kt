@@ -301,10 +301,10 @@ fun bi_describe(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject 
         lc.add(Cons(intern(name), obj))
     }
     fun entry(name: String, value: Double) {
-        lc.add(Cons(intern(name), Number.makeNumber(value)))
+        lc.add(Cons(intern(name), makeNumber(value)))
     }
     fun entry(name: String, value: Int) {
-        lc.add(Cons(intern(name), Number.makeNumber(value)))
+        lc.add(Cons(intern(name), makeNumber(value)))
     }
     
     entry("type", typeOf(obj), true)
@@ -403,8 +403,8 @@ val k2Sym = intern(":k2")
 /// builtin barams
 /// fun     bi_barams
 /// std     a b c
-/// key     "k1" to Number.makeNumber(3), "k2" to Nil
-/// opt     d, e Number.makeNumber(4)
+/// key     "k1" to makeNumber(3), "k2" to Nil
+/// opt     d, e makeNumber(4)
 /// rest    grabbelsack
 /// ret     t
 /// special no
