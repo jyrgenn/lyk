@@ -3,7 +3,7 @@
 package org.w21.lyk
 
 
-class Regexp(pattern: String): LObject() {
+class LRegexp(pattern: String): LObject() {
     val regex: Regex
 
     init {
@@ -25,7 +25,7 @@ class Regexp(pattern: String): LObject() {
         if (this === other) {
             return true
         }
-        return (other is Regexp) && regex.pattern == other.regex.pattern
+        return (other is LRegexp) && regex.pattern == other.regex.pattern
     }
 }
 

@@ -65,10 +65,10 @@ fun bi_join(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val re = arg1(args)
-    if (re is Regexp) {
+    if (re is LRegexp) {
         return re
     }
-    return Regexp(re.toString())
+    return LRegexp(re.toString())
 }
 
 /// builtin regexp-match

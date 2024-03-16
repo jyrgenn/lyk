@@ -603,7 +603,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
             is VectorStartToken ->
                 return readVector()
             is RegexpToken ->
-                return Regexp(token.value)
+                return LRegexp(token.value)
             is QuoteToken ->
                 macroSymbol = QuoteSymbol
             is FunctionToken ->

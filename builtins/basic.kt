@@ -981,7 +981,7 @@ fun bi_consp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_regexpp(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return bool2ob(arg1(args) is Regexp)
+    return bool2ob(arg1(args) is LRegexp)
 }
 
 /// builtin symbolp

@@ -347,7 +347,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         is Table -> {
              entry("size", obj.the_table.size)
         }
-        is Regexp -> {
+        is LRegexp -> {
             entry("pattern", obj.regex.toString(), false)
         }
         else -> Nil

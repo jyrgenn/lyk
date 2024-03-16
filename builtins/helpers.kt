@@ -101,8 +101,8 @@ fun tableArg(arg: LObject, what: String): Table {
     throw ArgumentError("$what argument not a table: $arg")
 }
 
-fun regexpArg(arg: LObject, what: String): Regexp {
-    if (arg is Regexp) {
+fun regexpArg(arg: LObject, what: String): LRegexp {
+    if (arg is LRegexp) {
         return arg
     }
     throw ArgumentError("$what argument not a regexp: $arg")
