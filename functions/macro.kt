@@ -2,7 +2,7 @@
 
 package org.w21.lyk
 
-class Macro(
+class LMacro(
     macroName: LSymbol?,                      // present if non anonymous
     stdPars: List<LSymbol>,                   // normal parameters
     keyPars: Map<LSymbol, LObject>,        // &key name => default
@@ -41,7 +41,7 @@ fun macroExpandFormRecurse(form: LObject): Pair<LObject, Boolean> {
         val (head, args) = form
         if (head is LSymbol) {
             val maybeMacro = head.function
-            if (maybeMacro is Macro) {
+            if (maybeMacro is LMacro) {
                 return Pair(maybeMacro.expand(args), true)
             }
         }
@@ -67,7 +67,7 @@ fun macroExpandForm(form: LObject): LObject {
 
 fun makeMacro(params: LObject,
               body: LObject,
-              name: LSymbol? = null): Macro {
+              name: LSymbol? = null): LMacro {
     return makeLambda(params, body, currentEnv, name, isMacro = true)
-        as Macro
+        as LMacro
 }

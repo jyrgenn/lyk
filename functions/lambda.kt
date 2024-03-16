@@ -312,7 +312,7 @@ fun makeLambda(params: LObject,
         bodyForms = body
     }
     if (isMacro) {
-        return Macro(name, stdPars, keyPars, optPars, rest_sym,
+        return LMacro(name, stdPars, keyPars, optPars, rest_sym,
                      bodyForms, docBody)
     } else {
         return Lambda(name, stdPars, keyPars, optPars, rest_sym,

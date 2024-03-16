@@ -254,7 +254,7 @@ fun bi_make_string_input_stream(args: LObject,
 @Suppress("UNUSED_PARAMETER")
 fun bi_stream(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val arg = arg1(args)
-    if (arg is Stream) {
+    if (arg is LStream) {
         return arg
     }
     return StringReaderStream(arg.toString())
@@ -285,7 +285,7 @@ fun bi_format(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     when (dest) {
         T -> stdout.write(result)
         Nil -> return makeString(result)
-        is Stream ->
+        is LStream ->
             dest.write(result)
         else ->
             throw ArgumentError("format `dest` not nil or t or stream: $dest")

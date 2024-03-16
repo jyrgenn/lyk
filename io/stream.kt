@@ -14,7 +14,7 @@ val newLine = 10
 
 
 open class StringReaderStream(content: String, name: String? = ""):
-    Stream(input = true, path = null, name = name)
+    LStream(input = true, path = null, name = name)
 {
     val chars = content.toCharArray()
     var nextpos = 0
@@ -33,7 +33,7 @@ open class StringReaderStream(content: String, name: String? = ""):
 
 open class FileReaderStream(path: String, name: String? = null,
                             error: Boolean = true):
-    Stream(input = true, path = path, name = name ?: path, error = error)
+    LStream(input = true, path = path, name = name ?: path, error = error)
 {
     val fileReader = File(path).bufferedReader()
 
@@ -63,7 +63,7 @@ open class FileWriterStream(path: String,
                             // append: Boolean = false,
                             // create: Boolean = true,
                             // exclusive: Boolean = false
-): Stream(output = true, path = path, name = name ?: "'$path'", error = error)
+): LStream(output = true, path = path, name = name ?: "'$path'", error = error)
 {
     val fileWriter = File(path).printWriter().buffered()
 
@@ -132,7 +132,7 @@ open class FileWriterStream(path: String,
     }
 }
 
-abstract class Stream(
+abstract class LStream(
     val input: Boolean = false,         // is input stream?
     val output: Boolean = false,        // is output stream?
     val error: Boolean = false,         // i.e. stderr

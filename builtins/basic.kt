@@ -1409,11 +1409,11 @@ fun bi_last(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_read(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (tentative_stream, eof_error_p, eof_value) = args3(args)
-    var input_stream: Stream? = null
+    var input_stream: LStream? = null
 
     if (tentative_stream === Nil) {
         input_stream = stdin
-    } else if (tentative_stream is Stream) {
+    } else if (tentative_stream is LStream) {
         input_stream = tentative_stream
     } else if (tentative_stream is LString) {
         input_stream = StringReaderStream(tentative_stream.value)

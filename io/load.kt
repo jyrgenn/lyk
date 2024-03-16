@@ -9,7 +9,7 @@ fun load_file(fname: String, verbose: Boolean = false,
     return load(load_stream, fname, verbose, throw_error)
 }
 
-fun load(load_stream: Stream, name: String, verbose: Boolean = false,
+fun load(load_stream: LStream, name: String, verbose: Boolean = false,
          throw_error: Boolean = true): LObject {
     var success = Nil
     

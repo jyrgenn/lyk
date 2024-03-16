@@ -3,15 +3,15 @@
 package org.w21.lyk
 
 
-fun outputStreamArg(arg: LObject, what: String): Stream {
+fun outputStreamArg(arg: LObject, what: String): LStream {
     if (arg === Nil) {
         return stdout
     }
     return streamArg(arg, what)
 }
 
-fun streamArg(arg: LObject, what: String): Stream { 
-    return (arg as? Stream) ?:
+fun streamArg(arg: LObject, what: String): LStream { 
+    return (arg as? LStream) ?:
         throw ArgumentError("$what argument is not a stream: $arg")
 }
 
