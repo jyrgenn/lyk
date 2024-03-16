@@ -1,0 +1,8 @@
+
+func Preload() string {
+        return preloadLisp
+}
+
+func Init_generated() {
+	//fmt.Println("preload_.init")
+}

@@ -1,0 +1,7 @@
+// -*- go -*-
+// Generated file, DO NOT EDIT!
+
+// A string with Lisp code to be loaded on lingo startup
+package gen
+
+var preloadLisp string =
