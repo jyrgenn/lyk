@@ -116,7 +116,7 @@ fun bi_doc(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_numbers(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
-    return Number.numbers()
+    return LNumber.numbers()
 }
 
 
@@ -337,7 +337,7 @@ fun bi_describe(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject 
             entry("level", obj.level)
             entry("size", obj.map.size)
         }
-        is Number -> {
+        is LNumber -> {
             entry("value", obj)
             entry("intp", bool2ob(obj.isLong()))
         }

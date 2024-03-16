@@ -5,22 +5,22 @@ package org.w21.lyk
 import java.util.WeakHashMap
 
 
-// class Number: LispObject, Comparable {
-class Number(val value: Double): LispObject() {
+// class LNumber: LispObject, Comparable {
+class LNumber(val value: Double): LispObject() {
     // this is a rudimentary number implementation for now
 
     constructor(longValue: Long) : this(longValue.toDouble()) {}
     constructor(intValue: Int) : this(intValue.toDouble()) {}
 
     companion object {
-        // val numberTable = mutableMapOf<Double, Number>()
+        // val numberTable = mutableMapOf<Double, LNumber>()
 
-        val numberTable = WeakHashMap(mutableMapOf<Double, Number>())
+        val numberTable = WeakHashMap(mutableMapOf<Double, LNumber>())
 
-        fun mkNumber(value: Double): Number {
+        fun mkNumber(value: Double): LNumber {
             var numob = numberTable.get(value)
             if (numob == null) {
-                numob = Number(value)
+                numob = LNumber(value)
                 numberTable.put(value, numob)
             }
             return numob
@@ -58,7 +58,7 @@ class Number(val value: Double): LispObject() {
     override fun toString() = desc()
 
     override fun compareTo(other: LispObject): Int {
-        if (other is Number) {
+        if (other is LNumber) {
             if (value < other.value) {
                 return -1
             } else if (value > other.value) {
@@ -72,9 +72,9 @@ class Number(val value: Double): LispObject() {
     }
 }
 
-fun makeNumber(value: Long) = Number.mkNumber(value.toDouble())
-fun makeNumber(value: Int) = Number.mkNumber(value.toDouble())
-fun makeNumber(value: Double) = Number.mkNumber(value)
+fun makeNumber(value: Long) = LNumber.mkNumber(value.toDouble())
+fun makeNumber(value: Int) = LNumber.mkNumber(value.toDouble())
+fun makeNumber(value: Double) = LNumber.mkNumber(value)
 
 
 // EOF

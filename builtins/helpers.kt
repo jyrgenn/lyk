@@ -21,12 +21,12 @@ fun envArg(arg: LispObject, what: String): LEnv {
 }
 
 fun numberArg(arg: LispObject, what: String): Double {
-    return (arg as? Number)?.value ?:
+    return (arg as? LNumber)?.value ?:
         throw ArgumentError("$what argument not a number: $arg (${typeOf(arg)})")
 }
 
 // fun longArg(arg: LispObject, what: String): Int {
-//     if let num = arg as? Number {
+//     if let num = arg as? LNumber {
 //         let intval = Int(num.value)
 //         if num.value == Double(intval) {
 //             return intval
@@ -36,7 +36,7 @@ fun numberArg(arg: LispObject, what: String): Double {
 // }
 
 fun longArg(arg: LispObject, what: String): Long {
-    if (arg is Number && arg.isLong()) {
+    if (arg is LNumber && arg.isLong()) {
         return arg.value.toLong()
     }
     throw ArgumentError("$what argument not an integer: $arg")

@@ -20,7 +20,7 @@ fun valueList(elems: LispObject): List<Any> {
 
     for (elem in elems) {
         l.add(when (elem) {
-                  is Number -> elem.value
+                  is LNumber -> elem.value
                   else -> elem.toString()
               })
     }

@@ -128,7 +128,7 @@ fun bi_table_inc(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 
     val value = table.the_table[key]
     if (value != null) {
-        if (value !is Number) {
+        if (value !is LNumber) {
             throw TypeError("key value $value in table $table not a number")
         }
         val new_value = makeNumber(value.value + increment)
