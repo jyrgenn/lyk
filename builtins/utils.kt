@@ -32,14 +32,14 @@ package org.w21.lyk
 fun bi_list_collector(args: LispObject,
                             kwArgs: Map<LSymbol, LispObject>): LispObject {
     var the_list: LispObject = Nil
-    var last_cons: Cons? = null
+    var last_cons: LCons? = null
 
     fun list_collector(args: LispObject,
                         kwArgs: Map<LSymbol, LispObject>): LispObject {
         for (arg in args) {
-            val newcons = Cons(arg, Nil)
+            val newcons = LCons(arg, Nil)
             if (last_cons != null) {
-                (last_cons as Cons).rplacd(newcons)
+                (last_cons as LCons).rplacd(newcons)
             } else {
                 the_list = newcons
             }

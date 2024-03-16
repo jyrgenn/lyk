@@ -55,8 +55,8 @@ fun functionArg(arg: LispObject, what: String): Function {
 //                           + " not comparable")
 // }
 
-fun consArg(arg: LispObject, what: String): Cons {
-    return arg as? Cons ?:
+fun consArg(arg: LispObject, what: String): LCons {
+    return arg as? LCons ?:
         throw ArgumentError("$what argument not a cons: $arg")
 }
 
@@ -132,7 +132,7 @@ fun spreadArglist(args: LispObject): LispObject {
     var lastBut2nd: LispObject = Nil
     var next = arglist
 
-    while (next is Cons) {
+    while (next is LCons) {
         lastBut2nd = last
         last = next
         next = next.cdr()
@@ -141,7 +141,7 @@ fun spreadArglist(args: LispObject): LispObject {
     if (lastBut2nd === Nil) {
         arglist = tail
     } else {
-        (lastBut2nd as Cons).rplacd(tail)
+        (lastBut2nd as LCons).rplacd(tail)
     }
     return arglist
 }
@@ -159,11 +159,11 @@ fun ob2bool(value: LispObject): Boolean {
     return value !== Nil
 }
 
-fun lastCons(list: Cons): Cons {
+fun lastCons(list: LCons): LCons {
     var last2b = list
     while (true) {
         val next = last2b.cdr()
-        if (next is Cons) {
+        if (next is LCons) {
             last2b = next
         } else {
             return last2b
@@ -171,11 +171,11 @@ fun lastCons(list: Cons): Cons {
     }
 }
 
-fun lastCons2(list: Cons): Cons {
+fun lastCons2(list: LCons): LCons {
     var last = list
 
-    while (last.cdr() is Cons) {
-        last = last.cdr() as Cons
+    while (last.cdr() is LCons) {
+        last = last.cdr() as LCons
     }
     return last
 }
@@ -184,21 +184,21 @@ fun lastCons2(list: Cons): Cons {
 // not a cons, return Nil for efficiency reasons. The caller must know or not
 // care.
 fun arg1(list: LispObject): LispObject {
-    return (list as? Cons)?.car() ?: Nil
+    return (list as? LCons)?.car() ?: Nil
 }
 
 // Return the second element of list. This is not checked -- if the list is not
 // a cons or not long enough, return Nil for efficiency reasons. The caller must
 // know or not care.
 fun arg2(list: LispObject): LispObject {
-    return ((list as? Cons)?.cdr() as? Cons)?.car() ?: Nil
+    return ((list as? LCons)?.cdr() as? LCons)?.car() ?: Nil
 }
 
 // Return the third element of list. This is not checked -- if the list is not a
 // cons or not long enough, return Nil for efficiency reasons. The caller must
 // know or not care.
 fun arg3(list: LispObject): LispObject {
-    return (((list as? Cons)?.cdr() as? Cons)?.cdr() as? Cons)?.car() ?: Nil
+    return (((list as? LCons)?.cdr() as? LCons)?.cdr() as? LCons)?.car() ?: Nil
 }
 
 // Return the first two elements of list. This is not checked -- if the list is

@@ -48,7 +48,7 @@ open class Lambda(                           // Macro will inherit this
 
         var restArgs = ListCollector()
 
-        if (arglist !is Cons && arglist !== Nil) {
+        if (arglist !is LCons && arglist !== Nil) {
             throw CallError("$this called with improper arglist: $arglist")
         }
 
@@ -219,7 +219,7 @@ fun makeLambda(params: LispObject,
         if (parameter is LSymbol) {
             // print("LSymbol => $(sym, Nil)")
             return Pair(parameter, Nil)
-        } else if (parameter is Cons) {
+        } else if (parameter is LCons) {
             val sym = parameter.car()
             if (sym !is LSymbol) {
                 throw LambdaDefError(
@@ -231,7 +231,7 @@ fun makeLambda(params: LispObject,
                 return Pair(sym, Nil)
             }
             val elem2 = parameter.cdr()
-            if (elem2 is Cons) {
+            if (elem2 is LCons) {
                 if (elem2.cdr() != Nil) {
                     throw LambdaDefError(
                         "invalid list in &optional parameter spec for "
@@ -259,7 +259,7 @@ fun makeLambda(params: LispObject,
     }
 
     var state = PLS.in_std
-    while (argptr is Cons) {
+    while (argptr is LCons) {
         val elem = argptr.car()
         val tclass = tokenClass(elem)
         val action = action_table[state.ordinal][tclass.ordinal]
@@ -300,7 +300,7 @@ fun makeLambda(params: LispObject,
         throw LambdaDefError("parameter list of $lambda_name is not a "
                              + "proper list: $params")            
     }
-    if (body is Cons) {
+    if (body is LCons) {
         val maybeDoc = body.car()
         if (maybeDoc is LString) {
             docBody = maybeDoc

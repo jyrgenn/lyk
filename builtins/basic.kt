@@ -123,7 +123,7 @@ fun bi_list(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_cons(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (car, cdr) = args2(args)
-    return Cons(car, cdr)
+    return LCons(car, cdr)
 }
 
 /// builtin set
@@ -215,9 +215,9 @@ fun bi_let(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 	    debug(debugLetBindSym) {
                 "will bind lone $binding to nil"
             }
-        } else if (binding is Cons) {
+        } else if (binding is LCons) {
 	    val (sym, rest) = binding
-	    if (rest !is Cons) {
+	    if (rest !is LCons) {
 		throw ArgumentError("let: malformed variable clause for `$sym`")
 	    }
 	    if (rest.cdr() != Nil) {
@@ -278,9 +278,9 @@ fun bi_letrec(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject{
         if (binding is LSymbol) {
             syms.add(binding)
             vals.add(Nil)
-        } else if (binding is Cons) {
+        } else if (binding is LCons) {
 	    val (sym, rest) = binding
-	    if (rest !is Cons) {
+	    if (rest !is LCons) {
 		throw ArgumentError("let*: malformed variable clause")
 	    }
 	    if (rest.cdr() != Nil) {
@@ -785,7 +785,7 @@ fun bi_errset(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val saveErrset = inErrset
     inErrset = true
     try {
-        return Cons(eval(expr), Nil)
+        return LCons(eval(expr), Nil)
     } catch (lerror: LispError) {
         val errObj = lerror.toObject()
         intern("*last-error*").setValue(errObj, silent = true)
@@ -963,7 +963,7 @@ fun bi_numberp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_consp(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
-    return bool2ob(arg1(args) is Cons)
+    return bool2ob(arg1(args) is LCons)
 }
 
 /// builtin regexpp
@@ -1052,7 +1052,7 @@ fun bi_vectorp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_listp(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val arg = arg1(args)
-    return bool2ob(arg is Cons || arg === Nil)
+    return bool2ob(arg is LCons || arg === Nil)
 }
 
 /// builtin functionp
@@ -1282,7 +1282,7 @@ fun bi_append(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val lc = ListCollector()
 
     var pair = args
-    while (pair is Cons) {
+    while (pair is LCons) {
         val arg = pair.car()
         if (pair.cdr() === Nil) {
             lc.lastcdr(arg)
@@ -1628,8 +1628,8 @@ fun bi_nreverse(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject 
     if (cell === Nil) {
         return Nil
     }
-    (cell as Cons).rplacd(Nil)
-    while (next is Cons) {
+    (cell as LCons).rplacd(Nil)
+    while (next is LCons) {
         val nextPair = next
         next = nextPair.cdr()
         nextPair.rplacd(cell)

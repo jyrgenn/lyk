@@ -43,7 +43,7 @@ class Builtin(
 
         var newArglist = ListCollector()
 
-        if (arglist !is Cons && arglist !== Nil) {
+        if (arglist !is LCons && arglist !== Nil) {
             throw CallError("$this called with improper arglist: $arglist")
         }
 

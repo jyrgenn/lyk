@@ -9,7 +9,7 @@ class Table(elems: LispObject): LispObject(), Callable {
             throw TypeError("Table constructor argument is not a list")
         }
         for (elem in elems) {
-            if (elem is Cons) {
+            if (elem is LCons) {
                 the_table[elem.car()] = elem.cdr()
             } else {
                 throw InternalError("Table element is not Pair (Table.init)")
@@ -59,7 +59,7 @@ class Table(elems: LispObject): LispObject(), Callable {
     fun items(): LispObject {
         val lc = ListCollector()
         for ((key, value) in the_table) {
-            lc.add(Cons(key, value))
+            lc.add(LCons(key, value))
         }
         return lc.list()
     }

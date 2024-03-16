@@ -265,7 +265,7 @@ fun bi_build_info(args: LispObject, kwArgs: Map<LSymbol, LispObject>
     var as_string = ob2bool(arg1(args))
     var lc = ListCollector()
     for ((key, value) in build_info) {
-        lc.add(Cons(intern(key), makeString(value)))
+        lc.add(LCons(intern(key), makeString(value)))
     }
     if (as_string) {
         return makeString(build_info.values.joinToString(" "))
@@ -292,19 +292,19 @@ fun bi_describe(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject 
 
     fun entry(name: String, s: String, asSym: Boolean) {
         if (asSym) {
-            lc.add(Cons(intern(name), intern(s)))
+            lc.add(LCons(intern(name), intern(s)))
         } else {
-            lc.add(Cons(intern(name), makeString(s)))
+            lc.add(LCons(intern(name), makeString(s)))
         }
     }
     fun entry(name: String, obj: LispObject) {
-        lc.add(Cons(intern(name), obj))
+        lc.add(LCons(intern(name), obj))
     }
     fun entry(name: String, value: Double) {
-        lc.add(Cons(intern(name), makeNumber(value)))
+        lc.add(LCons(intern(name), makeNumber(value)))
     }
     fun entry(name: String, value: Int) {
-        lc.add(Cons(intern(name), makeNumber(value)))
+        lc.add(LCons(intern(name), makeNumber(value)))
     }
     
     entry("type", typeOf(obj), true)
@@ -316,7 +316,7 @@ fun bi_describe(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject 
             entry("function", obj.function ?: Nil)
             entry("props", collectedList() { c ->
                                for ((prop, value) in obj.props) {
-                                   c.add(Cons(prop, value))
+                                   c.add(LCons(prop, value))
                                }
                            })
             entry("boundp", bool2ob(obj.getValueOptional() == null))

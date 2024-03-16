@@ -21,7 +21,7 @@ fun macroExpandList(form: LispObject): Pair<LispObject, Boolean> {
     val lc = ListCollector()
 
     var elems = form
-    while (elems is Cons) {
+    while (elems is LCons) {
         val elem = elems.car()
         val (newelem, expanded) = macroExpandFormRecurse(elem)
         lc.add(newelem)
@@ -37,7 +37,7 @@ fun macroExpandList(form: LispObject): Pair<LispObject, Boolean> {
 }
 
 fun macroExpandFormRecurse(form: LispObject): Pair<LispObject, Boolean> {
-    if (form is Cons) {
+    if (form is LCons) {
         val (head, args) = form
         if (head is LSymbol) {
             val maybeMacro = head.function

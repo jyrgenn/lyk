@@ -110,7 +110,7 @@ fun eval(form: LispObject): LispObject {
         var value: LispObject
         if (form is LSymbol) {
             value = form.getValue()
-        } else if (form is Cons) {
+        } else if (form is LCons) {
             var (func, args) = form
             val function = evalFun(func)
 

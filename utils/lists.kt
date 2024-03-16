@@ -32,7 +32,7 @@ class ListIterator(var l: LispObject): Iterator<LispObject> {
 
     override fun hasNext() =
         when (l) {
-            is Cons -> true
+            is LCons -> true
             else -> false
         }
 
@@ -49,9 +49,9 @@ class ListCollector() {
     var last: LispObject? = null
 
     fun add(arg: LispObject) {
-        val newpair = Cons(arg, Nil)
-        if (last is Cons) {
-            (last as Cons).rplacd(newpair)
+        val newpair = LCons(arg, Nil)
+        if (last is LCons) {
+            (last as LCons).rplacd(newpair)
         } else {
             head = newpair
         }
@@ -59,8 +59,8 @@ class ListCollector() {
     }
 
     fun lastcdr(arg: LispObject) {
-        if (last is Cons) {
-            (last as Cons).rplacd(arg)
+        if (last is LCons) {
+            (last as LCons).rplacd(arg)
         } else {
             last = arg
             head = arg

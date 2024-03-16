@@ -3,7 +3,7 @@
 package org.w21.lyk
 
 
-class Cons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
+class LCons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
 
     init {
         debug(debugConsSym) {
@@ -16,7 +16,7 @@ class Cons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
         val result = StrBuf("(")
 
         var elem: LispObject = this
-        while (elem is Cons) {
+        while (elem is LCons) {
             result.add(elem.car().desc())
             if (elem.cdr !== Nil) {
                 result.add(" ")
@@ -56,7 +56,7 @@ class Cons(var car: LispObject, var cdr: LispObject = Nil): LispObject() {
     override fun length(): Int {
         var len = 0
         var cell: LispObject = this
-        while (cell is Cons) {
+        while (cell is LCons) {
             len++
             cell = cell.cdr()
         }

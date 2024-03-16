@@ -15,11 +15,11 @@ fun assoc_iter_elems(alist: LispObject, what: String,
     if (alist === Nil) {
         return Nil
     }
-    if (alist !is Cons) {
+    if (alist !is LCons) {
         throw ArgumentError("alist argument to $what is not a alist: $alist")
     }
     for (elem in alist) {
-        if (elem !is Cons) {
+        if (elem !is LCons) {
             throw ArgumentError("alist argument to $what is not a proper"
                                 + " alist: $alist")
         }
@@ -95,7 +95,7 @@ fun bi_assoc_if(args: LispObject, kwArgs: Map<LSymbol, LispObject>
     var predicate = assoc_check_function(pred, "assoc-if")
 
     return assoc_iter_elems(alist, "assoc-if") {
-        ob2bool(predicate.call(Cons(it, Nil)))
+        ob2bool(predicate.call(LCons(it, Nil)))
     }
 }
 
@@ -119,6 +119,6 @@ fun bi_assoc_if_not(args: LispObject, kwArgs: Map<LSymbol, LispObject>
     var predicate = assoc_check_function(pred, "assoc-if-not")
 
     return assoc_iter_elems(alist, "assoc-if-not") {
-        !ob2bool(predicate.call(Cons(it, Nil)))
+        !ob2bool(predicate.call(LCons(it, Nil)))
     }
 }

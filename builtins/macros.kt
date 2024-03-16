@@ -52,34 +52,34 @@ fun bi_macroexpand(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 
 // Core of quasiquote, the internal recursion.
 fun qq_recurse(form: LispObject): LispObject {
-    if (form !is Cons) {
+    if (form !is LCons) {
         return form
     }
     val (head, tail) = form
     if (head === unquoteSymbol) {
-        if (tail is Cons && tail.cdr() === Nil) {
+        if (tail is LCons && tail.cdr() === Nil) {
             return eval(tail.car())            
         }
         throw ArgumentError("wrong number of args to unquote (takes 1)")
     }
     val tailResult = qq_recurse(tail)
-    if (head !is Cons) {
-        return Cons(head, tailResult)
+    if (head !is LCons) {
+        return LCons(head, tailResult)
     }
     val (headhead, cell2) = head
     if (headhead === unquoteSplicingSymbol) {
-        if (!(cell2 is Cons && cell2.cdr() === Nil)) {
+        if (!(cell2 is LCons && cell2.cdr() === Nil)) {
             throw ArgumentError("wrong number of args to unquote-splicing"
                                 + "(takes 1)")
         }
         val expandedArg = eval(cell2.car())
-        if (expandedArg is Cons) {
+        if (expandedArg is LCons) {
             lastCons(expandedArg).rplacd(tailResult)
             return expandedArg
         }
         throw TypeError("unquote-splicing arg not a list: `$expandedArg`")
     } else {
-        return Cons(qq_recurse(head), tailResult)
+        return LCons(qq_recurse(head), tailResult)
     }
 }
     

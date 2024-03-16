@@ -47,12 +47,12 @@ abstract class LispObject: Iterable<LispObject>, Comparable<LispObject> {
     override fun iterator() = ObjectIterator(this)
 
     operator fun component1(): LispObject {
-        return (this as? Cons)?.car() ?:
+        return (this as? LCons)?.car() ?:
             throw TypeError("$this is not a pair")
     }
 
     operator fun component2(): LispObject {
-        return (this as? Cons)?.cdr() ?:
+        return (this as? LCons)?.cdr() ?:
             throw TypeError("$this is not a pair")
     }
 
@@ -85,7 +85,7 @@ class ObjectIterator(var theObject: LispObject): Iterator<LispObject> {
         val ob = theObject
         when (ob) {
             Nil -> return false
-            is Cons -> return true
+            is LCons -> return true
             is Vector -> return nextIndex < ob.the_vector.size
             else ->
                 throw ValueError("iterating over improper list: $original")
@@ -97,7 +97,7 @@ class ObjectIterator(var theObject: LispObject): Iterator<LispObject> {
         when (ob) {
             Nil ->
                 throw ValueError("called next() after end of list: $original")
-            is Cons -> {
+            is LCons -> {
                 val retVal = ob.car()
                 theObject = ob.cdr()
                 return retVal

@@ -608,9 +608,9 @@ fun bi_easter(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 	month = 4
 	mday -= 31
     }
-    return Cons(makeNumber(X),
-                Cons(makeNumber(month),
-                     Cons(makeNumber(mday), Nil)))
+    return LCons(makeNumber(X),
+                LCons(makeNumber(month),
+                     LCons(makeNumber(mday), Nil)))
 }
     
 /// builtin round
