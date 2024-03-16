@@ -1016,7 +1016,7 @@ fun bi_symbolp(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_tablep(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return bool2ob(arg1(args) is Table)
+    return bool2ob(arg1(args) is LTable)
 }
 
 /// builtin vectorp
@@ -1034,7 +1034,7 @@ fun bi_tablep(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_vectorp(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return bool2ob(arg1(args) is Vector)
+    return bool2ob(arg1(args) is LVector)
 }
 
 /// builtin listp

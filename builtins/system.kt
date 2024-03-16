@@ -341,10 +341,10 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             entry("value", obj)
             entry("intp", bool2ob(obj.isLong()))
         }
-        is Vector -> {
+        is LVector -> {
             entry("size", obj.the_vector.size)
         }
-        is Table -> {
+        is LTable -> {
              entry("size", obj.the_table.size)
         }
         is LRegexp -> {

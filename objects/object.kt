@@ -86,7 +86,7 @@ class ObjectIterator(var theObject: LObject): Iterator<LObject> {
         when (ob) {
             Nil -> return false
             is LCons -> return true
-            is Vector -> return nextIndex < ob.the_vector.size
+            is LVector -> return nextIndex < ob.the_vector.size
             else ->
                 throw ValueError("iterating over improper list: $original")
         }
@@ -102,7 +102,7 @@ class ObjectIterator(var theObject: LObject): Iterator<LObject> {
                 theObject = ob.cdr()
                 return retVal
             }
-            is Vector -> {
+            is LVector -> {
                 return ob.get(nextIndex++)
             }
             else -> ValueError("iterating over non-sequence: $original")

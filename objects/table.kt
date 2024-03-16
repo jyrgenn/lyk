@@ -1,6 +1,6 @@
 package org.w21.lyk
 
-class Table(elems: LObject): LObject(), Callable {
+class LTable(elems: LObject): LObject(), Callable {
     // key: value pairs, backed by a dictionary [LObject: LObject]
     val the_table = mutableMapOf<LObject, LObject>()
 
@@ -12,7 +12,7 @@ class Table(elems: LObject): LObject(), Callable {
             if (elem is LCons) {
                 the_table[elem.car()] = elem.cdr()
             } else {
-                throw InternalError("Table element is not Pair (Table.init)")
+                throw InternalError("Table element is not Pair (LTable.init)")
             }
         }
     }
@@ -68,7 +68,7 @@ class Table(elems: LObject): LObject(), Callable {
         if (this === other) {
             return true
         }
-        if (other !is Table) {
+        if (other !is LTable) {
             return false
         }
         if (the_table.size != other.the_table.size) {

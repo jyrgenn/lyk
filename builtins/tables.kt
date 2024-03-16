@@ -60,7 +60,7 @@ fun bi_table_put(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_make_table(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return Table(Nil)
+    return LTable(Nil)
 }
 
 /// builtin table-count

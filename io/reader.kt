@@ -644,7 +644,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
                 is OparenToken ->
                     lc.add(readList())
                 is CparenToken ->
-                    return Table(lc.list())
+                    return LTable(lc.list())
                 else ->
                     throw SyntaxError("invalid $token expecting key/value"
                                       + " pair in a table", this)
@@ -660,7 +660,7 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
             val token = nextToken()
             when (token) {
                 is CparenToken ->
-                    return Vector(lc.list())
+                    return LVector(lc.list())
                 is PeriodToken ->
                     throw SyntaxError ("unexpected period in vector", this)
                 is EOFToken ->

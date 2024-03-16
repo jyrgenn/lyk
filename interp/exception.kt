@@ -13,7 +13,7 @@ open class LispError(message: String): Exception(message) {
     open override fun toString() = "${typeOf(this)}: $message"
 
     fun pushFrame(level: Int, form: LObject, env: LEnv) {
-        evalStack = LCons(Vector(makeNumber(level), form, env),
+        evalStack = LCons(LVector(makeNumber(level), form, env),
                          evalStack)
     }
 }

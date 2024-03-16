@@ -94,8 +94,8 @@ fun symbolArg(arg: LObject, what: String): LSymbol {
         throw ArgumentError("$what argument not a symbol: $arg")
 }
 
-fun tableArg(arg: LObject, what: String): Table {
-    if (arg is Table) {
+fun tableArg(arg: LObject, what: String): LTable {
+    if (arg is LTable) {
         return arg
     }
     throw ArgumentError("$what argument not a table: $arg")
@@ -108,8 +108,8 @@ fun regexpArg(arg: LObject, what: String): LRegexp {
     throw ArgumentError("$what argument not a regexp: $arg")
 }
 
-fun vectorArg(arg: LObject, what: String): Vector {
-    if (arg is Vector) {
+fun vectorArg(arg: LObject, what: String): LVector {
+    if (arg is LVector) {
         return arg
     }
     throw ArgumentError("$what argument not a vector: $arg")

@@ -1,6 +1,6 @@
 package org.w21.lyk
 
-class Vector(): LObject() {
+class LVector(): LObject() {
     // key: int, backed by an array [Object]
     val the_vector = mutableListOf<LObject>()
 
@@ -63,7 +63,7 @@ class Vector(): LObject() {
         if (this === other) {
             return true
         }
-        if (other !is Vector) {
+        if (other !is LVector) {
             return false
         }
         if (the_vector.size != other.the_vector.size) {

@@ -54,7 +54,7 @@ fun bi_make_vector(args: LObject, kwArgs: Map<LSymbol, LObject>
     if (length < 0) {
         throw ValueError("make-vector length argument < 0: $length")
     }
-    return Vector(length.toInt(), value)
+    return LVector(length.toInt(), value)
 }
 
 /// builtin vector-set
@@ -92,5 +92,5 @@ fun bi_vector_set(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_vector(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return Vector(args)
+    return LVector(args)
 }
