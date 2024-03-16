@@ -28,30 +28,32 @@ fun evalProgn(forms: LispObject): LispObject {
     return result
 }
 
+
+// to allow for a variable with a function *value* (not function!) in the
+// function position, we recurse *once* at maximum
 fun evalFun(obj: LispObject?,
             reclevel: Int = 0,
-            show: LispObject? = null): Function
+            original: LispObject? = null): Function
 {
     debug(debugEvalFunSym) {
         "evalFun(${obj?.dump() ?: "nil"}, $reclevel)"
     }
-    if (obj != null && reclevel <= 2) {
-        // dump(obj)
+    if (obj != null && reclevel <= 1) {
         if (obj is Function) {
             return obj
         }
         if (obj is Symbol) {
-            obj.dump()
             debug(debugEvalFunSym) {
                   "$obj is symbol, function ${obj.function}"
             }
+            // recurse to 
             return evalFun(obj.function ?: obj.getValueOptional(),
-                           reclevel + 1, show ?: obj)
+                           reclevel + 1, obj)
         }
-        return evalFun(eval(obj), reclevel+1, show ?: obj)
+        return evalFun(eval(obj), reclevel+1, obj)
     }
-    val present = show ?: obj ?: Symbol.uninterned("WOT?:")
-    throw FunctionError("object `$present` is not a function "
+    val present = original ?: obj ?: Symbol.uninterned("WOT?:")
+    throw FunctionError("object `$present` is not a function: "
                         + present.dump())
 }
 
