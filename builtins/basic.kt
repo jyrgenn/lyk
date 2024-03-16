@@ -1088,7 +1088,7 @@ fun bi_functionp(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_builtinp(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return bool2ob(arg1(args) is Builtin)
+    return bool2ob(arg1(args) is LBuiltin)
 }
 
 // /// builtin macrop

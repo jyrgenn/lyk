@@ -10,7 +10,7 @@ fun maybeIntern(word: String?): LSymbol? {
 }
 
 
-class Builtin(
+class LBuiltin(
     // marked with S as kotlin String, not LispString, for clarity
     nameS: String,
     val bfun: (LObject, Map<LSymbol, LObject>) -> LObject,
@@ -104,5 +104,5 @@ class Builtin(
         return bfun(newArglist.list(), kwArgs)
     }
 
-    override fun typeDesc() = if (isSpecial) "Special form" else "Builtin"
+    override fun typeDesc() = if (isSpecial) "Special form" else "LBuiltin"
 }

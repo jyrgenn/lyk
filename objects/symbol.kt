@@ -111,7 +111,7 @@ class LSymbol(val name: String, val immutable: Boolean): LObject()
         if (immutable) {
             throw ImmutableError(this, true)
         }
-        if (function is Builtin && !silent) {
+        if (function is LBuiltin && !silent) {
             val what = if (func == null) "unbinding" else "redefining"
             warn("$what builtin function $name")
         }

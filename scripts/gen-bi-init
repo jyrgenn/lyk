@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# create the Builtin register calls for the described builtins
+# create the LBuiltin register calls for the described builtins
 
 import re
 import sys
@@ -42,7 +42,7 @@ def print_init(builtin):
     if errors:
         sys.exit(1)
 
-    prin(f'    Builtin("{builtin.name}", ::{builtin.fun},\n            ')
+    prin(f'    LBuiltin("{builtin.name}", ::{builtin.fun},\n            ')
     if builtin.std:
         prin("/* std */ ")
         content = "\", \"".join(builtin.std)

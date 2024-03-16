@@ -48,7 +48,7 @@ fun bi_list_collector(args: LObject,
         return the_list
     }
 
-    return Builtin("*lc-closure*", ::list_collector,
+    return LBuiltin("*lc-closure*", ::list_collector,
                    noStd, noKey, noOpt, "args", "the-list", false,
 """
 This is a list collector closure. It takes an arbitrary number of arguments,

@@ -228,7 +228,7 @@ fun bi_apropos(args: LObject, kwArgs: Map<LSymbol, LObject>
             func = when (sym.function) {
                 // is Macro -> "macro"
                 is Lambda -> "lambda"
-                is Builtin -> if (special) {"special form"} else {"builtin"}
+                is LBuiltin -> if (special) {"special form"} else {"builtin"}
                 else -> "ewot?!"
             }
         }
