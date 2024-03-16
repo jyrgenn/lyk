@@ -5,7 +5,7 @@ package org.w21.lyk
 
 val anonLambdaSym = intern("*anon-lambda*")
 
-abstract class Function(
+abstract class LFunction(
     functionName: LSymbol?,                       // present if non anonymous
     val stdPars: List<LSymbol>,                   // normal parameters
     val keyPars: Map<LSymbol, LObject>,        // &key name => default

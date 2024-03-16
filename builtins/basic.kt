@@ -602,7 +602,7 @@ fun bi_eq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_function(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val arg = arg1(args)
-    if (arg is Function) {
+    if (arg is LFunction) {
         return arg
     }
     if (arg is LSymbol) {
@@ -1070,7 +1070,7 @@ fun bi_listp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_functionp(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return bool2ob(arg1(args) is Function)
+    return bool2ob(arg1(args) is LFunction)
 }
 
 /// builtin builtinp
@@ -1449,7 +1449,7 @@ fun bi_read(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_flet(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (bindings, body) = args
     // These are the previous function bindings to be restored after
-    var previous_bindings = mutableListOf<Pair<LSymbol, Function?>>()
+    var previous_bindings = mutableListOf<Pair<LSymbol, LFunction?>>()
 
     try {
         for (binding in listArg(bindings, "flet bindings")) {

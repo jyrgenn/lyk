@@ -18,7 +18,7 @@ open class Lambda(                           // Macro will inherit this
     docBody: LString,                     // docstring sans signature
     val environment: LEnv,
     isSpecial: Boolean = false          // for Macros only
-): Function(functionName, stdPars, keyPars, optPars, restPar,
+): LFunction(functionName, stdPars, keyPars, optPars, restPar,
             intern("value"), isSpecial, docBody)
 {
     val lambdatype = "function"

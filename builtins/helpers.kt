@@ -42,8 +42,8 @@ fun longArg(arg: LObject, what: String): Long {
     throw ArgumentError("$what argument not an integer: $arg")
 }
 
-fun functionArg(arg: LObject, what: String): Function {
-    return arg as? Function ?:
+fun functionArg(arg: LObject, what: String): LFunction {
+    return arg as? LFunction ?:
         throw ArgumentError("$what argument not a function: $arg")
 }
 

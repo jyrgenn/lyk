@@ -20,7 +20,7 @@ class LSymbol(val name: String, val immutable: Boolean): LObject()
 {
     val props = mutableMapOf<LSymbol, LObject>()
     val descName = makeDescName()
-    var function: Function? = null
+    var function: LFunction? = null
 
     companion object {
         fun interned(name: String, immutable_and_selfvalued: Boolean = false
@@ -107,7 +107,7 @@ class LSymbol(val name: String, val immutable: Boolean): LObject()
     }
 
 
-    fun setFunction(func: Function?, silent: Boolean = false) {
+    fun setFunction(func: LFunction?, silent: Boolean = false) {
         if (immutable) {
             throw ImmutableError(this, true)
         }

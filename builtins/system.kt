@@ -88,7 +88,7 @@ fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     } else {
         func = ob
     }
-    if (func is Function) {
+    if (func is LFunction) {
         val doc = func.documentation()
         if (as_string) {
             return LString(doc)
@@ -322,7 +322,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             entry("boundp", bool2ob(obj.getValueOptional() == null))
             entry("value", obj.getValueOptional() ?: Nil)
         }
-        is Function -> {
+        is LFunction -> {
             entry("name", obj.name)
             entry("synopsis",
                   obj.parlist() + " => " + obj.retval.toString(),

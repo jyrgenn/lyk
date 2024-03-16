@@ -21,7 +21,7 @@ class LBuiltin(
     retvalS: String?,
     isSpecial: Boolean = false,
     docBodyS: String,
-): Function(
+): LFunction(
        intern(nameS),
        arrayIntern(stdParsS),
        mapInternKeys(keyParsS),

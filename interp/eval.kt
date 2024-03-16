@@ -33,13 +33,13 @@ fun evalProgn(forms: LObject): LObject {
 // function position, we recurse *once* at maximum
 fun evalFun(obj: LObject?,
             reclevel: Int = 0,
-            original: LObject? = null): Function
+            original: LObject? = null): LFunction
 {
     debug(debugEvalFunSym) {
         "evalFun(${obj?.dump() ?: "nil"}, $reclevel)"
     }
     if (obj != null && reclevel <= 1) {
-        if (obj is Function) {
+        if (obj is LFunction) {
             return obj
         }
         if (obj is LSymbol) {

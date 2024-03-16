@@ -3,8 +3,8 @@
 package org.w21.lyk
 
 
-fun assoc_check_function(pred: LObject, what: String): Function {
-    if (pred is Function) {
+fun assoc_check_function(pred: LObject, what: String): LFunction {
+    if (pred is LFunction) {
         return pred
     }
     throw ArgumentError("predicate arg to $what is not a function: $pred")
