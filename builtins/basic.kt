@@ -893,7 +893,7 @@ fun bi_apply(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_environmentp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args) is Environment)
+    return bool2ob(arg1(args) is LEnv)
 }
 
 /// builtin errorp

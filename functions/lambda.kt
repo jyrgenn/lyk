@@ -16,7 +16,7 @@ open class Lambda(                           // Macro will inherit this
     restPar: LSymbol?,                       // &rest parameters
     val bodyForms: LispObject,               //
     docBody: LString,                     // docstring sans signature
-    val environment: Environment,
+    val environment: LEnv,
     isSpecial: Boolean = false          // for Macros only
 ): Function(functionName, stdPars, keyPars, optPars, restPar,
             intern("value"), isSpecial, docBody)
@@ -195,7 +195,7 @@ val action_table = arrayOf( // [PLS, TC] => Ac
 
 fun makeLambda(params: LispObject,
                body: LispObject,
-               env: Environment = currentEnv,
+               env: LEnv = currentEnv,
                name: LSymbol? = null,
                isMacro: Boolean = false): Lambda
 {

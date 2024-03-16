@@ -26,7 +26,7 @@ fun bi_new_environment(args: LispObject, kwArgs: Map<LSymbol, LispObject>
     val (parent, value_table) = args2(args)
     
     val parent_env = when (parent) {
-        is Environment -> parent
+        is LEnv -> parent
         T -> currentEnv
         Nil -> null
         else ->
@@ -34,7 +34,7 @@ fun bi_new_environment(args: LispObject, kwArgs: Map<LSymbol, LispObject>
                                 + "or an environment: $parent")
     }
     
-    val env = Environment(parent_env)
+    val env = LEnv(parent_env)
     if (value_table !== Nil) {
         val vtable = tableArg(value_table, "new-environment value-table")
 

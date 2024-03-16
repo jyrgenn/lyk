@@ -20,14 +20,16 @@ fun padString(s: String, width: Int, pad: Char = ' '): String {
 }
 
 fun typeOf(obj: Any): String {
-    if (obj is LString) {
-        return "string"
+    when (obj) {
+        is LEnv -> return "Environment"
+        else -> {
+            val typ = "${obj::class.simpleName}"
+            if (typ.startsWith("L")) {
+                return typ.substring(1)
+            }
+            return typ
+        }
     }
-    val typ = "${obj::class.simpleName}"
-    if (typ.startsWith("L")) {
-        return typ.substring(1)
-    }
-    return typ
 }
 
 

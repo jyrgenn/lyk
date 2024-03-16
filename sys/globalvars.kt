@@ -2,7 +2,7 @@
 
 package org.w21.lyk
 
-val rootEnv = Environment()
+val rootEnv = LEnv()
 var currentEnv = rootEnv
 
 val Nil = intern("nil", true)

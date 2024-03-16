@@ -15,8 +15,8 @@ fun streamArg(arg: LispObject, what: String): Stream {
         throw ArgumentError("$what argument is not a stream: $arg")
 }
 
-fun envArg(arg: LispObject, what: String): Environment {
-    return (arg as? Environment) ?:
+fun envArg(arg: LispObject, what: String): LEnv {
+    return (arg as? LEnv) ?:
         throw ArgumentError("$what argument is not an environment: $arg")
 }
 
@@ -146,8 +146,8 @@ fun spreadArglist(args: LispObject): LispObject {
     return arglist
 }
 
-fun environmentArg(arg: LispObject, what: String): Environment {
-    return arg as? Environment ?:
+fun environmentArg(arg: LispObject, what: String): LEnv {
+    return arg as? LEnv ?:
         throw ArgumentError("$what argument not a environment: $arg")
 }
 

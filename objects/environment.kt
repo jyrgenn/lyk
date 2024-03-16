@@ -4,7 +4,7 @@
 package org.w21.lyk
 
 
-class Environment(val parent: Environment? = null): LispObject() {
+class LEnv(val parent: LEnv? = null): LispObject() {
     val level: Int = if (parent == null) 0 else parent.level + 1
     val levelstring = if (level > 0) "$level" else "root"
     val map: MutableMap<LSymbol, LispObject> = mutableMapOf()
@@ -21,7 +21,7 @@ class Environment(val parent: Environment? = null): LispObject() {
         if (symbol.immutable) {
             throw Exception("symbol $symbol is immutable")
         }
-        var env: Environment? = this
+        var env: LEnv? = this
         while (env != null) {
 	    debug(debugBindSymSym) {
                  "unbind $symbol in $this"
@@ -32,7 +32,7 @@ class Environment(val parent: Environment? = null): LispObject() {
     }
     
     fun getValueMaybe(symbol: LSymbol): LispObject? {
-        var env: Environment? = this
+        var env: LEnv? = this
         while (env != null) {
             val maybe = env.map[symbol]
             if (maybe != null) {
@@ -49,7 +49,7 @@ class Environment(val parent: Environment? = null): LispObject() {
     }
 
     fun setValue(symbol: LSymbol, value: LispObject): Boolean {
-        var env: Environment? = this
+        var env: LEnv? = this
         while (env != null) {
             if (symbol in env.map.keys) {
                 env.map[symbol] = value
@@ -66,12 +66,12 @@ class Environment(val parent: Environment? = null): LispObject() {
     override fun desc() = toString() + map.toString()
 }
 
-fun withNewEnvironment(parent: Environment = currentEnv,
+fun withNewEnvironment(parent: LEnv = currentEnv,
                        closure: () -> LispObject): LispObject {
-    return withEnvironment(Environment(parent), closure)
+    return withEnvironment(LEnv(parent), closure)
 }
 
-fun withEnvironment(env: Environment, closure: () -> LispObject): LispObject {
+fun withEnvironment(env: LEnv, closure: () -> LispObject): LispObject {
     val savedEnv = currentEnv
     currentEnv = env
     try {

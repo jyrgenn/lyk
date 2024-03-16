@@ -333,7 +333,7 @@ fun bi_describe(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject 
             entry("len", obj.value.length)
             entry("value", obj)
         }
-        is Environment -> {
+        is LEnv -> {
             entry("level", obj.level)
             entry("size", obj.map.size)
         }
