@@ -83,14 +83,14 @@ fun stringlikeArg(arg: LispObject, what: String): String {
     if (arg is LispString) {
         return arg.value
     }
-    if (arg is Symbol) {
+    if (arg is LSymbol) {
         return arg.name
     }
     throw ArgumentError("$what argument not a string or symbol: $arg")
 }
 
-fun symbolArg(arg: LispObject, what: String): Symbol {
-    return arg as? Symbol ?:
+fun symbolArg(arg: LispObject, what: String): LSymbol {
+    return arg as? LSymbol ?:
         throw ArgumentError("$what argument not a symbol: $arg")
 }
 
@@ -219,19 +219,19 @@ fun args3(list: LispObject): Triple<LispObject, LispObject, LispObject> {
 }
 
 
-fun key2var(sym: Symbol): Symbol {
-    return Symbol.intern(sym.name.substring(1))
+fun key2var(sym: LSymbol): LSymbol {
+    return LSymbol.intern(sym.name.substring(1))
 }
 
-fun isKeysym(sym: Symbol): Symbol? {
+fun isKeysym(sym: LSymbol): LSymbol? {
     if (sym.name.startsWith(":")) {
         return key2var(sym)
     }
     return null
 }
 
-fun var2key(sym: Symbol): Symbol {
-    return Symbol.intern(":" + sym.name)
+fun var2key(sym: LSymbol): LSymbol {
+    return LSymbol.intern(":" + sym.name)
 }
 
 fun itemList(args: LispObject): LispObject {
@@ -242,7 +242,7 @@ fun itemList(args: LispObject): LispObject {
     }
 }
 
-fun withVariableAs(variable: Symbol, value: LispObject, closure: () -> Unit) {
+fun withVariableAs(variable: LSymbol, value: LispObject, closure: () -> Unit) {
     val previousValue = variable.getValueOptional()
     
     variable.setValue(value)

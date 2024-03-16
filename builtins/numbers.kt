@@ -17,7 +17,7 @@ import kotlin.math.*
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_plus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_plus(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     var acc: Double = 0.0
 
     for (arg in args) {
@@ -40,7 +40,7 @@ fun bi_plus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_minus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_minus(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (arg, rest) = args
     var acc = numberArg(arg, "-")
 
@@ -67,7 +67,7 @@ fun bi_minus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_mult(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_mult(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     var acc = 1.0
 
     for (arg in args) {
@@ -89,7 +89,7 @@ fun bi_mult(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_div(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_div(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (arg, rest) = args
     var acc = numberArg(arg, "/")
 
@@ -115,7 +115,7 @@ fun bi_div(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_zerop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_zerop(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return bool2ob(numberArg(arg1(args), "zerop") == 0.0)
 }
 
@@ -134,7 +134,7 @@ val numberZero = Number.makeNumber(0)
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_abs(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_abs(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return Number.makeNumber(abs(numberArg(arg1(args), "abs")))
 }
 
@@ -151,7 +151,7 @@ fun bi_abs(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_acos(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_acos(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return Number.makeNumber(acos(numberArg(arg1(args), "acos")))
 }
 
@@ -168,7 +168,7 @@ fun bi_acos(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_acosh(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_acosh(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return Number.makeNumber(acosh(numberArg(arg1(args), "acosh")))
 }
 
@@ -187,7 +187,7 @@ fun bi_acosh(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_lt(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_cmp_lt(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (arg1, rest) = args
     var first = arg1
 
@@ -216,7 +216,7 @@ fun bi_cmp_lt(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_gt(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_cmp_gt(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (arg1, rest) = args
     var first = arg1
 
@@ -244,7 +244,7 @@ fun bi_cmp_gt(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_eqv(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_cmp_eqv(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val (arg1, rest) = args
     var first = arg1
@@ -274,7 +274,7 @@ fun bi_cmp_eqv(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_ne(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_cmp_ne(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     var things = mutableSetOf<LispObject>()
     
     for (arg in args) {
@@ -302,7 +302,7 @@ fun bi_cmp_ne(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_ge(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_cmp_ge(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (arg1, rest) = args
     var first = arg1
 
@@ -331,7 +331,7 @@ fun bi_cmp_ge(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_le(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_cmp_le(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (arg1, rest) = args
     var first = arg1
 
@@ -360,7 +360,7 @@ fun bi_cmp_le(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_cmp(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (v1, v2) = args2(args)
     return Number.makeNumber(v1.compareTo(v2))
 }
@@ -379,7 +379,7 @@ fun bi_cmp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_modulo(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_modulo(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (value1, value2) = args2(args)
     val long1: Long = longArg(value1, "%")
     val long2: Long = longArg(value2, "%")
@@ -400,7 +400,7 @@ fun bi_modulo(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_power(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_power(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (value1, value2) = args2(args)
     return Number.makeNumber(
         numberArg(value1, "**").pow(numberArg(value2, "**")))
@@ -419,7 +419,7 @@ fun bi_power(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_1plus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_1plus(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val value = numberArg(arg1(args), "1+")
     return Number.makeNumber(value + 1)
 }
@@ -437,7 +437,7 @@ fun bi_1plus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_1minus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_1minus(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val value = numberArg(arg1(args), "1-")
     return Number.makeNumber(value - 1)
 }
@@ -455,7 +455,7 @@ fun bi_1minus(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_isqrt(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_isqrt(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val n = numberArg(arg1(args), "isqrt")
     var op = n.toLong()
     var res = 0L
@@ -490,7 +490,7 @@ fun bi_isqrt(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_ash(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_ash(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (int, n) = args2(args)
     val value = longArg(int, "ash integer")
     val count = longArg(n, "ash count")
@@ -514,7 +514,7 @@ fun bi_ash(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_asin(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_asin(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val value = numberArg(arg1(args), "asin")
     return Number.makeNumber(asin(value))
 }
@@ -532,7 +532,7 @@ fun bi_asin(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_asinh(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_asinh(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val value = numberArg(arg1(args), "asinh")
     return Number.makeNumber(asinh(value))
 }
@@ -550,7 +550,7 @@ fun bi_asinh(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_atan(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_atan(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val value = numberArg(arg1(args), "atan")
     return Number.makeNumber(atan(value))
 }
@@ -568,7 +568,7 @@ fun bi_atan(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_atanh(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_atanh(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val value = numberArg(arg1(args), "atanh")
     return Number.makeNumber(atanh(value))
 }
@@ -590,7 +590,7 @@ fun bi_atanh(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_easter(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_easter(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val X = longArg(arg1(args), "easter year")
     val K = X / 100
     val M = 15 + (3*K+3)/4 - (8*K+13)/25
@@ -626,7 +626,7 @@ fun bi_easter(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_round(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_round(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return Number.makeNumber(round(numberArg(arg1(args), "round")))
 }
 
@@ -643,7 +643,7 @@ fun bi_round(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_ceiling(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_ceiling(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return Number.makeNumber(ceil(numberArg(arg1(args), "round")))
 }
@@ -661,7 +661,7 @@ fun bi_ceiling(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_floor(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_floor(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return Number.makeNumber(floor(numberArg(arg1(args), "round")))
 }
 
@@ -678,7 +678,7 @@ fun bi_floor(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_sqrt(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_sqrt(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return Number.makeNumber(sqrt(numberArg(arg1(args), "sqrt")))
 }
 

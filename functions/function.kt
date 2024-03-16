@@ -3,19 +3,19 @@
 package org.w21.lyk
 
 
-val anonLambdaSym = Symbol.intern("*anon-lambda*")
+val anonLambdaSym = LSymbol.intern("*anon-lambda*")
 
 abstract class Function(
-    functionName: Symbol?,                       // present if non anonymous
-    val stdPars: List<Symbol>,                   // normal parameters
-    val keyPars: Map<Symbol, LispObject>,        // &key name => default
-    val optPars: List<Pair<Symbol, LispObject>>, // &optional name, default
-    val restPar: Symbol?,                       // &rest parameters
-    val retval: Symbol?,                         // return value description
+    functionName: LSymbol?,                       // present if non anonymous
+    val stdPars: List<LSymbol>,                   // normal parameters
+    val keyPars: Map<LSymbol, LispObject>,        // &key name => default
+    val optPars: List<Pair<LSymbol, LispObject>>, // &optional name, default
+    val restPar: LSymbol?,                       // &rest parameters
+    val retval: LSymbol?,                         // return value description
     val isSpecial: Boolean,                      // used by Builtins only
     val docBody: LispString,                     // docstring sans signature
 ): LispObject(), Callable {
-    val name: Symbol
+    val name: LSymbol
     val has_name: Boolean
     val minargs: Int
     val maxargs: Int
@@ -29,7 +29,7 @@ abstract class Function(
         else
             -1
         if (has_name) {
-            (functionName as Symbol).function = this
+            (functionName as LSymbol).function = this
         }
     }
 
@@ -84,12 +84,12 @@ abstract class Function(
         return docHeader() + docBody.value + "\n"        
     }
 
-    fun myKeywordArg(maybeSym: LispObject): Symbol? {
+    fun myKeywordArg(maybeSym: LispObject): LSymbol? {
         // if sym is a keyword *and* in the keyPars, return the variable
         // symbol, used in both Builtins and Lambdas
-        if (maybeSym is Symbol && maybeSym.isKeyword() &&
+        if (maybeSym is LSymbol && maybeSym.isKeyword() &&
                 maybeSym in keyPars.keys) {
-            return Symbol.intern(maybeSym.name.substring(1))
+            return LSymbol.intern(maybeSym.name.substring(1))
         }
         return null
     }

@@ -45,7 +45,7 @@ fun assoc_iter_elems(alist: LispObject, what: String,
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assoc(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_assoc(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (item, alist) = args2(args)
 
     return assoc_iter_elems(alist, "assoc") {
@@ -67,7 +67,7 @@ fun bi_assoc(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assq(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_assq(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (item, alist) = args2(args)
 
     return assoc_iter_elems(alist, "assq") {
@@ -89,7 +89,7 @@ fun bi_assq(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assoc_if(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_assoc_if(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val (pred, alist) = args2(args)
     var predicate = assoc_check_function(pred, "assoc-if")
@@ -113,7 +113,7 @@ fun bi_assoc_if(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assoc_if_not(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_assoc_if_not(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val (pred, alist) = args2(args)
     var predicate = assoc_check_function(pred, "assoc-if-not")

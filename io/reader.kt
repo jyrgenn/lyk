@@ -20,11 +20,11 @@ val specialChar2escaped = mapOf(
 // characters denoting the end of (most) tokens, besides whitespace
 val delimiter_chars = "(),'`\""
 
-val QuoteSymbol = Symbol.intern("quote", true)
-val UnquoteSymbol = Symbol.intern("unquote", true)
-val QuasiquoteSymbol = Symbol.intern("quasiquote", true)
-val UnquoteSplicingSymbol = Symbol.intern("unquote-splicing")
-val FunctionSymbol = Symbol.intern("function", true)
+val QuoteSymbol = LSymbol.intern("quote", true)
+val UnquoteSymbol = LSymbol.intern("unquote", true)
+val QuasiquoteSymbol = LSymbol.intern("quasiquote", true)
+val UnquoteSplicingSymbol = LSymbol.intern("unquote-splicing")
+val FunctionSymbol = LSymbol.intern("function", true)
 
 fun closingOf(opening: Char): Char {
     // Return the closing character for the opening character. For brackets
@@ -587,11 +587,11 @@ class Reader(val input: Stream, sourceName: String? = null): LocationHolder
     fun read(): LispObject? {
         // Read an expression from the input and return it.
         val token = nextToken()
-        var macroSymbol: Symbol?
+        var macroSymbol: LSymbol?
         
         when (token) {
             is SymbolToken ->
-                return Symbol.intern(token.value)
+                return LSymbol.intern(token.value)
             is NumberToken ->
                 return Number.makeNumber(token.value)
             is StringToken ->

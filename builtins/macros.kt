@@ -22,7 +22,7 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_defmacro(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_defmacro(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject
 {
     var (name, rest1) = args
@@ -45,7 +45,7 @@ fun bi_defmacro(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_macroexpand(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_macroexpand(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return macroExpandForm(arg1(args))
 }
@@ -101,7 +101,7 @@ fun qq_recurse(form: LispObject): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_quasiquote(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_quasiquote(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return qq_recurse(arg1(args))
 }
@@ -119,7 +119,7 @@ fun bi_quasiquote(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_unquote(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_unquote(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     throw FunctionError("unquote outside of a quasiquote context")
 }
@@ -137,7 +137,7 @@ fun bi_unquote(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_unquote_splicing(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_unquote_splicing(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     throw FunctionError("unquote-splicing outside of a quasiquote context")
 }

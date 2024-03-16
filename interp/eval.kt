@@ -42,7 +42,7 @@ fun evalFun(obj: LispObject?,
         if (obj is Function) {
             return obj
         }
-        if (obj is Symbol) {
+        if (obj is LSymbol) {
             debug(debugEvalFunSym) {
                   "$obj is symbol, function ${obj.function}"
             }
@@ -52,7 +52,7 @@ fun evalFun(obj: LispObject?,
         }
         return evalFun(eval(obj), reclevel+1, obj)
     }
-    val present = original ?: obj ?: Symbol.uninterned("WOT?:")
+    val present = original ?: obj ?: LSymbol.uninterned("WOT?:")
     throw FunctionError("object `$present` is not a function: "
                         + present.dump())
 }
@@ -108,7 +108,7 @@ fun eval(form: LispObject): LispObject {
         }
 
         var value: LispObject
-        if (form is Symbol) {
+        if (form is LSymbol) {
             value = form.getValue()
         } else if (form is Cons) {
             var (func, args) = form

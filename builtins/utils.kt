@@ -30,12 +30,12 @@ package org.w21.lyk
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_list_collector(args: LispObject,
-                            kwArgs: Map<Symbol, LispObject>): LispObject {
+                            kwArgs: Map<LSymbol, LispObject>): LispObject {
     var the_list: LispObject = Nil
     var last_cons: Cons? = null
 
     fun list_collector(args: LispObject,
-                        kwArgs: Map<Symbol, LispObject>): LispObject {
+                        kwArgs: Map<LSymbol, LispObject>): LispObject {
         for (arg in args) {
             val newcons = Cons(arg, Nil)
             if (last_cons != null) {

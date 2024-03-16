@@ -7,17 +7,17 @@ package org.w21.lyk
 class Environment(val parent: Environment? = null): LispObject() {
     val level: Int = if (parent == null) 0 else parent.level + 1
     val levelstring = if (level > 0) "$level" else "root"
-    val map: MutableMap<Symbol, LispObject> = mutableMapOf()
+    val map: MutableMap<LSymbol, LispObject> = mutableMapOf()
 
     // must only be called by symbol.bind
-    fun bind(symbol: Symbol, value: LispObject) {
+    fun bind(symbol: LSymbol, value: LispObject) {
 	debug(debugBindSymSym) {
              "$symbol <= $value in $this"
         }
         map[symbol] = value
     }
 
-    fun unbind(symbol: Symbol) {
+    fun unbind(symbol: LSymbol) {
         if (symbol.immutable) {
             throw Exception("symbol $symbol is immutable")
         }
@@ -31,7 +31,7 @@ class Environment(val parent: Environment? = null): LispObject() {
         }
     }
     
-    fun getValueMaybe(symbol: Symbol): LispObject? {
+    fun getValueMaybe(symbol: LSymbol): LispObject? {
         var env: Environment? = this
         while (env != null) {
             val maybe = env.map[symbol]
@@ -43,12 +43,12 @@ class Environment(val parent: Environment? = null): LispObject() {
         return null
     }
 
-    fun getValue(symbol: Symbol): LispObject {
+    fun getValue(symbol: LSymbol): LispObject {
         return getValueMaybe(symbol) ?:
             throw ValueError("value of symbol `$symbol` is undefined")
     }
 
-    fun setValue(symbol: Symbol, value: LispObject): Boolean {
+    fun setValue(symbol: LSymbol, value: LispObject): Boolean {
         var env: Environment? = this
         while (env != null) {
             if (symbol in env.map.keys) {

@@ -48,7 +48,7 @@ fun anyDebugOn(): Boolean {
     return false
 }
 
-fun setDebug(sym: Symbol, value: Boolean = true): Boolean { // false if error
+fun setDebug(sym: LSymbol, value: Boolean = true): Boolean { // false if error
     debug(debugDebugSym) {
         "set $sym <= $value"
     }
@@ -60,7 +60,7 @@ fun setDebug(sym: Symbol, value: Boolean = true): Boolean { // false if error
     return false
 }
 
-fun setDebug(vararg syms: Symbol, value: Boolean = true): Boolean {
+fun setDebug(vararg syms: LSymbol, value: Boolean = true): Boolean {
     for (sym in syms) {
         val result = setDebug(sym, value)
         if (!result) {
@@ -74,7 +74,7 @@ fun setDebug(options: String?): Boolean {
     options ?: return false
     var isgood = true
     for (option in options.split(',')) {
-        val sym = Symbol.intern(option)
+        val sym = LSymbol.intern(option)
         if (!setDebug(sym)) {
             isgood = false
             printErr("`$option` is not a valid debug option")
@@ -84,7 +84,7 @@ fun setDebug(options: String?): Boolean {
 }
 
 
-fun debug(topic: Symbol, closure: () -> Any?) {
+fun debug(topic: LSymbol, closure: () -> Any?) {
     if (debugOn && Options.debug[topic] ?: false) {
         debug_out.print("DBG:$topic ")
         val value = closure()

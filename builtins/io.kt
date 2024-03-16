@@ -2,18 +2,18 @@
 
 package org.w21.lyk
 
-val directionKeyw = Symbol.intern(":direction")
-val inputKeyw = Symbol.intern(":input")
-val outputKeyw = Symbol.intern(":output")
-val ioKeyw = Symbol.intern(":io")
-val if_existsKeyw = Symbol.intern(":if-exists")
-val new_versionKeyw = Symbol.intern(":new-version")
-val overwriteKeyw = Symbol.intern(":overwrite")
-val supersedeKeyw = Symbol.intern(":supersede")
-val errorKeyw = Symbol.intern(":error")
-val if_does_not_existKeyw = Symbol.intern(":if-does-not-exist")
-val createKeyw = Symbol.intern(":create")
-val sepKeyw = Symbol.intern(":sep")
+val directionKeyw = LSymbol.intern(":direction")
+val inputKeyw = LSymbol.intern(":input")
+val outputKeyw = LSymbol.intern(":output")
+val ioKeyw = LSymbol.intern(":io")
+val if_existsKeyw = LSymbol.intern(":if-exists")
+val new_versionKeyw = LSymbol.intern(":new-version")
+val overwriteKeyw = LSymbol.intern(":overwrite")
+val supersedeKeyw = LSymbol.intern(":supersede")
+val errorKeyw = LSymbol.intern(":error")
+val if_does_not_existKeyw = LSymbol.intern(":if-does-not-exist")
+val createKeyw = LSymbol.intern(":create")
+val sepKeyw = LSymbol.intern(":sep")
 
 
 /// builtin println
@@ -29,7 +29,7 @@ val sepKeyw = Symbol.intern(":sep")
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_println(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_println(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     stdout.println(args.joinToString(kwArgs[sepKeyw].toString()))
     return theNonPrintingObject
 }
@@ -49,7 +49,7 @@ fun bi_println(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_print(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_print(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (arg, stream) = args2(args)
     outputStreamArg(stream, "print stream").write("\n${arg.desc()} ")
     return arg
@@ -69,7 +69,7 @@ fun bi_print(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_prin1(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_prin1(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (arg, stream) = args2(args)
     outputStreamArg(stream, "prin1 stream").write(arg.desc())
     return arg
@@ -88,7 +88,7 @@ fun bi_prin1(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_prin1_to_string(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_prin1_to_string(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return LispString.makeString(arg1(args).desc())
 }
@@ -106,7 +106,7 @@ fun bi_prin1_to_string(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_princ(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_princ(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (arg, stream) = args2(args)
     outputStreamArg(stream, "princ stream").write(arg.toString())
     return arg
@@ -140,7 +140,7 @@ fun bi_princ(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_princs(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_princs(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return LispString.makeString(arg1(args).toString())
 }
@@ -159,7 +159,7 @@ fun bi_princs(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_terpri(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_terpri(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val stream = arg1(args)
     outputStreamArg(stream, "terpri stream").println()
     return Nil
@@ -181,7 +181,7 @@ fun bi_terpri(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_warning(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_warning(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     // TODO: warnings as errors
     val (msg1, rest) = args
@@ -209,7 +209,7 @@ fun bi_warning(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_load(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_load(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val fname = arg1(args).toString()
     val verbose = kwArgs[verboseSym] !== Nil
     val throw_error = ob2bool(kwArgs[errorSym] ?: T)
@@ -232,7 +232,7 @@ fun bi_load(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_make_string_input_stream(args: LispObject,
-                                kwArgs: Map<Symbol, LispObject>): LispObject {
+                                kwArgs: Map<LSymbol, LispObject>): LispObject {
     val string = stringArg(arg1(args), "make-string-input-stream")
     return StringReaderStream(string)
 }
@@ -252,7 +252,7 @@ fun bi_make_string_input_stream(args: LispObject,
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_stream(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_stream(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val arg = arg1(args)
     if (arg is Stream) {
         return arg
@@ -277,7 +277,7 @@ fun bi_stream(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_format(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_format(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (dest, rest) = args
     val (f, f_args) = rest
     val format = stringArg(f, "format string")
@@ -297,7 +297,7 @@ fun bi_format(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// builtin open
 /// fun     bi_open
 /// std     fname
-/// key     ":if-does-not-exist" to Symbol.intern(":error"), ":direction" to Symbol.intern(":input"), ":if-exists" to Symbol.intern(":overwrite")
+/// key     ":if-does-not-exist" to LSymbol.intern(":error"), ":direction" to LSymbol.intern(":input"), ":if-exists" to LSymbol.intern(":overwrite")
 /// opt     
 /// rest    
 /// ret     stream
@@ -311,7 +311,7 @@ fun bi_format(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_open(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_open(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val fname = arg1(args).toString()    
     val direction = kwArgs[directionKeyw] ?: Nil
     val if_exists = kwArgs[if_existsKeyw] ?: Nil
@@ -372,7 +372,7 @@ fun bi_open(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_close(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_close(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val stream = streamArg(arg1(args), "close")
     try {
         return bool2ob(stream.close())

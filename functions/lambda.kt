@@ -2,24 +2,24 @@
 
 package org.w21.lyk
 
-val optionalPSym = Symbol.intern("&optional")
-val keyPSym = Symbol.intern("&key")
-val restPSym = Symbol.intern("&rest")
+val optionalPSym = LSymbol.intern("&optional")
+val keyPSym = LSymbol.intern("&key")
+val restPSym = LSymbol.intern("&rest")
 val emptyString = LispString.makeString("")
 
 
 open class Lambda(                           // Macro will inherit this
-    functionName: Symbol?,                   // present if non anonymous
-    stdPars: List<Symbol>,                   // normal parameters
-    keyPars: Map<Symbol, LispObject>,        // &key name => default
-    optPars: List<Pair<Symbol, LispObject>>, // &optional name, default
-    restPar: Symbol?,                       // &rest parameters
+    functionName: LSymbol?,                   // present if non anonymous
+    stdPars: List<LSymbol>,                   // normal parameters
+    keyPars: Map<LSymbol, LispObject>,        // &key name => default
+    optPars: List<Pair<LSymbol, LispObject>>, // &optional name, default
+    restPar: LSymbol?,                       // &rest parameters
     val bodyForms: LispObject,               //
     docBody: LispString,                     // docstring sans signature
     val environment: Environment,
     isSpecial: Boolean = false          // for Macros only
 ): Function(functionName, stdPars, keyPars, optPars, restPar,
-            Symbol.intern("value"), isSpecial, docBody)
+            LSymbol.intern("value"), isSpecial, docBody)
 {
     val lambdatype = "function"
     
@@ -52,7 +52,7 @@ open class Lambda(                           // Macro will inherit this
             throw CallError("$this called with improper arglist: $arglist")
         }
 
-        var wantKeywordParam: Symbol? = null  // i.e. have seen this keyword
+        var wantKeywordParam: LSymbol? = null  // i.e. have seen this keyword
         for (arg in arglist) {
             hadArgs++
             if (wantKeywordParam != null) {
@@ -63,7 +63,7 @@ open class Lambda(                           // Macro will inherit this
                 continue
             }
             if (arg.isKeyword()) {
-                val sym = key2var(arg as Symbol)
+                val sym = key2var(arg as LSymbol)
                 if (sym !in kwArgs.keys) {
                     throw ArgumentError("keyword $arg invalid"
                                         + " for function `${this.name}'")
@@ -196,17 +196,17 @@ val action_table = arrayOf( // [PLS, TC] => Ac
 fun makeLambda(params: LispObject,
                body: LispObject,
                env: Environment = currentEnv,
-               name: Symbol? = null,
+               name: LSymbol? = null,
                isMacro: Boolean = false): Lambda
 {
     // sort params into the various params arrays
     var argptr = params
-    val stdPars = mutableListOf<Symbol>()
-    val optPars = mutableListOf<Pair<Symbol, LispObject>>()
-    val keyPars = mutableMapOf<Symbol, LispObject>()
+    val stdPars = mutableListOf<LSymbol>()
+    val optPars = mutableListOf<Pair<LSymbol, LispObject>>()
+    val keyPars = mutableMapOf<LSymbol, LispObject>()
     var bodyForms: LispObject
     var docBody: LispString = emptyString
-    var rest_sym: Symbol? = null
+    var rest_sym: LSymbol? = null
     val lambda_name = name?.toString() ?: "*anon-lambda*"
 
     // Parse an &optional parameter description. This will be either a
@@ -214,14 +214,14 @@ fun makeLambda(params: LispObject,
     // Nil, or a list of two elements, the name symbol and the default
     // value. Everything else will be flagged as an error. Return a tuple of
     // the name symbol and the default value.
-    fun parse_2parlist(parameter: LispObject): Pair<Symbol, LispObject> {
+    fun parse_2parlist(parameter: LispObject): Pair<LSymbol, LispObject> {
         // print("parse_2parlist($parameter): ", terminator: "")
-        if (parameter is Symbol) {
-            // print("Symbol => $(sym, Nil)")
+        if (parameter is LSymbol) {
+            // print("LSymbol => $(sym, Nil)")
             return Pair(parameter, Nil)
         } else if (parameter is Cons) {
             val sym = parameter.car()
-            if (sym !is Symbol) {
+            if (sym !is LSymbol) {
                 throw LambdaDefError(
                     "&optional parameter name `$sym` not a symbol"
                     + "in $lambda_name definition")

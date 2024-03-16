@@ -21,7 +21,7 @@ package org.w21.lyk
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 
-fun bi_new_environment(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_new_environment(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val (parent, value_table) = args2(args)
     
@@ -39,7 +39,7 @@ fun bi_new_environment(args: LispObject, kwArgs: Map<Symbol, LispObject>
         val vtable = tableArg(value_table, "new-environment value-table")
 
         for ((sym, value) in vtable.items()) {
-            if (sym is Symbol) {
+            if (sym is LSymbol) {
                 env.bind(sym, value)
             } else {
                 throw ArgumentError("`value-table` argument has non-symbol"
@@ -63,7 +63,7 @@ fun bi_new_environment(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_the_environment(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_the_environment(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return currentEnv
 }
@@ -81,7 +81,7 @@ fun bi_the_environment(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_with_environment(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_with_environment(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val (env_arg, bodyforms) = args
 

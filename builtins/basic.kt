@@ -15,7 +15,7 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_car(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_car(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return listArg(arg1(args), "car").car()
 }
 
@@ -32,7 +32,7 @@ fun bi_car(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cdr(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_cdr(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return listArg(arg1(args), "cdr").cdr()
 }
 
@@ -49,7 +49,7 @@ fun bi_cdr(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_rplaca(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_rplaca(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     var (cons, newcar) = args2(args)
     consArg(cons, "rplaca").rplaca(newcar)
     return cons
@@ -68,7 +68,7 @@ fun bi_rplaca(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_rplacd(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_rplacd(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     var (cons, newcar) = args2(args)
     consArg(cons, "rplacd").rplacd(newcar)
     return cons
@@ -87,8 +87,8 @@ fun bi_rplacd(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_intern(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    return Symbol.intern(stringArg(arg1(args), "intern"))
+fun bi_intern(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
+    return LSymbol.intern(stringArg(arg1(args), "intern"))
 }
 
 /// builtin list
@@ -104,7 +104,7 @@ fun bi_intern(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_list(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_list(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return args
 }
 
@@ -121,7 +121,7 @@ fun bi_list(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cons(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_cons(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (car, cdr) = args2(args)
     return Cons(car, cdr)
 }
@@ -139,7 +139,7 @@ fun bi_cons(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_set(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_set(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (sym, value) = args2(args)
     symbolArg(sym, "set").setValue(value)
     return value
@@ -158,7 +158,7 @@ fun bi_set(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_quote(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_quote(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return arg1(args)
 }
 
@@ -175,7 +175,7 @@ fun bi_quote(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_setq(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_setq(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (sym, value) = args2(args)
     val newvalue = eval(value)
     symbolArg(sym, "setq").setValue(newvalue)
@@ -198,18 +198,18 @@ fun bi_setq(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_let(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_let(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     if (args === Nil) {
         return Nil                      // no bindings *and* no bodyforms
     }
 
     val (bindings, bodyforms) = args
     // now we're talking
-    var syms = mutableListOf<Symbol>()     // variable symbols to bind
+    var syms = mutableListOf<LSymbol>()     // variable symbols to bind
     var vals = mutableListOf<LispObject>() // values to bind to them
     
     for (binding in bindings) {
-        if (binding is Symbol) {
+        if (binding is LSymbol) {
             syms.add(binding)
             vals.add(Nil)
 	    debug(debugLetBindSym) {
@@ -264,18 +264,18 @@ fun bi_let(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_letrec(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject{
+fun bi_letrec(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject{
     if (args === Nil) {
         return Nil                      // no bindings *and* no bodyforms
     }
 
     val (bindings, bodyforms) = args
     // now we're talking
-    var syms = mutableListOf<Symbol>()     // variable symbols to bind
+    var syms = mutableListOf<LSymbol>()     // variable symbols to bind
     var vals = mutableListOf<LispObject>() // values to bind to them
     
     for (binding in bindings) {
-        if (binding is Symbol) {
+        if (binding is LSymbol) {
             syms.add(binding)
             vals.add(Nil)
         } else if (binding is Cons) {
@@ -324,7 +324,7 @@ fun bi_letrec(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject{
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_and(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_and(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     var value: LispObject = T
     for (arg in args) {
         value = eval(arg)
@@ -348,7 +348,7 @@ fun bi_and(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_or(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_or(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     var value: LispObject = Nil
     for (arg in args) {
         value = eval(arg)
@@ -376,7 +376,7 @@ fun bi_or(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cond(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_cond(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     for (arg in args) {
         val clause = consArg(arg, "cond clause")
         if (eval(clause.car()) !== Nil) {
@@ -400,7 +400,7 @@ fun bi_cond(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_if(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_if(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (condition, rest) = args
     val (when_clause, else_clauses) = rest
     if (eval(condition) !== Nil) {
@@ -423,7 +423,7 @@ fun bi_if(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_when(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_when(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (condition, when_clauses) = args
     if (eval(condition) !== Nil) {
         return evalProgn(when_clauses)
@@ -445,7 +445,7 @@ fun bi_when(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_unless(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_unless(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (condition, else_clauses) = args
     if (eval(condition) === Nil) {
         return evalProgn(else_clauses)
@@ -466,7 +466,7 @@ fun bi_unless(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_progn(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_progn(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return evalProgn(args)
 }
 
@@ -483,7 +483,7 @@ fun bi_progn(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_prog1(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_prog1(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (form1, rest) = args
     val result = eval(form1)
     evalProgn(rest)
@@ -504,7 +504,7 @@ fun bi_prog1(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_lambda(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_lambda(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     var (params, bodyforms) = args
     return makeLambda(params, bodyforms)
 }
@@ -528,7 +528,7 @@ fun bi_lambda(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_defun(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_defun(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (name, rest) = args
     val (params, bodyforms) = rest
 
@@ -562,7 +562,7 @@ fun bi_defun(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_null(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_null(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return bool2ob(arg1(args) === Nil)
 }
 
@@ -580,7 +580,7 @@ fun bi_null(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_eq(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_eq(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (a1, a2) = args2(args)
     return bool2ob(a1 === a2)
 }
@@ -599,13 +599,13 @@ fun bi_eq(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_function(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_function(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val arg = arg1(args)
     if (arg is Function) {
         return arg
     }
-    if (arg is Symbol) {
+    if (arg is LSymbol) {
         val function = arg.function
         if (function != null) {
             return function
@@ -628,7 +628,7 @@ fun bi_function(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_symbol_function(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_symbol_function(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val sym = symbolArg(arg1(args), "symbol")
     val function = sym.function
@@ -652,7 +652,7 @@ fun bi_symbol_function(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_error(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_error(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (message, data) = args2(args)
     throw UserError(message.desc(), data)
 }
@@ -672,7 +672,7 @@ fun bi_error(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_catch(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_catch(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (tagform, bodyforms) = args
     val tag = eval(tagform)
     
@@ -714,7 +714,7 @@ fun bi_catch(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_throw(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_throw(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (tag, value) = args2(args)
     debug(debugCatchThrowSym) {
          "throw ($tag) with $value"
@@ -735,7 +735,7 @@ fun bi_throw(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_boundp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_boundp(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val sym = symbolArg(arg1(args), "boundp")
     if (sym.getValueOptional() != null) {
         return T
@@ -756,7 +756,7 @@ fun bi_boundp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_fboundp(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_fboundp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val sym = symbolArg(arg1(args), "fboundp")
     if (sym.function != null) {
@@ -780,7 +780,7 @@ fun bi_fboundp(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_errset(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_errset(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (expr, print_error) = args2(args)
     val saveErrset = inErrset
     inErrset = true
@@ -788,7 +788,7 @@ fun bi_errset(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
         return Cons(eval(expr), Nil)
     } catch (lerror: LispError) {
         val errObj = lerror.toObject()
-        Symbol.intern("*last-error*").setValue(errObj, silent = true)
+        LSymbol.intern("*last-error*").setValue(errObj, silent = true)
         if (print_error != Nil) {
             stderr.println(errObj)
         }
@@ -811,7 +811,7 @@ fun bi_errset(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_makunbound(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_makunbound(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val sym = symbolArg(arg1(args), "makunbound")
     currentEnv.unbind(sym)
@@ -831,7 +831,7 @@ fun bi_makunbound(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_fmakunbound(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_fmakunbound(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val sym = symbolArg(arg1(args), "makunbound")
     sym.setFunction(null)               // checked in the symbol object
@@ -851,7 +851,7 @@ fun bi_fmakunbound(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_funcall(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_funcall(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val (function, rest) = args
     return functionArg(function, "funcall").call(rest)
@@ -872,7 +872,7 @@ fun bi_funcall(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_apply(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_apply(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (function, rest) = args
     val allargs = spreadArglist(rest)
     return functionArg(function, "funcall").call(allargs)
@@ -891,7 +891,7 @@ fun bi_apply(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_environmentp(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_environmentp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return bool2ob(arg1(args) is Environment)
 }
@@ -909,7 +909,7 @@ fun bi_environmentp(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_errorp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_errorp(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return bool2ob(arg1(args) is ErrorObject)
 }
 
@@ -926,7 +926,7 @@ fun bi_errorp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_stringp(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_stringp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return bool2ob(arg1(args) is LispString)
 }
@@ -944,7 +944,7 @@ fun bi_stringp(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_numberp(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_numberp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return bool2ob(arg1(args)is Number)
 }
@@ -962,7 +962,7 @@ fun bi_numberp(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_consp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_consp(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return bool2ob(arg1(args) is Cons)
 }
 
@@ -979,7 +979,7 @@ fun bi_consp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_regexpp(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_regexpp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return bool2ob(arg1(args) is Regexp)
 }
@@ -997,9 +997,9 @@ fun bi_regexpp(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_symbolp(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_symbolp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
-    return bool2ob(arg1(args) is Symbol)
+    return bool2ob(arg1(args) is LSymbol)
 }
 
 /// builtin tablep
@@ -1015,7 +1015,7 @@ fun bi_symbolp(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_tablep(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_tablep(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return bool2ob(arg1(args) is Table)
 }
 
@@ -1032,7 +1032,7 @@ fun bi_tablep(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_vectorp(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_vectorp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return bool2ob(arg1(args) is Vector)
 }
@@ -1050,7 +1050,7 @@ fun bi_vectorp(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_listp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_listp(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val arg = arg1(args)
     return bool2ob(arg is Cons || arg === Nil)
 }
@@ -1068,7 +1068,7 @@ fun bi_listp(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_functionp(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_functionp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return bool2ob(arg1(args) is Function)
 }
@@ -1086,7 +1086,7 @@ fun bi_functionp(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_builtinp(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_builtinp(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return bool2ob(arg1(args) is Builtin)
 }
@@ -1104,7 +1104,7 @@ fun bi_builtinp(args: LispObject, kwArgs: Map<Symbol, LispObject>
 // /// }
 // /// end builtin
 // @Suppress("UNUSED_PARAMETER")
-// fun bi_macrop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+// fun bi_macrop(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
 //     return bool2ob(arg1(args) is Macro)
 // }
 
@@ -1121,7 +1121,7 @@ fun bi_builtinp(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_length(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_length(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return Number.makeNumber(arg1(args).length())
 }
 
@@ -1138,8 +1138,8 @@ fun bi_length(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_typeof(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
-    return Symbol.intern(typeOf(arg1(args)))
+fun bi_typeof(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
+    return LSymbol.intern(typeOf(arg1(args)))
 }
 
 /// builtin loop
@@ -1155,7 +1155,7 @@ fun bi_typeof(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_loop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_loop(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     while (true) {
         evalProgn(args)
     }
@@ -1174,7 +1174,7 @@ fun bi_loop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_while(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_while(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (condition, _) = args
     
     while (eval(condition) !== Nil) {
@@ -1196,7 +1196,7 @@ fun bi_while(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_until(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_until(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (condition, _) = args
     
     while (eval(condition) === Nil) {
@@ -1220,7 +1220,7 @@ fun bi_until(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_unwind_protect(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_unwind_protect(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val (bodyform, unwindforms) = args
     try {
@@ -1246,17 +1246,17 @@ fun bi_unwind_protect(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_gensym(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_gensym(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val prefix = arg1(args).toString()
 
     if (prefix != "G#" && symbolTable[prefix] == null) {
-        return Symbol.uninterned(prefix)
+        return LSymbol.uninterned(prefix)
     }
     while (true) {
         val name = prefix + gensymCounter.toString()
         gensymCounter += 1
         if (symbolTable[name] == null) {
-            return Symbol.uninterned(name)
+            return LSymbol.uninterned(name)
         }
     }
 }
@@ -1278,7 +1278,7 @@ fun bi_gensym(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_append(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_append(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val lc = ListCollector()
 
     var pair = args
@@ -1309,7 +1309,7 @@ fun bi_append(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_fset(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_fset(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (sym, func) = args2(args)
     val symbol = symbolArg(sym, "fset symbol")
     val function = functionArg(func, "fset function")
@@ -1331,7 +1331,7 @@ fun bi_fset(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_defvar(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_defvar(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (sym, value, doc) = args3(args)
     val symbol = symbolArg(sym, "defvar symbol")
     if (symbol.getValueOptional() == null) {
@@ -1339,7 +1339,7 @@ fun bi_defvar(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
     }
     if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
-        symbol.putprop(Symbol.intern("docstring"),
+        symbol.putprop(LSymbol.intern("docstring"),
                        LispString.makeString(docstring))
     }
     return symbol
@@ -1359,13 +1359,13 @@ fun bi_defvar(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_defparameter(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_defparameter(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (sym, value, doc) = args3(args)
     val symbol = symbolArg(sym, "defvar symbol")
     symbol.setValue(eval(value), silent = true)
     if (doc !== Nil) {
         val docstring = stringArg(doc, "defvar docstring")
-        symbol.putprop(Symbol.intern("docstring"),
+        symbol.putprop(LSymbol.intern("docstring"),
                        LispString.makeString(docstring))
     }
     return symbol
@@ -1385,7 +1385,7 @@ fun bi_defparameter(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObje
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_last(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_last(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val list_arg = arg1(args)
     if (list_arg === Nil) {
         return Nil
@@ -1407,7 +1407,7 @@ fun bi_last(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_read(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_read(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (tentative_stream, eof_error_p, eof_value) = args3(args)
     var input_stream: Stream? = null
 
@@ -1446,10 +1446,10 @@ fun bi_read(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_flet(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_flet(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (bindings, body) = args
     // These are the previous function bindings to be restored after
-    var previous_bindings = mutableListOf<Pair<Symbol, Function?>>()
+    var previous_bindings = mutableListOf<Pair<LSymbol, Function?>>()
 
     try {
         for (binding in listArg(bindings, "flet bindings")) {
@@ -1482,7 +1482,7 @@ fun bi_flet(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_symbol_name(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_symbol_name(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     return LispString.makeString(symbolArg(arg1(args), "symbol-name").name)
 }
@@ -1500,7 +1500,7 @@ fun bi_symbol_name(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_atom(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_atom(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     return bool2ob(arg1(args).isAtom())
 }
 
@@ -1517,7 +1517,7 @@ fun bi_atom(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_equal(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_equal(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (arg1, arg2) = args
     return bool2ob(arg1.equal(arg2))
 }
@@ -1536,7 +1536,7 @@ fun bi_equal(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_eval(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_eval(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (expr, env) = args2(args)
 
     if (env === Nil) {
@@ -1560,7 +1560,7 @@ fun bi_eval(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_getprop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_getprop(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (symbol, property, default) = args3(args)
     val sym = symbolArg(symbol, "get symbol")
     val prop = symbolArg(property, "get property")
@@ -1580,7 +1580,7 @@ fun bi_getprop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_putprop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_putprop(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (symbol, property, value) = args3(args)
     val sym = symbolArg(symbol, "put symbol")
     val prop = symbolArg(property, "put property")
@@ -1601,7 +1601,7 @@ fun bi_putprop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_remprop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_remprop(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     val (symbol, property) = args3(args)
     val sym = symbolArg(symbol, "put symbol")
     val prop = symbolArg(property, "put property")
@@ -1621,7 +1621,7 @@ fun bi_remprop(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_nreverse(args: LispObject, kwArgs: Map<Symbol, LispObject>): LispObject {
+fun bi_nreverse(args: LispObject, kwArgs: Map<LSymbol, LispObject>): LispObject {
     var cell = arg1(args)
     var next = cell.cdr()
 

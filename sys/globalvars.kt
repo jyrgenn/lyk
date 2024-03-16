@@ -5,11 +5,11 @@ package org.w21.lyk
 val rootEnv = Environment()
 var currentEnv = rootEnv
 
-val Nil = Symbol.intern("nil", true)
-val T = Symbol.intern("t", true)
+val Nil = LSymbol.intern("nil", true)
+val T = LSymbol.intern("t", true)
 
-val warningsAsErrors = Symbol.makeGlobal("*warnings-as-errors*")
-val last_error = Symbol.makeGlobal("*last-error*")
+val warningsAsErrors = LSymbol.makeGlobal("*warnings-as-errors*")
+val last_error = LSymbol.makeGlobal("*last-error*")
 
 var inErrset = false            // are we in an (errset ...) context?
 
@@ -20,7 +20,7 @@ var gensymCounter = 4711
 // return value. The REPL will print any return value but this one.
 // Idea taken from TI's PC Scheme.
 //
-val theNonPrintingObject = Symbol.intern("*the-non-printing-object*", true)
+val theNonPrintingObject = LSymbol.intern("*the-non-printing-object*", true)
 
 var stdin = FileReaderStream(stdinPath, stdinName, error = true)
 var stdout = FileWriterStream(stdoutPath, stdoutName, flushln = true)
@@ -30,43 +30,43 @@ var console = FileWriterStream(consolePath, consoleName, flushch = true)
 
 var debug_out = console
 
-val verboseSym = Symbol.intern("verbose")
-val errorSym = Symbol.intern("error")
+val verboseSym = LSymbol.intern("verbose")
+val errorSym = LSymbol.intern("error")
 
 var consCounter = 0
 var evalCounter = 0
 
 // debug and trace topic names
-val debugEvalSym = Symbol.intern("eval")
-val debugEvalPrognSym = Symbol.intern("evalprogn")
-val debugEvalFunSym = Symbol.intern("evalfun")
-val debugCallSym = Symbol.intern("call")
-val debugErrorSym = Symbol.intern("error")
-val debugIOSym = Symbol.intern("io")
-val debugBindParSym = Symbol.intern("bindpar")
-val debugReaderSym = Symbol.intern("reader")
-val debugConsSym = Symbol.intern("cons")
-val debugCatchThrowSym = Symbol.intern("catch-throw")
-val debugLetBindSym = Symbol.intern("let")
-val debugBindSymSym = Symbol.intern("bind")
-val debugStepEval = Symbol.intern("stepeval")
-val debugMacroSym = Symbol.intern("macro")
-val debugLambdaParamsSym = Symbol.intern("params")
+val debugEvalSym = LSymbol.intern("eval")
+val debugEvalPrognSym = LSymbol.intern("evalprogn")
+val debugEvalFunSym = LSymbol.intern("evalfun")
+val debugCallSym = LSymbol.intern("call")
+val debugErrorSym = LSymbol.intern("error")
+val debugIOSym = LSymbol.intern("io")
+val debugBindParSym = LSymbol.intern("bindpar")
+val debugReaderSym = LSymbol.intern("reader")
+val debugConsSym = LSymbol.intern("cons")
+val debugCatchThrowSym = LSymbol.intern("catch-throw")
+val debugLetBindSym = LSymbol.intern("let")
+val debugBindSymSym = LSymbol.intern("bind")
+val debugStepEval = LSymbol.intern("stepeval")
+val debugMacroSym = LSymbol.intern("macro")
+val debugLambdaParamsSym = LSymbol.intern("params")
 
-val debugOffSym = Symbol.intern(":off")
-val debugListSym = Symbol.intern(":list")
-val debugDebugSym = Symbol.intern("debug")
+val debugOffSym = LSymbol.intern(":off")
+val debugListSym = LSymbol.intern(":list")
+val debugDebugSym = LSymbol.intern("debug")
 
 
-val unquoteSymbol = Symbol.intern("unquote")
-val unquoteSplicingSymbol = Symbol.intern("unquote-splicing")
+val unquoteSymbol = LSymbol.intern("unquote")
+val unquoteSplicingSymbol = LSymbol.intern("unquote-splicing")
 
 
 var debugOn = false             // set iff any debug topic is "on"
 
-val commandLineArgs = Symbol.makeGlobal("*command-line-args*")
+val commandLineArgs = LSymbol.makeGlobal("*command-line-args*")
 
-val currentLoadFile = Symbol.makeGlobal("*current-load-file*")
+val currentLoadFile = LSymbol.makeGlobal("*current-load-file*")
 
 // set of features provided
-val featureSet = mutableSetOf<Symbol>()
+val featureSet = mutableSetOf<LSymbol>()

@@ -7,7 +7,7 @@ val verbosityNotice = 1
 val verbosityInfo = 2
 
 object Options {
-    var debug = mutableMapOf<Symbol, Boolean>(
+    var debug = mutableMapOf<LSymbol, Boolean>(
         debugEvalSym to false,
         debugCallSym to false,
         debugErrorSym to false,

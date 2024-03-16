@@ -17,14 +17,14 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_elements(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_elements(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val seq = arg1(args)
 
     if (seq === Nil) {
         return Nil
     }
-    if (seq is Symbol) {
+    if (seq is LSymbol) {
         throw ArgumentError("elements argument is not a sequence: $seq")
     }
     return collectedList() {
@@ -49,7 +49,7 @@ fun bi_elements(args: LispObject, kwArgs: Map<Symbol, LispObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_elt(args: LispObject, kwArgs: Map<Symbol, LispObject>
+fun bi_elt(args: LispObject, kwArgs: Map<LSymbol, LispObject>
 ): LispObject {
     val (seq, ind) = args2(args)
     val index = longArg(ind, "elt index")

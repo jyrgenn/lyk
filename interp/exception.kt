@@ -32,7 +32,7 @@ class InternalReaderError(message: String,
     override fun toString() = "${lh.location()}: $message"
 }
 
-class ImmutableError(val symbol: Symbol, val function: Boolean): 
+class ImmutableError(val symbol: LSymbol, val function: Boolean): 
     LispError("symbol $symbol is immutable")
 
 class UserError(message: String, val data: LispObject = Nil): Exception(message)
@@ -81,7 +81,7 @@ class OtherError(message: String, val e: Exception): LispError(message) {
     override fun toString(): String = "${super.toString()}: $e"
 }
 
-class NotProvidedError(val feature: Symbol):
+class NotProvidedError(val feature: LSymbol):
     LispError("Required feature `$feature` has not been provided") {
 }
 

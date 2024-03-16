@@ -68,27 +68,27 @@ class StrBuf() {
     }
 }
 
-fun arrayIntern(array: Array<String>): List<Symbol> {
-    val symbols = mutableListOf<Symbol>()
+fun arrayIntern(array: Array<String>): List<LSymbol> {
+    val symbols = mutableListOf<LSymbol>()
     for (elem in array) {
-        symbols.add(Symbol.intern(elem))
+        symbols.add(LSymbol.intern(elem))
     }
     return symbols
 }
 
-fun mapInternKeys(map: Map<String, LispObject>): Map<Symbol, LispObject> {
-    val result = mutableMapOf<Symbol, LispObject>()
+fun mapInternKeys(map: Map<String, LispObject>): Map<LSymbol, LispObject> {
+    val result = mutableMapOf<LSymbol, LispObject>()
     for ((key, value) in map) {
-        result[Symbol.intern(":" + key)] = value
+        result[LSymbol.intern(":" + key)] = value
     }
     return result
 }
 
 fun pairsInternFirst(pairs: Array<Pair<String, LispObject>>
-): List<Pair<Symbol, LispObject>> {
-    var result = mutableListOf<Pair<Symbol, LispObject>>()
+): List<Pair<LSymbol, LispObject>> {
+    var result = mutableListOf<Pair<LSymbol, LispObject>>()
     for ((key, value) in pairs) {
-        result.add(Pair<Symbol, LispObject>(Symbol.intern(key), value))
+        result.add(Pair<LSymbol, LispObject>(LSymbol.intern(key), value))
     }
     return result
 }

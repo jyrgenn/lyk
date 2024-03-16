@@ -2,18 +2,18 @@
 
 package org.w21.lyk
 
-fun maybeIntern(word: String?): Symbol? {
+fun maybeIntern(word: String?): LSymbol? {
     if (word == null) {
         return null
     }
-    return Symbol.intern(word)
+    return LSymbol.intern(word)
 }
 
 
 class Builtin(
     // marked with S as kotlin String, not LispString, for clarity
     nameS: String,
-    val bfun: (LispObject, Map<Symbol, LispObject>) -> LispObject,
+    val bfun: (LispObject, Map<LSymbol, LispObject>) -> LispObject,
     stdParsS: Array<String>,
     keyParsS: Map<String, LispObject>,
     optParsS: Array<Pair<String, LispObject>>,
@@ -22,7 +22,7 @@ class Builtin(
     isSpecial: Boolean = false,
     docBodyS: String,
 ): Function(
-       Symbol.intern(nameS),
+       LSymbol.intern(nameS),
        arrayIntern(stdParsS),
        mapInternKeys(keyParsS),
        pairsInternFirst(optParsS),
@@ -47,7 +47,7 @@ class Builtin(
             throw CallError("$this called with improper arglist: $arglist")
         }
 
-        var wantKeywordParam: Symbol? = null  // i.e. have seen this keyword
+        var wantKeywordParam: LSymbol? = null  // i.e. have seen this keyword
         for (arg in arglist) {
             hadArgs++
             if (wantKeywordParam != null) {
@@ -60,7 +60,7 @@ class Builtin(
                     throw ArgumentError("keyword $arg invalid"
                                         + " for function `${this.name}'")
                 }
-                wantKeywordParam = arg as Symbol
+                wantKeywordParam = arg as LSymbol
                 continue
             }
             if (hadStdArgs < wantStdArgs) {

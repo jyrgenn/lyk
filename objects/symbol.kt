@@ -2,7 +2,7 @@
 
 package org.w21.lyk
 
-val symbolTable: MutableMap<String, Symbol> = mutableMapOf()
+val symbolTable: MutableMap<String, LSymbol> = mutableMapOf()
 
 val symchars = "!#$%&*+-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^" +
     "_abcdefghijklmnopqrstuvwxyz{}~".toSet()
@@ -16,15 +16,15 @@ fun isNumberString(s: String): Boolean {
     }
 }
 
-class Symbol(val name: String, val immutable: Boolean): LispObject()
+class LSymbol(val name: String, val immutable: Boolean): LispObject()
 {
-    val props = mutableMapOf<Symbol, LispObject>()
+    val props = mutableMapOf<LSymbol, LispObject>()
     val descName = makeDescName()
     var function: Function? = null
 
     companion object {
         fun intern(name: String, immutable_and_selfvalued: Boolean = false
-        ): Symbol {
+        ): LSymbol {
             if (name in symbolTable.keys) {
                 return symbolTable[name] ?:
                     throw Exception(
@@ -32,7 +32,7 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
                     )
             }
             val i_and_sv = immutable_and_selfvalued || name.startsWith(":")
-            val sym = Symbol(name, i_and_sv)
+            val sym = LSymbol(name, i_and_sv)
             symbolTable[name] = sym
             if (i_and_sv) {
                 rootEnv.setValue(sym, sym)
@@ -40,13 +40,13 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
             return sym
         }
 
-        fun uninterned(name: String): Symbol {
-            val sym = Symbol(name, name.startsWith(":"))
+        fun uninterned(name: String): LSymbol {
+            val sym = LSymbol(name, name.startsWith(":"))
             return sym
         }
 
-        fun makeGlobal(name: String, value: LispObject = Nil): Symbol {
-            val symbol = Symbol.intern(name)
+        fun makeGlobal(name: String, value: LispObject = Nil): LSymbol {
+            val symbol = LSymbol.intern(name)
             rootEnv.map[symbol] = value
             return symbol
         }
@@ -96,13 +96,13 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
         return name.startsWith(':')
     }
 
-    // Get the value of a property of Symbol. If it is not defined, return Nil.
-    fun getprop(name: Symbol): LispObject {
+    // Get the value of a property of LSymbol. If it is not defined, return Nil.
+    fun getprop(name: LSymbol): LispObject {
         return props[name] ?: Nil
     }
     
-    // Set the value of a property of Symbol.
-    fun putprop(name: Symbol, value: LispObject) {
+    // Set the value of a property of LSymbol.
+    fun putprop(name: LSymbol, value: LispObject) {
         props[name] = value
     }
 
@@ -139,15 +139,15 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
 
     fun getValueOptional() = currentEnv.getValueMaybe(this)
 
-    fun setProp(name: Symbol, value: LispObject) {
+    fun setProp(name: LSymbol, value: LispObject) {
         props[name] = value
     }
 
-    fun getProp(name: Symbol, default: LispObject): LispObject {
+    fun getProp(name: LSymbol, default: LispObject): LispObject {
         return props[name] ?: default
     }
 
-    fun remProp(name: Symbol): LispObject {
+    fun remProp(name: LSymbol): LispObject {
         val result = props[name] ?: Nil
         props.remove(name)
         return result
@@ -180,7 +180,7 @@ class Symbol(val name: String, val immutable: Boolean): LispObject()
     }
 
     override fun compareTo(other: LispObject): Int {
-	if (other is Symbol) {
+	if (other is LSymbol) {
 	    if (name < other.name) {
 		return -1
 	    } else if (name > other.name) {
