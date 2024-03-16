@@ -11,7 +11,7 @@ class Macro(
     bodyForms: LispObject,                   //
     docBody: LispString,                     // docstring sans signature
 ): Lambda(macroName, stdPars, keyPars, optPars, restPar, bodyForms,
-          docBody, currentEnv)
+          docBody, currentEnv, isSpecial = true)
 {
     fun expand(arglist: LispObject) = call(arglist)
 }
@@ -55,10 +55,19 @@ fun macroExpandForm(form: LispObject): LispObject {
     var needExpansion = true
     var formvar = form
     while (needExpansion) {
+        debug(debugMacroSym) {
+            "need expand $formvar"
+        }
         val (newForm, stillNeedExpansion) = macroExpandFormRecurse(formvar)
         formvar = newForm
         needExpansion = stillNeedExpansion
     }
-    return form
+    return formvar
 }
 
+fun makeMacro(params: LispObject,
+              body: LispObject,
+              name: Symbol? = null): Macro {
+    return makeLambda(params, body, currentEnv, name, isMacro = true)
+        as Macro
+}

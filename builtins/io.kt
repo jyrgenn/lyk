@@ -190,7 +190,7 @@ fun bi_warning(args: LispObject, kwArgs: Map<Symbol, LispObject>
         fields.add(arg.toString())
     }
     warn(fields.joinToString(" "))
-    return Nil
+    return theNonPrintingObject
 }
 
 /// builtin load

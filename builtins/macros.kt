@@ -28,7 +28,7 @@ fun bi_defmacro(args: LispObject, kwArgs: Map<Symbol, LispObject>
     var (name, rest1) = args
     var (params, bodyForms) = rest1
     val sym = symbolArg(name, "defmacro name")
-    sym.setFunction(makeMacro(params, bodyforms, currentEnv, name))
+    sym.setFunction(makeMacro(params, bodyForms, sym))
     return name
 }
 
@@ -74,7 +74,7 @@ fun qq_recurse(form: LispObject): LispObject {
         }
         val expandedArg = eval(cell2.car())
         if (expandedArg is Cons) {
-            expandedArg.lastCons().rplacd(tailResult)
+            lastCons(expandedArg).rplacd(tailResult)
             return expandedArg
         }
         throw TypeError("unquote-splicing arg not a list: `$expandedArg`")

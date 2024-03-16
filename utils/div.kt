@@ -96,6 +96,17 @@ fun pairsInternFirst(pairs: Array<Pair<String, LispObject>>
 // Measure performance data while executing the passed closure. The returned
 // value is a Pair of the string with the performance data and the returned
 // value.
+fun measurePerfdataValue(closure: () -> LispObject): Pair<String, LispObject> {
+    var result: LispObject = Nil
+
+    val perfdata = measurePerfdata {
+        result = closure()
+    }
+    return Pair(perfdata, result)
+}
+
+// Measure performance data while executing the passed closure. The returned
+// value is a string with the performance data.
 fun measurePerfdata(closure: () -> Unit): String {
     val consCountBefore = consCounter
     val evalCountBefore = evalCounter

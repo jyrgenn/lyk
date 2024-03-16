@@ -32,21 +32,23 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
         iprint(promptString, true)
         try {
             // Read, 
-            val obj = reader.read()
+            val expr = reader.read()
             iprintln()
-            if (obj == null) {
+            if (expr == null) {
                 break
             }
 
+            // Expand macros,
+            val expanded = macroExpandForm(expr)
+
             // Eval,
-            var result: LispObject = Nil
-            val perfdata = measurePerfdata {
-                result = eval(obj)
+            val (perfdata, value) = measurePerfdataValue {
+                eval(expanded)
             }
 
             // Print,
-            if (result !== theNonPrintingObject) {
-                iprintln(result.desc())
+            if (value !== theNonPrintingObject) {
+                iprintln(value.desc())
             }
             if (interactive) {
                 info(perfdata)

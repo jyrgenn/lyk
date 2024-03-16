@@ -49,6 +49,9 @@ fun anyDebugOn(): Boolean {
 }
 
 fun setDebug(sym: Symbol, value: Boolean = true): Boolean { // false if error
+    debug(debugDebugSym) {
+        "set $sym <= $value"
+    }
     if (sym in Options.debug.keys) {
         Options.debug[sym] = value
         debugOn = anyDebugOn()

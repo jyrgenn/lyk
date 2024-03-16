@@ -62,6 +62,8 @@ class Environment(val parent: Environment? = null): LispObject() {
     }
 
     override fun toString() = "#<${typeOf(this)}$id[$level]>"
+
+    override fun desc() = toString() + map.toString()
 }
 
 fun withNewEnvironment(parent: Environment = currentEnv,

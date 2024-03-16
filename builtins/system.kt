@@ -2,9 +2,6 @@
 
 package org.w21.lyk
 
-val debugOffSym = Symbol.intern(":off")
-val debugListSym = Symbol.intern(":list")
-val debugDebugSym = Symbol.intern("debug")
 
 /// builtin debug
 /// fun     bi_debug

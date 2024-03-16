@@ -16,9 +16,10 @@ open class Lambda(                           // Macro will inherit this
     restPar: Symbol?,                       // &rest parameters
     val bodyForms: LispObject,               //
     docBody: LispString,                     // docstring sans signature
-    val environment: Environment
+    val environment: Environment,
+    isSpecial: Boolean = false          // for Macros only
 ): Function(functionName, stdPars, keyPars, optPars, restPar,
-            Symbol.intern("value"), false, docBody)
+            Symbol.intern("value"), isSpecial, docBody)
 {
     val lambdatype = "function"
     
@@ -120,6 +121,9 @@ open class Lambda(                           // Macro will inherit this
     override fun call(arglist: LispObject): LispObject {
         return withNewEnvironment(environment) {
             bindPars(arglist)
+            debug(debugLambdaParamsSym) {
+                currentEnv.desc() + "\nin " + bodyForms.toString()
+            }
             evalProgn(bodyForms)
         }
     }
@@ -192,7 +196,8 @@ val action_table = arrayOf( // [PLS, TC] => Ac
 fun makeLambda(params: LispObject,
                body: LispObject,
                env: Environment = currentEnv,
-               name: Symbol? = null): Lambda
+               name: Symbol? = null,
+               isMacro: Boolean = false): Lambda
 {
     // sort params into the various params arrays
     var argptr = params
@@ -306,6 +311,11 @@ fun makeLambda(params: LispObject,
     } else {
         bodyForms = body
     }
-    return Lambda(name, stdPars, keyPars, optPars, rest_sym,
-                  bodyForms, docBody, env)
+    if (isMacro) {
+        return Macro(name, stdPars, keyPars, optPars, rest_sym,
+                     bodyForms, docBody)
+    } else {
+        return Lambda(name, stdPars, keyPars, optPars, rest_sym,
+                      bodyForms, docBody, env)
+    }
 }

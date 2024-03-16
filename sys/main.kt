@@ -21,6 +21,8 @@ object Options {
         debugReaderSym to false,
         debugConsSym to false,
         debugStepEval to false,
+        debugMacroSym to false,
+        debugLambdaParamsSym to false,
     )
     var print_estack = false
     var maxrecurse = 0
@@ -38,6 +40,7 @@ fun usage() {
     -l load-file     : load the named Lisp files (multiple possible)
     -h, -?           : print this help on options
     -q               : suppress info messages (-qq: also notice/warning)
+    -v               : increase verbosity
     -E               : print exception stack
     -R maxrecurse    : maximum eval recursion depth 
 """)
@@ -87,6 +90,7 @@ fun main(args: Array<String>) {
             when (ch) {
                 'E' -> { Options.print_estack = true }
                 'q' -> { Options.verbosity -= 1 }
+                'v' -> { Options.verbosity += 1 }
                 'd' -> { setDebug(getOptVal("debug options")) }
                 'e' -> { lispExpression = getOptVal("Lisp expression") }
                 'l' -> {
@@ -125,6 +129,7 @@ fun main(args: Array<String>) {
     }
 
     if (lispExpression != null) {
+        Options.verbosity -= 1
         try {
             val reader = Reader(StringReaderStream(lispExpression),
                                 "*command-arg*")
