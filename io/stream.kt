@@ -74,7 +74,7 @@ open class FileWriterStream(path: String,
     override fun write(code: Int) {
         try {
             fileWriter.write(code)
-            if (flushch) {
+            if (flushch || (flushln && code == newLine)) {
                 fileWriter.flush()
             }
         } catch (e: Exception) {
@@ -92,28 +92,6 @@ open class FileWriterStream(path: String,
         }
     }
 
-    override fun println(thing: Any) {
-        try {
-            super.println(thing)
-            if (flushch || flushln) {
-                fileWriter.flush()
-            }
-        } catch (e: Exception) {
-            throw IOError("writing $this", e)
-        }
-    }
-
-    override fun println() {
-        try{
-            super.println()
-            if (flushch || flushln) {
-                fileWriter.flush()
-            }
-        } catch (e: Exception) {
-            throw IOError("writing $this", e)
-        }
-    }
-    
     fun flush() {
         try {
             fileWriter.flush()
@@ -161,10 +139,17 @@ abstract class LStream(
     open fun print(thing: Any) {
         write(thing.toString())
     }
-    open fun println(thing: Any) {
-        print(thing)
-        write(newLine)
+    open fun println(vararg things: Any) {
+        val last = things.size - 1
+        var n = 0
+        for (thing in things) {
+            write(thing.toString())
+            if (n++ == last) {
+                write(newLine)
+            }
+        }
     }
+    
     open fun println() {
         write(newLine)
     }
