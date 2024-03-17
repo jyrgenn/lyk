@@ -13,6 +13,8 @@ class LMacro(
 ): LFunction(macroName, stdPars, keyPars, optPars, restPar, null, true,
              docBody)
 {
+    override val typeDesc = "macro"
+    
     fun expand(arglist: LObject): LObject {
         return withNewEnvironment(currentEnv) {
             bindPars(arglist, this)

@@ -6,28 +6,22 @@ package org.w21.lyk
 val anonLambdaSym = intern("*anon-lambda*")
 
 abstract class LFunction(
-    functionName: LSymbol?,                       // present if non anonymous
-    val stdPars: List<LSymbol>,                   // normal parameters
+    functionName: LSymbol?,                    // present if non anonymous
+    val stdPars: List<LSymbol>,                // normal parameters
     val keyPars: Map<LSymbol, LObject>,        // &key name => default
     val optPars: List<Pair<LSymbol, LObject>>, // &optional name, default
-    val restPar: LSymbol?,                       // &rest parameters
-    val retval: LSymbol?,                         // return value description
-    val isSpecial: Boolean,                      // used by Builtins only
-    val docBody: LString,                     // docstring sans signature
+    val restPar: LSymbol?,                     // &rest parameters
+    val retval: LSymbol?,                      // return value description
+    val isSpecial: Boolean,                    // used by Builtins only
+    val docBody: LString,                      // docstring sans signature
 ): LObject(), Callable {
     val name: LSymbol
     val has_name: Boolean
-    val minargs: Int
-    val maxargs: Int
+    abstract val typeDesc: String
 
     init {
         has_name = functionName != null
         name = functionName ?: anonLambdaSym
-        minargs = stdPars.size
-        maxargs = if (restPar == null)
-            minargs + optPars.size + keyPars.size * 2 // ":key keyarg"
-        else
-            -1
         if (has_name) {
             (functionName as LSymbol).function = this
         }
@@ -65,16 +59,12 @@ abstract class LFunction(
         return sb.join(" ")
     }
 
-    override open fun toString() = "#<${typeDesc()}[$id]$name>"
+    override open fun toString() = "#<${typeDesc}[$id]$name>"
 
-    override open fun desc() = "#<${typeDesc()}[$id](${parlist()})=$retval>"
-
-    open fun typeDesc(): String {
-        return typeOf(this)
-    }
+    override open fun desc() = "#<${typeDesc}[$id](${parlist()})=$retval>"
 
     fun docHeader(): String {
-        return "${typeDesc()} (${parlist()}) => $retval"
+        return "${typeDesc} (${parlist()}) => $retval"
     }
 
     fun documentation(): String {
@@ -101,7 +91,8 @@ abstract class LFunction(
     open override fun dump() = desc()
 }
 
-
+// bind function call or macro expansion arguments to the right variables; with
+// complex arglists, this is a complex task
 fun bindPars(arglist: LObject, func: LFunction) {
     // first establish the kwArgs[] with the default values
     var kwArgs = func.keyPars.toMutableMap()
@@ -109,7 +100,6 @@ fun bindPars(arglist: LObject, func: LFunction) {
     var hadStdArgs = 0              // stdPars seen
     var wantOptArgs = func.optPars.size
     var hadOptArgs = 0              // optPars seen
-    var hadArgs = 0                 // args seen at all
 
     var restArgs = ListCollector()
 
@@ -117,23 +107,22 @@ fun bindPars(arglist: LObject, func: LFunction) {
         throw CallError("$func called with improper arglist: $arglist")
     }
 
-    var wantKeywordParam: LSymbol? = null  // i.e. have seen this keyword
+    var wantKeyArg: LSymbol? = null  // i.e. have seen this keyword
     for (arg in arglist) {
-        hadArgs++
-        if (wantKeywordParam != null) {
+        if (wantKeyArg != null) {
             // these will be bound later together with the default values
             // for keys we did not see
-            kwArgs[wantKeywordParam] = arg
-            wantKeywordParam = null
+            kwArgs[wantKeyArg] = arg
+            wantKeyArg = null
             continue
         }
         if (arg.isKeyword()) {
             val sym = key2var(arg as LSymbol)
             if (sym !in kwArgs.keys) {
                 throw ArgumentError("keyword $arg invalid"
-                                    + " for function `${func.name}'")
+                                    + " for ${func.typeDesc} `${func.name}'")
             }
-            wantKeywordParam = sym
+            wantKeyArg = sym
             continue
         }
         if (hadStdArgs < wantStdArgs) {
@@ -148,25 +137,21 @@ fun bindPars(arglist: LObject, func: LFunction) {
         }
         if (func.restPar != null) {
             restArgs.add(arg)
+            continue
         }
+        // don't want this any more
+        throw ArgumentError(
+            "too many arguments for ${func.typeDesc} `${func.name}`: $arglist")
     }
     // was it enough?
     if (hadStdArgs < wantStdArgs) {
-        val atleast = if (func.minargs == func.maxargs) "" else "at least "
-        throw ArgumentError("too few args for function `${func.name}`; have "
-                            + "$hadArgs, needs $atleast${func.minargs}")
-    }
-    // and not too much?
-    if (func.maxargs >= 0 && hadArgs > func.maxargs) {
-        val atmost = if (func.minargs == func.maxargs) "" else "at most "
-        throw ArgumentError("too many args for function `${func.name}`;"
-                            + " have $hadArgs, takes $atmost"
-                            + "${func.maxargs}")
+        throw ArgumentError(
+            "too few arguments for function `${func.name}`: $arglist")
     }
     // a :keyword left dangling?
-    if (wantKeywordParam != null) {
-        throw ArgumentError("&key `:$wantKeywordParam` argument missing "
-                            + "calling builtin `${func.name}`")
+    if (wantKeyArg != null) {
+        throw ArgumentError("&key `$wantKeyArg` argument missing "
+                            + "for ${func.typeDesc} `${func.name}`: $arglist")
     }
 
     // fill in optArgs with default values if necessary

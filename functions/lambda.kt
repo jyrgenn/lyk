@@ -21,7 +21,7 @@ open class Lambda(                           // Macro will inherit this
 ): LFunction(functionName, stdPars, keyPars, optPars, restPar,
             intern("value"), isSpecial, docBody)
 {
-    val lambdatype = "function"
+    override val typeDesc = "lambda function"
     
     override fun desc(): String {
         var body: String
@@ -33,7 +33,7 @@ open class Lambda(                           // Macro will inherit this
             body = s.substring(1, s.length - 1)
         }
         
-        return "#<${typeDesc()}[$id](${parlist()}) $body>"
+        return "#<${typeDesc}[$id](${parlist()}) $body>"
     }
 
 

@@ -1125,7 +1125,7 @@ fun bi_length(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return makeNumber(arg1(args).length())
 }
 
-/// builtin typeof
+/// builtin type-of
 /// fun     bi_typeof
 /// std     object
 /// key     

@@ -31,6 +31,8 @@ class LBuiltin(
        isSpecial,
        makeString(docBodyS),
    ) {
+    override val typeDesc =
+        if (isSpecial) "special form" else "builtin function"
 
     override fun call(arglist: LObject): LObject {
        // first establish the kwArgs[] with the default values
@@ -58,7 +60,7 @@ class LBuiltin(
             if (arg.isKeyword()) {
                 if (arg !in kwArgs.keys) {
                     throw ArgumentError("keyword $arg invalid"
-                                        + " for function `${this.name}'")
+                                        + " for $typeDesc `${this.name}'")
                 }
                 wantKeywordParam = arg as LSymbol
                 continue
@@ -75,20 +77,14 @@ class LBuiltin(
             }
             if (restPar != null) {
                 newArglist.add(arg)
+                continue
             }
+            throw ArgumentError(
+                "too many arguments for $typeDesc `$name`: $arglist")
         }
         // was it enough?
         if (hadStdArgs < wantStdArgs) {
-            val atleast = if (minargs == maxargs) "" else "at least "
-            throw ArgumentError("too few args for function `$name`; have "
-                                + "$hadArgs, needs $atleast$minargs")
-        }
-        // and not too much?
-        if (maxargs >= 0 && hadArgs > maxargs) {
-            val atmost = if (minargs == maxargs) "" else "at most "
-            throw ArgumentError("too many args for function `$name`;"
-                                + " have $hadArgs, takes $atmost"
-                                + "$maxargs")
+            throw ArgumentError("too few args for $typeDesc `$name`: $arglist")
         }
         // a :keyword left dangling?
         if (wantKeywordParam != null) {
@@ -103,6 +99,4 @@ class LBuiltin(
         // finally, call the actual function
         return bfun(newArglist.list(), kwArgs)
     }
-
-    override fun typeDesc() = if (isSpecial) "Special form" else "LBuiltin"
 }

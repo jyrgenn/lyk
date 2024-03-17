@@ -61,9 +61,17 @@ class LEnv(val parent: LEnv? = null): LObject() {
         return false
     }
 
-    override fun toString() = "#<${typeOf(this)}$id[$level]>"
+    val descFormat = "#<${typeOf(this)}$id[$level]%s>"
 
-    override fun desc() = toString() + map.toString()
+    override fun toString() = descFormat.format("")
+
+    override fun desc() = descFormat.format(
+        if (level == 0) {
+            "{...}"
+        } else {
+            map.toString()
+        }
+    )
 }
 
 fun withNewEnvironment(parent: LEnv = currentEnv,
