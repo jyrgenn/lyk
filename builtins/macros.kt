@@ -74,7 +74,7 @@ fun qq_recurse(form: LObject): LObject {
         }
         val expandedArg = eval(cell2.car())
         if (expandedArg is LCons) {
-            lastCons(expandedArg).rplacd(tailResult)
+            lastCons(expandedArg).cdr = tailResult
             return expandedArg
         }
         throw TypeError("unquote-splicing arg not a list: `$expandedArg`")

@@ -51,7 +51,7 @@ fun bi_cdr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_rplaca(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     var (cons, newcar) = args2(args)
-    consArg(cons, "rplaca").rplaca(newcar)
+    consArg(cons, "rplaca").car = newcar
     return cons
 }
 
@@ -70,7 +70,7 @@ fun bi_rplaca(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_rplacd(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     var (cons, newcar) = args2(args)
-    consArg(cons, "rplacd").rplacd(newcar)
+    consArg(cons, "rplacd").cdr = newcar
     return cons
 }
 
@@ -1628,11 +1628,11 @@ fun bi_nreverse(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     if (cell === Nil) {
         return Nil
     }
-    (cell as LCons).rplacd(Nil)
+    (cell as LCons).cdr = Nil
     while (next is LCons) {
         val nextPair = next
         next = nextPair.cdr()
-        nextPair.rplacd(cell)
+        nextPair.cdr = cell
         cell = nextPair
     }
     return cell

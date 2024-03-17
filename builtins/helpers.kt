@@ -141,7 +141,7 @@ fun spreadArglist(args: LObject): LObject {
     if (lastBut2nd === Nil) {
         arglist = tail
     } else {
-        (lastBut2nd as LCons).rplacd(tail)
+        (lastBut2nd as LCons).cdr = tail
     }
     return arglist
 }

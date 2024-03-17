@@ -35,23 +35,9 @@ class LCons(var car: LObject, var cdr: LObject = Nil): LObject() {
 
     override fun desc() = toString()
 
-    fun rplaca(newcar: LObject) {
-        car = newcar
-    }
+    override fun car() = car
 
-    fun rplacd(newcdr: LObject) {
-        cdr = newcdr
-    }
-
-    override fun car(): LObject {
-        return car
-    }
-
-    override fun cdr(): LObject {
-        return cdr
-    }
-
-    fun cxr() = Pair(car, cdr)
+    override fun cdr() = cdr
 
     override fun length(): Int {
         var len = 0

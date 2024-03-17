@@ -51,7 +51,7 @@ class ListCollector() {
     fun add(arg: LObject) {
         val newpair = LCons(arg, Nil)
         if (last is LCons) {
-            (last as LCons).rplacd(newpair)
+            (last as LCons).cdr = newpair
         } else {
             head = newpair
         }
@@ -60,7 +60,7 @@ class ListCollector() {
 
     fun lastcdr(arg: LObject) {
         if (last is LCons) {
-            (last as LCons).rplacd(arg)
+            (last as LCons).cdr = arg
         } else {
             last = arg
             head = arg

@@ -39,7 +39,7 @@ fun bi_list_collector(args: LObject,
         for (arg in args) {
             val newcons = LCons(arg, Nil)
             if (last_cons != null) {
-                (last_cons as LCons).rplacd(newcons)
+                (last_cons as LCons).cdr = newcons
             } else {
                 the_list = newcons
             }
