@@ -506,7 +506,7 @@ fun bi_prog1(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_lambda(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     var (params, bodyforms) = args
-    return makeLambda(params, bodyforms)
+    return makeLambdaOrMacro(params, bodyforms)
 }
 
 /// builtin defun
@@ -533,7 +533,7 @@ fun bi_defun(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (params, bodyforms) = rest
 
     val sym = symbolArg(name, "function name")
-    sym.setFunction(makeLambda(params, bodyforms, currentEnv, sym))
+    sym.setFunction(makeLambdaOrMacro(params, bodyforms, currentEnv, sym))
     return sym
 }
 
@@ -1458,7 +1458,7 @@ fun bi_flet(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             previous_bindings.add(Pair(symbol, symbol.function))
             val (params, bodyforms) = listArg(funcrest,
                                               "flet function $symbol")
-            symbol.setFunction(makeLambda(params, bodyforms))
+            symbol.setFunction(makeLambdaOrMacro(params, bodyforms))
         }
         return evalProgn(body)
     } finally {

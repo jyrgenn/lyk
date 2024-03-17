@@ -8,12 +8,17 @@ class LMacro(
     keyPars: Map<LSymbol, LObject>,        // &key name => default
     optPars: List<Pair<LSymbol, LObject>>, // &optional name, default
     restPar: LSymbol?,                        // &rest parameters
-    bodyForms: LObject,                   //
+    val bodyForms: LObject,                   //
     docBody: LString,                     // docstring sans signature
-): Lambda(macroName, stdPars, keyPars, optPars, restPar, bodyForms,
-          docBody, currentEnv, isSpecial = true)
+): LFunction(macroName, stdPars, keyPars, optPars, restPar, null, true,
+             docBody)
 {
-    fun expand(arglist: LObject) = call(arglist)
+    fun expand(arglist: LObject): LObject {
+        return withNewEnvironment(currentEnv) {
+            bindPars(arglist, this)
+            evalProgn(bodyForms)
+        }
+    }
 }
 
 fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
@@ -68,6 +73,6 @@ fun macroExpandForm(form: LObject): LObject {
 fun makeMacro(params: LObject,
               body: LObject,
               name: LSymbol? = null): LMacro {
-    return makeLambda(params, body, currentEnv, name, isMacro = true)
+    return makeLambdaOrMacro(params, body, currentEnv, name, isMacro = true)
         as LMacro
 }
