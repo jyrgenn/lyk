@@ -16,7 +16,7 @@ package org.w21.lyk
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_car(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return listArg(arg1(args), "car").car()
+    return listArg(arg1(args), "car").car
 }
 
 /// builtin cdr
@@ -33,7 +33,7 @@ fun bi_car(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_cdr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return listArg(arg1(args), "cdr").cdr()
+    return listArg(arg1(args), "cdr").cdr
 }
 
 /// builtin rplaca
@@ -220,10 +220,10 @@ fun bi_let(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 	    if (rest !is LCons) {
 		throw ArgumentError("let: malformed variable clause for `$sym`")
 	    }
-	    if (rest.cdr() != Nil) {
+	    if (rest.cdr != Nil) {
 		throw ArgumentError("let: malformed binding clause for `$sym`") 
 	    }
-	    val form = rest.car()
+	    val form = rest.car
 	    val value = eval(form)
             syms.add(symbolArg(sym, "let binding variable"))
 	    vals.add(value)
@@ -283,10 +283,10 @@ fun bi_letrec(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject{
 	    if (rest !is LCons) {
 		throw ArgumentError("let*: malformed variable clause")
 	    }
-	    if (rest.cdr() != Nil) {
+	    if (rest.cdr != Nil) {
 		throw ArgumentError("let*: malformed binding clause")
 	    }
-	    val value = rest.car()
+	    val value = rest.car
 	    syms.add(symbolArg(sym, "let* binding variable"))
 	    vals.add(value)
 	    debug(debugLetBindSym) {
@@ -379,8 +379,8 @@ fun bi_or(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_cond(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     for (arg in args) {
         val clause = consArg(arg, "cond clause")
-        if (eval(clause.car()) !== Nil) {
-            return evalProgn(clause.cdr())
+        if (eval(clause.car) !== Nil) {
+            return evalProgn(clause.cdr)
         }
     }
     return Nil
@@ -1283,15 +1283,15 @@ fun bi_append(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 
     var pair = args
     while (pair is LCons) {
-        val arg = pair.car()
-        if (pair.cdr() === Nil) {
+        val arg = pair.car
+        if (pair.cdr === Nil) {
             lc.lastcdr(arg)
             return lc.list()
         }
         for (elem in arg) {
             lc.add(elem)
         }
-        pair = pair.cdr()
+        pair = pair.cdr
     }
     return lc.list()
 }
@@ -1623,7 +1623,7 @@ fun bi_remprop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_nreverse(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     var cell = arg1(args)
-    var next = cell.cdr()
+    var next = cell.cdr
 
     if (cell === Nil) {
         return Nil
@@ -1631,7 +1631,7 @@ fun bi_nreverse(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     (cell as LCons).cdr = Nil
     while (next is LCons) {
         val nextPair = next
-        next = nextPair.cdr()
+        next = nextPair.cdr
         nextPair.cdr = cell
         cell = nextPair
     }

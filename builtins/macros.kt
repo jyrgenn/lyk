@@ -57,8 +57,8 @@ fun qq_recurse(form: LObject): LObject {
     }
     val (head, tail) = form
     if (head === unquoteSymbol) {
-        if (tail is LCons && tail.cdr() === Nil) {
-            return eval(tail.car())            
+        if (tail is LCons && tail.cdr === Nil) {
+            return eval(tail.car)            
         }
         throw ArgumentError("wrong number of args to unquote (takes 1)")
     }
@@ -68,11 +68,11 @@ fun qq_recurse(form: LObject): LObject {
     }
     val (headhead, cell2) = head
     if (headhead === unquoteSplicingSymbol) {
-        if (!(cell2 is LCons && cell2.cdr() === Nil)) {
+        if (!(cell2 is LCons && cell2.cdr === Nil)) {
             throw ArgumentError("wrong number of args to unquote-splicing"
                                 + "(takes 1)")
         }
-        val expandedArg = eval(cell2.car())
+        val expandedArg = eval(cell2.car)
         if (expandedArg is LCons) {
             lastCons(expandedArg).cdr = tailResult
             return expandedArg

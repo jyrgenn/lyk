@@ -257,25 +257,25 @@ fun makeLambdaOrMacro(params: LObject,
             // print("LSymbol => $(sym, Nil)")
             return Pair(parameter, Nil)
         } else if (parameter is LCons) {
-            val sym = parameter.car()
+            val sym = parameter.car
             if (sym !is LSymbol) {
                 throw LambdaDefError(
                     "&optional parameter name `$sym` not a symbol"
                     + "in $lambda_name definition")
             }
-            if (parameter.cdr() === Nil) {
+            if (parameter.cdr === Nil) {
                 // print("short list => $(sym, Nil)")
                 return Pair(sym, Nil)
             }
-            val elem2 = parameter.cdr()
+            val elem2 = parameter.cdr
             if (elem2 is LCons) {
-                if (elem2.cdr() != Nil) {
+                if (elem2.cdr != Nil) {
                     throw LambdaDefError(
                         "invalid list in &optional parameter spec for "
                         + "`$sym` in $lambda_name definition")
                 }
                 // print("list of 2 => $(sym, Nil)")
-                return Pair(sym, elem2.car())
+                return Pair(sym, elem2.car)
             } else {
                 throw LambdaDefError(
                     "improper list in &optional parameter spec for `$sym`"
@@ -297,7 +297,7 @@ fun makeLambdaOrMacro(params: LObject,
 
     var state = PLS.in_std
     while (argptr is LCons) {
-        val elem = argptr.car()
+        val elem = argptr.car
         val tclass = tokenClass(elem)
         val action = action_table[state.ordinal][tclass.ordinal]
         // print("state $state, seen $elem, tclass $tclass, action $action")
@@ -331,17 +331,17 @@ fun makeLambdaOrMacro(params: LObject,
         }
         state = new_state[state.ordinal][tclass.ordinal]
         // print("new state $state")
-        argptr = argptr.cdr()
+        argptr = argptr.cdr
     }
     if (argptr !== Nil) {
         throw LambdaDefError("parameter list of $lambda_name is not a "
                              + "proper list: $params")            
     }
     if (body is LCons) {
-        val maybeDoc = body.car()
+        val maybeDoc = body.car
         if (maybeDoc is LString) {
             docBody = maybeDoc
-            bodyForms = body.cdr()
+            bodyForms = body.cdr
         } else {
             bodyForms = body
         }

@@ -153,19 +153,23 @@ class LSymbol(val name: String, val immutable: Boolean): LObject()
         return result
     }
 
-    override fun car(): LObject {
-        if (this === Nil) {
-            return Nil
+    override var car: LObject
+        get() {
+            if (this === Nil) {
+                return Nil
+            }
+            throw ValueError("called car() of non-nil symbol $descName")
         }
-        throw ValueError("called car() of non-nil symbol $descName")
-    }
+        set(_) { throw ValueError("called car() of non- $descName") }
 
-    override fun cdr(): LObject {
-        if (this === Nil) {
-            return Nil
+    override var cdr: LObject
+        get() {
+            if (this === Nil) {
+                return Nil
+            }
+            throw ValueError("called cdr() of non-nil symbol $descName")
         }
-        throw ValueError("called cdr() of non-nil symbol $descName")
-    }
+        set(_) { throw ValueError("called cdr() of non- $descName") }
 
     override fun isAtom() = true
 

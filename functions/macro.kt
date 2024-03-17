@@ -29,11 +29,11 @@ fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
 
     var elems = form
     while (elems is LCons) {
-        val elem = elems.car()
+        val elem = elems.car
         val (newelem, expanded) = macroExpandFormRecurse(elem)
         lc.add(newelem)
         haveExpanded = haveExpanded || expanded
-        elems = elems.cdr()
+        elems = elems.cdr
     }
     if (elems !== Nil) {
         val (newrest, expanded) = macroExpandFormRecurse(elems)

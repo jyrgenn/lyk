@@ -47,24 +47,24 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject> {
     override fun iterator() = ObjectIterator(this)
 
     operator fun component1(): LObject {
-        return (this as? LCons)?.car() ?:
+        return (this as? LCons)?.car ?:
             throw TypeError("$this is not a pair")
     }
 
     operator fun component2(): LObject {
-        return (this as? LCons)?.cdr() ?:
+        return (this as? LCons)?.cdr ?:
             throw TypeError("$this is not a pair")
     }
 
     fun toBoolean() = this != Nil
 
-    open fun car(): LObject {
-        throw LispError("called car on non-list $this")
-    }
+    open var car: LObject
+        get() { throw LispError("called car on non-list $this") }
+        set(_) { throw LispError("set car on non-list $this") }
 
-    open fun cdr(): LObject {
-        throw LispError("called cdr on non-list $this")
-    }
+    open var cdr: LObject
+        get() { throw LispError("called cdr on non-list $this") }
+        set(_) { throw LispError("set cdr on non-list $this") }
 
     open override fun compareTo(other: LObject): Int {
         throw compareError(other)
@@ -98,8 +98,8 @@ class ObjectIterator(var theObject: LObject): Iterator<LObject> {
             Nil ->
                 throw ValueError("called next() after end of list: $original")
             is LCons -> {
-                val retVal = ob.car()
-                theObject = ob.cdr()
+                val retVal = ob.car
+                theObject = ob.cdr
                 return retVal
             }
             is LVector -> {

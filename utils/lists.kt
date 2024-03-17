@@ -37,8 +37,8 @@ class ListIterator(var l: LObject): Iterator<LObject> {
         }
 
     override fun next(): LObject {
-        val obj = l.car()
-        l = l.cdr()
+        val obj = l.car
+        l = l.cdr
         return obj
     }
 }

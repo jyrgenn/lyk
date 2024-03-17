@@ -135,9 +135,9 @@ fun spreadArglist(args: LObject): LObject {
     while (next is LCons) {
         lastBut2nd = last
         last = next
-        next = next.cdr()
+        next = next.cdr
     }
-    val tail = last.car()
+    val tail = last.car
     if (lastBut2nd === Nil) {
         arglist = tail
     } else {
@@ -162,7 +162,7 @@ fun ob2bool(value: LObject): Boolean {
 fun lastCons(list: LCons): LCons {
     var last2b = list
     while (true) {
-        val next = last2b.cdr()
+        val next = last2b.cdr
         if (next is LCons) {
             last2b = next
         } else {
@@ -174,8 +174,8 @@ fun lastCons(list: LCons): LCons {
 fun lastCons2(list: LCons): LCons {
     var last = list
 
-    while (last.cdr() is LCons) {
-        last = last.cdr() as LCons
+    while (last.cdr is LCons) {
+        last = last.cdr as LCons
     }
     return last
 }
@@ -184,21 +184,21 @@ fun lastCons2(list: LCons): LCons {
 // not a cons, return Nil for efficiency reasons. The caller must know or not
 // care.
 fun arg1(list: LObject): LObject {
-    return (list as? LCons)?.car() ?: Nil
+    return (list as? LCons)?.car ?: Nil
 }
 
 // Return the second element of list. This is not checked -- if the list is not
 // a cons or not long enough, return Nil for efficiency reasons. The caller must
 // know or not care.
 fun arg2(list: LObject): LObject {
-    return ((list as? LCons)?.cdr() as? LCons)?.car() ?: Nil
+    return ((list as? LCons)?.cdr as? LCons)?.car ?: Nil
 }
 
 // Return the third element of list. This is not checked -- if the list is not a
 // cons or not long enough, return Nil for efficiency reasons. The caller must
 // know or not care.
 fun arg3(list: LObject): LObject {
-    return (((list as? LCons)?.cdr() as? LCons)?.cdr() as? LCons)?.car() ?: Nil
+    return (((list as? LCons)?.cdr as? LCons)?.cdr as? LCons)?.car ?: Nil
 }
 
 // Return the first two elements of list. This is not checked -- if the list is

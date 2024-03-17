@@ -10,7 +10,7 @@ class LTable(elems: LObject): LObject(), Callable {
         }
         for (elem in elems) {
             if (elem is LCons) {
-                the_table[elem.car()] = elem.cdr()
+                the_table[elem.car] = elem.cdr
             } else {
                 throw InternalError("Table element is not Pair (LTable.init)")
             }

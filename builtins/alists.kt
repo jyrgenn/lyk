@@ -23,7 +23,7 @@ fun assoc_iter_elems(alist: LObject, what: String,
             throw ArgumentError("alist argument to $what is not a proper"
                                 + " alist: $alist")
         }
-        val result = closure(elem.car())
+        val result = closure(elem.car)
         if (result) {
             return elem
         }

@@ -3,7 +3,8 @@
 package org.w21.lyk
 
 
-class LCons(var car: LObject, var cdr: LObject = Nil): LObject() {
+class LCons(override var car: LObject,
+            override var cdr: LObject = Nil): LObject() {
 
     init {
         debug(debugConsSym) {
@@ -17,7 +18,7 @@ class LCons(var car: LObject, var cdr: LObject = Nil): LObject() {
 
         var elem: LObject = this
         while (elem is LCons) {
-            result.add(elem.car().desc())
+            result.add(elem.car.desc())
             if (elem.cdr !== Nil) {
                 result.add(" ")
             }
@@ -35,16 +36,12 @@ class LCons(var car: LObject, var cdr: LObject = Nil): LObject() {
 
     override fun desc() = toString()
 
-    override fun car() = car
-
-    override fun cdr() = cdr
-
     override fun length(): Int {
         var len = 0
         var cell: LObject = this
         while (cell is LCons) {
             len++
-            cell = cell.cdr()
+            cell = cell.cdr
         }
         return len
     }
