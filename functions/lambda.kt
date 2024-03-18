@@ -33,7 +33,7 @@ open class Lambda(                           // Macro will inherit this
             body = s.substring(1, s.length - 1)
         }
         
-        return "#<${typeDesc}[$id](${parlist()}) $body>"
+        return "#<Lambda[$id](${parlist()}) $body>"
     }
 
 

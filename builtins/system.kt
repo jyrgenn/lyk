@@ -307,7 +307,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         lc.add(LCons(intern(name), makeNumber(value)))
     }
     
-    entry("type", typeOf(obj), true)
+    entry("type", typeOf(obj).lowercase(), true)
     when (obj) {
         is LSymbol -> {
             entry("name", obj.name, false)

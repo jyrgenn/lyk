@@ -19,10 +19,10 @@ fun padString(s: String, width: Int, pad: Char = ' '): String {
     return result
 }
 
-fun typeOf(obj: Any): String {
-    return when (obj) {
-        is LEnv ->  "environment"
-        is Lambda -> "lambda"
+fun typeOf(obj: Any) =
+    when (obj) {
+        is LEnv ->  "Environment"
+        is Lambda -> "Lambda"
         else -> {
             val typ = "${obj::class.simpleName}"
             if (typ.startsWith("L")) {
@@ -31,8 +31,7 @@ fun typeOf(obj: Any): String {
                 typ
             }
         }
-    }.lowercase()
-}
+    }
 
 
 class CharBuf {

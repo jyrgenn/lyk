@@ -20,8 +20,6 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject> {
 
     open fun isList() = false
 
-    fun type() = typeOf(this)
-
     open fun length(): Int {
         throw ValueError("$this has no length")
     }
@@ -36,7 +34,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject> {
     }
 
     // Print as much information about the object as can be helpful debugging.
-    open fun dump() = "${type()}[$id]"
+    open fun dump() = "${typeOf(this)}[$id]"
 
     // The output of this shall, if at all possible, be sufficent to
     // be read by the reader to re-create the object.
@@ -71,8 +69,8 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject> {
     }
 
     fun compareError(other: LObject): Throwable {
-        return TypeError("cannot compare ${typeOf(this)} `$this`"
-                         +" to ${typeOf(other)} `$other`")
+        return TypeError("cannot compare ${typeOf(this).lowercase()} `$this`"
+                         +" to ${typeOf(other).lowercase()} `$other`")
     }
 }
 

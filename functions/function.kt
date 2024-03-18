@@ -14,7 +14,7 @@ abstract class LFunction(
     val retval: LSymbol?,                      // return value description
     val isSpecial: Boolean,                    // used by Builtins only
     val docBody: LString,                      // docstring sans signature
-): LObject(), Callable {
+): LObject() {
     val name: LSymbol
     val has_name: Boolean
     abstract val typeDesc: String
@@ -84,7 +84,7 @@ abstract class LFunction(
         return null
     }
 
-    open override fun call(arglist: LObject): LObject {
+    open fun call(arglist: LObject): LObject {
         throw InternalError("calling $this, not Subclass")
     }
 

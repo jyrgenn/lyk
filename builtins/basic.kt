@@ -1139,7 +1139,7 @@ fun bi_length(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_typeof(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return intern(typeOf(arg1(args)))
+    return intern(typeOf(arg1(args)).lowercase())
 }
 
 /// builtin loop

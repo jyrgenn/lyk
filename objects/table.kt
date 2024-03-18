@@ -1,6 +1,6 @@
 package org.w21.lyk
 
-class LTable(elems: LObject): LObject(), Callable {
+class LTable(elems: LObject): LObject() {
     // key: value pairs, backed by a dictionary [LObject: LObject]
     val the_table = mutableMapOf<LObject, LObject>()
 
@@ -12,18 +12,13 @@ class LTable(elems: LObject): LObject(), Callable {
             if (elem is LCons) {
                 the_table[elem.car] = elem.cdr
             } else {
-                throw InternalError("Table element is not Pair (LTable.init)")
+                throw InternalError("Table element is not Cons ($this, $elems)")
             }
         }
     }
 
-    fun get(key: LObject, defaultvalue: LObject = Nil): LObject {
-        val value = the_table[key]
-        if (value != null) {
-            return value
-        }
-        return defaultvalue
-    }
+    fun get(key: LObject, defaultvalue: LObject = Nil)
+        = the_table[key] ?: defaultvalue
 
     fun exists(key: LObject): LObject =
         if (the_table[key] == null) Nil else T
@@ -75,15 +70,15 @@ class LTable(elems: LObject): LObject(), Callable {
             return false
         }
         for ((key, value) in the_table) {
-            if (value != other.the_table[key]) {
+            val otherValue = other.the_table[key]
+            if (otherValue == null) {
+                return false
+            }
+            if (!value.equal(otherValue)){
                 return false
             }
         }
         return true
-    }
-
-    override fun call(arglist: LObject): LObject {
-        return Nil
     }
 
     override fun desc() = toString()

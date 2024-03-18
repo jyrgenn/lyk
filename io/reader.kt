@@ -66,7 +66,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     
 
     override fun toString(): String {
-        return "#<${typeOf(this)}:$readerName>"
+        return "#<Reader:$readerName>"
     }
     fun desc() = toString()
 

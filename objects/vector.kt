@@ -1,10 +1,10 @@
 package org.w21.lyk
 
-class LVector(): LObject() {
+class LVector(elems: LObject): LObject() {
     // key: int, backed by an array [Object]
     val the_vector = mutableListOf<LObject>()
 
-    constructor(elems: LObject) : this() {
+    init {
         if (!elems.isList()) {
             throw TypeError("Vector constructor called with "
                             + "non-list arg $elems")
@@ -14,13 +14,13 @@ class LVector(): LObject() {
         }
     }
 
-    constructor(vararg elems: LObject) : this() {
+    constructor(vararg elems: LObject) : this(Nil) {
         for (elem in elems) {
             the_vector.add(elem)
         }
     }
 
-    constructor(length: Int, elem: LObject) : this() {
+    constructor(length: Int, elem: LObject) : this(Nil) {
         for (n in 1..length) {
             the_vector.add(elem)
         }

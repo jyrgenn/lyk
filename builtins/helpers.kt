@@ -47,14 +47,6 @@ fun functionArg(arg: LObject, what: String): LFunction {
         throw ArgumentError("$what argument not a function: $arg")
 }
 
-// fun comparableArg(arg: LObject, what: String): CompObject {
-//     if (arg is CompObject) {
-//         return arg
-//     }
-//     throw ArgumentError("$what argument $arg type ${typeOf(arg)}"
-//                           + " not comparable")
-// }
-
 fun consArg(arg: LObject, what: String): LCons {
     return arg as? LCons ?:
         throw ArgumentError("$what argument not a cons: $arg")

@@ -7,7 +7,4 @@ fun interface LocationHolder {
     fun location(): String
 }
 
-fun interface Callable {
-    fun call(arglist: LObject): LObject
-}
 

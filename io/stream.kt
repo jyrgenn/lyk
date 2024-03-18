@@ -178,7 +178,7 @@ abstract class LStream(
         val i = if (input) "I" else ""
         val o = if (output) "O" else ""
         val e = if (error) "E" else ""
-        return "#<${type()}[$i$o$e$x]$name>"
+        return "#<${typeOf(this)}[$i$o$e$x]$name>"
     }
     override fun desc() = toString()
 }
