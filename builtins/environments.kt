@@ -94,3 +94,21 @@ fun bi_with_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
     }
 }
 
+/// builtin root-environment
+/// fun     bi_root_environment
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     root-environment
+/// special no
+/// doc {
+/// Return the root environment.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_root_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return rootEnv
+}
+

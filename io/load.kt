@@ -21,7 +21,7 @@ fun load(load_stream: LStream, name: String, verbose: Boolean = false,
             }
             if (error != null) {
                 if (verbose) {
-                    stderr.println(error.toString())
+                    printErr(error!!)
                 }
                 if (throw_error) {
                     throw error as LispError
@@ -30,12 +30,12 @@ fun load(load_stream: LStream, name: String, verbose: Boolean = false,
             } else {
                 success = T
                 if (verbose) {
-                    stderr.println("; load $name: " + perfdata)
+                    info("load $name: " + perfdata)
                 }
             }
         } catch (e: Exception) {
             if (verbose) {
-                stderr.println(e.toString())
+                printErr(e)
             }
             if (throw_error) {
                 throw e

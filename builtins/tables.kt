@@ -49,7 +49,7 @@ fun bi_table_put(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// fun     bi_make_table
 /// std     
 /// key     
-/// opt     
+/// opt     alist
 /// rest    
 /// ret     table
 /// special no
@@ -60,7 +60,7 @@ fun bi_table_put(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_make_table(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return LTable(Nil)
+    return LTable(arg1(args))
 }
 
 /// builtin table-count

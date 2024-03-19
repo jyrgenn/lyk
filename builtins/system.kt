@@ -273,7 +273,7 @@ fun bi_build_info(args: LObject, kwArgs: Map<LSymbol, LObject>
     return lc.list()
 }
 
-/// builtin desc
+/// builtin describe
 /// fun     bi_describe
 /// std     object
 /// key     
@@ -336,6 +336,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         is LEnv -> {
             entry("level", obj.level)
             entry("size", obj.map.size)
+            entry("mapping", LTable(obj.map))
         }
         is LNumber -> {
             entry("value", obj)

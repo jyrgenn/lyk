@@ -1,10 +1,11 @@
 package org.w21.lyk
 
-class LTable(elems: LObject): LObject() {
+
+class LTable(): LObject() {
     // key: value pairs, backed by a dictionary [LObject: LObject]
     val the_table = mutableMapOf<LObject, LObject>()
-
-    init {
+    
+    constructor(elems: LObject): this() {
         if (!elems.isList()) {
             throw TypeError("Table constructor argument is not a list")
         }
@@ -14,6 +15,12 @@ class LTable(elems: LObject): LObject() {
             } else {
                 throw InternalError("Table element is not Cons ($this, $elems)")
             }
+        }
+    }
+
+    constructor(map: Map<LSymbol, LObject>): this(Nil) {
+        for (entry in map) {
+            the_table[entry.key] = entry.value
         }
     }
 
