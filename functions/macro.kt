@@ -21,6 +21,8 @@ class LMacro(
             evalProgn(bodyForms)
         }
     }
+
+    override fun equal(other: LObject) = this === other
 }
 
 fun macroExpandList(form: LObject): Pair<LObject, Boolean> {

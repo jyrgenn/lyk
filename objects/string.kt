@@ -67,6 +67,7 @@ class LString(val value: String): LObject() {
             throw compareError(other)
         }
     }
+    
 }
 
 fun makeString(value: String) = LString.mkString(value)

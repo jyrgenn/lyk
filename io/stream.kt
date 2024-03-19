@@ -181,4 +181,6 @@ abstract class LStream(
         return "#<${typeOf(this)}[$i$o$e$x]$name>"
     }
     override fun desc() = toString()
+
+    override fun equal(other: LObject) = this === other    
 }

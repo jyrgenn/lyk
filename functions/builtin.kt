@@ -99,4 +99,6 @@ class LBuiltin(
         // finally, call the actual function
         return bfun(newArglist.list(), kwArgs)
     }
+
+    override fun equal(other: LObject) = this === other
 }

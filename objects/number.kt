@@ -70,6 +70,7 @@ class LNumber(val value: Double): LObject() {
             throw compareError(other)
         }
     }
+
 }
 
 fun makeNumber(value: Long) = LNumber.mkNumber(value.toDouble())

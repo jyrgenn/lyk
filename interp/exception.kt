@@ -5,6 +5,8 @@ class ErrorObject(val error: LispError): LObject() {
     override fun toString() = error.toString()
 
     override fun desc() = "#<${typeOf(this)}: {error.toString()}>"
+
+    override fun equal(other: LObject) = this === other    
 }
 
 open class LispError(message: String): Exception(message) {

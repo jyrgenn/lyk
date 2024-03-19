@@ -49,6 +49,8 @@ open class Lambda(                           // Macro will inherit this
         }
     }
 
+    override fun equal(other: LObject) = this === other
+
 }
 
 

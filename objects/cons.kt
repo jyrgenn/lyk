@@ -45,4 +45,10 @@ class LCons(override var car: LObject,
         }
         return len
     }
+
+    override fun equal(other: LObject): Boolean {
+        return other is LCons
+            && car.equal(other.car)
+            && cdr.equal(other.cdr)
+    }
 }

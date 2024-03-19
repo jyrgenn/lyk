@@ -196,6 +196,7 @@ class LSymbol(val name: String, val immutable: Boolean): LObject()
 	    throw compareError(other)
 	}
     }
+
 }
 
 fun intern(name: String, immutable_and_selfvalued: Boolean = false) =

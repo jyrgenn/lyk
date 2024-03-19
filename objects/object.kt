@@ -40,7 +40,6 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject> {
     // be read by the reader to re-create the object.
     open fun desc() = toString()
 
-    open fun equal(other: LObject) = false
 
     override fun iterator() = ObjectIterator(this)
 
@@ -55,6 +54,8 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject> {
     }
 
     fun toBoolean() = this != Nil
+
+    open fun equal(other: LObject) = this === other
 
     open var car: LObject
         get() { throw LispError("called car on non-list $this") }

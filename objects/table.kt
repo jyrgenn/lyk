@@ -102,4 +102,5 @@ class LTable(): LObject() {
         buf.add(")")
         return buf.toString()
     }
+
 }

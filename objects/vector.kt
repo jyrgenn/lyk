@@ -76,5 +76,4 @@ class LVector(elems: LObject): LObject() {
         }
         return true
     }
-
 }
