@@ -182,5 +182,4 @@ abstract class LStream(
     }
     override fun desc() = toString()
 
-    override fun equal(other: LObject) = this === other    
 }
