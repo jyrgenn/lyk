@@ -3,14 +3,20 @@
 package org.w21.lyk
 
 
-fun load_file(fname: String, verbose: Boolean = false,
-              throw_error: Boolean = true): LObject {
+fun load_file(fname: String, throw_error: Boolean = true,
+              quiet: Boolean = false): LObject {
     var load_stream = FileReaderStream(fname)
-    return load(load_stream, fname, verbose, throw_error)
+    return load_stream(load_stream, fname, throw_error, quiet)
 }
 
-fun load(load_stream: LStream, name: String, verbose: Boolean = false,
-         throw_error: Boolean = true): LObject {
+fun load_string(code: String, name: String, throw_error: Boolean = true,
+                quiet: Boolean = false): LObject {
+    var load_stream = StringReaderStream(code)
+    return load_stream(load_stream, name, throw_error, quiet)
+}
+
+fun load_stream(load_stream: LStream, name: String,
+         throw_error: Boolean = true, quiet: Boolean = false): LObject {
     var success = Nil
     
     withVariableAs(currentLoadFile, makeString(name)) {
@@ -20,23 +26,19 @@ fun load(load_stream: LStream, name: String, verbose: Boolean = false,
                 error = repl(Reader(load_stream, name))
             }
             if (error != null) {
-                if (verbose) {
-                    printErr(error!!)
-                }
+                printErr(error!!)
                 if (throw_error) {
                     throw error as LispError
                 }
                 success = Nil
             } else {
                 success = T
-                if (verbose) {
+                if (!quiet) {
                     info("load $name: " + perfdata)
                 }
             }
         } catch (e: Exception) {
-            if (verbose) {
-                printErr(e)
-            }
+            printErr(e)
             if (throw_error) {
                 throw e
             }

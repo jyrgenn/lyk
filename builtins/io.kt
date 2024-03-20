@@ -214,7 +214,7 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val verbose = kwArgs[verboseSym] !== Nil
     val throw_error = ob2bool(kwArgs[errorSym] ?: T)
     
-    return load_file(fname, verbose, throw_error)
+    return load_file(fname, throw_error, !verbose)
 }
 
 /// builtin make-string-input-stream

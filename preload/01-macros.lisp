@@ -103,7 +103,10 @@ Options: :direction followed by :input (default) or :output or :io,
          :if-exists followed by :supersede (default) or :new-version
                              or :append or :overwrite or :error or nil
          :if-no-exists followed by :error (default) or :create or nil"
-  (let (((stream-symbol pathname . options) file-declaration)
+;;;  (let (((stream-symbol pathname . options) file-declaration)
+  (let ((stream-symbol (car file-declaration))
+        (pathname (cadr file-declaration))
+        (options (cddr file-declaration))
         (bodyform (if (= (length bodyforms) 1)
                       (car bodyforms)
                     (cons 'progn bodyforms))))

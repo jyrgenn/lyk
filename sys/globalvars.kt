@@ -52,6 +52,7 @@ val debugBindSymSym = intern("bind")
 val debugStepEval = intern("stepeval")
 val debugMacroSym = intern("macro")
 val debugLambdaParamsSym = intern("params")
+val debugPreloadSym = intern("preload")
 
 val debugOffSym = intern(":off")
 val debugListSym = intern(":list")

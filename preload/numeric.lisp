@@ -23,7 +23,7 @@ For any other argument type, this function raises an error."
     (error "not a number: %v" number)))
 
 (defun gcd (n1 n2)
-  "Return the greatest common divisor of the arguments."""
+  "Return the greatest common divisor of the arguments."
   (let ((gcd 1)
         (factors1 (factor n1))
         (factors2 (factor n2)))

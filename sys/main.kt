@@ -23,6 +23,7 @@ object Options {
         debugStepEval to false,
         debugMacroSym to false,
         debugLambdaParamsSym to false,
+        debugPreloadSym to false,
     )
     var print_estack = false
     var maxrecurse = 0
@@ -112,7 +113,17 @@ fun main(args: Array<String>) {
         }
     }
 
-    init_Builtins()
+    // now start the machine!
+    try {
+        init_Builtins()
+        load_string(preload_code, "*preload-code*")
+        
+        for (file in load_files) {
+            load_file(file)
+        }
+    } catch (e: Exception) {
+        errExit(e.toString())
+    }
 
     val lc = ListCollector()
     for (arg in argl) {
@@ -120,14 +131,6 @@ fun main(args: Array<String>) {
     }
     commandLineArgs.setValue(lc.list())
     
-    for (file in load_files) {
-        try {
-            load_file(file)
-        } catch (e: Exception) {
-            errExit(e.toString())
-        }
-    }
-
     if (lispExpression != null) {
         Options.verbosity -= 1
         try {

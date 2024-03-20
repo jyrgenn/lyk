@@ -1,1 +1,0 @@
-../scripts/subdir-Makefile

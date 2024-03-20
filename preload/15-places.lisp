@@ -56,9 +56,10 @@ function plus the value argument."
      ,(if (symbolp update-fn-or-lambda-list)
           (if forms
               (error "defsetf: two-symbol form called with forms argument(s)")
-            `(*setf-update-table* ',access-fn ',update-fn-or-lambda-list))
-        `(*setf-update-table* ',access-fn
-                              (lambda ,update-fn-or-lambda-list ,@forms)))
+            `(table-put *setf-update-table*
+                        ',access-fn ',update-fn-or-lambda-list))
+        `(table-put *setf-update-table*
+                    ',access-fn (lambda ,update-fn-or-lambda-list ,@forms)))
       ',access-fn))
 
 (defsetf car rplaca-ret-value)

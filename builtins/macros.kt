@@ -77,6 +77,9 @@ fun qq_recurse(form: LObject): LObject {
             lastCons(expandedArg).cdr = tailResult
             return expandedArg
         }
+        if (expandedArg == Nil) {
+            return Nil
+        }
         throw TypeError("unquote-splicing arg not a list: `$expandedArg`")
     } else {
         return LCons(qq_recurse(head), tailResult)

@@ -12,8 +12,10 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	builtins/sequences.kt builtins/macros.kt \
 	utils/lists.kt utils/div.kt utils/interfaces.kt \
 	sys/messages.kt sys/main.kt sys/globalvars.kt
-GENSRCS = generated/buildtag.kt generated/init-builtins.kt
+GENSRCS = generated/buildtag.kt generated/init-builtins.kt \
+	generated/preload.kt
 ALLSRCS = $(SRCS) $(GENSRCS)
+PRELOAD = $(shell echo preload/*.lisp)
 
 BUILDSCRIPTS = scripts/buildtag.sh scripts/gen-bi-init
 
@@ -36,12 +38,16 @@ lyk.jar: $(ALLSRCS) Makefile
 	$(COMP) $(ALLSRCS) -include-runtime -d lyk.jar
 	java -jar lyk.jar -qe '(build-info t)'
 
-generated/buildtag.kt: Makefile $(SRCS) $(BUILDSCRIPTS)
+generated:
 	mkdir -p generated
+
+generated/preload.kt: Makefile generated scripts/preload.sh $(PRELOAD)
+	./scripts/preload.sh $(PRELOAD) > generated/preload.kt
+
+generated/buildtag.kt: Makefile generated $(SRCS) $(BUILDSCRIPTS)
 	scripts/buildtag.sh lyk > generated/buildtag.kt
 
-generated/init-builtins.kt: scripts/gen-bi-init Makefile $(BUILTINSRC)
-	mkdir -p generated
+generated/init-builtins.kt: Makefile generated scripts/gen-bi-init $(BUILTINSRC)
 	-rm -f generated/Makefile && \
 	    ln -s ../scripts/Subdirmakefile generated/Makefile
 	scripts/gen-bi-init $(BUILTINSRC) > generated/init-builtins.kt
@@ -54,7 +60,7 @@ native: $(SRCS) Makefile
 	mv lykn.pexe lykn
 
 clean:
-	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar generated/* META-INF lyk
+	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar generated META-INF lyk
 
 install: lyk.jar
 	mkdir -p $(INSTALLDIR)
