@@ -464,4 +464,22 @@ fun bi_barams(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return T    
 }
 
+/// builtin exit
+/// fun     bi_exit
+/// std     
+/// key     
+/// opt     exit-status makeNumber(0)
+/// rest    
+/// ret     none
+/// special no
+/// doc {
+/// End the lisp interpreted with (optional) exit status.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_exit(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    kotlin.system.exitProcess(longArg(arg1(args), "exit-status").toInt())
+    return Nil                          // yeah, right
+}
+
 // EOF
