@@ -297,7 +297,7 @@ fun bi_format(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// builtin open
 /// fun     bi_open
 /// std     fname
-/// key     ":if-does-not-exist" to intern(":error"), ":direction" to intern(":input"), ":if-exists" to intern(":overwrite")
+/// key     "if-does-not-exist" to intern(":error"), "direction" to intern(":input"), "if-exists" to intern(":overwrite")
 /// opt     
 /// rest    
 /// ret     stream
