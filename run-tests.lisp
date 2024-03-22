@@ -1,5 +1,5 @@
 #!/usr/bin/env lyk -l
 
-(load "l/regtests")
+(load "l/regtests.lisp")
 (exit (run-tests))
 
