@@ -26,9 +26,10 @@ fun load_stream(load_stream: LStream, name: String,
                 error = repl(Reader(load_stream, name))
             }
             if (error != null) {
-                printErr(error!!)
                 if (throw_error) {
                     throw error as LispError
+                } else {
+                    printErr(error!!)
                 }
                 success = Nil
             } else {

@@ -66,7 +66,7 @@ val defmacroSym = intern("defmacro")
 var debugOn = false             // set iff any debug topic is "on"
 
 val commandLineArgs = LSymbol.makeGlobal("*command-line-args*")
-
+val lastError = LSymbol.makeGlobal("*last-error*")
 val currentLoadFile = LSymbol.makeGlobal("*current-load-file*")
 
 // set of features provided

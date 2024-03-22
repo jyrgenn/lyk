@@ -6,7 +6,9 @@ import kotlin.system.exitProcess
 
 
 fun printErr(vararg things: Any) {
-    stderr.print("ERROR:")
+    if (things[0] !is LispError) {
+        stderr.print("Error:")
+    }
     for (thing in things) {
         stderr.print(" " + thing)
     }

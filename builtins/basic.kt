@@ -788,7 +788,7 @@ fun bi_errset(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         return LCons(eval(expr), Nil)
     } catch (lerror: LispError) {
         val errObj = lerror.toObject()
-        intern("*last-error*").setValue(errObj, silent = true)
+        lastError.setValue(errObj, silent = true)
         if (print_error != Nil) {
             stderr.println(errObj)
         }
