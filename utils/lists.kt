@@ -4,7 +4,7 @@ package org.w21.lyk
 fun collectedList(closure: (lc: ListCollector) -> Unit): LObject {
     val lc = ListCollector()
     closure(lc)
-    return lc.list()
+    return lc.list
 }
 
 fun list2lisp(elems: Collection<LObject>): LObject {
@@ -12,7 +12,7 @@ fun list2lisp(elems: Collection<LObject>): LObject {
     for (elem in elems) {
         lc.add(elem)
     }
-    return lc.list()
+    return lc.list
 }
 
 fun valueList(elems: LObject): List<Any> {
@@ -44,8 +44,8 @@ class ListIterator(var l: LObject): Iterator<LObject> {
 }
 
 
-class ListCollector() {
-    var head: LObject = Nil
+class ListCollector(): Iterable<LObject> {
+    var list: LObject = Nil
     var last: LObject? = null
 
     fun add(arg: LObject) {
@@ -53,7 +53,7 @@ class ListCollector() {
         if (last is LCons) {
             (last as LCons).cdr = newpair
         } else {
-            head = newpair
+            list = newpair
         }
         last = newpair
     }
@@ -63,10 +63,10 @@ class ListCollector() {
             (last as LCons).cdr = arg
         } else {
             last = arg
-            head = arg
+            list = arg
         }
     }
 
-    fun list() = head
+    override fun iterator() = ListIterator(this.list)
 }
 

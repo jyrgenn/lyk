@@ -53,15 +53,15 @@ val debugStepEval = intern("stepeval")
 val debugMacroSym = intern("macro")
 val debugLambdaParamsSym = intern("params")
 val debugPreloadSym = intern("preload")
-
-val debugOffSym = intern(":off")
-val debugListSym = intern(":list")
 val debugDebugSym = intern("debug")
+
+val debugOffSym = intern("=off")
+val debugListSym = intern("=list")
 
 
 val unquoteSymbol = intern("unquote")
 val unquoteSplicingSymbol = intern("unquote-splicing")
-
+val defmacroSym = intern("defmacro")
 
 var debugOn = false             // set iff any debug topic is "on"
 

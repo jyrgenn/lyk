@@ -20,7 +20,7 @@ This is a null operation for a number argument (as all numbers are floats).
 For any other argument type, this function raises an error."
   (if (numberp number)
       number
-    (error "not a number: %v" number)))
+    (error "not a number: %s" number)))
 
 (defun gcd (n1 n2)
   "Return the greatest common divisor of the arguments."

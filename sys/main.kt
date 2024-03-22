@@ -129,7 +129,7 @@ fun main(args: Array<String>) {
     for (arg in argl) {
         lc.add(LString(arg))
     }
-    commandLineArgs.setValue(lc.list())
+    commandLineArgs.setValue(lc.list)
     
     if (lispExpression != null) {
         Options.verbosity -= 1

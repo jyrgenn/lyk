@@ -7,11 +7,14 @@ import kotlin.system.exitProcess
 
 // debug frame marker; if there is a second object, it is a return
 fun markFrame(level: Int, ob1: LObject, ob2: LObject? = null): String {
-    var s = "%3d: ${mulString("| ", level)}" + ob1.toString()
+    var s = "%3d: ${mulString("| ", level)} %s%s%s"
+    var separator = ""
+    var ob2Str = ""
     if (ob2 != null) {
-        s += " => $ob2"
+        separator = " => "
+        ob2Str = ob2.toString()
     }
-    return s.format(level)
+    return s.format(level, ob1.toString(), separator, ob2Str)
 }
     
 
@@ -64,7 +67,7 @@ fun evalArgs(arglist: LObject): LObject {
     for (arg in arglist) {
         lc.add(eval(arg))
     }
-    return lc.list()
+    return lc.list
 }
 
 var evalLevel: Int = 0

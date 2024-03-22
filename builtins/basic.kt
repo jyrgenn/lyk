@@ -1286,14 +1286,14 @@ fun bi_append(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         val arg = pair.car
         if (pair.cdr === Nil) {
             lc.lastcdr(arg)
-            return lc.list()
+            return lc.list
         }
         for (elem in arg) {
             lc.add(elem)
         }
         pair = pair.cdr
     }
-    return lc.list()
+    return lc.list
 }
 
 /// builtin fset
@@ -1638,3 +1638,91 @@ fun bi_nreverse(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return cell
 }
 
+/// builtin mapcar
+/// fun     bi_mapcar
+/// std     function
+/// key     
+/// opt     
+/// rest    lists+
+/// ret     value-list`
+/// special no
+/// doc {
+/// Apply `function` to the first members of the argument lists, then the
+/// second and so on; return the list of resulting values. Any excess
+/// values are discarded.
+/// Example:
+///   (mapcar #'cons '(3 4 5) '(a b c d))
+///   => ((3 . a) (4 . b) (5 . c))
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_mapcar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (func, lists) = args
+    val function = functionArg(func, "mapcar function")
+    var listArgs = lists
+    val results = ListCollector()
+
+    fun allCars(): LObject? {
+        val cars = ListCollector()
+        var overLists = listArgs
+
+        while (overLists is LCons) {
+            val thisList = overLists.car
+            if (thisList is LCons) {
+                cars.add(thisList.car)
+                overLists.car = thisList.cdr
+            } else {
+                return null
+            }
+        }
+        return cars.list
+    }
+
+    while (true) {
+        val cars = allCars()
+        if (cars == null) {
+            return results.list
+        }
+        results.add(function.call(cars))
+    }
+}
+
+/// builtin rplaca-ret-value
+/// fun     bi_rplaca_ret_value
+/// std     cons new-car
+/// key     
+/// opt     
+/// rest    
+/// ret     new-car
+/// special no
+/// doc {
+/// Replace the car of `cons` with `new-car` and return `new-car`.
+/// Intended for use by setf.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_rplaca_ret_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (the_cons, new_value) = args2(args)
+    consArg(the_cons, "rplaca-ret-value cons").car = new_value
+    return new_value
+}
+
+/// builtin rplacd-ret-value
+/// fun     bi_rplacd_ret_value
+/// std     cons new-cdr
+/// key     
+/// opt     
+/// rest    
+/// ret     new-cdr
+/// special no
+/// doc {
+/// Replace the cdr of `cons` with `new-car` and return `new-cdr`.
+/// Intended for use by setf.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_rplacd_ret_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (the_cons, new_value) = args2(args)
+    consArg(the_cons, "rplacd-ret-value cons").cdr = new_value
+    return new_value
+}

@@ -10,7 +10,7 @@ EOF
 
 for file; do
     echo ";; from $file"
-    echo "(println \"preload $file\")"
+    echo "(debug preload \"$file\")"
     echo
     cat $file
     echo ";; end $file"

@@ -3,8 +3,8 @@
 package org.w21.lyk
 
 
-/// builtin debug
-/// fun     bi_debug
+/// builtin set-debug
+/// fun     bi_set_debug
 /// std     
 /// key     
 /// opt     
@@ -14,13 +14,13 @@ package org.w21.lyk
 /// doc {
 /// Activate and deactivate debug topics (symbols), items/areas to be debugged.
 /// Topics are activated by using their name as argument, or deactivated with
-/// `-name`. To deactivate all, use `:off`. To show what topics are available,
-/// use `list`.
+/// `-name`. To deactivate all, use `=off`. To show what topics are available,
+/// use `=list`.
 /// Return the active debug topics (a list of symbols) or all with `list`.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_set_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val lc = ListCollector()
     for (arg in args) {
         debug(debugDebugSym) {
@@ -37,7 +37,7 @@ fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
                 for (key in Options.debug.keys) {
                     lc.add(key)
                 }
-                return lc.list()
+                return lc.list
             }
             else -> {
                 if (arg !is LSymbol) {
@@ -60,7 +60,37 @@ fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             lc.add(key)
         }
     }
-    return lc.list()
+    return lc.list
+}
+
+/// builtin debug
+/// fun     bi_debug
+/// std     topic
+/// key     
+/// opt     
+/// rest    data
+/// ret     t/nil
+/// special yes
+/// doc {
+/// Print a debug message, if `topic` (a symbol, not evaluated) is enabled.
+/// If the topic is enabled, evaluate all other arguments and print a debug
+/// message accordingly. If there are no other arguments, just return t if
+/// the topic is enabled; nil otherwise.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (topic, data) = args
+    var result = Nil
+    debug(symbolArg(topic, "debug topic")) {
+        result = T
+        val items = ListCollector()
+        for (item in data) {
+            items.add(eval(item))
+        }
+        items.joinToString(" ")
+    }
+    return result
 }
 
 /// builtin doc
@@ -97,7 +127,7 @@ fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             return theNonPrintingObject
         }
     }
-    throw FunctionError("`$ob` is not a function or function symbol")
+    throw FunctionError("`${ob.desc()}` is not a function or function symbol")
 }
 
 
@@ -139,7 +169,7 @@ fun bi_symbols(args: LObject, kwArgs: Map<LSymbol, LObject>
     for (sym in symbolTable.values) {
         lc.add(sym)
     }
-    return lc.list()
+    return lc.list
 }
 
 /// builtin gc
@@ -216,9 +246,9 @@ fun bi_apropos(args: LObject, kwArgs: Map<LSymbol, LObject>
         }
     }
     if (ob2bool(as_list)) {
-        return symlist_lc.list()
+        return symlist_lc.list
     }
-    for (symbol in symlist_lc.list()) {
+    for (symbol in symlist_lc.list) {
         val sym = symbol as LSymbol
         var func = "-"
         var bound = "-"
@@ -270,7 +300,7 @@ fun bi_build_info(args: LObject, kwArgs: Map<LSymbol, LObject>
     if (as_string) {
         return makeString(build_info.values.joinToString(" "))
     }
-    return lc.list()
+    return lc.list
 }
 
 /// builtin describe
@@ -353,7 +383,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         }
         else -> Nil
     }
-    return lc.list()
+    return lc.list
 }
 
 

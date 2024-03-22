@@ -15,6 +15,12 @@ class LMacro(
 {
     override val typeDesc = "macro"
     
+    init {
+        debug(debugMacroSym) {
+            "Macro($macroName) = $bodyForms"
+        }
+    }
+
     fun expand(arglist: LObject): LObject {
         return withNewEnvironment(currentEnv) {
             bindPars(arglist, this)
@@ -22,6 +28,9 @@ class LMacro(
         }
     }
 
+    override fun call(arglist: LObject): LObject {
+        throw InternalError("calling $this as a function!")        
+    }
 }
 
 fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
@@ -41,7 +50,7 @@ fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
         lc.lastcdr(newrest)
         haveExpanded = haveExpanded || expanded
     }
-    return Pair(lc.list(), haveExpanded)
+    return Pair(lc.list, haveExpanded)
 }
 
 fun macroExpandFormRecurse(form: LObject): Pair<LObject, Boolean> {
@@ -49,7 +58,13 @@ fun macroExpandFormRecurse(form: LObject): Pair<LObject, Boolean> {
         val (head, args) = form
         if (head is LSymbol) {
             val maybeMacro = head.function
-            if (maybeMacro is LMacro) {
+            debug(debugMacroSym) {
+                "$head is maybeMacro?"
+            }
+            if (maybeMacro != null && maybeMacro is LMacro) {
+                debug(debugMacroSym) {
+                    "yes, $maybeMacro is!"
+                }
                 return Pair(maybeMacro.expand(args), true)
             }
         }

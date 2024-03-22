@@ -34,7 +34,7 @@ class LNumber(val value: Double): LObject() {
             for (num in numberTable.values) {
                 lc.add(num)
             }
-            return lc.list()
+            return lc.list
         }
     }
 

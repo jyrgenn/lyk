@@ -85,7 +85,7 @@ abstract class LFunction(
     }
 
     open fun call(arglist: LObject): LObject {
-        throw InternalError("calling $this, not Subclass")
+        throw InternalError("calling $this in LFunction, not Subclass!")
     }
 
     open override fun dump() = desc()
@@ -160,7 +160,7 @@ fun bindPars(arglist: LObject, func: LFunction) {
                         func.optPars[hadOptArgs++].second)
     }
     if (func.restPar != null) {
-        currentEnv.bind(func.restPar, restArgs.list())
+        currentEnv.bind(func.restPar, restArgs.list)
     }
     // bind keyword arguments
     for ((symbol, value) in kwArgs) {

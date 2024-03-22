@@ -47,7 +47,7 @@ class LTable(): LObject() {
         for (key in the_table.keys) {
             lc.add(key)
         }
-        return lc.list()
+        return lc.list
     }
 
     fun values(): LObject {
@@ -55,7 +55,7 @@ class LTable(): LObject() {
         for (value in the_table.values) {
             lc.add(value)
         }
-        return lc.list()
+        return lc.list
     }
 
     fun items(): LObject {
@@ -63,7 +63,7 @@ class LTable(): LObject() {
         for ((key, value) in the_table) {
             lc.add(LCons(key, value))
         }
-        return lc.list()
+        return lc.list
     }
 
     override fun equal(other: LObject): Boolean {

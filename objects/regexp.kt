@@ -18,7 +18,7 @@ class LRegexp(pattern: String): LObject() {
         for (match in regex.findAll(s)) {
             lc.add(LString(match.value))
         }
-        return lc.list()
+        return lc.list
     }
 
     override fun equal(other: LObject): Boolean {

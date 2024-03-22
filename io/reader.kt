@@ -644,7 +644,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                 is OparenToken ->
                     lc.add(readList())
                 is CparenToken ->
-                    return LTable(lc.list())
+                    return LTable(lc.list)
                 else ->
                     throw SyntaxError("invalid $token expecting key/value"
                                       + " pair in a table", this)
@@ -660,7 +660,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             val token = nextToken()
             when (token) {
                 is CparenToken ->
-                    return LVector(lc.list())
+                    return LVector(lc.list)
                 is PeriodToken ->
                     throw SyntaxError ("unexpected period in vector", this)
                 is EOFToken ->
@@ -684,7 +684,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             val token = nextToken()
             when (token) {
                 is PeriodToken -> {
-                    if (lc.list() == Nil) {
+                    if (lc.list == Nil) {
                         throw SyntaxError("unexpected dot at beginning of list",
                                           token)
                     }
@@ -694,7 +694,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     lc.lastcdr(elem)
                     val next = nextToken()
                     if (next is CparenToken) {
-                        return lc.list()
+                        return lc.list
                     } else {
                         throw SyntaxError("unexpected $next in list"
                                           + " where ')' expected after `.`",
@@ -702,7 +702,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     }
                 }
                 is CparenToken ->
-                    return lc.list()
+                    return lc.list
                 is EOFToken ->
                     throw ParseError("EOF in list", this)
                 else -> {
