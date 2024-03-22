@@ -97,7 +97,7 @@ class LBuiltin(
             newArglist.add(optPars[hadOptArgs++].second)
         }
         // finally, call the actual function
-        return bfun(newArglist.list(), kwArgs)
+        return bfun(newArglist.list, kwArgs)
     }
 
 }

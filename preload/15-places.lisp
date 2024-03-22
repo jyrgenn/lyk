@@ -108,8 +108,8 @@ function plus the value argument."
         ((consp place)
          (let* ((access-fn (car place))
                 (args (cdr place))
-                (update-fn (*setf-update-table* access-fn)))
+                (update-fn (table-get *setf-update-table* access-fn)))
            (if update-fn
                `(,update-fn ,@args ,value)
-             (error "no setf expansion found for place %v" place))))
-        (t (error "no setf expansion for place %v" place))))
+             (error "no setf expansion found for place %s" place))))
+        (t (error "no setf expansion for place %s" place))))

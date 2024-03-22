@@ -32,18 +32,25 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
         iprint(promptString, true)
         try {
             // Read, 
-            val expr = reader.read()
+            var expr = reader.read()
             iprintln()
             if (expr == null) {
                 break
             }
 
-            // Expand macros,
-            val expanded = macroExpandForm(expr)
+            // Expand macros (just not macro definitions),
+            if (expr is LCons && expr.car === defmacroSym) {
+                // println("skip expanding (${expr.car} ${expr.cdr.car} ...)")
+            } else {
+                // if (expr is LCons) {
+                //     println("(${expr.car} ${expr.cdr.car} ...)")
+                // }
+                expr = macroExpandForm(expr)
+            }
 
             // Eval,
             val (perfdata, value) = measurePerfdataValue {
-                eval(expanded)
+                eval(expr)
             }
 
             // Print,
@@ -65,6 +72,9 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
                 evalStack = Nil
                 debug(debugErrorSym) {
                     e.toObject().desc()
+                }
+                if (!interactive) {
+                    return e
                 }
             }
         } catch (e: Exception) {

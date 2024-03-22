@@ -32,7 +32,7 @@ class LString(val value: String): LObject() {
             for (num in stringTable.values) {
                 lc.add(num)
             }
-            return lc.list()
+            return lc.list
         }
     }
 
