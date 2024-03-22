@@ -4,7 +4,8 @@
   '(
     ;; char
     environment
-    function
+    lambda
+    builtin
     macro
     ;; netaddr
     number
