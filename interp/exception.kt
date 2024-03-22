@@ -5,10 +5,14 @@ class ErrorObject(val error: LispError): LObject() {
     override fun toString() = error.toString()
 
     override fun desc() = "#<${typeOf(this)}: {error.toString()}>"
-
 }
 
 open class LispError(message: String): Exception(message) {
+
+    init {
+        
+    }
+
     fun toObject() = ErrorObject(this)
 
     open override fun toString() = "${typeOf(this)}: $message"

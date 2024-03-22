@@ -150,8 +150,8 @@ fun bi_numbers(args: LObject, kwArgs: Map<LSymbol, LObject>
 }
 
 
-/// builtin symbols
-/// fun     bi_symbols
+/// builtin all-symbols
+/// fun     bi_all_symbols
 /// std     
 /// key     
 /// opt     
@@ -163,7 +163,7 @@ fun bi_numbers(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_symbols(args: LObject, kwArgs: Map<LSymbol, LObject>
+fun bi_all_symbols(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val lc = ListCollector()
     for (sym in symbolTable.values) {
@@ -479,6 +479,7 @@ fun bi_barams(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_exit(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     kotlin.system.exitProcess(longArg(arg1(args), "exit-status").toInt())
+    @Suppress("UNREACHABLE_CODE")
     return Nil                          // yeah, right
 }
 
