@@ -14,7 +14,7 @@
   (let ((combine (cond ((listp seq) #'list)
                        ((vectorp seq) #'vector)
                        ((stringp seq) #'string)
-                       (t (error "sort not implemented for type %v"
+                       (t (error "sort not implemented for type %s"
                                  (type-of seq))))))
     (flet ((helper
              (lambda (seq)

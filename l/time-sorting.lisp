@@ -12,7 +12,7 @@
     (apply #'format
            (nconc
             (list t
-                  (format nil "\n%d * %d (%v %v) %%d evals %%d pairs %%.4f s\n"
+                  (format nil "\n%d * %d (%s %s) %%d evals %%d pairs %%.4f s\n"
                           runs (length data) funcsym datasym))
             (collect-performance-data
              (while (> n 0)

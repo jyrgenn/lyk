@@ -36,7 +36,7 @@
                        (cons (mktree (1- depth))
                              (mktree (1- depth)))))))
       (mktree 4))))
-;;(format t "%v\n" tree4)
+;;(format t "%s\n" tree4)
 (test-is "caaaar" (caaaar tree4) "0000")
 (test-is "cdaaar" (cdaaar tree4) "0001")
 (test-is "cadaar" (cadaar tree4) "0010")

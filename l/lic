@@ -14,18 +14,18 @@
 ;; format strings for lingo
 (defvar *fstring-prompt* "[%d]; ") ;input prompt with stack size argument
 (defvar *fstring-stack-format* "%s -> %s: %s")
-(defvar *fstring-describe* "%v: %v arg%s, %v result\n  %v\n")
-(defvar *fstring-functions* "%v\n")
-(defvar *fstring-describe-functions* "%v: %v")
-(defvar *fstring-simple* "%v")
-(defvar *fstring-simple-nl* "%v\n")
+(defvar *fstring-describe* "%s: %s arg%s, %s result\n  %s\n")
+(defvar *fstring-functions* "%s\n")
+(defvar *fstring-describe-functions* "%s: %s")
+(defvar *fstring-simple* "%s")
+(defvar *fstring-simple-nl* "%s\n")
 (defvar *fstring-repl* "\n> ")
-(defvar *fstring-vars* "%10v: %v\n")
-(defvar *fstring-stackframe* "%2d:  %v%v\n")
-(defvar *fstring-error* "\nerror: %v\n")
-(defvar *fstring-error-nosymbol* "%v is not a function symbol\n")
+(defvar *fstring-vars* "%10v: %s\n")
+(defvar *fstring-stackframe* "%2d:  %s%s\n")
+(defvar *fstring-error* "\nerror: %s\n")
+(defvar *fstring-error-nosymbol* "%s is not a function symbol\n")
 (defvar *fstring-too-few-args*
-  "too few arguments on stack for %v (needs %d)\n")
+  "too few arguments on stack for %s (needs %d)\n")
 
 (defmacro handle-error (evalform handlerform)
   "Eval EVALFORM; on error, bind `error-condition' and eval HANDLERFORM."
@@ -37,7 +37,7 @@
   `(make-string ,len " "))
 (defmacro print-prompt ())
 (defmacro ldebug (msg obj)
-  `(format t "DBG %s: %v\n" ,msg ,obj))
+  `(format t "DBG %s: %s\n" ,msg ,obj))
 (setf sys:stdin
       (open-interactive-stream sys:stdin
                                (lambda ()

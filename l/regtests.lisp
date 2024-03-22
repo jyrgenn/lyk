@@ -51,18 +51,18 @@
 The test is considered successful if the printed representations of
 the evaluation of EXPR and EXPECT are equal.
 TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
-  (let ((already-have-fname? (test-name-table name)))
+  (let ((already-have-fname? (table-get test-name-table name)))
     (if already-have-fname?
-        (progn (format t "WARN name %v:%v already seen in %v\n"
-                       sys:current-load-file name already-have-fname?)
+        (progn (format t "WARN name %s:%s already seen in %s\n"
+                       *current-load-file* name already-have-fname?)
                (incf warnings))
-      (test-name-table name sys:current-load-file)))
+      (table-put test-name-table name *current-load-file*)))
   (let* ((result (errset (if (functionp expr)
                              (expr)     ;allow closures
                            (eval expr))
                          nil))
          (pass (lambda ()
-                 (presult "pass: %-23s »%v«\n" name result)))
+                 (presult "pass: %-23s »%s«\n" name result)))
          (fail (lambda (&rest args)
                  (unless args
                    (setf args
@@ -70,18 +70,18 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
                           "FAIL: %s\n calculated: %s\n   expected: %s\n"
                           name (princs result) (princs expect))))
                  (apply #'presult args)
-                 (push (cons sys:current-load-file name) fails))))
+                 (push (cons *current-load-file* name) fails))))
     (incf ntests)
     (if (atom result)
-        (progn (setf result sys:last-error)
+        (progn (setf result *last-error*)
                (if (eq type 'error)
                    (if (regexpp expect)
                        (if (expect result)
                            (pass)
                          (fail))
-                     (fail "FAIL: %s wrong, not a regexp: %v\n"
+                     (fail "FAIL: %s wrong, not a regexp: %s\n"
                            name expect))
-                 (fail "FAIL: %s RAISED ERROR: %s\n" name sys:last-error)))
+                 (fail "FAIL: %s RAISED ERROR: %s\n" name *last-error*)))
       ;; no error
       (setf result (car result))
       (cond ((eq type 'true) (if result (pass) (fail)))
@@ -123,7 +123,7 @@ Traverse conses and vectors to find numbers."
 
 (defun done-testing ()
   "Mark a test file as done."
-  (presult "testing done in %s\n" sys:current-load-file)
+  (presult "testing done in %s\n" *current-load-file*)
   (setf testing-done t))
 
 ;;;;;;;;;;;;;;;;;;; now let the games begin
@@ -131,14 +131,14 @@ Traverse conses and vectors to find numbers."
 (defun run-tests ()
   (setf fails nil)
   (setf warnings 0)
-  (when (eq (car sys:args) "-v")
-    (pop sys:args)
+  (when (eq (car *command-line-args*) "-v")
+    (pop *command-line-args*)
     (setf verbose t))
 
-  (let ((files (or sys:args
+  (let ((files (or *command-line-args*
                    (directory (string-concat testdir "/" "[0-9]*.lisp")))))
     (when verbose
-      (format t "load files: %v\n" files))
+      (format t "load files: %s\n" files))
     (dolist (f files)
       (let ((number (car (#/^[0-9][0-9][0-9]$/ f))))
         ;; (format t "number: %s\n" number)
@@ -154,7 +154,7 @@ Traverse conses and vectors to find numbers."
           (format t " %s " number)))
       (let ((result (errset (load f))))
         (if (atom result)
-            (progn (presult "load FAIL: %s %s\n" f sys:last-error)
+            (progn (presult "load FAIL: %s %s\n" f *last-error*)
                    (push (cons f "load") fails))
           (unless testing-done
             (presult "file FAIL: %s not completed\n" f)

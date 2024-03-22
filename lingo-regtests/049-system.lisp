@@ -26,9 +26,9 @@
           #/assertion failed: Apfel < Birne/)
 (test-err "assertion fail 2" (assert (< a b))
           #/assertion failed: \(< a b\)/)
-(test-err "assertion fail 3" (assert (< a b) (format nil "%v < %v" 'a 'b))
+(test-err "assertion fail 3" (assert (< a b) (format nil "%s < %s" 'a 'b))
           #/assertion failed: a < b/)
-(test-err "assertion fail 4" (assert (< a b) (format nil "%v < %v" a b))
+(test-err "assertion fail 4" (assert (< a b) (format nil "%s < %s" a b))
           #/assertion failed: 21 < 21/)
 
 (test-is "declare good" (declare (number a b)) nil)

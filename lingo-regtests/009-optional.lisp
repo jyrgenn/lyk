@@ -60,7 +60,7 @@
                          (opt-param 3))
          '(3 4))
 (defun opt-param2 (param1 &optional (param2 (cons two 119)))
-  (format nil "param1 %v param2 %v" param1 param2))
+  (format nil "param1 %s param2 %s" param1 param2))
 
 (test-is "init-form5" (opt-param2 3) "param1 3 param2 (4 . 119)")
 

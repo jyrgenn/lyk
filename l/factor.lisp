@@ -76,7 +76,7 @@
     (while (or (null max) (<= n max))
       (let ((factors (factor n)))
         (if (or (not (zerop pause)) (zerop (% n 1000)))
-            (format t "%d: %v\n" n factors))
+            (format t "%d: %s\n" n factors))
         (sleep pause))
       (setq n (+ n 1)))))
 
@@ -96,5 +96,5 @@
   (let ((i 0))
     (while (<= i n)
       (let ((n (101s i)))
-        (format t "%d: %v\n" n (factor n)))
+        (format t "%d: %s\n" n (factor n)))
       (setq i (+ i 1)))))
