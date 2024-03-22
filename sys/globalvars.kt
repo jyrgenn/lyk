@@ -54,6 +54,7 @@ val debugMacroSym = intern("macro")
 val debugLambdaParamsSym = intern("params")
 val debugPreloadSym = intern("preload")
 val debugDebugSym = intern("debug")
+val debugFormatSym = intern("format")
 
 val debugOffSym = intern("=off")
 val debugListSym = intern("=list")

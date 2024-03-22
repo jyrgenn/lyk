@@ -28,8 +28,6 @@ fun load_stream(load_stream: LStream, name: String,
             if (error != null) {
                 if (throw_error) {
                     throw error as LispError
-                } else {
-                    printErr(error!!)
                 }
                 success = Nil
             } else {
@@ -38,12 +36,6 @@ fun load_stream(load_stream: LStream, name: String,
                     info("load $name: " + perfdata)
                 }
             }
-        } catch (e: Exception) {
-            printErr(e)
-            if (throw_error) {
-                throw e
-            }
-            success = Nil
         } finally {
             load_stream.close()
         }

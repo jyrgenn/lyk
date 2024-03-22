@@ -9,10 +9,6 @@ class ErrorObject(val error: LispError): LObject() {
 
 open class LispError(message: String): Exception(message) {
 
-    init {
-        
-    }
-
     fun toObject() = ErrorObject(this)
 
     open override fun toString() = "${typeOf(this)}: $message"
@@ -21,6 +17,11 @@ open class LispError(message: String): Exception(message) {
         evalStack = LCons(LVector(makeNumber(level), form, env),
                          evalStack)
     }
+}
+
+class JavaError(val err: Exception): LispError(err.message ?: "Java error") {
+    override fun toString() =
+        "${typeOf(this)}: ${err::class.simpleName}: $message"
 }
 
 open class ParseError(message: String,

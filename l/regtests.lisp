@@ -13,10 +13,10 @@
 (defvar test-name-table #:()
   "Ensure that all tests have a unique name")
 
-(defun presult (&rest args)
+(defun presult (format-string &rest args)
   (when verbose
-    (apply #'format t args))
-  (apply #'format out args))
+    (apply #'format t format-string args))
+  (apply #'format out format-string args))
 
 (defmacro test (name expr)
   "Run test NAME; success if EXPR evaluates to a true value"

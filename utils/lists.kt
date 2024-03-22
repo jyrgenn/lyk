@@ -15,16 +15,20 @@ fun list2lisp(elems: Collection<LObject>): LObject {
     return lc.list
 }
 
-fun valueList(elems: LObject): List<Any> {
-    val l = mutableListOf<Any>()
+fun valueArray(elems: LObject): Array<Any> {
+    val a = Array<Any>(elems.length()) { 0 }
 
+    var index = 0
     for (elem in elems) {
-        l.add(when (elem) {
-                  is LNumber -> elem.value
-                  else -> elem.toString()
-              })
+        a[index++] = when (elem) {
+            is LNumber -> if (elem.isLong())
+                              elem.value.toLong()
+                          else
+                              elem.value
+            else -> elem.toString()
+        }
     }
-    return l
+    return a
 }
 
 class ListIterator(var l: LObject): Iterator<LObject> {

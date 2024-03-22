@@ -60,6 +60,9 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
             if (interactive) {
                 info(perfdata)
             }
+        } catch (e: JavaError) {
+            e.err.printStackTrace()
+            throw e
         } catch (e: LispError) {
             reader.skipRestOfLine()
             if (Options.print_estack) {

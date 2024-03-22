@@ -51,4 +51,14 @@ class LCons(override var car: LObject,
             && car.equal(other.car)
             && cdr.equal(other.cdr)
     }
+
+    fun toArray(): Array<LObject> {
+        val valueArray = Array<LObject>(length()) { Nil }
+
+        var index = 0
+        for (elem in this) {
+            valueArray[index++] = elem
+        }
+        return valueArray
+    }
 }

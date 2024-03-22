@@ -92,6 +92,13 @@ class LSymbol(val name: String, val immutable: Boolean): LObject()
 
     override fun isList() = this === Nil
 
+    override fun length(): Int {
+        if (this === Nil) {
+            return 0
+        }
+        return super.length()
+    }
+
     override fun isKeyword(): Boolean {
         return name.startsWith(':')
     }

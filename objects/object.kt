@@ -2,10 +2,14 @@
 
 package org.w21.lyk
 
+import java.util.Formatter;
+import java.util.Formattable;
+import java.util.FormattableFlags.*;
+
 private var objectCounter = 0
 
 
-abstract class LObject: Iterable<LObject>, Comparable<LObject> {
+abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     val id: Int
     
     init {
@@ -31,6 +35,36 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject> {
     // that can be read in again by the reader.
     override fun toString(): String {
         return dump()
+    }
+
+    override fun formatTo(fmtr: Formatter,
+                          flags: Int,
+                          width: Int,
+                          prec: Int) {
+        val s = if ((flags and ALTERNATE) == ALTERNATE) {
+            this.desc()
+        } else {
+            this.toString()
+        }
+
+        val padsize = width - s.length
+        debug(debugFormatSym) {
+            "$this[${typeOf(this)}].format(fmtr = '$fmtr', flags = $flags, width = $width, prec = $prec)"
+        }
+        if (padsize > 0) {
+            val pad = mulString(" ", padsize)
+            if ((flags and LEFT_JUSTIFY) == LEFT_JUSTIFY) {
+                fmtr.format(s + pad)
+            } else {
+                fmtr.format(pad + s)
+            }
+        } else {
+            if (width >= 0) {
+                fmtr.format(s.substring(0, width))
+            } else {
+                fmtr.format(s)
+            }
+        }
     }
 
     // Print as much information about the object as can be helpful debugging.

@@ -24,6 +24,7 @@ object Options {
         debugMacroSym to false,
         debugLambdaParamsSym to false,
         debugPreloadSym to false,
+        debugFormatSym to false,
     )
     var print_estack = false
     var maxrecurse = 0
