@@ -29,7 +29,7 @@ class LBuiltin(
        maybeIntern(restParsS),
        maybeIntern(retvalS),
        isSpecial,
-       makeString(docBodyS),
+       makeString(docBodyS.trim()),
    ) {
     override val typeDesc =
         if (isSpecial) "special form" else "builtin function"

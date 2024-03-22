@@ -26,11 +26,11 @@ See the documentation of function #'copy for details."
 ;;   (let* (((tag nil . slots) (get-struct-type s))
 ;;          (nslots (length slots))
 ;;          (values (map (lambda (n)
-;;                         (sys:get-struct-slot s n))
+;;                         (get-struct-slot s n))
 ;;                       (iota nslots)))
-;;          (newstruct (sys:make-struct tag)))
+;;          (newstruct (make-struct tag)))
 ;;     (dotimes (i nslots)
-;;       (sys:set-struct-slot newstruct i (copy (pop values))))
+;;       (set-struct-slot newstruct i (copy (pop values))))
 ;;     newstruct))
 
 ;; (defvar *deep-copy-function-table*

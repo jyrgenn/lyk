@@ -71,7 +71,7 @@ abstract class LFunction(
         if (docBody.value == "") {
             return docHeader() + "\n"
         }
-        return docHeader() + docBody.value + "\n"        
+        return docHeader() + "\n" + docBody.value + "\n"        
     }
 
     fun myKeywordArg(maybeSym: LObject): LSymbol? {
@@ -89,6 +89,8 @@ abstract class LFunction(
     }
 
     open override fun dump() = desc()
+
+    open fun body() = Nil as LObject
 }
 
 // bind function call or macro expansion arguments to the right variables; with

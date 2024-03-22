@@ -23,14 +23,23 @@ class LMacro(
 
     fun expand(arglist: LObject): LObject {
         return withNewEnvironment(currentEnv) {
+            debug(debugMacroSym) {
+                "expand $this with args $arglist"
+            }
             bindPars(arglist, this)
-            evalProgn(bodyForms)
+            val result = evalProgn(bodyForms)
+            debug(debugMacroSym) {
+                "$this expanded to $result"
+            }
+            result
         }
     }
 
     override fun call(arglist: LObject): LObject {
         throw InternalError("calling $this as a function!")        
     }
+
+    override fun body() = bodyForms
 }
 
 fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
@@ -54,22 +63,39 @@ fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
 }
 
 fun macroExpandFormRecurse(form: LObject): Pair<LObject, Boolean> {
+    debug(debugMacroSym) {
+        "macroExpandFormRecurse $form"
+    }
     if (form is LCons) {
+        debug(debugMacroSym) {
+            "is cons"
+        }
         val (head, args) = form
         if (head is LSymbol) {
+            debug(debugMacroSym) {
+                "head of form is symbol $head"
+            }
             val maybeMacro = head.function
             debug(debugMacroSym) {
-                "$head is maybeMacro?"
+                "$head is maybeMacro? function $maybeMacro"
             }
             if (maybeMacro != null && maybeMacro is LMacro) {
+                val expanded = maybeMacro.expand(args)
                 debug(debugMacroSym) {
-                    "yes, $maybeMacro is!"
+                    "yes, $maybeMacro is! return $expanded, true"
                 }
-                return Pair(maybeMacro.expand(args), true)
+                return Pair(expanded, true)
             }
         }
-        return macroExpandList(form)
+        val result = macroExpandList(form)
+        debug(debugMacroSym) {
+            "not a call form, so expand list and return $result"
+        }
+        return result
     } else {
+        debug(debugMacroSym) {
+            "not a cons, nothing to expand"
+        }
         return Pair(form, false)
     }
 }

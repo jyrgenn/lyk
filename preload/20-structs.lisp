@@ -4,17 +4,17 @@
 ;; Example:
 ;;     (defstruct hcoord "homogenous coordinates" x y z m)
 ;;   results in
-;;     (sys:def-struct-type hcoord "homogenous coordinates" x y z m)
+;;     (def-struct-type hcoord "homogenous coordinates" x y z m)
 ;;     (defun make-hcoord (&rest args)
-;;       (apply #'sys:make-struct 'hcoord args))
+;;       (apply #'make-struct 'hcoord args))
 ;;     (defun hcoord-x (s)
-;;       (sys:get-struct-slot s 0)
+;;       (get-struct-slot s 0)
 ;;     (defun hcoord-y (s)
-;;       (sys:get-struct-slot s 1)
+;;       (get-struct-slot s 1)
 ;;     (defun hcoord-z (s)
-;;       (sys:get-struct-slot s 2)
+;;       (get-struct-slot s 2)
 ;;     (defun hcoord-m (s)
-;;       (sys:get-struct-slot s 3)
+;;       (get-struct-slot s 3)
 ;;   and setf operations for each
 
 ;; (defmacro defstruct (tag &rest args)
@@ -49,14 +49,14 @@
 ;;           (setf maker-docstring (string maker-docstring " :" slot))
 ;;           (push `(defmacro ,funsym (s)
 ;;                    ,docstring
-;;                    `(sys:get-struct-slot ,(list 'unquote 's) ,arg-index))
+;;                    `(get-struct-slot ,(list 'unquote 's) ,arg-index))
 ;;                 defs)
 ;;           (eval `(defsetf ,funsym (struct value)
-;;                    (sys:set-struct-slot struct ,arg-index value))))
+;;                    (set-struct-slot struct ,arg-index value))))
 ;;         (incf arg-index))
-;;       `(progn (sys:def-struct-type ,tag ,docstring ,@args)
+;;       `(progn (def-struct-type ,tag ,docstring ,@args)
 ;;               (defmacro ,maker-sym (&rest make-args)
 ;;                 ,maker-docstring
-;;                 `(sys:make-struct ',tag ,@(list 'unquote 'make-args)))
+;;                 `(make-struct ',tag ,@(list 'unquote 'make-args)))
 ;;               ,@defs
 ;;               ',tag))))

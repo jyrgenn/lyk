@@ -1,17 +1,12 @@
 
 (defmacro unless (condition &rest bodyforms)
   "If CONDITION yields nil, eval BODYFORMS and return the result of the last."
-  `(if ,condition
-       nil
-     ,@bodyforms))
+  `(cond (,condition)
+         (t ,@bodyforms)))
 
 (defmacro when (condition &rest bodyforms)
   "If CONDITION yields true, eval BODYFORMS and return the result of the last."
-  (let ((bodyform (if (= (length bodyforms) 1)
-                      (car bodyforms)
-                    (cons 'progn bodyforms))))
-    `(if ,condition
-         ,bodyform)))
+  `(cond (,condition ,@bodyforms)))
 
 (defmacro =/= (ob1 ob2)
   "Return true iff OB1 and OB2 are unequal (in terms of #'equal)."
@@ -144,11 +139,11 @@ the lines."
 A declaration like (declare (number n m) (string name) (symbol a b c))
 generates the corresponding type assertions for the named variables and
 their respectively declared types. For the available type symbols see
-the variable sys:types."
+the variable *object-types*."
   (let (assertions)
     (dolist (d declarations)
       (let (((type . vars) d))
-        (assert (member type sys:types)
+        (assert (member type *object-types*)
                 (string "invalid type in declare: " type))
         (let ((pred (intern (string type "p"))))
           (dolist (var vars)

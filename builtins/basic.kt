@@ -1726,3 +1726,22 @@ fun bi_rplacd_ret_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     consArg(the_cons, "rplacd-ret-value cons").cdr = new_value
     return new_value
 }
+
+/// builtin function-body
+/// fun     bi_function_body
+/// std     function
+/// key     
+/// opt     
+/// rest    
+/// ret     bodyforms
+/// special no
+/// doc {
+/// Return the bodyforms of `function`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_function_body(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return functionArg(arg1(args), "function-documentation").body()
+}
+

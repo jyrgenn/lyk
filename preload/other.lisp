@@ -26,5 +26,5 @@ If ARG is a sequence, do the same according to the number of it elements."
 
 (defun function-symbols ()
   "Return a list of all function symbols."
-  (filter (λ (sym) (get sym 'func-defined-in)) (sys:symbols)))
+  (filter (λ (sym) (get sym 'func-defined-in)) (all-symbols)))
 

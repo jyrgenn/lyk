@@ -36,9 +36,6 @@ open class Lambda(                           // Macro will inherit this
         return "#<Lambda[$id](${parlist()}) $body>"
     }
 
-
-
-
     override fun call(arglist: LObject): LObject {
         return withNewEnvironment(environment) {
             bindPars(arglist, this)
@@ -49,7 +46,7 @@ open class Lambda(                           // Macro will inherit this
         }
     }
 
-
+    override fun body() = bodyForms
 }
 
 
