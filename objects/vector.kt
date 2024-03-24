@@ -76,4 +76,11 @@ class LVector(elems: LObject): LObject() {
         }
         return true
     }
+    override operator fun component1() = the_vector.get(0)
+    override operator fun component2() = the_vector.get(1)
+    operator fun component3() = the_vector.get(2)
+    operator fun component4() = the_vector.get(3)
+    operator fun component5() = the_vector.get(4)
+    operator fun component6() = the_vector.get(5)
+    operator fun component7() = the_vector.get(6)
 }

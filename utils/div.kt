@@ -70,8 +70,12 @@ class StrBuf() {
         return buf.joinToString(separator = "")
     }
 
-    fun join(separator: String): String {
-        return buf.joinToString(separator = separator)
+    fun join(separator: String = " ",
+             prefix: String = "",
+             postfix: String = ""): String {
+        return buf.joinToString(separator = separator,
+                                prefix = prefix,
+                                postfix = postfix)
     }
 }
 

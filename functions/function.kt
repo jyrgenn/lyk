@@ -27,36 +27,37 @@ abstract class LFunction(
         }
     }
 
-    fun parlist(): String {
-        val sb = StrBuf(name.name)
+
+    fun parlist(): LObject {
+        val lc = ListCollector()
         for (par in stdPars) {
-            sb.add(par.name)
+            lc.add(par)
         }
         if (optPars.size > 0) {
-            sb.add("&optional")
+            lc.add(optionalPSym)
             for ((pname, defval) in optPars) {
                 if (defval === Nil) {
-                    sb.add(pname.name)
+                    lc.add(pname)
                 } else {
-                    sb.add("(${pname.name} ${defval.desc()})")
+                    lc.add(LCons(pname, LCons(defval, Nil)))
                 }
             }
         }
         if (keyPars.size > 0) {
-            sb.add("&key")
+            lc.add(keyPSym)
             for ((pname, defval) in keyPars) {
                 if (defval === Nil) {
-                    sb.add(pname.name)
+                    lc.add(pname)
                 } else {
-                    sb.add("(${pname.name} ${defval.desc()})")
+                    lc.add(LCons(pname, LCons(defval, Nil)))
                 }
             }
         }
         if (restPar != null) {
-            sb.add("&rest")
-            sb.add(restPar.name)
+            lc.add(restPSym)
+            lc.add(restPar)
         }
-        return sb.join(" ")
+        return lc.list
     }
 
     override open fun toString() = "#<${typeDesc}[$id]$name>"
@@ -64,7 +65,7 @@ abstract class LFunction(
     override open fun desc() = "#<${typeDesc}[$id](${parlist()})=$retval>"
 
     fun docHeader(): String {
-        return "${typeDesc} (${parlist()}) => $retval"
+        return "${typeDesc} ${LCons(name, parlist())} => $retval"
     }
 
     fun documentation(): String {

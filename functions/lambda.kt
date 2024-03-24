@@ -2,11 +2,6 @@
 
 package org.w21.lyk
 
-val optionalPSym = intern("&optional")
-val keyPSym = intern("&key")
-val restPSym = intern("&rest")
-val emptyString = makeString("")
-
 
 open class Lambda(                           // Macro will inherit this
     functionName: LSymbol?,                   // present if non anonymous

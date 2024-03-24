@@ -111,5 +111,5 @@ function plus the value argument."
                 (update-fn (table-get *setf-update-table* access-fn)))
            (if update-fn
                `(,update-fn ,@args ,value)
-             (error "no setf expansion found for place %s" place))))
-        (t (error "no setf expansion for place %s" place))))
+             (error "no setf expansion found for place" place))))
+        (t (error "no setf expansion for place" place))))

@@ -77,12 +77,12 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
 
     override fun iterator() = ObjectIterator(this)
 
-    operator fun component1(): LObject {
+    open operator fun component1(): LObject {
         return (this as? LCons)?.car ?:
             throw TypeError("$this is not a pair")
     }
 
-    operator fun component2(): LObject {
+    open operator fun component2(): LObject {
         return (this as? LCons)?.cdr ?:
             throw TypeError("$this is not a pair")
     }

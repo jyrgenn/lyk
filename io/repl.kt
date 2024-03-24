@@ -37,15 +37,15 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
                 break
             }
 
-            // // Expand macros (just not macro definitions),
-            // if (expr is LCons && expr.car === defmacroSym) {
-            //     // println("skip expanding (${expr.car} ${expr.cdr.car} ...)")
-            // } else {
-            //     // if (expr is LCons) {
-            //     //     println("(${expr.car} ${expr.cdr.car} ...)")
-            //     // }
-            //     expr = macroExpandForm(expr)
-            // }
+            // Expand macros (just not macro definitions),
+            if (expr is LCons && expr.car === defmacroSym) {
+                // println("skip expanding (${expr.car} ${expr.cdr.car} ...)")
+            } else {
+                // if (expr is LCons) {
+                //     println("(${expr.car} ${expr.cdr.car} ...)")
+                // }
+                expr = macroExpandForm(expr)
+            }
 
             // Eval,
             val (perfdata, value) = measurePerfdataValue {
@@ -67,18 +67,25 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
             reader.skipRestOfLine()
             if (Options.print_estack) {
                 e.printStackTrace()
-            } else {
+            }
+            printErr(e)
+            for (frame in evalStack) {
+                // stderr.println(frame)
+                val (level, expr, env) = frame as LVector
+                val frameno = "#%d".format((level as LNumber).toInt())
+                val pad = mulString(" ", frameno.length)
+                stderr.println("%s %s\n%s %s".format(frameno, env.desc(),
+                                                     pad, expr))
+            }
+            if (evalStack.size > 10) {
                 printErr(e)
-                for (frame in evalStack) {
-                    stderr.println(frame)
-                }
-                evalStack = Nil
-                debug(debugErrorSym) {
-                    e.toObject().desc()
-                }
-                if (!interactive) {
-                    return e
-                }
+            }
+            debug(debugErrorSym) {
+                e.toObject().desc()
+            }
+            evalStack = ListCollector()
+            if (!interactive) {
+                return e
             }
         } catch (e: Exception) {
             printErr("unexpected exception:", e)

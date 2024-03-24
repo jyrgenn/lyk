@@ -70,14 +70,6 @@ fun evalArgs(arglist: LObject): LObject {
     return lc.list
 }
 
-var evalLevel: Int = 0
-var maxEvalLevel: Int = 0
-var maxRecursionDepth: Int = 1_000_000_000
-var abortEval: Boolean = false
-var stepEval: Boolean = false
-var evalStack: LObject = Nil
-
-
 
 fun eval(form: LObject): LObject {
     evalCounter += 1
@@ -149,7 +141,6 @@ fun eval(form: LObject): LObject {
         err.pushFrame(evalLevel, form, currentEnv)
         throw err
     } catch (ex: Exception) {
-        printErr(ex)
         val err = JavaError(ex)
         err.pushFrame(evalLevel, form, currentEnv)
         throw err

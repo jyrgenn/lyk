@@ -71,6 +71,8 @@ class ListCollector(): Iterable<LObject> {
         }
     }
 
+    val size get() = list.length()
+
     override fun iterator() = ListIterator(this.list)
 }
 

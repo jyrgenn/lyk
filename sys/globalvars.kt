@@ -36,6 +36,15 @@ val errorSym = intern("error")
 var consCounter = 0
 var evalCounter = 0
 
+// function parameters
+val optionalPSym = intern("&optional")
+val keyPSym = intern("&key")
+val restPSym = intern("&rest")
+val emptyString = makeString("")
+val returnSym = intern("=>")
+val no_returnSym = intern("no-return")
+
+
 // debug and trace topic names
 val debugEvalSym = intern("eval")
 val debugEvalPrognSym = intern("evalprogn")
@@ -72,3 +81,12 @@ val currentLoadFile = LSymbol.makeGlobal("*current-load-file*")
 
 // set of features provided
 val featureSet = mutableSetOf<LSymbol>()
+
+// eval stuff
+var evalLevel: Int = 0
+var maxEvalLevel: Int = 0
+var maxRecursionDepth: Int = 1_000_000_000
+var abortEval: Boolean = false
+var stepEval: Boolean = false
+var evalStack = ListCollector()
+

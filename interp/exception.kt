@@ -14,8 +14,7 @@ open class LispError(message: String): Exception(message) {
     open override fun toString() = "${typeOf(this)}: $message"
 
     fun pushFrame(level: Int, form: LObject, env: LEnv) {
-        evalStack = LCons(LVector(makeNumber(level), form, env),
-                         evalStack)
+        evalStack.add(LVector(makeNumber(level), form, env))
     }
 }
 
@@ -41,7 +40,15 @@ class InternalReaderError(message: String,
 class ImmutableError(val symbol: LSymbol, val function: Boolean): 
     LispError("symbol $symbol is immutable")
 
-class UserError(message: String, val data: LObject = Nil): Exception(message)
+class UserError(message: String, val data: LObject = Nil): LispError(message) {
+    override fun toString(): String {
+        var s = super.toString()
+        if (data !== Nil) {
+            s += ", " + data.toString()
+        }
+        return s
+    }
+}
 
 open class ValueError(message: String,
                       lh: LocationHolder?): LispError(message) {

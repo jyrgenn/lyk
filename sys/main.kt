@@ -34,7 +34,7 @@ object Options {
 
 fun usage() {
     println(buildtag())
-    println("\nUsage: lyk [-Ehq?] [-d debug-options] [-e expression] [-R maxrecurse]")
+    println("\nUsage: lyk [-Ehq?] [-d debug-options] [-e expression] [-l load-file] [file [arg1 ...]]")
 
     println("""
     -d debug-options : set debug options, comma separated, see below
@@ -44,8 +44,9 @@ fun usage() {
     -q               : suppress info messages (-qq: also notice/warning)
     -v               : increase verbosity
     -E               : print exception stack
-    -R maxrecurse    : maximum eval recursion depth 
 """)
+    // -R maxrecurse    : maximum eval recursion depth 
+
     print("Available debug options:")
     for (opt in Options.debug.keys.sorted()) {
 	print(" $opt")
@@ -83,6 +84,9 @@ fun main(args: Array<String>) {
     }
 
     while (argl.size > 0) {
+        if (!argl[0].startsWith("-")) {
+            break
+        }
         val arg = argl.removeFirst()
         if (!arg.startsWith("-") || arg == "--") {
             break
@@ -114,8 +118,13 @@ fun main(args: Array<String>) {
         }
     }
 
+    if (lispExpression != null || argl.size > 0) {
+        // i.e. running non-interactively, so no buildtag printing etc.
+        Options.verbosity -= 1
+    }
     // now start the machine!
     try {
+        info(buildtag())
         init_Builtins()
         load_string(preload_code, "*preload-code*")
         
@@ -126,14 +135,14 @@ fun main(args: Array<String>) {
         errExit(e.toString())
     }
 
-    val lc = ListCollector()
+    val args_lc = ListCollector()
     for (arg in argl) {
-        lc.add(LString(arg))
+        args_lc.add(LString(arg))
     }
-    commandLineArgs.setValue(lc.list)
     
     if (lispExpression != null) {
-        Options.verbosity -= 1
+        // in this case, all command line args are in *command-line-args*
+        commandLineArgs.setValue(args_lc.list)
         try {
             val reader = Reader(StringReaderStream(lispExpression),
                                 "*command-arg*")
@@ -150,6 +159,13 @@ fun main(args: Array<String>) {
         }
         exitProcess(0)
     }
-    notice(buildtag())
-    repl(Reader(stdin), "> ")
+    if (args_lc.list !== Nil) {
+        // first argument is the file to run, rest goes to *command-line-args*"
+        val file = (args_lc.list.car as LString).value
+        commandLineArgs.setValue(args_lc.list.cdr)
+
+        load_file(file)
+    } else {
+        repl(Reader(stdin), "> ")
+    }
 }
