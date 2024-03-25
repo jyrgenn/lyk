@@ -79,6 +79,37 @@ class StrBuf() {
     }
 }
 
+fun glob2regexp(glob_pattern: String): Regex {
+    val sb = StrBuf()
+    var had_quote = false               // state: after backslash escape
+    var in_cclass = false               // state: in character class
+    
+    sb.add("^")
+    for (ch in glob_pattern) {
+        var char = ch
+        if (had_quote) {
+            sb.add(char)
+            had_quote = false
+            continue
+        }
+        when (char) {
+            '\\' -> {
+                had_quote = true
+            }
+            '[' -> in_cclass = true
+            ']' -> in_cclass = false
+            '!' -> if (in_cclass) char = '^'
+            '*' -> if (!in_cclass) sb.add('.')
+            '?' -> if (!in_cclass) char = '.'
+            '.', '|', '+', ')', '(', '^', '$' -> sb.add('\\')
+            
+        }
+        sb.add(char)
+    }
+    sb.add("$")
+    return Regex(sb.toString())
+}
+
 fun arrayIntern(array: Array<String>): List<LSymbol> {
     val symbols = mutableListOf<LSymbol>()
     for (elem in array) {
