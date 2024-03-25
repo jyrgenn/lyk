@@ -64,6 +64,7 @@ val debugLambdaParamsSym = intern("params")
 val debugPreloadSym = intern("preload")
 val debugDebugSym = intern("debug")
 val debugFormatSym = intern("format")
+val debugDefunSym = intern("defun")
 
 val debugOffSym = intern("=off")
 val debugListSym = intern("=list")

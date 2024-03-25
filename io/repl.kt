@@ -74,8 +74,10 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
                 val (level, expr, env) = frame as LVector
                 val frameno = "#%d".format((level as LNumber).toInt())
                 val pad = mulString(" ", frameno.length)
-                stderr.println("%s %s\n%s %s".format(frameno, env.desc(),
-                                                     pad, expr))
+                // using format() here lead to spurious %s argument missing
+                // errors, so I work around it
+                stderr.println(frameno, env.desc())
+                stderr.println(pad, expr)
             }
             if (evalStack.size > 10) {
                 printErr(e)

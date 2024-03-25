@@ -531,8 +531,10 @@ fun bi_lambda(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_defun(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (name, rest) = args
     val (params, bodyforms) = rest
-
     val sym = symbolArg(name, "function name")
+    debug (debugDefunSym) {
+        LCons(sym, params).toString()
+    }
     sym.setFunction(makeLambdaOrMacro(params, bodyforms, currentEnv, sym))
     return sym
 }

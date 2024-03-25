@@ -136,18 +136,24 @@ abstract class LStream(
         write(ch.code)
     }
     
-    open fun print(thing: Any) {
-        write(thing.toString())
-    }
-    open fun println(vararg things: Any) {
+    open fun print(vararg things: Any, separator: String = " ") {
         val last = things.size - 1
         var n = 0
         for (thing in things) {
             write(thing.toString())
-            if (n++ == last) {
-                write(newLine)
+            if (n++ < last) {
+                write(separator)
             }
         }
+    }
+    
+    open fun printf(format_string: String, vararg format_args: Any) {
+        write(format_string.format(*format_args))
+    }
+    
+    open fun println(vararg things: Any, separator: String = " ") {
+        print(*things, separator)
+        write(newLine)
     }
     
     open fun println() {

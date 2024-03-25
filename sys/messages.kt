@@ -28,13 +28,13 @@ fun errExit(message: String? = null) {
 
 fun info(message: String) {
     if (Options.verbosity >= verbosityInfo) {
-        stderr.println("; " + message)
+        stderr.println(";", message)
     }
 }
 
 fun notice(message: String) {
     if (Options.verbosity >= verbosityNotice) {
-        stderr.println("; " + message)
+        stderr.println(";", message)
     }
 }
 
@@ -91,7 +91,7 @@ fun debug(topic: LSymbol, closure: () -> Any?) {
         debug_out.print("DBG:$topic ")
         val value = closure()
         if (value != null) {
-            debug_out.println(value.toString())
+            debug_out.println(value)
         }
     }
 }

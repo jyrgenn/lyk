@@ -25,6 +25,7 @@ object Options {
         debugLambdaParamsSym to false,
         debugPreloadSym to false,
         debugFormatSym to false,
+        debugDefunSym to false,
     )
     var print_estack = false
     var maxrecurse = 0
@@ -151,7 +152,7 @@ fun main(args: Array<String>) {
                 throw EOFError("no Lisp expression to eval")
             }
             val perfdata = measurePerfdata {
-                println(eval(expr))
+                stdout.println(eval(expr))
             }
             info(perfdata)
         } catch (e: Exception) {

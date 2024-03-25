@@ -18,6 +18,9 @@ open class LispError(message: String): Exception(message) {
     }
 }
 
+open class InternalError(message: String): LispError(message)
+
+
 class JavaError(val err: Exception): LispError(err.message ?: "Java error") {
     override fun toString() =
         "${typeOf(this)}: ${err::class.simpleName}: $message"
