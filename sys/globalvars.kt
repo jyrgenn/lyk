@@ -44,6 +44,8 @@ val emptyString = makeString("")
 val returnSym = intern("=>")
 val no_returnSym = intern("no-return")
 
+val lastValueSym = intern("_")
+
 
 // debug and trace topic names
 val debugEvalSym = intern("eval")

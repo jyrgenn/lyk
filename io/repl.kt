@@ -58,6 +58,7 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
             }
             iprintln()
             if (interactive) {
+                lastValueSym.setValue(value)
                 info(perfdata)
             }
         } catch (e: JavaError) {
