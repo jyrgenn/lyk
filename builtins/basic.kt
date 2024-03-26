@@ -506,7 +506,8 @@ fun bi_prog1(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_lambda(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     var (params, bodyforms) = args
-    return makeLambdaOrMacro(params, bodyforms)
+    return makeLambdaOrMacro(params, bodyforms,
+                             location = lastTopLevelLocation)
 }
 
 /// builtin defun
@@ -535,7 +536,8 @@ fun bi_defun(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     debug (debugDefunSym) {
         LCons(sym, params).toString()
     }
-    sym.setFunction(makeLambdaOrMacro(params, bodyforms, currentEnv, sym))
+    sym.setFunction(makeLambdaOrMacro(params, bodyforms, currentEnv, sym,
+                                      false, lastTopLevelLocation))
     return sym
 }
 
@@ -1344,6 +1346,7 @@ fun bi_defvar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         symbol.putprop(intern("docstring"),
                        makeString(docstring))
     }
+    symbol.putprop(varDefinedInPropSym, makeString(lastTopLevelLocation))
     return symbol
 }
 
@@ -1370,6 +1373,7 @@ fun bi_defparameter(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         symbol.putprop(intern("docstring"),
                        makeString(docstring))
     }
+    symbol.putprop(varDefinedInPropSym, makeString(lastTopLevelLocation))
     return symbol
 }
 
@@ -1424,7 +1428,7 @@ fun bi_read(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         throw ArgumentError("read argument not a stream or string: "
                             + " $input_stream")
     }
-    val obj = Reader(input_stream, "*expr*").read()
+    val obj = Reader(input_stream, "*expr*").read().first
     if (obj == null) {
         if (eof_error_p !== Nil) {
             throw EOFError("unexpected EOF in read")
@@ -1460,7 +1464,9 @@ fun bi_flet(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             previous_bindings.add(Pair(symbol, symbol.function))
             val (params, bodyforms) = listArg(funcrest,
                                               "flet function $symbol")
-            symbol.setFunction(makeLambdaOrMacro(params, bodyforms))
+            symbol.setFunction(makeLambdaOrMacro(
+                                   params, bodyforms,
+                                   location = lastTopLevelLocation))
         }
         return evalProgn(body)
     } finally {

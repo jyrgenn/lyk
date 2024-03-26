@@ -14,8 +14,9 @@ open class LispError(message: String): Exception(message) {
 
     open override fun toString() = "${typeOf(this)}: $message"
 
-    fun pushFrame(level: Int, form: LObject, env: LEnv) {
-        evalStack.add(LVector(makeNumber(level), form, env))
+    fun pushFrame(level: Int, form: LObject, env: LEnv, location: String) {
+        evalStack.add(LVector(makeNumber(level), form, env,
+                              makeString(location)))
     }
 }
 

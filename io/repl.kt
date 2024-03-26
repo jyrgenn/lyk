@@ -32,10 +32,11 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
         iprint(promptString, true)
         try {
             // Read, 
-            var expr = reader.read()
+            var (expr, where) = reader.read()
             if (expr == null) {
                 break
             }
+            lastTopLevelLocation = where
 
             // Expand macros (just not macro definitions),
             if (expr is LCons && expr.car === defmacroSym) {
@@ -72,12 +73,12 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
             printErr(e)
             for (frame in evalStack) {
                 // stderr.println(frame)
-                val (level, expr, env) = frame as LVector
+                val (level, expr, env, location) = frame as LVector
                 val frameno = "#%d".format((level as LNumber).toInt())
                 val pad = mulString(" ", frameno.length)
                 // using format() here lead to spurious %s argument missing
                 // errors, so I work around it
-                stderr.println(frameno, env.desc())
+                stderr.println(frameno, location, env.desc())
                 stderr.println(pad, expr)
             }
             if (evalStack.size > 10) {
@@ -95,6 +96,6 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
             e.printStackTrace()
             return OtherError("unexpected exception in REPL", e)
         }
-    }                           // and Loop
+    }                           // end Loop
     return null
 }

@@ -3,18 +3,18 @@
 package org.w21.lyk
 
 
-open class Lambda(                           // Macro will inherit this
-    functionName: LSymbol?,                   // present if non anonymous
-    stdPars: List<LSymbol>,                   // normal parameters
+open class Lambda(                         // Macro will inherit this
+    functionName: LSymbol?,                // present if non anonymous
+    stdPars: List<LSymbol>,                // normal parameters
     keyPars: Map<LSymbol, LObject>,        // &key name => default
     optPars: List<Pair<LSymbol, LObject>>, // &optional name, default
-    restPar: LSymbol?,                       // &rest parameters
-    val bodyForms: LObject,               //
-    docBody: LString,                     // docstring sans signature
-    val environment: LEnv,
-    isSpecial: Boolean = false          // for Macros only
+    restPar: LSymbol?,                     // &rest parameters
+    val bodyForms: LObject,                //
+    docBody: LString,                      // docstring sans signature
+    val environment: LEnv,                 // environment of function
+    location: LString,                     // where defined
 ): LFunction(functionName, stdPars, keyPars, optPars, restPar,
-            intern("value"), isSpecial, docBody)
+             intern("value"), false, docBody, location)
 {
     override val typeDesc = "lambda function"
     

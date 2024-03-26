@@ -93,8 +93,8 @@ def print_init(builtin):
     prin("/* special */ ")
     prin(repr(y.boolish(builtin.special[0])).lower())
     prin(",\n            ")
-    prin('"""\n' + builtin.doc + '"""')
-    print(")")
+    print('"""\n' + builtin.doc + '""",')
+    print(f'            "{filename}:{lineno}:1")')
     print()
 
 

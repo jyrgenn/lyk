@@ -36,6 +36,15 @@ val errorSym = intern("error")
 var consCounter = 0
 var evalCounter = 0
 
+// location of the last top level expression read in a repl
+var lastTopLevelLocation = ""
+
+// property to store a defined-in location for functions, macros
+var definedInPropSym = intern("defined-in")
+
+// property to store a defined-in location for defvar, defparameter
+var varDefinedInPropSym = intern("var-defined-in")
+
 // function parameters
 val optionalPSym = intern("&optional")
 val keyPSym = intern("&key")

@@ -584,26 +584,28 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     }
 
 
-    fun read(): LObject? {
-        // Read an expression from the input and return it.
+    fun read(): Pair<LObject?, String> {
+        // Read an expression from the input and return it together with the
+        // location of its first token.
         val token = nextToken()
+        val location = token.location()
         var macroSymbol: LSymbol?
         
         when (token) {
             is SymbolToken ->
-                return intern(token.value)
+                return Pair(intern(token.value), location)
             is NumberToken ->
-                return makeNumber(token.value)
+                return Pair(makeNumber(token.value), location)
             is StringToken ->
-                return makeString(token.value)
+                return Pair(makeString(token.value), location)
             is OparenToken ->
-                return readList()
+                return Pair(readList(), location)
             is TableStartToken ->
-                return readTable()
+                return Pair(readTable(), location)
             is VectorStartToken ->
-                return readVector()
+                return Pair(readVector(), location)
             is RegexpToken ->
-                return LRegexp(token.value)
+                return Pair(LRegexp(token.value), location)
             is QuoteToken ->
                 macroSymbol = QuoteSymbol
             is FunctionToken ->
@@ -615,7 +617,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             is UnquoteSplicingToken ->
                 macroSymbol = UnquoteSplicingSymbol
             is EOFToken ->
-                return null
+                return Pair(null, location)
             is CparenToken ->
                 throw SyntaxError("unexpected closing parenthesis", this)
             is PeriodToken ->
@@ -625,9 +627,9 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         }
 
         // arrives here only if we actually had a macroSymbol
-        val macroArg = read() ?:
+        val macroArg = read().first ?:
             throw ParseError("unexpected EOF after $macroSymbol", this)
-        return LCons(macroSymbol, LCons(macroArg, Nil))
+        return Pair(LCons(macroSymbol, LCons(macroArg, Nil)), location)
     }
             
 
@@ -667,7 +669,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     throw ParseError("unexpected EOF in vector", this)
                 else -> {
                     unreadToken(token)
-                    val obj = read() ?:
+                    val obj = read().first ?:
                         throw ParseError("EOF when expecting vector element",
                                          this)
                     lc.add(obj)
@@ -688,7 +690,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                         throw SyntaxError("unexpected dot at beginning of list",
                                           token)
                     }
-                    val elem = read() ?:
+                    val elem = read().first ?:
                         throw ParseError("EOF reading list element after `.`",
                                          this)
                     lc.lastcdr(elem)
@@ -707,7 +709,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     throw ParseError("EOF in list", this)
                 else -> {
                     unreadToken(token)
-                    val elem = read() ?:
+                    val elem = read().first ?:
                         throw ParseError("EOF reading list element", this)
                     lc.add(elem)
                 }

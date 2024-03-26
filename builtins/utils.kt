@@ -64,6 +64,5 @@ Example:
       (lc 'hear "no" 'evil)
       (lc))
     => (see 0 evil hear "no" evil)
-"""
-    )
+""", lastTopLevelLocation)
 }

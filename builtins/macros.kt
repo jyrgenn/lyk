@@ -28,7 +28,8 @@ fun bi_defmacro(args: LObject, kwArgs: Map<LSymbol, LObject>
     var (name, rest1) = args
     var (params, bodyForms) = rest1
     val sym = symbolArg(name, "defmacro name")
-    sym.setFunction(makeMacro(params, bodyForms, sym))
+    sym.setFunction(makeMacro(params, bodyForms, sym,
+                              location = lastTopLevelLocation))
     return name
 }
 

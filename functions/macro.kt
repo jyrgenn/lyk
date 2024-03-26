@@ -3,15 +3,16 @@
 package org.w21.lyk
 
 class LMacro(
-    macroName: LSymbol?,                      // present if non anonymous
-    stdPars: List<LSymbol>,                   // normal parameters
+    macroName: LSymbol?,                   // present if non anonymous
+    stdPars: List<LSymbol>,                // normal parameters
     keyPars: Map<LSymbol, LObject>,        // &key name => default
     optPars: List<Pair<LSymbol, LObject>>, // &optional name, default
-    restPar: LSymbol?,                        // &rest parameters
-    val bodyForms: LObject,                   //
-    docBody: LString,                     // docstring sans signature
+    restPar: LSymbol?,                     // &rest parameters
+    val bodyForms: LObject,                //
+    docBody: LString,                      // docstring sans signature
+    location: LString,                     // where defined
 ): LFunction(macroName, stdPars, keyPars, optPars, restPar, null, true,
-             docBody)
+             docBody, location)
 {
     override val typeDesc = "macro"
     
@@ -116,7 +117,9 @@ fun macroExpandForm(form: LObject): LObject {
 
 fun makeMacro(params: LObject,
               body: LObject,
-              name: LSymbol? = null): LMacro {
-    return makeLambdaOrMacro(params, body, currentEnv, name, isMacro = true)
+              name: LSymbol? = null,
+              location: String): LMacro {
+    return makeLambdaOrMacro(params, body, currentEnv, name, isMacro = true,
+                             location = location)
         as LMacro
 }

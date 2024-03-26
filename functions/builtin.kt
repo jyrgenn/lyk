@@ -21,6 +21,7 @@ class LBuiltin(
     retvalS: String?,
     isSpecial: Boolean = false,
     docBodyS: String,
+    location: String,
 ): LFunction(
        intern(nameS),
        arrayIntern(stdParsS),
@@ -30,6 +31,7 @@ class LBuiltin(
        maybeIntern(retvalS),
        isSpecial,
        makeString(docBodyS.trim()),
+       makeString(location),
    ) {
     override val typeDesc =
         if (isSpecial) "special form" else "builtin function"

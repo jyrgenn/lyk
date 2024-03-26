@@ -138,11 +138,11 @@ fun eval(form: LObject): LObject {
         }
         return value
     } catch (err: LispError) {
-        err.pushFrame(evalLevel, form, currentEnv)
+        err.pushFrame(evalLevel, form, currentEnv, lastTopLevelLocation)
         throw err
     } catch (exc: Exception) {
         val err = makeLispError(exc)
-        err.pushFrame(evalLevel, form, currentEnv)
+        err.pushFrame(evalLevel, form, currentEnv, lastTopLevelLocation)
         throw err
     } finally {
         for (defer in deferList) {

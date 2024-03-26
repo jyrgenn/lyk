@@ -14,6 +14,7 @@ abstract class LFunction(
     val retval: LSymbol?,                      // return value description
     val isSpecial: Boolean,                    // used by Builtins only
     val docBody: LString,                      // docstring sans signature
+    val location: LString,                     // of top-level defining expr
 ): LObject() {
     val name: LSymbol
     val has_name: Boolean
@@ -22,8 +23,9 @@ abstract class LFunction(
     init {
         has_name = functionName != null
         name = functionName ?: anonLambdaSym
-        if (has_name) {
-            (functionName as LSymbol).function = this
+        if (functionName != null) {
+            functionName.function = this
+            functionName.putprop(definedInPropSym, location)
         }
     }
 
@@ -69,10 +71,20 @@ abstract class LFunction(
     }
 
     fun documentation(): String {
-        if (docBody.value == "") {
-            return docHeader() + "\n"
+        val sb = StrBuf()
+        sb.add(docHeader())
+        sb.add("\n")
+        if (docBody.value != "") {
+            sb.add(docBody.value)
+            sb.add("\n")
         }
-        return docHeader() + "\n" + docBody.value + "\n"        
+        val defined_in = name.getprop(definedInPropSym)
+        if (defined_in is LString) {
+            sb.add("defined in ")
+            sb.add(defined_in.value)
+            sb.add("\n")
+        }
+        return sb.toString()
     }
 
     fun myKeywordArg(maybeSym: LObject): LSymbol? {
@@ -237,7 +249,8 @@ fun makeLambdaOrMacro(params: LObject,
                       body: LObject,
                       env: LEnv = currentEnv,
                       name: LSymbol? = null,
-                      isMacro: Boolean = false): LFunction
+                      isMacro: Boolean = false,
+                      location: String): LFunction
 {
     // sort params into the various params arrays
     var argptr = params
@@ -353,9 +366,9 @@ fun makeLambdaOrMacro(params: LObject,
     }
     if (isMacro) {
         return LMacro(name, stdPars, keyPars, optPars, rest_sym,
-                     bodyForms, docBody)
+                      bodyForms, docBody, makeString(location))
     } else {
         return Lambda(name, stdPars, keyPars, optPars, rest_sym,
-                      bodyForms, docBody, env)
+                      bodyForms, docBody, env, makeString(location))
     }
 }
