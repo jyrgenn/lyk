@@ -356,7 +356,7 @@ fun bi_open(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         if (return_nil) {
             return Nil
         }
-        throw IOError("error opening `$fname`", e)
+        throw IOError(e)
     }
     return Nil
 }
@@ -379,6 +379,6 @@ fun bi_close(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     try {
         return bool2ob(stream.close())
     } catch (e: Exception) {
-        throw IOError("closing $stream", e)
+        throw IOError(e)
     }
 }

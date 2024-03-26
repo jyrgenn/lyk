@@ -45,7 +45,7 @@ open class FileReaderStream(path: String, name: String? = null,
             }
             return c.toChar()
         } catch (e: Exception) {
-            throw IOError("reading $this", e)
+            throw IOError(e)
         }
     }
     
@@ -78,7 +78,7 @@ open class FileWriterStream(path: String,
                 fileWriter.flush()
             }
         } catch (e: Exception) {
-            throw IOError("writing $this", e)
+            throw IOError(e)
         }
     }
     override fun write(s: String) {
@@ -88,7 +88,7 @@ open class FileWriterStream(path: String,
                 fileWriter.flush()
             }
         } catch (e: Exception) {
-            throw IOError("writing $this", e)
+            throw IOError(e)
         }
     }
 
@@ -96,7 +96,7 @@ open class FileWriterStream(path: String,
         try {
             fileWriter.flush()
         } catch (e: Exception) {
-            throw IOError("flushing $this", e)
+            throw IOError(e)
         }
     }
 
@@ -105,7 +105,7 @@ open class FileWriterStream(path: String,
             fileWriter.close()
             return super.close()
         } catch (e: Exception) {
-            throw IOError("closing $this", e)
+            throw IOError(e)
         }
     }
 }

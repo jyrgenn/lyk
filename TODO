@@ -28,9 +28,6 @@ Weights: Need, Want, Nice, TBD (to be decided)
   - make desc => toString() and toString() => value? makes a lot of
     casual object printing easier or rather more descriptive. TBD.
 
-  - Some file not found handling; currently it bombs with a Java
-    exception. Need, definitely.
-
   - clean up the conditionals: have cond as builtin; if, when,
     unless as macros. Should not have a perceptible performance
     impact. Want, but only after the regtests.
@@ -39,6 +36,9 @@ Weights: Need, Want, Nice, TBD (to be decided)
     longer needed. A tad difficult as the Reader does not read
     lines; would need line buffering in the stream. TBD.
 
+
+  + Some file not found handling; currently it bombs with a Java
+    exception. Need, definitely.
 
   + builtin (exit &optional (exit-status 0)). Need.
 

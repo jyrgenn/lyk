@@ -1,5 +1,6 @@
 package org.w21.lyk
 
+import java.io.IOException
 
 class ErrorObject(val error: LispError): LObject() {
     override fun toString() = error.toString()
@@ -17,6 +18,10 @@ open class LispError(message: String): Exception(message) {
         evalStack.add(LVector(makeNumber(level), form, env))
     }
 }
+
+open class IOError(err: Exception):
+    LispError("${err::class.simpleName}: ${err.message}")
+
 
 open class InternalError(message: String): LispError(message)
 
@@ -74,10 +79,6 @@ class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
     constructor(message: String) : this(message, null) {}
 }
 
-class IOError(message: String, val e: Exception): LispError(message) {
-    override fun toString(): String = "${super.toString()}: ${e.message}"
-}
-
 class CallError(message: String): LispError(message)
 
 class ArgumentError(message: String): LispError(message)
@@ -107,3 +108,11 @@ class AssertionFail(form: LObject, val moreInfo: LObject):
     override fun toString(): String =
         "${super.toString()}" + if (moreInfo === Nil) "" else ", $moreInfo"
 }
+
+// make some LispError from any Java exception
+fun makeLispError(exc: Exception) =
+    when (exc) {
+        is IOException -> IOError(exc)
+        else -> JavaError(exc)
+    }
+

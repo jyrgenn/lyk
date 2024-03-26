@@ -140,8 +140,8 @@ fun eval(form: LObject): LObject {
     } catch (err: LispError) {
         err.pushFrame(evalLevel, form, currentEnv)
         throw err
-    } catch (ex: Exception) {
-        val err = JavaError(ex)
+    } catch (exc: Exception) {
+        val err = makeLispError(exc)
         err.pushFrame(evalLevel, form, currentEnv)
         throw err
     } finally {
