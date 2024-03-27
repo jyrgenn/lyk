@@ -1443,9 +1443,9 @@ fun bi_read(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// std     bindings
 /// key     
 /// opt     
-/// rest    
+/// rest    bodyforms
 /// ret     value
-/// special no
+/// special yes
 /// doc {
 /// Bind one or more functions to symbols and evaluate `bodyforms`.
 /// The `bindings` are of the form (symbol (lambda-list) . bodyforms).

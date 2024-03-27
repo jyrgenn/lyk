@@ -16,9 +16,8 @@
                        ((stringp seq) #'string)
                        (t (error "sort not implemented for type %s"
                                  (type-of seq))))))
-    (flet ((helper
-             (lambda (seq)
-              (if (< (length seq) 2)
+    (flet ((helper (seq)
+             (if (< (length seq) 2)
                   (elements seq)
                 (let ((pivot (elt seq 0))
                       l1 l2)
@@ -27,7 +26,7 @@
                                         (helper l2)) 1)
                          (if (pred el pivot)
                              (push el l1)
-                           (push el l2))))))))
+                           (push el l2)))))))
       (apply combine (helper seq)))))
 
 (defun find (item sequence &optional from-end test start end)
