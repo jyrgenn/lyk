@@ -10,7 +10,7 @@ class LMacro(
     restPar: LSymbol?,                     // &rest parameters
     val bodyForms: LObject,                //
     docBody: LString,                      // docstring sans signature
-    location: LString,                     // where defined
+    location: LString?,                    // where defined
 ): LFunction(macroName, stdPars, keyPars, optPars, restPar, null, true,
              docBody, location)
 {
@@ -118,7 +118,7 @@ fun macroExpandForm(form: LObject): LObject {
 fun makeMacro(params: LObject,
               body: LObject,
               name: LSymbol? = null,
-              location: String): LMacro {
+              location: String?): LMacro {
     return makeLambdaOrMacro(params, body, currentEnv, name, isMacro = true,
                              location = location)
         as LMacro

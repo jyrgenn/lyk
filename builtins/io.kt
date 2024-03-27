@@ -2,6 +2,9 @@
 
 package org.w21.lyk
 
+import java.io.File
+
+
 val directionKeyw = intern(":direction")
 val inputKeyw = intern(":input")
 val outputKeyw = intern(":output")
@@ -381,4 +384,32 @@ fun bi_close(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     } catch (e: Exception) {
         throw IOError(e)
     }
+}
+
+/// builtin directory-entries
+/// fun     bi_directory_entries
+/// std     pathname
+/// key     "pattern" to Nil
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return a list of the entries in the directory `pathname`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_directory_entries(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    val pathname = arg1(args)
+    val pattern = kwArgs[intern(":pattern")] ?: Nil
+    val lc = ListCollector()
+    val regexp = if (pattern !== Nil) glob2regexp(pattern.toString()) else null
+
+    for (entry in File(stringArg(pathname, "directory name")).list()) {
+        if (regexp == null || regexp.matches(entry)) {
+            lc.add(makeString(entry))
+        }
+    }
+    return lc.list
 }

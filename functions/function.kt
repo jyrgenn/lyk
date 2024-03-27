@@ -14,7 +14,7 @@ abstract class LFunction(
     val retval: LSymbol?,                      // return value description
     val isSpecial: Boolean,                    // used by Builtins only
     val docBody: LString,                      // docstring sans signature
-    val location: LString,                     // of top-level defining expr
+    val location: LString?,                    // of top-level defining expr
 ): LObject() {
     val name: LSymbol
     val has_name: Boolean
@@ -23,7 +23,7 @@ abstract class LFunction(
     init {
         has_name = functionName != null
         name = functionName ?: anonLambdaSym
-        if (functionName != null) {
+        if (functionName != null && location != null) {
             functionName.function = this
             functionName.putprop(definedInPropSym, location)
         }
@@ -250,7 +250,7 @@ fun makeLambdaOrMacro(params: LObject,
                       env: LEnv = currentEnv,
                       name: LSymbol? = null,
                       isMacro: Boolean = false,
-                      location: String): LFunction
+                      location: String? = null): LFunction
 {
     // sort params into the various params arrays
     var argptr = params
@@ -364,11 +364,15 @@ fun makeLambdaOrMacro(params: LObject,
     } else {
         bodyForms = body
     }
+    val locationLString = if (location != null)
+        makeString(location)
+    else
+        null
     if (isMacro) {
         return LMacro(name, stdPars, keyPars, optPars, rest_sym,
-                      bodyForms, docBody, makeString(location))
+                      bodyForms, docBody, locationLString)
     } else {
         return Lambda(name, stdPars, keyPars, optPars, rest_sym,
-                      bodyForms, docBody, env, makeString(location))
+                      bodyForms, docBody, env, locationLString)
     }
 }

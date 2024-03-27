@@ -1465,8 +1465,7 @@ fun bi_flet(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             val (params, bodyforms) = listArg(funcrest,
                                               "flet function $symbol")
             symbol.setFunction(makeLambdaOrMacro(
-                                   params, bodyforms,
-                                   location = lastTopLevelLocation))
+                                   params, bodyforms))
         }
         return evalProgn(body)
     } finally {

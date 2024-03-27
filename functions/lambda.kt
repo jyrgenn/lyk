@@ -12,7 +12,7 @@ open class Lambda(                         // Macro will inherit this
     val bodyForms: LObject,                //
     docBody: LString,                      // docstring sans signature
     val environment: LEnv,                 // environment of function
-    location: LString,                     // where defined
+    location: LString?,                    // where defined
 ): LFunction(functionName, stdPars, keyPars, optPars, restPar,
              intern("value"), false, docBody, location)
 {

@@ -4,10 +4,7 @@
 
 Weights: Need, Want, Nice, TBD (to be decided)
 
-  - BUG: defined-in properties are set in flet, which they
-    shouldn't.
-
-  - listdir or whatever. Need (regtests).
+  - listdir or whatever (directory-files pathname). Need (regtests).
 
     Kotlin has Path.listDirectoryEntries(), but what is a Path? It
     is an Interface, but File does not implement it, obviously, nor
@@ -44,4 +41,7 @@ Weights: Need, Want, Nice, TBD (to be decided)
     exception. Need, definitely.
 
   + builtin (exit &optional (exit-status 0)). Need.
+
+  + BUG: defined-in properties are set in flet, which they
+    shouldn't.
 
