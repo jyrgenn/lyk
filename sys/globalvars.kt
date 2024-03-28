@@ -90,6 +90,9 @@ var debugOn = false             // set iff any debug topic is "on"
 val commandLineArgs = LSymbol.makeGlobal("*command-line-args*")
 val lastError = LSymbol.makeGlobal("*last-error*")
 val currentLoadFile = LSymbol.makeGlobal("*current-load-file*")
+val terminalWidth = LSymbol.makeGlobal("*terminal-width*")
+val terminalHeight = LSymbol.makeGlobal("*terminal-height*")
+
 
 // set of features provided
 val featureSet = mutableSetOf<LSymbol>()
@@ -102,3 +105,11 @@ var abortEval: Boolean = false
 var stepEval: Boolean = false
 var evalStack = ListCollector()
 
+fun init_Variables() {
+    val columns = System.getenv("COLUMNS")
+    val width = Reader(StringReaderStream(columns ?: "")).read().first ?: Nil
+    terminalWidth.setValue(width)
+    val lines = System.getenv("LINES")
+    val height = Reader(StringReaderStream(lines ?: "")).read().first ?: Nil
+    terminalHeight.setValue(height)
+}

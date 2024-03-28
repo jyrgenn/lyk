@@ -127,6 +127,7 @@ fun main(args: Array<String>) {
     try {
         info(buildtag())
         init_Builtins()
+	init_Variables()
         load_string(preload_code, "*preload-code*")
         
         for (file in load_files) {
