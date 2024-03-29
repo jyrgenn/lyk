@@ -52,8 +52,9 @@ generated/init-builtins.kt: Makefile generated scripts/gen-bi-init $(BUILTINSRC)
 	    ln -s ../scripts/Subdirmakefile generated/Makefile
 	scripts/gen-bi-init $(BUILTINSRC) > generated/init-builtins.kt
 
-new: $(SRCS) functions/function.kt
-	$(COMP) $(SRCS)
+new: remove-buildtag build
+remove-buildtag:
+	rm generated/buildtag.kt
 
 native: $(SRCS) Makefile
 	$(NATIVECOMP) $(SRCS) -o lykn

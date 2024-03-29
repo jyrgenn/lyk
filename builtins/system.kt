@@ -575,11 +575,7 @@ fun bi_env_vars(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         envArg(arg, "env-vars")
     }
 
-    return collectedList {
-        for (key in environment.map.keys) {
-            it.add(key)
-        }
-    }
+    return list2lisp(environment.map.keys)
 }
 
 // EOF
