@@ -36,7 +36,7 @@ build: lyk.jar
 
 lyk.jar: $(ALLSRCS) Makefile
 	$(COMP) $(ALLSRCS) -include-runtime -d lyk.jar
-	java -jar lyk.jar -qe '(build-info t)'
+	./scripts/lyk -qe '(build-info t)'
 
 generated:
 	mkdir -p generated

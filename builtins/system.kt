@@ -484,4 +484,44 @@ fun bi_exit(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return Nil                          // yeah, right
 }
 
+/// builtin getenv
+/// fun     bi_getenv
+/// std     variable
+/// key     
+/// opt     
+/// rest    
+/// ret     string-value
+/// special no
+/// doc {
+/// Return the value of `variable` in the process environment.
+/// If it is not defined, return an empty string.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_getenv(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeString(System.getenv(arg1(args).toString()) ?: "")
+}
+
+/// builtin process-env
+/// fun     bi_process_env
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     table
+/// special no
+/// doc {
+/// Return a table with all process environment variables and their values.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_process_env(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val table = LTable()
+
+    for ((key, value) in System.getenv()) {
+        table.put(makeString(key), makeString(value))
+    }
+    return table
+}
+
 // EOF
