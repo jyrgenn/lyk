@@ -4,6 +4,8 @@
 
 Weights: Need, Want, Nice, TBD (to be decided), Bug
 
+  - read-line. Need, urgently.
+
   - Get the regtests going. Implies a number of things to implement
     so I can run the lingo regtest code. Or write it anew? Huh, not
     keen on that, actually. Need.
@@ -18,6 +20,10 @@ Weights: Need, Want, Nice, TBD (to be decided), Bug
   - For startup/preload problems: debug reader-lines? Maybe no
     longer needed. A tad difficult as the Reader does not read
     lines; would need line buffering in the stream. TBD.
+
+  - destructuring bind in (let ) like I had it in lingo; that is not
+    only very convenient, but I guess also a small performance gain.
+    Want.
 
 
   + dolist, dotimes without with-gensyms. Need (regtests).

@@ -130,7 +130,9 @@ Instead of a pathname, an already open input port can be used as well,
 but that port will be closed afterwards.
 If &optional CHOMP is non-nil, the newline characters are removed from
 the lines."
-  (let (((line-symbol pathname chomp) declarations)
+  (let ((line-symbol (car declarations))
+        (pathname (cadr declarations))
+        (chomp (caddr declarations))
         (stream-symbol (gensym)))
     `(with-open-file (,stream-symbol ,pathname)
        (let (,line-symbol)

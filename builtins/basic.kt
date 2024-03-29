@@ -1209,7 +1209,7 @@ fun bi_until(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return Nil
 }
 
-/// builtin unwind_protect
+/// builtin unwind-protect
 /// fun     bi_unwind_protect
 /// std     bodyform
 /// key     
