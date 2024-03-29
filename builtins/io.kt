@@ -207,8 +207,9 @@ fun bi_warning(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// special no
 /// doc {
 /// Load specified file; return t if the contents was evaluated without error.
-/// If the `filename` does not contain a slash, try to find the load file
-/// in the directories named in *load-path*.
+/// If the filename contains a slash, it is used exactly as given. Otherwise,
+/// try to find the load file in the directories named in *load-path*. Try the
+/// filename as given, then with a ".l" suffix, then with  a ".lisp" suffix.
 ///
 /// If keyword verbose is nil (the default is true), do not print an
 /// informational message after loading.
