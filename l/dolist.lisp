@@ -2,6 +2,7 @@
 ;; lingo has a dolist builtin, but we could do this with a macro as well
 
 (defmacro dolist (cvars &rest bodyforms)
+  "(dolist (var listform &optional resultform) &rest bodyforms)"
   (let ((var (car cvars))
         (listform (cadr cvars))
         (resultform (caddr cvars))

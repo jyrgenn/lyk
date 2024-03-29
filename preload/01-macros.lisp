@@ -17,8 +17,20 @@
 See (doc #//) for details."
   `((regexp ,regexp) ,string ,limit))
 
+(defmacro dolist (cvars &rest bodyforms)
+  "(dolist (var listform &optional resultform) &rest bodyforms)"
+  (let ((var (car cvars))
+        (listform (cadr cvars))
+        (resultform (caddr cvars))
+        (listsym (gensym)))
+    `(let ((,listsym ,listform))
+       (while ,listsym
+         (let ((,var (pop ,listsym)))
+           ,@bodyforms))
+       ,resultform)))
+
 (defmacro dotimes (countargs &rest bodyforms)
-  "(dotimes (var count-form [result-form]) bodyforms...)
+  "(dotimes (var count-form &optional result-form) &rest bodyforms)
 dotimes evaluates count-form, which should produce an integer. If
 count-form is zero or negative, the body is not executed. dotimes then
 executes the body once for each integer from 0 up to but not including
@@ -29,7 +41,7 @@ body was executed. [CLHS]"
   (let ((var (car countargs))
         (endval (cadr countargs))
         (resultform (caddr countargs)))
-    (with-gensyms (end)
+    (let ((end (gensym)))
       `(let ((,var 0)
              (,end ,endval))
          (while (< ,var ,end)
@@ -38,7 +50,7 @@ body was executed. [CLHS]"
          ,resultform))))
 
 (defmacro dotimes1 (countargs &rest bodyforms)
-  "(dotimes1 (var count-form [result-form]) bodyforms...)
+  "(dotimes1 (var count-form &optional result-form) &rest bodyforms)
 dotimes evaluates count-form, which should produce an integer. If
 count-form is zero or negative, the body is not executed. dotimes then
 executes the body once for each integer from 1 up to including the
@@ -49,7 +61,7 @@ was executed."
   (let ((var (car countargs))
         (endval (cadr countargs))
         (resultform (caddr countargs)))
-    (with-gensyms (end)
+    (let ((end (gensym)))
       `(let ((,var 1)
              (,end ,endval))
          (while (<= ,var ,end)

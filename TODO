@@ -8,8 +8,6 @@ Weights: Need, Want, Nice, TBD (to be decided), Bug
     so I can run the lingo regtest code. Or write it anew? Huh, not
     keen on that, actually. Need.
 
-  - dolist, dotimes without with-gensyms. Need (regtests).
-
   - make desc => toString() and toString() => value? makes a lot of
     casual object printing easier or rather more descriptive. TBD.
 
@@ -21,6 +19,8 @@ Weights: Need, Want, Nice, TBD (to be decided), Bug
     longer needed. A tad difficult as the Reader does not read
     lines; would need line buffering in the stream. TBD.
 
+
+  + dolist, dotimes without with-gensyms. Need (regtests).
 
   + Environment functions env-table, env-vars. Need.
 
