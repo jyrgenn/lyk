@@ -256,7 +256,7 @@ fun bi_apropos(args: LObject, kwArgs: Map<LSymbol, LObject>
         if (sym.function != null) {
             val special = sym.function?.isSpecial ?: false
             func = when (sym.function) {
-                // is Macro -> "macro"
+                is LMacro -> "macro"
                 is Lambda -> "lambda"
                 is LBuiltin -> if (special) {"special form"} else {"builtin"}
                 else -> "ewot?!"
