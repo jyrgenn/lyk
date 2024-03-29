@@ -136,7 +136,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
     (setf verbose t))
 
   (let ((files (or *command-line-args*
-                   (directory (string-concat testdir "/" "[0-9]*.lisp")))))
+                   (directory-entries testdir :pattern "[0-9]*.lisp"))))
     (when verbose
       (format t "load files: %s\n" files))
     (dolist (f files)

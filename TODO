@@ -10,8 +10,6 @@ Weights: Need, Want, Nice, TBD (to be decided), Bug
 
   - dolist, dotimes without with-gensyms. Need (regtests).
 
-  - Environment functions env-table, env-vars. Need.
-
   - make desc => toString() and toString() => value? makes a lot of
     casual object printing easier or rather more descriptive. TBD.
 
@@ -23,6 +21,8 @@ Weights: Need, Want, Nice, TBD (to be decided), Bug
     longer needed. A tad difficult as the Reader does not read
     lines; would need line buffering in the stream. TBD.
 
+
+  + Environment functions env-table, env-vars. Need.
 
   + *process* environment functions getenv, setenv, process-env
     (returns a table). Need. => no setenv though; environment can be

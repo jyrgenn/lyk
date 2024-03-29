@@ -56,14 +56,14 @@ class CharBuf {
 class StrBuf() {
     val buf = mutableListOf<String>()
 
-    constructor(s: String) : this() {
-        buf.add(s)
+    constructor(vararg inits: Any) : this() {
+        for (s in inits) {
+            add(s)
+        }
     }
-    fun add(ch: Char) {
-        buf.add(ch.toString())
-    }
-    fun add(s: String) {
-        buf.add(s)
+
+    fun add(thing: Any) {
+        buf.add(thing.toString())
     }
     
     override fun toString(): String {

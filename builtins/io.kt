@@ -441,9 +441,17 @@ fun bi_directory_entries(args: LObject, kwArgs: Map<LSymbol, LObject>
     val pathname = arg1(args)
     val pattern = kwArgs[intern(":pattern")] ?: Nil
     val lc = ListCollector()
-    val regexp = if (pattern !== Nil) glob2regexp(pattern.toString()) else null
+    val regexp = if (pattern !== Nil) {
+        glob2regexp(pattern.toString())
+    } else {
+        null
+    }
 
-    for (entry in File(stringArg(pathname, "directory name")).list()) {
+    val file = File(stringArg(pathname, "directory name"))
+    if (!file.exists()) {
+        throw java.io.FileNotFoundException(file.path)
+    }
+    for (entry in file.list()) {
         if (regexp == null || regexp.matches(entry)) {
             lc.add(makeString(entry))
         }

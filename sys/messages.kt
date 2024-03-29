@@ -15,7 +15,7 @@ fun printErr(vararg things: Any) {
     stderr.println()
 }
 
-fun printErr(e: LispError) {
+fun printErr(e: Exception) {
     stderr.println(e.toString())
 }
 

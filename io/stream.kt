@@ -160,7 +160,7 @@ abstract class LStream(
     }
     
     open fun println(vararg things: Any, separator: String = " ") {
-        print(*things, separator)
+        print(*things, separator = separator)
         write(newLine)
     }
     

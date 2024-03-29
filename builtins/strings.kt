@@ -2,10 +2,10 @@
 
 package org.w21.lyk
 
-val stringSeparatorKey = intern(":sep")
+val stringSeparatorKey = intern("sep")
 val defaultStringSep = makeString(" ")
 
-fun string_from_list(items: LObject, sep: String): LObject {
+fun string_from_list(items: LObject, sep: String = ""): LObject {
     var strings = mutableListOf<String>()
     for (item in items) {
         strings.add(item.toString())
@@ -16,20 +16,18 @@ fun string_from_list(items: LObject, sep: String): LObject {
 /// builtin string
 /// fun     bi_string
 /// std     
-/// key     ":sep" to defaultStringSep
+/// key
 /// opt     
 /// rest    items
 /// ret     string
 /// special no
 /// doc {
-/// Make a string from all arguments and return it. Keyword :sep specifies
-/// a separator string (default: " ").
+/// Make a string from all arguments and return it.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_string(args: LObject, kwArgs: Map<LSymbol , LObject>): LObject {
-    val sep = kwArgs[stringSeparatorKey].toString()
-    return string_from_list(args, sep)
+    return string_from_list(args)
 }
 
 /// builtin join

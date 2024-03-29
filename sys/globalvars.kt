@@ -96,6 +96,7 @@ val loadPrintSym = LSymbol.makeGlobal("*load-print*")
 val loadPathSym = LSymbol.makeGlobal("*load-path*")
 val loadPathnameSym = LSymbol.makeGlobal("*load-pathname*")
 
+val evalStackAbbrLines = LSymbol.makeGlobal("*eval-stack-abbr-lines*", T)
 
 // set of features provided
 val featureSet = mutableSetOf<LSymbol>()
@@ -108,6 +109,13 @@ var abortEval: Boolean = false
 var stepEval: Boolean = false
 var evalStack = ListCollector()
 
+fun getTermWidth(): Int {
+    val w = terminalWidth.getValueOptional()
+    if (w is LNumber) {
+        return w.toInt()
+    }
+    return 80
+}
 
 fun init_Variables() {
     val columns = System.getenv("COLUMNS")

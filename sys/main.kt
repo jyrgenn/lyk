@@ -168,7 +168,15 @@ fun main(args: Array<String>) {
         val file = (args_lc.list.car as LString).value
         commandLineArgs.setValue(args_lc.list.cdr)
 
-        load_file(file)
+        try {
+            load_file(file)
+        } catch (e: Exception) {
+            if (Options.print_estack) {
+                e.printStackTrace()
+            } else {
+                printErr(e)
+            }
+        }
     } else {
         repl(Reader(stdin), "> ")
     }
