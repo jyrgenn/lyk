@@ -23,9 +23,13 @@ abstract class LFunction(
     init {
         has_name = functionName != null
         name = functionName ?: anonLambdaSym
-        if (functionName != null && location != null) {
+        if (functionName != null) {
             functionName.function = this
-            functionName.putprop(definedInPropSym, location)
+            if (location != null) {
+                val parts = location.value.split(":")
+                val newloc = parts[0] + ":" + parts[1]
+                functionName.putprop(definedInPropSym, makeString(newloc))
+            }
         }
     }
 

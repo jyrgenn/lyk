@@ -207,11 +207,16 @@ fun bi_warning(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// special no
 /// doc {
 /// Load specified file; return t if the contents was evaluated without error.
+/// If the `filename` does not contain a slash, try to find the load file
+/// in the directories named in *load-path*.
+///
 /// If keyword verbose is nil (the default is true), do not print an
 /// informational message after loading.
 /// If keyword `error` is nil (the default is true), do not raise an error for
 /// an unfound file, but return nil instead.
-/// If 
+/// If keyword `print` is true, (the default is nil), the load progress is
+/// shown by printing the values of the top-level forms evaluated. Otherwise,
+/// the value of the variable *load-print* is used to determine printing.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")

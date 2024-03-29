@@ -25,7 +25,7 @@ fun load_file(dir: String, fname: String, throw_error: Boolean = true,
 ): Pair<LObject, Boolean> {
     try {
         var file_stream = FileReaderStream(dir, fname)
-        return Pair(load_stream(file_stream, fname, throw_error,
+        return Pair(load_stream(file_stream, dir + "/" + fname, throw_error,
                                 quiet, print),
                     true)
     } catch (e: java.io.FileNotFoundException) {
