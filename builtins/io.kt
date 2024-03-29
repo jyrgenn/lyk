@@ -17,6 +17,7 @@ val errorKeyw = intern(":error")
 val if_does_not_existKeyw = intern(":if-does-not-exist")
 val createKeyw = intern(":create")
 val sepKeyw = intern(":sep")
+val printKeyw = intern(":print")
 
 
 /// builtin println
@@ -199,16 +200,18 @@ fun bi_warning(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// builtin load
 /// fun     bi_load
 /// std     filename
-/// key     "verbose" to T, "error" to T
+/// key     "verbose" to T, "print" to Nil, "error" to T
 /// opt     
 /// rest    
 /// ret     t/nil
 /// special no
 /// doc {
 /// Load specified file; return t if the contents was evaluated without error.
-/// If keyword ERROR is nil (the default is true), do not raise an error for
-/// an unfound file. If keyword verbose is nil (the default is true), do not
-/// print an informational message after loading.
+/// If keyword verbose is nil (the default is true), do not print an
+/// informational message after loading.
+/// If keyword `error` is nil (the default is true), do not raise an error for
+/// an unfound file, but return nil instead.
+/// If 
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
@@ -216,8 +219,36 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val fname = arg1(args).toString()
     val verbose = kwArgs[verboseSym] !== Nil
     val throw_error = ob2bool(kwArgs[errorSym] ?: T)
-    
-    return load_file(fname, throw_error, !verbose)
+    val suffixes = listOf("", ".l", ".lisp")
+    val loadpath = loadPathSym.getValueOptional() ?: Nil
+    val print = ob2bool(kwArgs[printKeyw] ?: Nil)
+        || ob2bool(loadPrintSym.getValueOptional() ?: Nil)
+
+    fun trySuffixes(dir: String, fname: String): Pair<LObject, Boolean> {
+        for (suffix in suffixes) {
+            val (result, found) = load_file(dir, fname + suffix,
+                                            throw_error, !verbose,
+                                            print)
+            if (found) {
+                return Pair(result, true)
+            }
+        }
+        return Pair(Nil, false)
+    }
+
+    if (fname.contains("/")) {
+        val (result, found) = load_file(fname, throw_error, !verbose, print)
+        return if (found) result else Nil
+    }
+
+    // no slash in name, so try the load path
+    for (dir in loadpath) {
+        val (result, found) = trySuffixes(dir.toString(), fname)
+        if (found) {
+            return result
+        }
+    }
+    return Nil
 }
 
 /// builtin make-string-input-stream

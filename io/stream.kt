@@ -31,11 +31,19 @@ open class StringReaderStream(content: String, name: String? = ""):
     }
 }
 
-open class FileReaderStream(path: String, name: String? = null,
+open class FileReaderStream(file: File, name: String? = null,
                             error: Boolean = true):
-    LStream(input = true, path = path, name = name ?: path, error = error)
+    LStream(input = true, path = file.path, name = name ?: file.path,
+            error = error)
 {
-    val fileReader = File(path).bufferedReader()
+    constructor(pathname: String, name: String? = null, error: Boolean = true):
+        this(File(pathname), name = name ?: pathname, error = error)
+
+    constructor(dir: String, fname: String, name: String? = null,
+                error: Boolean = true):
+        this(File(dir, fname), name = name ?: fname, error = error)
+
+    val fileReader = file.bufferedReader()
 
     override fun read(): Char? {
         try {

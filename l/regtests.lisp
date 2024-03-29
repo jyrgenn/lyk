@@ -54,9 +54,9 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
   (let ((already-have-fname? (table-get test-name-table name)))
     (if already-have-fname?
         (progn (format t "WARN name %s:%s already seen in %s\n"
-                       *current-load-file* name already-have-fname?)
+                       *load-pathname* name already-have-fname?)
                (incf warnings))
-      (table-put test-name-table name *current-load-file*)))
+      (table-put test-name-table name *load-pathname*)))
   (let* ((result (errset (if (functionp expr)
                              (expr)     ;allow closures
                            (eval expr))
@@ -70,7 +70,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
                           "FAIL: %s\n calculated: %s\n   expected: %s\n"
                           name (princs result) (princs expect))))
                  (apply #'presult args)
-                 (push (cons *current-load-file* name) fails))))
+                 (push (cons *load-pathname* name) fails))))
     (incf ntests)
     (if (atom result)
         (progn (setf result *last-error*)
@@ -123,7 +123,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
 
 (defun done-testing ()
   "Mark a test file as done."
-  (presult "testing done in %s\n" *current-load-file*)
+  (presult "testing done in %s\n" *load-pathname*)
   (setf testing-done t))
 
 ;;;;;;;;;;;;;;;;;;; now let the games begin

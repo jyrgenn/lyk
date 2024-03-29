@@ -130,8 +130,8 @@ fun main(args: Array<String>) {
 	init_Variables()
         load_string(preload_code, "*preload-code*")
         
-        for (file in load_files) {
-            load_file(file)
+        for (fname in load_files) {
+            load_file(fname)
         }
     } catch (e: Exception) {
         errExit(e.toString())

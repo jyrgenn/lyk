@@ -3,7 +3,8 @@
 package org.w21.lyk
 
 
-fun repl(reader: Reader, prompt: String? = null): LispError? {
+fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
+): LispError? {
     // If we have a prompt, we assume this repl is interactive and print eval
     // results to stdout.
 
@@ -51,6 +52,9 @@ fun repl(reader: Reader, prompt: String? = null): LispError? {
             // Eval,
             val (perfdata, value) = measurePerfdataValue {
                 eval(macroExpandForm(expr))
+            }
+            if (print) {
+                println(value)
             }
 
             // Print,

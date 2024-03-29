@@ -114,7 +114,8 @@ fun eval(form: LObject): LObject {
             }
             debug(debugCallSym) {
                 val indent = mulString("| ", evalLevel)
-                "%3d: $indent$function $args".format(evalLevel - 1)
+                // println("==== ${evalLevel-1}: $indent;;;; $function;;;; $args")
+                "${"%3d".format(evalLevel - 1)}: $indent$function $args"
             }
             value = function.call(args)
             // debug(debugCallSym) {

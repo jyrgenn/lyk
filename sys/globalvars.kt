@@ -22,11 +22,12 @@ var gensymCounter = 4711
 //
 val theNonPrintingObject = intern("*the-non-printing-object*", true)
 
-var stdin = FileReaderStream(stdinPath, stdinName, error = true)
-var stdout = FileWriterStream(stdoutPath, stdoutName, flushln = true)
-var stderr = FileWriterStream(stderrPath, stderrName, flushch = true,
+val stdin = FileReaderStream(stdinPath, name = stdinName, error = true)
+val stdout = FileWriterStream(stdoutPath, name = stdoutName, flushln = true)
+val stderr = FileWriterStream(stderrPath, name = stderrName, flushch = true,
                               error = true)
-var console = FileWriterStream(consolePath, consoleName, flushch = true)
+
+var console = FileWriterStream(consolePath, name = consoleName, flushch = true)
 
 var debug_out = console
 
@@ -89,9 +90,11 @@ var debugOn = false             // set iff any debug topic is "on"
 
 val commandLineArgs = LSymbol.makeGlobal("*command-line-args*")
 val lastError = LSymbol.makeGlobal("*last-error*")
-val currentLoadFile = LSymbol.makeGlobal("*current-load-file*")
 val terminalWidth = LSymbol.makeGlobal("*terminal-width*")
 val terminalHeight = LSymbol.makeGlobal("*terminal-height*")
+val loadPrintSym = LSymbol.makeGlobal("*load-print*")
+val loadPathSym = LSymbol.makeGlobal("*load-path*")
+val loadPathnameSym = LSymbol.makeGlobal("*load-pathname*")
 
 
 // set of features provided
@@ -105,6 +108,7 @@ var abortEval: Boolean = false
 var stepEval: Boolean = false
 var evalStack = ListCollector()
 
+
 fun init_Variables() {
     val columns = System.getenv("COLUMNS")
     val width = Reader(StringReaderStream(columns ?: "")).read().first ?: Nil
@@ -112,4 +116,17 @@ fun init_Variables() {
     val lines = System.getenv("LINES")
     val height = Reader(StringReaderStream(lines ?: "")).read().first ?: Nil
     terminalHeight.setValue(height)
+
+    val lykpath = System.getenv("LYKPATH")?.split(":") ?: listOf(".")
+    val loadpath = collectedList {
+        for (dir in lykpath) {
+            it.add(makeString(dir.trimEnd('/') + "/l"))
+        }
+    }
+    loadPathSym.setValue(loadpath)
+
+    LSymbol.makeGlobal(stdinName, stdin)
+    LSymbol.makeGlobal(stdoutName, stdout)
+    LSymbol.makeGlobal(stderrName, stderr)
+    LSymbol.makeGlobal(consoleName, console)
 }

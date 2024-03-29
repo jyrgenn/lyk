@@ -3,27 +3,51 @@
 package org.w21.lyk
 
 
-fun load_file(fname: String, throw_error: Boolean = true,
-              quiet: Boolean = false): LObject {
-    var load_stream = FileReaderStream(fname)
-    return load_stream(load_stream, fname, throw_error, quiet)
+// return the result value of the load, and a Boolean if the file was actually
+// found
+fun load_file(pathname: String, throw_error: Boolean = true,
+              quiet: Boolean = false, print: Boolean = false
+): Pair<LObject, Boolean> {
+    try {
+        var file_stream = FileReaderStream(pathname)
+        return Pair(load_stream(file_stream, pathname,
+                                throw_error, quiet, print),
+                    true)
+    } catch (e: java.io.FileNotFoundException) {
+        return Pair(Nil, false)
+    }
+}
+
+// return the result value of the load, and a Boolean if the file was actually
+// found
+fun load_file(dir: String, fname: String, throw_error: Boolean = true,
+              quiet: Boolean = false, print: Boolean = false
+): Pair<LObject, Boolean> {
+    try {
+        var file_stream = FileReaderStream(dir, fname)
+        return Pair(load_stream(file_stream, fname, throw_error,
+                                quiet, print),
+                    true)
+    } catch (e: java.io.FileNotFoundException) {
+        return Pair(Nil, false)
+    }
 }
 
 fun load_string(code: String, name: String, throw_error: Boolean = true,
-                quiet: Boolean = false): LObject {
+                quiet: Boolean = false, print: Boolean = false): LObject {
     var load_stream = StringReaderStream(code)
-    return load_stream(load_stream, name, throw_error, quiet)
+    return load_stream(load_stream, name, throw_error, quiet, print)
 }
 
 fun load_stream(load_stream: LStream, name: String,
-         throw_error: Boolean = true, quiet: Boolean = false): LObject {
+                throw_error: Boolean, quiet: Boolean, print: Boolean): LObject {
     var success = Nil
     
-    withVariableAs(currentLoadFile, makeString(name)) {
+    withVariableAs(loadPathnameSym, makeString(name)) {
         try {
             var error: LispError? = null
             val perfdata = measurePerfdata {
-                error = repl(Reader(load_stream, name))
+                error = repl(Reader(load_stream, name), print = print)
             }
             if (error != null) {
                 if (throw_error) {
