@@ -227,7 +227,7 @@ fun var2key(sym: LSymbol): LSymbol {
 }
 
 fun itemList(args: LObject): LObject {
-    return collectedList() { lc ->
+    return collectedList { lc ->
         for (arg in args) {
             lc.add(arg)
         }

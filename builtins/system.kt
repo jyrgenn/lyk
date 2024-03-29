@@ -344,7 +344,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             entry("immutable", bool2ob(obj.immutable))
             entry("desc-name", obj.descName, false)
             entry("function", obj.function ?: Nil)
-            entry("props", collectedList() { c ->
+            entry("props", collectedList { c ->
                                for ((prop, value) in obj.props) {
                                    c.add(LCons(prop, value))
                                }
@@ -522,6 +522,64 @@ fun bi_process_env(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         table.put(makeString(key), makeString(value))
     }
     return table
+}
+
+/// builtin env-table
+/// fun     bi_env_table
+/// std     
+/// key     
+/// opt     environment
+/// rest    
+/// ret     table
+/// special no
+/// doc {
+/// Return a table with all variables and values in the current environment.
+/// Optionally, specify an environment.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_env_table(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val table = LTable()
+    val arg = arg1(args)
+    val environment = if (arg === Nil) {
+        currentEnv
+    } else{
+        envArg(arg, "env-table")
+    }
+
+    for ((key, value) in environment.map) {
+        table.put(key, value)
+    }
+    return table
+}
+
+/// builtin env-vars
+/// fun     bi_env_vars
+/// std     
+/// key     
+/// opt     environment
+/// rest    
+/// ret     var-list
+/// special no
+/// doc {
+/// Return a list with all variables in the current environment.
+/// Optionally, specify an environment.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_env_vars(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val arg = arg1(args)
+    val environment = if (arg === Nil) {
+        currentEnv
+    } else{
+        envArg(arg, "env-vars")
+    }
+
+    return collectedList {
+        for (key in environment.map.keys) {
+            it.add(key)
+        }
+    }
 }
 
 // EOF

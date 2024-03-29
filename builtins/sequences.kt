@@ -27,7 +27,7 @@ fun bi_elements(args: LObject, kwArgs: Map<LSymbol, LObject>
     if (seq is LSymbol) {
         throw ArgumentError("elements argument is not a sequence: $seq")
     }
-    return collectedList() {
+    return collectedList {
         for (elem in seq) {
             it.add(elem)
         }
