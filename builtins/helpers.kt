@@ -210,6 +210,16 @@ fun args3(list: LObject): Triple<LObject, LObject, LObject> {
     return Triple(a1, a2, arg1(rest2))
 }
 
+// Return the first four elements of list. This is not checked -- if the list
+// is not a cons or not long enough, return Nil for efficiency reasons. The
+// caller must know or not care.
+fun args4(list: LObject): Array<LObject> {
+    val (a1, rest1) = list
+    val (a2, rest2) = rest1
+    val (a3, rest3) = rest2
+    return arrayOf(a1, a2, a3, rest3.car)
+}
+
 
 fun key2var(sym: LSymbol): LSymbol {
     return intern(sym.name.substring(1))

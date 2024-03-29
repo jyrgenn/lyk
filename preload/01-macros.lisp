@@ -136,9 +136,7 @@ the lines."
         (stream-symbol (gensym)))
     `(with-open-file (,stream-symbol ,pathname)
        (let (,line-symbol)
-         (while (setq ,line-symbol (read-line ,stream-symbol nil))
-           ,(if chomp
-                `(setq ,line-symbol (string-right-trim "\n" ,line-symbol)))
+         (while (setq ,line-symbol (read-line ,stream-symbol nil nil ,chomp))
            ,@bodyforms)))))
 
 (defmacro debug-vars (&rest vars)

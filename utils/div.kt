@@ -70,6 +70,9 @@ class StrBuf() {
         return buf.joinToString(separator = "")
     }
 
+    val size: Int
+        get() = buf.size
+
     fun join(separator: String = " ",
              prefix: String = "",
              postfix: String = ""): String {

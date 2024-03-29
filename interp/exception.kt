@@ -93,7 +93,9 @@ class AbortEvalSignal(message: String): LispError(message)
 class ThrowSignal(val tag: LObject, val value: LObject):
     LispError("uncaught; tag $tag value $value")
 
-class EOFError(message: String): LispError(message)
+class EOFError(message: String): LispError(message) {
+    constructor(stream: LStream): this("on stream $stream")
+}
 
 class OtherError(message: String, val e: Exception): LispError(message) {
     override fun toString(): String = "${super.toString()}: $e"

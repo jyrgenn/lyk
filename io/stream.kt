@@ -144,6 +144,23 @@ abstract class LStream(
         write(ch.code)
     }
     
+    open fun readLine(trimNewline: Boolean): String? {
+        val sb = StrBuf()
+        while (true) {
+            val ch = read()
+            when (ch) {
+                newLine.toChar() -> {
+                    if (!trimNewline) {
+                        sb.add(ch)
+                    }
+                    return sb.toString()
+                }
+                null -> return if (sb.size > 0) sb.toString() else null
+                else -> sb.add(ch)
+            }
+        }
+    }
+
     open fun print(vararg things: Any, separator: String = " ") {
         val last = things.size - 1
         var n = 0

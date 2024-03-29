@@ -458,3 +458,37 @@ fun bi_directory_entries(args: LObject, kwArgs: Map<LSymbol, LObject>
     }
     return lc.list
 }
+
+/// builtin read-line
+/// fun     bi_read_line
+/// std     
+/// key     
+/// opt     input-stream, eof-error-p T, eof-value, trim-nl
+/// rest    
+/// ret     line
+/// special no
+/// doc {
+/// Read a line from *stdin* (or `input-stream`) and return it as a string.
+/// If `eof-error-p` is true (which is the default), raise an error on EOF.
+/// Otherwise, return `eof-value` instead.
+/// If `trim-nl` is true, trim a trailin newline character from the line.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_read_line(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (input_stream, eof_error_p, eof_value, trim_nl) = args4(args)
+
+    var stream = if (input_stream === Nil) {
+        stdin
+    } else {
+        streamArg(input_stream, "read-line input-stream")
+    }
+    val line = stream.readLine(ob2bool(trim_nl))
+    if (line == null) {
+        if (ob2bool(eof_error_p)) {
+            throw EOFError(stream)
+        }
+        return eof_value
+    }
+    return makeString(line)
+}
