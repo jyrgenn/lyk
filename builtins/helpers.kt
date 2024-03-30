@@ -264,3 +264,32 @@ fun withVariableAs(variable: LSymbol, value: LObject, closure: () -> Unit) {
         }
     }
 }
+
+fun basename(pathname: String): String {
+    if (pathname == "/" || pathname == "") {
+        return pathname
+    }
+    var s = pathname
+    while (s.endsWith("/")) {
+        s = s.substring(0, s.length -1)
+    }
+    val parts = s.split("/")
+    return parts[parts.size - 1]
+}
+
+fun dirname(pathname: String): String {
+    if (pathname == "/" || pathname == "") {
+        return pathname
+    }
+    var s = pathname
+    while (s.endsWith("/")) {
+        s = s.substring(0, s.length -1)
+    }
+    var absolute = s.startsWith("/")
+    val parts = s.split("/")
+    val result = parts.subList(0, parts.size - 1).joinToString("/")
+    if (absolute && !result.startsWith("/")) {
+        return "/"+ result
+    }
+    return result
+}

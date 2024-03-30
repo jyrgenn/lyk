@@ -1615,6 +1615,30 @@ fun bi_remprop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return sym.remProp(prop)
 }
 
+/// builtin reverse
+/// fun     bi_reverse
+/// std     list
+/// key     
+/// opt     
+/// rest    
+/// ret     list
+/// special no
+/// doc {
+/// Reverse `list` and return the result.
+/// The resulting list does not share structure with the argument list.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_reverse(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    var list = arg1(args)
+    var newlist: LObject = Nil
+
+    for (elem in list) {
+        newlist = LCons(elem, newlist)
+    }
+    return newlist
+}
+
 /// builtin nreverse
 /// fun     bi_nreverse
 /// std     list

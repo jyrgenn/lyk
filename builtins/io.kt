@@ -446,13 +446,14 @@ fun bi_directory_entries(args: LObject, kwArgs: Map<LSymbol, LObject>
     } else {
         null
     }
+    println("path $pathname, pattern = $pattern, regexp = $regexp")
 
     val file = File(stringArg(pathname, "directory name"))
     if (!file.exists()) {
         throw java.io.FileNotFoundException(file.path)
     }
     for (entry in file.list()) {
-        if (regexp == null || regexp.matches(entry)) {
+        if (regexp == null || regexp.matches(basename(entry))) {
             lc.add(makeString(entry))
         }
     }
@@ -492,3 +493,40 @@ fun bi_read_line(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     }
     return makeString(line)
 }
+
+/// builtin basename
+/// fun     bi_basename
+/// std     pathname
+/// key     
+/// opt     
+/// rest    
+/// ret     file-basename
+/// special no
+/// doc {
+/// Return the basename of a pathname, meaning without the directory part(s).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_basename(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val fname = stringArg(arg1(args), "basename")
+    return makeString(basename(fname))
+}
+
+/// builtin dirname
+/// fun     bi_dirname
+/// std     pathname
+/// key     
+/// opt     
+/// rest    
+/// ret     file-dirname
+/// special no
+/// doc {
+/// Return the dirname of a pathname, meaning only the directory part(s).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_dirname(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val fname = stringArg(arg1(args), "dirname")
+    return makeString(dirname(fname))
+}
+
