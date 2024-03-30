@@ -89,3 +89,50 @@ fun bi_regexp_match(args: LObject, kwArgs: Map<LSymbol, LObject>
     val s = string.toString()
     return regex.match(s)
 }
+
+/// builtin regexp-split
+/// fun     bi_regexp_split
+/// std     re string
+/// key     
+/// opt     limit makeNumber(0)
+/// rest    
+/// ret     string-list
+/// special no
+/// doc {
+/// Split the string around regexp matches and return a list of the parts.
+/// If `limit` is greater than (default) 0, only so many parts are split
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_regexp_split(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    val (re, s, limit) = args3(args)
+    return collectedList {
+        for (elem in regexpArg(re, "regexp-split regexp").split(
+                 s.toString(), intArg(limit, "regexp-split limit"))) {
+            it.add(makeString(elem))
+        }
+    }
+}
+
+/// builtin regexp-replace
+/// fun     bi_regexp_replace
+/// std     re string replacement
+/// key     
+/// opt     limit makeNumber(0)
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if regexp `re` replacees `string`, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_regexp_replace(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    val (re, s, replacement, limit) = args4(args)
+    val regexp = regexpArg(re, "regexp-replace regexp")
+    return regexp.replace(s.toString(), replacement.toString(),
+                          intArg(limit, "regexp-replace limit"))
+}
+

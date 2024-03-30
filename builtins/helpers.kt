@@ -25,6 +25,8 @@ fun numberArg(arg: LObject, what: String): Double {
         throw ArgumentError("$what argument not a number: $arg (${typeOf(arg)})")
 }
 
+fun intArg(arg: LObject, what: String) = numberArg(arg, what).toInt()
+
 // fun longArg(arg: LObject, what: String): Int {
 //     if let num = arg as? LNumber {
 //         let intval = Int(num.value)
@@ -97,7 +99,11 @@ fun regexpArg(arg: LObject, what: String): LRegexp {
     if (arg is LRegexp) {
         return arg
     }
-    throw ArgumentError("$what argument not a regexp: $arg")
+    try {
+        return LRegexp(arg.toString())
+    } catch (e: Exception) {
+        throw ArgumentError("$what argument not a regexp: $arg ($e)")
+    }
 }
 
 fun vectorArg(arg: LObject, what: String): LVector {
