@@ -8,7 +8,7 @@
 (defvar fails nil "list of failed test cases")
 (defvar warnings 0 "number of warnings issued")
 (defvar ntests 0 "number of tests done")
-(defvar verbose nil)
+(defvar verbose t)
 
 (defvar test-name-table #:()
   "Ensure that all tests have a unique name")
@@ -92,7 +92,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
              (if (eq result expect) (pass) (fail)))
             ((eq type 'match)
              (setf result (princs result))
-             (if (expect result) (pass) (fail)))
+             (if (regexp-match expect result) (pass) (fail)))
             ((eq type 'num)
              (setf result (princs (round-deep result)))
              (setf expect (princs (round-deep expect)))
@@ -140,17 +140,20 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
     (when verbose
       (format t "load files: %s\n" files))
     (dolist (f files)
-      (let ((number (car (#/^[0-9][0-9][0-9]$/ f))))
-        ;; (format t "number: %s\n" number)
+      (let ((number (car (regexp-match #/^[0-9][0-9][0-9]/ f))))
+        (format *stderr* "number: %s\n" number)
+        ;; if we have just a number (as a command-line arg), we still
+        ;; find and load the file from the regtests directory
         (when number
-          (let ((fname (car (directory (format nil "%s/%s*.lisp"
-                                                    testdir number)))))
+          (let ((fname (car (directory-entries testdir
+                                               :pattern (string number
+                                                                "%s*.lisp")))))
             (when fname 
               (setf f fname)))))
       (presult "\nloading %s\n" f)
       (setf testing-done nil)
       (unless verbose
-        (let ((number (cadr (#r{/([0-9]+)} f))))
+        (let ((number (cadr (regexp-match #r{/([0-9]+)} f))))
           (format t " %s " number)))
       (let ((result (errset (load f))))
         (if (atom result)

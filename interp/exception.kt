@@ -20,8 +20,11 @@ open class LispError(message: String): Exception(message) {
     }
 }
 
-open class IOError(err: Exception):
-    LispError("${err::class.simpleName}: ${err.message}")
+
+open class IOError(message: String): LispError(message) {
+    constructor(err: Exception):
+        this("${err::class.simpleName}: ${err.message}")
+}
 
 
 open class InternalError(message: String): LispError(message)

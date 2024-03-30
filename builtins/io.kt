@@ -446,13 +446,19 @@ fun bi_directory_entries(args: LObject, kwArgs: Map<LSymbol, LObject>
     } else {
         null
     }
-    println("path $pathname, pattern = $pattern, regexp = $regexp")
 
     val file = File(stringArg(pathname, "directory name"))
     if (!file.exists()) {
         throw java.io.FileNotFoundException(file.path)
     }
-    for (entry in file.list()) {
+    if (!file.isDirectory()) {
+        throw IOError("not a directory: $file")
+    }
+    val the_list = file.list()
+    if (the_list == null) {
+        throw IOError("cannot list directory: $file")
+    }
+    for (entry in the_list) {
         if (regexp == null || regexp.matches(basename(entry))) {
             lc.add(makeString(entry))
         }
