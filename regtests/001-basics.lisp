@@ -52,7 +52,7 @@
 (test-is "symbol-function" (progn (fset 'mal (symbol-function '*))
                                   (mal 1 2 3 4 5 6 7))
          5040)
-(test-err "error" (error "lala: `%d'" (+ 3 4)) #/^lala: `7'$/)
+(test-err "error" (error "lala" (+ 3 4)) #/^Error: lala: 7$/)
 
 (test "integerp 1" (integerp 1))
 (test "integerp 2" (integerp 2))
@@ -66,8 +66,8 @@
 (test-is "lambda sym" lambda "lambda")
 
 ;; lambda definitions
-(test-is "lambda fun" (lambda (n) (* n n)) "#<function (n) (* n n)>")
-(test-is "λ fun" (λ (n) (* n n)) "#<function (n) (* n n)>")
+(test-is "lambda fun" (lambda (n) (* n n)) "#<function *anon-lambda*>")
+(test-is "λ fun" (λ (n) (* n n)) "#<function *anon-lambda*>")
 
 ;; ... quoted
 (test-is "function lambda" (eval (read "#'(lambda (n) (+ n n))"))
@@ -83,19 +83,16 @@
 
 ;; lingo version
 
-(test "lingo-version 1" (stringp sys:lingo-version))
-(test-is "lingo-version 2" (join " " (sys:lingo-version)) sys:lingo-version)
-(test-match "lingo-version 3" (car (sys:lingo-version 'version-tag))
-            #/^v\d+\.\d+/)
-
-(test-is "lingo-version 4" (let ((items '(version-tag build-date builder)))
-                             (length (apply #'sys:lingo-version items)))
-         (let ((items '(version-tag build-date builder)))
-           (length items)))
-(test-is "lingo-version 5" (let ((items '(version-tag build-date builder)))
-                             (reverse (apply #'sys:lingo-version items)))
-         (let ((items '(version-tag build-date builder)))
-           (apply #'sys:lingo-version (reverse items))))
+(test "build-info string" (stringp (build-info t)))
+(test-is "build-info program" (cdr (assoc 'program (build-info))) "lyk")
+(test-match "build-info version" (cdr (assoc 'version (build-info)))
+            #/^v[0-9]+.[0-9]+/)
+(test-match "build-info kotlin" (cdr (assoc 'kotlin (build-info)))
+            #/kotlin/)
+(test-match "build-info built-at" (cdr (assoc 'built-at (build-info)))
+            #/^20[0-9]{2}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$/)
+(test-match "build-info built-by" (cdr (assoc 'built-by (build-info)))
+            #/@/)
 
 ;; #22 #'set evaluates too much
 

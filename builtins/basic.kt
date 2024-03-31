@@ -615,6 +615,10 @@ fun bi_function(args: LObject, kwArgs: Map<LSymbol, LObject>
             return function
         }
     }
+    if (arg is LCons && (arg.car === LambdaSym ||
+                             arg.car === greekLambdaSym)) {
+        return eval(arg)
+    }
     throw ArgumentError("$arg is not a function or function symbol")
 }
 
@@ -658,7 +662,7 @@ fun bi_symbol_function(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_error(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (message, data) = args2(args)
-    throw UserError(message.toString(), data)
+    throw LispError(message.toString(), data)
 }
 
 /// builtin catch
@@ -1705,6 +1709,7 @@ fun bi_mapcar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             } else {
                 return null
             }
+            overLists = overLists.cdr
         }
         return cars.list
     }

@@ -23,6 +23,7 @@ fun typeOf(obj: Any) =
     when (obj) {
         is LEnv ->  "environment"
         is LFunction -> "function"
+        is LispError -> "Error"
         else -> {
             val typ = "${obj::class.simpleName}"
             if (typ.startsWith("L")) {

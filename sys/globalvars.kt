@@ -7,6 +7,8 @@ var currentEnv = rootEnv
 
 val Nil = intern("nil", true)
 val T = intern("t", true)
+val LambdaSym = intern("lambda", true)
+val greekLambdaSym = intern("λ", true)
 
 val warningsAsErrors = LSymbol.makeGlobal("*warnings-as-errors*")
 val last_error = LSymbol.makeGlobal("*last-error*")

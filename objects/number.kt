@@ -43,6 +43,7 @@ class LNumber(val value: Double): LObject() {
     override fun isAtom() = true 
 
     fun isLong() = value == value.toLong().toDouble()
+    fun isInt() = value == value.toInt().toDouble()
 
     fun toLong() = value.toLong()
     fun toInt() = value.toInt()

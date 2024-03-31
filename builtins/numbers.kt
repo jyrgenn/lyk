@@ -682,3 +682,20 @@ fun bi_sqrt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return makeNumber(sqrt(numberArg(arg1(args), "sqrt")))
 }
 
+/// builtin integerp
+/// fun     bi_integerp
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true iff object is an integer number
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_integerp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val arg = arg1(args)
+    return bool2ob((arg is LNumber) && arg.isInt())
+}

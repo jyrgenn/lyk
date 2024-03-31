@@ -4,7 +4,12 @@
 
 Weights: Need, Want, Nice, TBD (to be decided), Bug
 
-  @ pass the regtests. Need. Currently in 001
+  @ pass the regtests. Need. Currently in 002
+
+  - a flush/close list for streams to be processed in atexit() (if
+    there is such a thing...)
+
+  - \d does not work in a regexp literal. Bug.
 
   - make desc => toString() and toString() => value? makes a lot of
     casual object printing easier or rather more descriptive. TBD.

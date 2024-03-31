@@ -8,11 +8,18 @@ class ErrorObject(val error: LispError): LObject() {
     override fun desc() = "#<${typeOf(this)}: ${error.toString()}>"
 }
 
-open class LispError(message: String): Exception(message) {
+open class LispError(message: String, val data: LObject = Nil
+): Exception(message) {
 
     fun toObject() = ErrorObject(this)
 
-    open override fun toString() = "${typeOf(this)}: $message"
+    override fun toString(): String {
+        var s = "${typeOf(this)}: $message"
+        if (data !== Nil) {
+            s += ": " + data.toString()
+        }
+        return s
+    }
 
     fun pushFrame(level: Int, form: LObject, env: LEnv, location: String) {
         evalStack.add(LVector(makeNumber(level), form, env,
@@ -51,16 +58,6 @@ class InternalReaderError(message: String,
 
 class ImmutableError(val symbol: LSymbol, val function: Boolean): 
     LispError("symbol $symbol is immutable")
-
-class UserError(message: String, val data: LObject = Nil): LispError(message) {
-    override fun toString(): String {
-        var s = super.toString()
-        if (data !== Nil) {
-            s += ", " + data.toString()
-        }
-        return s
-    }
-}
 
 open class ValueError(message: String,
                       lh: LocationHolder?): LispError(message) {

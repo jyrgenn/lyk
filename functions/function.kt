@@ -66,9 +66,9 @@ abstract class LFunction(
         return lc.list
     }
 
-    override open fun toString() = "#<${typeDesc}[$id]$name>"
+    override open fun toString() = "#<function $name>"
 
-    override open fun desc() = "#<${typeDesc}[$id](${parlist()})=$retval>"
+    override open fun desc() = "#<${typeDesc} (${parlist()})=$retval>"
 
     fun docHeader(): String {
         return "${typeDesc} ${LCons(name, parlist())} => $retval"
