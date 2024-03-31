@@ -25,15 +25,15 @@
 (test-is "* 3" (* 1 2 3) 6)
 (test-is "* 7" (* 1 2 3 4 5 6 7) 5040)
 
-(test-is "factor 1e14 + 1" (factor 100000000000001) '(29 101 281 121499449))
+(test-is "factor 1e14 + 1" (factorise 100000000000001) '(29 101 281 121499449))
 
 (test-is "abs 0" (abs 0) 0)
 (test-is "abs 1" (abs 1) 1)
 (test-is "abs 1.5" (abs 1.5) 1.5)
 (test-is "abs -1" (abs -1) 1)
 (test-is "abs -1.5" (abs -1.5) 1.5)
-(test-err "abs nil" (abs nil) #/is not a number/)
-(test-err "abs \"huhu\"" (abs "huhu") #/is not a number/)
+(test-err "abs nil" (abs nil) #/argument not a number/)
+(test-err "abs \"huhu\"" (abs "huhu") #/argument not a number/)
 
 (test-is "signum 0" (signum 0) 0)
 (test-is "signum 1" (signum 1) 1)

@@ -307,3 +307,22 @@ fun dirname(pathname: String): String {
     }
     return result
 }
+
+fun isqrt(n: Long): Long {
+    var op = n
+    var res = 0L
+    var one = 1L shl 62
+
+    while (one > op) {
+        one = one shr 2
+    }
+    while (one != 0L) {
+        if (op >= res+one) {
+            op -= res + one
+            res += one shl 1 // <-- faster than 2 * one
+        }
+        res = res shr 1
+        one = one shr 2
+    }
+    return res
+}

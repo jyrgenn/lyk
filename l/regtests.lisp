@@ -4,7 +4,7 @@
 
 (defvar testdir "regtests" "directory containing the test cases")
 (defvar protocol-file-name "testrun.log")
-(defvar out (open protocol-file-name :direction :output) "test log file")
+(defvar out nil "test log file")
 (defvar fails nil "list of failed test cases")
 (defvar warnings 0 "number of warnings issued")
 (defvar ntests 0 "number of tests done")

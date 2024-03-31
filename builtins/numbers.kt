@@ -457,22 +457,7 @@ fun bi_1minus(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_isqrt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val n = numberArg(arg1(args), "isqrt")
-    var op = n.toLong()
-    var res = 0L
-    var one = 1L shl 62
-
-    while (one > op) {
-        one = one shr 2
-    }
-    while (one != 0L) {
-        if (op >= res+one) {
-            op -= res + one
-            res += one shl 1 // <-- faster than 2 * one
-        }
-        res = res shr 1
-        one = one shr 2
-    }
-    return makeNumber(res)
+    return makeNumber(isqrt(n.toLong()))
 }
 
 /// builtin ash
@@ -699,3 +684,30 @@ fun bi_integerp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val arg = arg1(args)
     return bool2ob((arg is LNumber) && arg.isInt())
 }
+
+/// builtin signum
+/// fun     bi_signum
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     sign
+/// special no
+/// doc {
+/// Return -1 / 0 / 1 if NUMBER is negative / zero / positive, respectively.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_signum(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val number = numberArg(arg1(args), "signum")
+    println("number: $number")
+    return makeNumber(if (number < 0) {
+                          -1
+                      } else if (number > 0) {
+                          1
+                      } else {
+                          0
+                      })
+}
+
+
