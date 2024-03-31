@@ -700,7 +700,6 @@ fun bi_integerp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_signum(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val number = numberArg(arg1(args), "signum")
-    println("number: $number")
     return makeNumber(if (number < 0) {
                           -1
                       } else if (number > 0) {

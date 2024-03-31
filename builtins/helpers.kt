@@ -272,7 +272,7 @@ fun dirlist(pathspec: String): LObject {
     val dirpath = Path(dirname(pathspec))
     val glob = basename(pathspec)
     return collectedList {
-        for (path in dirpath.listDirectoryEntries(glob)) {
+        for (path in dirpath.listDirectoryEntries(glob).sorted()) {
             it.add(makeString(path.toString()))
         }
     }

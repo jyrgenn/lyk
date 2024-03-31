@@ -433,6 +433,7 @@ fun bi_close(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// special no
 /// doc {
 /// Return a list of pathnames matching `pathspec`.
+/// The last path component may contain wildcard characters.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
