@@ -5,7 +5,7 @@ import java.io.IOException
 class ErrorObject(val error: LispError): LObject() {
     override fun toString() = error.toString()
 
-    override fun desc() = "#<${typeOf(this)}: {error.toString()}>"
+    override fun desc() = "#<${typeOf(this)}: ${error.toString()}>"
 }
 
 open class LispError(message: String): Exception(message) {

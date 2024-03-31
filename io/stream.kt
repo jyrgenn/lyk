@@ -31,17 +31,15 @@ open class StringReaderStream(content: String, name: String? = ""):
     }
 }
 
-open class FileReaderStream(file: File, name: String? = null,
-                            error: Boolean = true):
+open class FileReaderStream(file: File, name: String? = null):
     LStream(input = true, path = file.path, name = name ?: file.path,
-            error = error)
+            error = false)
 {
-    constructor(pathname: String, name: String? = null, error: Boolean = true):
-        this(File(pathname), name = name ?: pathname, error = error)
+    constructor(pathname: String, name: String? = null):
+        this(File(pathname), name = name ?: pathname)
 
-    constructor(dir: String, fname: String, name: String? = null,
-                error: Boolean = true):
-        this(File(dir, fname), name = name ?: fname, error = error)
+    constructor(dir: String, fname: String, name: String? = null):
+        this(File(dir, fname), name = name ?: fname)
 
     val fileReader = file.bufferedReader()
 
@@ -130,6 +128,9 @@ abstract class LStream(
 {
     var charUnread: Char? = null
     var is_open = true
+    // init {
+    //     System.out.println("opened $this")
+    // }
 
     open fun read(): Char? {          // the actual reading
         throw ArgumentError("write on $this")

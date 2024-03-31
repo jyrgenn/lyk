@@ -21,8 +21,8 @@ fun padString(s: String, width: Int, pad: Char = ' '): String {
 
 fun typeOf(obj: Any) =
     when (obj) {
-        is LEnv ->  "Environment"
-        is Lambda -> "Lambda"
+        is LEnv ->  "environment"
+        is LFunction -> "function"
         else -> {
             val typ = "${obj::class.simpleName}"
             if (typ.startsWith("L")) {

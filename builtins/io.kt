@@ -230,31 +230,31 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val print = ob2bool(kwArgs[printKeyw] ?: Nil)
         || ob2bool(loadPrintSym.getValueOptional() ?: Nil)
 
-    fun trySuffixes(dir: String, fname: String): Pair<LObject, Boolean> {
+    fun trySuffixes(dir: String, fname: String): LObject? {
         for (suffix in suffixes) {
-            val (result, found) = load_file(dir, fname + suffix,
-                                            throw_error, !verbose,
-                                            print)
-            if (found) {
-                return Pair(result, true)
+            val fullname = fname + suffix
+            if (File(dir, fullname).exists()) {
+                return load_file(dir, fullname, throw_error, !verbose, print)
             }
         }
-        return Pair(Nil, false)
+        return null
     }
 
     if (fname.contains("/")) {
-        val (result, found) = load_file(fname, throw_error, !verbose, print)
-        return if (found) result else Nil
+        if (File(fname).exists()) {
+            return load_file(fname, throw_error, !verbose, print)
+        }
+        throw IOError("could not find load file: $fname")
     }
 
     // no slash in name, so try the load path
     for (dir in loadpath) {
-        val (result, found) = trySuffixes(dir.toString(), fname)
-        if (found) {
+        val result = trySuffixes(dir.toString(), fname)
+        if (result != null) {
             return result
         }
     }
-    return Nil
+    throw IOError("could not find load file: $fname")
 }
 
 /// builtin make-string-input-stream
@@ -423,47 +423,23 @@ fun bi_close(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     }
 }
 
-/// builtin directory-entries
-/// fun     bi_directory_entries
-/// std     pathname
-/// key     "pattern" to Nil
+/// builtin directory
+/// fun     bi_directory
+/// std     pathspec
+/// key     
 /// opt     
 /// rest    
-/// ret     t/nil
+/// ret     pathnames
 /// special no
 /// doc {
-/// Return a list of the entries in the directory `pathname`.
+/// Return a list of pathnames matching `pathspec`.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_directory_entries(args: LObject, kwArgs: Map<LSymbol, LObject>
+fun bi_directory(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    val pathname = arg1(args)
-    val pattern = kwArgs[intern(":pattern")] ?: Nil
-    val lc = ListCollector()
-    val regexp = if (pattern !== Nil) {
-        glob2regexp(pattern.toString())
-    } else {
-        null
-    }
-
-    val file = File(stringArg(pathname, "directory name"))
-    if (!file.exists()) {
-        throw java.io.FileNotFoundException(file.path)
-    }
-    if (!file.isDirectory()) {
-        throw IOError("not a directory: $file")
-    }
-    val the_list = file.list()
-    if (the_list == null) {
-        throw IOError("cannot list directory: $file")
-    }
-    for (entry in the_list) {
-        if (regexp == null || regexp.matches(basename(entry))) {
-            lc.add(makeString(entry))
-        }
-    }
-    return lc.list
+    val pathspec = arg1(args)
+    return dirlist(pathspec.toString())
 }
 
 /// builtin read-line

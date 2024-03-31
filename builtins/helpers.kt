@@ -2,6 +2,8 @@
 
 package org.w21.lyk
 
+import kotlin.io.path.*
+
 
 fun outputStreamArg(arg: LObject, what: String): LStream {
     if (arg === Nil) {
@@ -264,6 +266,18 @@ fun withVariableAs(variable: LSymbol, value: LObject, closure: () -> Unit) {
         }
     }
 }
+
+
+fun dirlist(pathspec: String): LObject {
+    val dirpath = Path(dirname(pathspec))
+    val glob = basename(pathspec)
+    return collectedList {
+        for (path in dirpath.listDirectoryEntries(glob)) {
+            it.add(makeString(path.toString()))
+        }
+    }
+}
+
 
 fun basename(pathname: String): String {
     if (pathname == "/" || pathname == "") {

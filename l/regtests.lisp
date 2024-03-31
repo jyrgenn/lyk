@@ -10,6 +10,7 @@
 (defvar ntests 0 "number of tests done")
 (defvar verbose t)
 
+
 (defvar test-name-table #:()
   "Ensure that all tests have a unique name")
 
@@ -76,7 +77,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
         (progn (setf result *last-error*)
                (if (eq type 'error)
                    (if (regexpp expect)
-                       (if (expect result)
+                       (if (regexp-match expect result)
                            (pass)
                          (fail))
                      (fail "FAIL: %s wrong, not a regexp: %s\n"
@@ -129,6 +130,11 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
 ;;;;;;;;;;;;;;;;;;; now let the games begin
 
 (defun run-tests ()
+  (with-open-file (log protocol-file-name :direction :output)
+    (setf out log)
+    (run-tests-with-out)))
+
+(defun run-tests-with-out ()
   (setf fails nil)
   (setf warnings 0)
   (when (eq (car *command-line-args*) "-v")
@@ -136,27 +142,28 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
     (setf verbose t))
 
   (let ((files (or *command-line-args*
-                   (directory-entries testdir :pattern "[0-9]*.lisp"))))
+                   (directory (string testdir "/" "[0-9]*.lisp")))))
     (when verbose
       (format t "load files: %s\n" files))
     (dolist (f files)
       (let ((number (car (regexp-match #/^[0-9][0-9][0-9]/ f))))
-        (format *stderr* "number: %s\n" number)
         ;; if we have just a number (as a command-line arg), we still
         ;; find and load the file from the regtests directory
         (when number
-          (let ((fname (car (directory-entries testdir
-                                               :pattern (string number
-                                                                "%s*.lisp")))))
-            (when fname 
-              (setf f fname)))))
+          (println "the list:" (directory (string testdir "/"
+                                                  number "%s*.lisp")))
+          (let ((fname (car (directory (string testdir "/"
+                                                  number "%s*.lisp")))))
+            (when fname
+              (printlin "fname:" fname)
+              (setf f (string testdir "/" fname))))))
       (presult "\nloading %s\n" f)
       (setf testing-done nil)
       (unless verbose
         (let ((number (cadr (regexp-match #r{/([0-9]+)} f))))
           (format t " %s " number)))
       (let ((result (errset (load f))))
-        (if (atom result)
+       (if (atom result)
             (progn (presult "load FAIL: %s %s\n" f *last-error*)
                    (push (cons f "load") fails))
           (unless testing-done

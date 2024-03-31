@@ -1800,3 +1800,37 @@ fun bi_function_parameters(args: LObject, kwArgs: Map<LSymbol, LObject>
     return function.parlist()
 }
 
+/// builtin identity
+/// fun     bi_identity
+/// std     arg
+/// key     
+/// opt     
+/// rest    
+/// ret     arg
+/// special no
+/// doc {
+/// Return `arg` unchanged.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_identity(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return arg1(args)
+}
+
+/// builtin ignore
+/// fun     bi_ignore
+/// std     
+/// key     
+/// opt     
+/// rest    args
+/// ret     nil
+/// special no
+/// doc {
+/// Return nil
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_ignore(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return Nil
+}
+

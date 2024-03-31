@@ -11,3 +11,6 @@
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
+fun bi_(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return 
+}

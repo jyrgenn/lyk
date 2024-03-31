@@ -45,7 +45,7 @@ class LEnv(val parent: LEnv? = null): LObject() {
 
     fun getValue(symbol: LSymbol): LObject {
         return getValueMaybe(symbol) ?:
-            throw ValueError("value of symbol `$symbol` is undefined")
+            throw ValueError("variable `$symbol` is undefined")
     }
 
     fun setValue(symbol: LSymbol, value: LObject): Boolean {
