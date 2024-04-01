@@ -84,9 +84,9 @@ abstract class LFunction(
         }
         val defined_in = name.getprop(definedInPropSym)
         if (defined_in is LString) {
-            sb.add("defined in ")
+            sb.add("[defined in ")
             sb.add(defined_in.value)
-            sb.add("\n")
+            sb.add("]\n")
         }
         return sb.toString()
     }
