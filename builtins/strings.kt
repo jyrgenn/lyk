@@ -71,14 +71,17 @@ fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 
 /// builtin regexp-match
 /// fun     bi_regexp_match
-/// std     re string
+/// std     regexp string
 /// key     
 /// opt     
 /// rest    
-/// ret     t/nil
+/// ret     value
 /// special no
 /// doc {
-/// Return t if regexp `re` matches `string`, nil else.
+/// Return true if regexp `regexp` matches `string`, nil else.
+/// The returned value in case of a match is a list of the values for the
+/// whole match and possible group matches. If an optional group (...)?
+/// does not match, its value is nil. 
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")

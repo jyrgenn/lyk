@@ -36,6 +36,19 @@ class LString(val value: String): LObject() {
         }
     }
 
+    override fun equal(other: LObject): Boolean {
+        if (this === other) {
+            return true
+        }
+        if (other !is LString) {
+            return false
+        }
+        if (value == other.value) {
+            return true
+        }
+        return false
+    }
+
     // Return true iff object is an atom
     override fun isAtom() = true
 

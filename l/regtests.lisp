@@ -5,10 +5,11 @@
 (defvar testdir "regtests" "directory containing the test cases")
 (defvar protocol-file-name "testrun.log")
 (defvar out nil "test log file")
+(defvar devnull (open "/dev/null" :direction :output) "The null device")
 (defvar fails nil "list of failed test cases")
 (defvar warnings 0 "number of warnings issued")
 (defvar ntests 0 "number of tests done")
-(defvar verbose t)
+(defvar verbose nil)
 
 
 (defvar test-name-table #:()
@@ -167,8 +168,9 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
             (progn (presult "load FAIL: %s %s\n" f *last-error*)
                    (push (cons f "load") fails))
           (unless testing-done
-            (presult "file FAIL: %s not completed\n" f)
-            (push (cons f " not completed") fails))))))
+            (let ((message " not completed, done-testing not called\n"))
+              (presult "file FAIL: %s%s" f message)
+              (push (cons f message) fails)))))))
 
   (let ((nfails (length fails)))
     (format t "\n%d tests, %d FAILS, %d warning%s\n"
@@ -181,7 +183,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
       (dolist (err (reverse fails))
         (let ((file (car err))
               (name (cdr err)))
-          (format t "   %s:%s\n" file name)))))
+          (format t "   %s: %s\n" file name)))))
   (terpri)
   (format t "test output written to %s\n" protocol-file-name)
   

@@ -15,8 +15,12 @@ class LRegexp(pattern: String): LObject() {
 
     fun match(s: String): LObject {
         val lc = ListCollector()
-        for (match in regexp.findAll(s)) {
-            lc.add(LString(match.value))
+        val match = regexp.find(s)
+        if (match != null) {
+            // lc.add(makeString(match.value))
+            for (group in match.groups) {
+                lc.add(if (group != null) makeString(group.value) else Nil)
+            }
         }
         return lc.list
     }

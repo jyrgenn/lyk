@@ -126,9 +126,10 @@ class LSymbol(val name: String, val immutable: Boolean): LObject()
         if (immutable) {
             throw ImmutableError(this, false)
         } else {
-            if (!(currentEnv.setValue(this, newvalue) || silent)) {
+            if (!silent && getValueOptional() == null) {
                 warn("setting unbound variable $this to $newvalue")
             }
+            currentEnv.setValue(this, newvalue)
         }
     }
 

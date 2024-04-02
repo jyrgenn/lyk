@@ -165,7 +165,7 @@ fun bindPars(arglist: LObject, func: LFunction) {
     // was it enough?
     if (hadStdArgs < wantStdArgs) {
         throw ArgumentError(
-            "too few args for function `${func.name}`: $arglist")
+            "too few args for ${func.typeDesc} `${func.name}`: $arglist")
     }
     // a :keyword left dangling?
     if (wantKeyArg != null) {

@@ -39,6 +39,9 @@ fun notice(message: String) {
 }
 
 fun warn(warning: String) {
+    if (Options.warnIsError) {
+        throw WarningError(warning)
+    }
     notice("WARNING " + warning)
 }
 

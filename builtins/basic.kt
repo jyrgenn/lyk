@@ -745,10 +745,7 @@ fun bi_throw(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_boundp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val sym = symbolArg(arg1(args), "boundp")
-    if (sym.getValueOptional() != null) {
-        return T
-    }
-    return Nil
+    return bool2ob(sym.getValueOptional() != null)
 }
 
 /// builtin fboundp
@@ -1529,7 +1526,7 @@ fun bi_atom(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_equal(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val (arg1, arg2) = args
+    val (arg1, arg2) = args2(args)
     return bool2ob(arg1.equal(arg2))
 }
 

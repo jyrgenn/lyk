@@ -7,8 +7,13 @@ Weights: Need, Want, Nice, TBD (to be decided), Bug
   @ pass the regtests. The regtests will in parts be adapted in the
     process. Need. Done with 002, coming up 003
 
+  - a string output buffer stream type, if only for the regtests.
+    Need.
+
+  - Be able to set warnings-as-errors from Lisp
+
   - a flush/close list for streams to be processed in atexit() (if
-    there is such a thing...)
+    there is such a thing...) Need.
 
   - \d does not work in a regexp literal. Bug.
 

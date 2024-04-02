@@ -30,6 +30,7 @@ object Options {
     var print_estack = false
     var maxrecurse = 0
     var verbosity = 2           // 0: errors-only, 1: notice, 2: info
+    var warnIsError = false     // let warnings be errors
 }
 
 
@@ -38,13 +39,14 @@ fun usage() {
     println("\nUsage: lyk [-Ehq?] [-d debug-options] [-e expression] [-l load-file] [file [arg1 ...]]")
 
     println("""
-    -d debug-options : set debug options, comma separated, see below
-    -e expression    : evaluate Lisp expression, print result, and exit
-    -l load-file     : load the named Lisp files (multiple possible)
-    -h, -?           : print this help on options
-    -q               : suppress info messages (-qq: also notice/warning)
-    -v               : increase verbosity
-    -E               : print exception stack
+  -d debug-options : set debug options, comma separated, see below
+  -e expression    : evaluate Lisp expression, print result, and exit
+  -l load-file     : load the named Lisp files (multiple possible)
+  -h, -?           : print this help on options
+  -q               : suppress info messages (-qq: also notice/warning)
+  -v               : increase verbosity
+  -E               : print exception stack
+  -W               : let warnings be errors
 """)
     // -R maxrecurse    : maximum eval recursion depth 
 
@@ -108,6 +110,7 @@ fun main(args: Array<String>) {
                 }
                 'h', '?' -> { usage() }
                 'R' -> { Options.maxrecurse = getOptValInt("maxrecurse") ?: 0 }
+                'W' -> { Options.warnIsError = true }
                 else -> {
                     printErr("unknown option `-$ch`")
                     opterrors = true
@@ -139,7 +142,7 @@ fun main(args: Array<String>) {
 
     val args_lc = ListCollector()
     for (arg in argl) {
-        args_lc.add(LString(arg))
+        args_lc.add(makeString(arg))
     }
     
     if (lispExpression != null) {

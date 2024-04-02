@@ -27,6 +27,7 @@ open class LispError(message: String, val data: LObject = Nil
     }
 }
 
+class WarningError(message: String): LispError(message)
 
 open class IOError(message: String): LispError(message) {
     constructor(err: Exception):

@@ -121,7 +121,7 @@ fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     if (func is LFunction) {
         val doc = func.documentation()
         if (as_string) {
-            return LString(doc)
+            return makeString(doc)
         } else {
             print(doc)
             return theNonPrintingObject
