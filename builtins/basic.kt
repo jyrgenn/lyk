@@ -998,7 +998,7 @@ fun bi_regexpp(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// ret     t/nil
 /// special no
 /// doc {
-/// Return t is `object` is a symbol, else nil.
+/// Return t if `object` is a symbol, else nil.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")

@@ -70,8 +70,10 @@ abstract class LFunction(
 
     override open fun desc() = "#<${typeDesc} (${parlist()})=$retval>"
 
+    fun synopsis() = LCons(name, parlist()).toString()
+
     fun docHeader(): String {
-        return "${typeDesc} ${LCons(name, parlist())} => $retval"
+        return "${typeDesc} ${synopsis()} => $retval"
     }
 
     fun documentation(): String {

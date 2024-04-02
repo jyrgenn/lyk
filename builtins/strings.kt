@@ -78,10 +78,20 @@ fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// ret     value
 /// special no
 /// doc {
-/// Return true if regexp `regexp` matches `string`, nil else.
+/// Return a list of matches if regexp `regexp` matches `string`, nil else.
 /// The returned value in case of a match is a list of the values for the
 /// whole match and possible group matches. If an optional group (...)?
 /// does not match, its value is nil. 
+///
+/// Regular expression syntax is that of the Kotlin regexp package (RE2),
+/// which is largely similar to that of the Perl and Python languages.
+/// A \"(?flags)\" specification in the regexp can modify the behaviour
+/// of the match in the current group. Possible flags are:
+/// 
+/// i  case-insensitive (default false)
+/// m  multi-line mode: ^ and $ match begin/end line in addition to begin/end
+///    text (default false)
+/// s  let . match \\n (default false)
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")

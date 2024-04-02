@@ -97,7 +97,7 @@ fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// fun     bi_doc
 /// std     symbol-or-function
 /// key     
-/// opt     return-as-string
+/// opt     return-as-string, synopsis-only
 /// rest    
 /// ret     object
 /// special no
@@ -105,13 +105,14 @@ fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// Return or print the documentation for `arg`, if available.
 /// If optional `return-as-string` is true, return the docstring as a string,
 /// otherwise print it and return *the-non-printing-object*.
+/// If optional `synopsis-only` is true, print or return the function's
+/// synopsis only.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val ob = arg1(args)
+    val (ob, as_string, synopsis_only) = args3(args)
     var func: LObject?
-    val as_string = ob2bool(arg2(args))
 
     if (ob is LSymbol) {
         func = ob.function
@@ -119,8 +120,11 @@ fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         func = ob
     }
     if (func is LFunction) {
-        val doc = func.documentation()
-        if (as_string) {
+        val doc = if (ob2bool(synopsis_only))
+            func.synopsis()
+        else
+            func.documentation()
+        if (ob2bool(as_string)) {
             return makeString(doc)
         } else {
             print(doc)
