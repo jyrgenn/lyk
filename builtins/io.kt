@@ -55,7 +55,7 @@ fun bi_println(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_print(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (arg, stream) = args2(args)
-    outputStreamArg(stream, "print stream").write("\n${arg.desc()} ")
+    outputStreamArg(stream, "print stream").write("\n$arg ")
     return arg
 }
 
