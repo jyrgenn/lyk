@@ -54,5 +54,9 @@ fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>
     val (seq, ind) = args2(args)
     val index = longArg(ind, "elt index")
 
-    return seq.elementAt(index.toInt())
+    try {
+        return seq.elementAt(index.toInt())
+    } catch (e: IndexOutOfBoundsException) {
+        throw IndexError("elt", index.toInt())
+    }
 }

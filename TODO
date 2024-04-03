@@ -7,6 +7,25 @@ Weights: Need, Want, Nice, TBD (to be decided), Bug
   @ pass the regtests. The regtests will in parts be adapted in the
     process. Need. Done with 002, coming up 003
 
+  - default return value in elt. Need. See elt tests in 006.
+
+    Problem: currently, we cannot know if an optional parameter has
+    been specified or not; in the latter case we just get the
+    default value. We also cannot use a special value to signal
+    non-specified-ness, because that would mask the fact that the
+    same value might have been specified. So, we'd to signal that
+    in another way. See CLHS 3.4.1.2, "Specifiers for optional
+    parameters": "&optional (param defaultvalue param-supplied-p)"
+
+    This would help, I am just pondering how to implement that. For
+    Builtins, I could pass another array or map; maybe the
+    declaration in init-builtins would not even need to be different
+    as I could just pass this array every time. For Lambdas, parsing
+    the parameter list would get just this bit more expensive; and
+    then I'd need to bind the supplied-p parameter.
+
+  - Character data type. Need.
+
   - a string output buffer stream type, if only for the regtests.
     Need.
 

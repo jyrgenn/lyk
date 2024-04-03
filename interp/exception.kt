@@ -27,6 +27,9 @@ open class LispError(message: String, val data: LObject = Nil
     }
 }
 
+class IndexError(where: String, index: Int):
+    LispError("invalid index $index calling $where")
+
 class WarningError(message: String): LispError(message)
 
 open class IOError(message: String): LispError(message) {
@@ -113,9 +116,21 @@ class AssertionFail(form: LObject, val moreInfo: LObject):
         "${super.toString()}" + if (moreInfo === Nil) "" else ", $moreInfo"
 }
 
+class RegexpError(val e: java.util.regex.PatternSyntaxException
+): LispError(e.pattern) {
+    override fun toString(): String {
+        var s = "${typeOf(this)}: " +
+            "invalid regexp pattern '${e.pattern}', ${e.message}"
+        return s
+    }    
+}
+
 // make some LispError from any Java exception
 fun makeLispError(exc: Exception) =
     when (exc) {
+        is LispError -> exc
+        is java.util.regex.PatternSyntaxException ->
+            RegexpError(exc)
         is IOException -> IOError(exc)
         else -> JavaError(exc)
     }

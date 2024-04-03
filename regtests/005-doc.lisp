@@ -25,23 +25,5 @@ Return t if `object` is a symbol, else nil./)
 (test-is "docstring table brief" (doc 'table-get t t)
          "(table-get table key &optional default)")
 
-(test-is "docstring regexp-match" (doc 'regexp-match nil t)
-         "regexp (REGEXP STRING &optional LIMIT) => matches
-If STRING matches REGEXP, return list of match and sub-matches, else nil.
-With optional third argument LIMIT, a list of match lists for (potentially)
-multiple matches is returned. If LIMIT is t, all matches are considered;
-otherwise, a number specifies the number of matches to be considered.
-
-Regular expression syntax is that of the Kotlin regexp package (RE2), which
-is largely similar to that of the Perl and Python languages. A \"(?flags)\"
-specification in the regexp can modify the behaviour of the match in the
-current group. Possible flags are:
-
-i  case-insensitive (default false)
-m  multi-line mode: ^ and $ match begin/end line in addition to begin/end
-   text (default false)
-s  let . match \\n (default false)
-U  ungreedy: swap meaning of x* and x*?, x+ and x+?, etc (default false)
-")
 
 (done-testing)

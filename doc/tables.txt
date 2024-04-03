@@ -1,0 +1,14 @@
+;;; lingo doc
+
+Table Literals
+--------------
+
+The syntax of table literals is #:(<pairs>), where <pairs> is one or
+more pairs. Of each pair, the car is the key and the cdr is the
+value of a table entry. If there is more than one pair with the same
+key, all but one of them are silently ignored. Examples:
+
+    #:()
+    #:((#\4 . 52)(#\@ . 64)(#\[ . 91))
+    #:((3 . "119")(a . b)("shoo" . 13.4))
+

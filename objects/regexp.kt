@@ -4,10 +4,14 @@ package org.w21.lyk
 
 
 class LRegexp(pattern: String): LObject() {
-    val regexp: Regex
+    var regexp = Regex("")
 
     init {
-        regexp = Regex(pattern)
+        try {
+            regexp = Regex(pattern)
+        } catch (e: java.util.regex.PatternSyntaxException) {
+            throw RegexpError(e)
+        }
     }
 
     override fun desc() = "#/${regexp.pattern}/"

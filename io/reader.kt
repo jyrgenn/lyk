@@ -268,6 +268,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     unreadChar(ch)
                     return NumberToken(this, readFreeRadixNumber())
                 }
+                // '\\' -> return charLiteralToken(this)
                 else -> {}
             }
             throw SyntaxError("unexpected char `$ch` after '#'", this)

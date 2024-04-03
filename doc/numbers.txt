@@ -1,0 +1,40 @@
+;;; lys doc
+
+Number Literals
+---------------
+
+The syntax of number literals is a subset of that of Common Lisp.
+
+Integer literals can be written in decimal as a sequence of decimal
+digits [0-9], or in binary as a sequence of binary digits [01]
+preceded by ``#b'', or in octal as a sequence of octal digits [0-7]
+preceded by ``#o'', or in hexadecimal as a seqence of fexadecimal
+digits [0-9a-fA-F] preceded by ``#x''.
+
+Decimal floating-point numbers can be written in Kotlin syntax:
+
+    float_lit = decimals "." [ decimals ] [ exponent ] |
+                decimals exponent |
+                "." decimals [ exponent ] .
+    decimals  = decimal_digit { decimal_digit } .
+    exponent  = ( "e" | "E" ) [ "+" | "-" ] decimals .
+
+
+Decimal integers and floating point numbers can be preceded by
+``-'', resulting in the appropriate negative number. Also, ``+''.
+
+There are no complex numbers. All numbers are internally represented
+using Kotlin's Double data type, so there aren't even real integers,
+only pretend ones.
+
+Examples:
+
+         1  the number one
+  31557600  the number of seconds in a Julian astronomical year
+ 3.15576e7  the number of seconds in a Julian astronomical year
+-3.1415926  as seconds, minus a ten-millionth of a year (roughly)
+ #b1001001  the number seventy-three
+ #o1001001  the number two hundred sixty-two thousand six hundred
+            fifty-seven
+ #x1001001  the number sixteen million seven hundred eighty-one
+            thousand three-hundred thirteen
