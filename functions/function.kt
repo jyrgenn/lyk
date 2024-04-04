@@ -211,7 +211,7 @@ fun bindPars(arglist: LObject, func: LFunction) {
     // fill in optArgs with default values if necessary
     while (hadOptArgs < wantOptArgs) {
         currentEnv.bind(func.optPars[hadOptArgs].first,
-                        func.optPars[hadOptArgs++].second)
+                        eval(func.optPars[hadOptArgs++].second))
     }
     if (func.restPar != null) {
         currentEnv.bind(func.restPar, restArgs.list)
