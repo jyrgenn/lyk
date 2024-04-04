@@ -2,10 +2,16 @@
 
 -: open; @: work in progress; +: done; *: denied;
 
-Weights: Need, Want, Nice, TBD (to be decided), Bug
+Weights/urgencies:
+    Bug:   this is a problem that needs to be fixed
+    Need:  must be done for further progress
+    Do:    not as urgent as Need, but definitely do some time
+    Want:  I really want this, but it is not urgent
+    Nice:  nice to have for sure, but lower priority
+    TBD:   to be decided
 
   @ pass the regtests. The regtests will in parts be adapted in the
-    process. Need. Done with 002, coming up 003
+    process. Need.
 
   - default return value in elt. Need. See elt tests in 006.
 
@@ -29,27 +35,39 @@ Weights: Need, Want, Nice, TBD (to be decided), Bug
   - a string output buffer stream type, if only for the regtests.
     Need.
 
-  - Be able to set warnings-as-errors from Lisp
+  - Be able to set warnings-as-errors from Lisp. Do.
 
   - a flush/close list for streams to be processed in atexit() (if
     there is such a thing...) Need.
 
-  - \d does not work in a regexp literal. Bug.
+  - \d does not work in a regexp literal. Bug, but still not urgent.
 
   - make desc => toString() and toString() => value? makes a lot of
     casual object printing easier or rather more descriptive. TBD.
 
+  - An interactive line editor (probably JLine). Not having one is a
+    pain in the afternoon. This what I Want, what I really really want.
+    I will most likely not get to the point where I can edit the whole
+    expression, but being able to edit single lines would already be a
+    big win.
+
   - clean up the conditionals: have cond as builtin; if, when,
-    unless as macros. Should not have a perceptible performance
-    impact. Want, but only after the regtests.
+    unless, as macros. Should not have a perceptible performance
+    impact. Want, but maybe only after the regtests. Wait, how long
+    will they take? hm..,.
 
   - For startup/preload problems: debug reader-lines? Maybe no
-    longer needed. A tad difficult as the Reader does not read
-    lines; would need line buffering in the stream. TBD.
+    longer needed. That would need line buffering in the stream, not
+    difficult due to BufferedReader.readLine(). TBD.
 
   - destructuring bind in (let ) like I had it in lingo; that is not
     only very convenient, but I guess also a small performance gain.
-    Want.
+    Want. Maybe with a different name, though. Maybe not let-destruct,
+    which sounds somewhat wrong. :-)
+    Update: there *is* already a (destructuring-bind ...) in the CLHS.
+    *Also*, destructuring llambda lists. *Also* improper lambda lists,
+    which I might...
+
 
   - pathname operations like directory-p, file-p, symlink-p fifo-p,
     device-p, socket-p, etc. with a "don't follow symlink" flag.
