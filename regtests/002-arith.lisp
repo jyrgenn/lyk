@@ -32,8 +32,8 @@
 (test-is "abs 1.5" (abs 1.5) 1.5)
 (test-is "abs -1" (abs -1) 1)
 (test-is "abs -1.5" (abs -1.5) 1.5)
-(test-err "abs nil" (abs nil) #/argument not a number/)
-(test-err "abs \"huhu\"" (abs "huhu") #/argument not a number/)
+(test-err "abs nil" (abs nil) #/argument is not a number/)
+(test-err "abs \"huhu\"" (abs "huhu") #/argument is not a number/)
 
 (test-is "signum 0" (signum 0) 0)
 (test-is "signum 1" (signum 1) 1)

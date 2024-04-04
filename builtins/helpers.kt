@@ -24,7 +24,7 @@ fun envArg(arg: LObject, what: String): LEnv {
 
 fun numberArg(arg: LObject, what: String): Double {
     return (arg as? LNumber)?.value ?:
-        throw ArgumentError("$what argument not a number: $arg (${typeOf(arg)})")
+        throw ArgumentError("$what argument is not a number: $arg (${typeOf(arg)})")
 }
 
 fun intArg(arg: LObject, what: String) = numberArg(arg, what).toInt()
@@ -36,43 +36,43 @@ fun intArg(arg: LObject, what: String) = numberArg(arg, what).toInt()
 //             return intval
 //         }
 //     }
-//     throw ArgumentError("$what argument not an integer: $arg")
+//     throw ArgumentError("$what argument is not an integer: $arg")
 // }
 
 fun longArg(arg: LObject, what: String): Long {
     if (arg is LNumber && arg.isLong()) {
         return arg.value.toLong()
     }
-    throw ArgumentError("$what argument not an integer: $arg")
+    throw ArgumentError("$what argument is not an integer: $arg")
 }
 
 fun functionArg(arg: LObject, what: String): LFunction {
     return arg as? LFunction ?:
-        throw ArgumentError("$what argument not a function: $arg")
+        throw ArgumentError("$what argument is not a function: $arg")
 }
 
 fun consArg(arg: LObject, what: String): LCons {
     return arg as? LCons ?:
-        throw ArgumentError("$what argument not a cons: $arg")
+        throw ArgumentError("$what argument is not a cons: $arg")
 }
 
 fun listArg(arg: LObject, what: String): LObject {
     if (arg.isList()) {
         return arg
     }
-    throw ArgumentError("$what argument not a list: $arg")
+    throw ArgumentError("$what argument is not a list: $arg")
 }
 
 // fun sequenceArg(arg: LObject, what: String): ObjectSequence {
 //     if (arg is any) ObjectSequence {
 //         return arg
 //     }
-//     throw ArgumentError("$what argument not a sequence: $arg")
+//     throw ArgumentError("$what argument is not a sequence: $arg")
 // }
 
 fun stringArg(arg: LObject, what: String): String {
     return (arg as? LString)?.value ?:
-        throw ArgumentError("$what argument not a string: $arg")
+        throw ArgumentError("$what argument is not a string: $arg")
 }
 
 fun stringlikeArg(arg: LObject, what: String): String {
@@ -82,19 +82,19 @@ fun stringlikeArg(arg: LObject, what: String): String {
     if (arg is LSymbol) {
         return arg.name
     }
-    throw ArgumentError("$what argument not a string or symbol: $arg")
+    throw ArgumentError("$what argument is not a string or symbol: $arg")
 }
 
 fun symbolArg(arg: LObject, what: String): LSymbol {
     return arg as? LSymbol ?:
-        throw ArgumentError("$what argument not a symbol: $arg")
+        throw ArgumentError("$what argument is not a symbol: $arg")
 }
 
 fun tableArg(arg: LObject, what: String): LTable {
     if (arg is LTable) {
         return arg
     }
-    throw ArgumentError("$what argument not a table: $arg")
+    throw ArgumentError("$what argument is not a table: $arg")
 }
 
 fun regexpArg(arg: LObject, what: String): LRegexp {
@@ -104,7 +104,7 @@ fun regexpArg(arg: LObject, what: String): LRegexp {
     try {
         return LRegexp(arg.toString())
     } catch (e: Exception) {
-        throw ArgumentError("$what argument not a regexp: $arg ($e)")
+        throw ArgumentError("$what argument is not a regexp: $arg ($e)")
     }
 }
 
@@ -112,7 +112,7 @@ fun vectorArg(arg: LObject, what: String): LVector {
     if (arg is LVector) {
         return arg
     }
-    throw ArgumentError("$what argument not a vector: $arg")
+    throw ArgumentError("$what argument is not a vector: $arg")
 }
 
 
@@ -148,7 +148,7 @@ fun spreadArglist(args: LObject): LObject {
 
 fun environmentArg(arg: LObject, what: String): LEnv {
     return arg as? LEnv ?:
-        throw ArgumentError("$what argument not a environment: $arg")
+        throw ArgumentError("$what argument is not a environment: $arg")
 }
 
 fun bool2ob(value: Boolean): LObject {
