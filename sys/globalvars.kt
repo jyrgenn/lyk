@@ -83,7 +83,7 @@ val debugDefunSym = intern("defun")
 val debugOffSym = intern("=off")
 val debugListSym = intern("=list")
 
-
+val defunSym = debugDefunSym
 val unquoteSymbol = intern("unquote")
 val unquoteSplicingSymbol = intern("unquote-splicing")
 val defmacroSym = intern("defmacro")

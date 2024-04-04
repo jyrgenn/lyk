@@ -4,10 +4,10 @@
                         (fooo 34))
          "68")
 (test-err "lambda 1" (lambda)
-          #/too few arguments for function/)
+          #/too few args for special form/)
 (test-err "lambda 2" (lambda 3)
-          #/lambda list is not a proper list/)
-(test-is "lambda 3" (lambda (n) (+ 3 n)) "#<function (n) (+ 3 n)>")
+          #/is not a proper list/)
+(test-is "lambda 3" (lambda (n) (+ 3 n)) "#<function *anon-lambda*>")
 (test-is "defun" (progn (defun lala (n) (* n n))
                         (lala 123))
          "15129")
@@ -19,12 +19,13 @@
 (test-is "functionp" (map #'functionp (list #'f #'g foomly))
          '(t t nil))
 
-(defparameter f-arglist '(n x &optional b (c 3) &rest other &key col (row 0)))
+(defparameter f-parameters
+  '(n x &optional b (c 3) &key col (row 0) &rest other))
 (defparameter f-body '((list n x b c other col row)))
 (defparameter f-docstring "A sample function with a complicated arglist and...
 ...a multi-line docstring.")
 (defparameter sample-f
-  `(defun sample-function ,f-arglist ,f-docstring ,@f-body))
+  `(defun sample-function ,f-parameters ,f-docstring ,@f-body))
 
 (eval sample-f)
 
@@ -42,16 +43,16 @@
 (test-is "function-docstring 1" (function-docstring #'sample-function)
          f-docstring)
 (test-is "function-docstring 2" (function-docstring #'cdr)
-         "Return the contents of the decrement part of the PAIR register.
+         "Return the contents of the decrement part of the `list` register.
 The cdr of nil is nil.")
 (test-is "function-docstring 3" (function-docstring anon1)
          "Be fruitful and multiply!")
 
-(test-is "function-arglist 1" (function-arglist #'sample-function)
-         f-arglist)
-(test-is "function-arglist 2" (function-arglist #'with-open-file)
+(test-is "function-parameters 1" (function-parameters #'sample-function)
+         f-parameters)
+(test-is "function-parameters 2" (function-parameters #'with-open-file)
          '(file-declaration &rest bodyforms))
-(test-is "function-arglist 3" (function-arglist anon1)
+(test-is "function-parameters 3" (function-parameters anon1)
          '(n p))
 
 (test-is "function-body 1" (function-body #'sample-function)

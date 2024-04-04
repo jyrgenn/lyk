@@ -582,4 +582,65 @@ fun bi_env_vars(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return list2lisp(environment.map.keys)
 }
 
+/// builtin function-definition
+/// fun     bi_function_definition
+/// std     function
+/// key     
+/// opt     
+/// rest    
+/// ret     function-definition-form
+/// special no
+/// doc {
+/// Return `function`'s definition form.
+/// `function` must be a lambda function {TODO or a macro}, not a builtin.
+/// The function definition returned contains the real function body,
+/// not a copy.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_function_definition(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return functionArg(arg1(args), "function-definition").definition()
+}
+
+/// builtin function-docstring
+/// fun     bi_function_docstring
+/// std     function
+/// key     
+/// opt     
+/// rest    
+/// ret     docstring
+/// special no
+/// doc {
+/// Return `function`'s docstring.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_function_docstring(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return makeString(functionArg(arg1(args), "function-docstring").docstring())
+}
+
+/// builtin function-parameters
+/// fun     bi_function_parameters
+/// std     function
+/// key     
+/// opt     
+/// rest    
+/// ret     parameter-list
+/// special no
+/// doc {
+/// Return the parameter list of `function`.
+/// The returned list is a reconstruction of the original parameter list;
+/// modifying it will not change the function's behaviour.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_function_parameters(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    val function = functionArg(arg1(args), "function-parameters")
+    return function.parlist()
+}
+
+
 // EOF

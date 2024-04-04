@@ -12,6 +12,7 @@ package org.w21.lyk
 /// special no
 /// doc {
 /// Return the contents of the address part of the `list` register.
+/// The car of nil is nil.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
@@ -29,6 +30,7 @@ fun bi_car(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// special no
 /// doc {
 /// Return the contents of the decrement part of the `list` register.
+/// The cdr of nil is nil.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
@@ -1779,27 +1781,6 @@ fun bi_rplacd_ret_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_function_body(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     return functionArg(arg1(args), "function-body").body()
-}
-
-/// builtin function-parameters
-/// fun     bi_function_parameters
-/// std     function
-/// key     
-/// opt     
-/// rest    
-/// ret     parameter-list
-/// special no
-/// doc {
-/// Return the parameter list of `function`.
-/// The returned list is a reconstruction of the original parameter list;
-/// modifying it will not change the function's behaviour.
-/// }
-/// end builtin
-@Suppress("UNUSED_PARAMETER")
-fun bi_function_parameters(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
-    val function = functionArg(arg1(args), "function-parameters")
-    return function.parlist()
 }
 
 /// builtin identity

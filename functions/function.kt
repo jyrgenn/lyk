@@ -6,7 +6,7 @@ package org.w21.lyk
 val anonLambdaSym = intern("*anon-lambda*")
 
 abstract class LFunction(
-    functionName: LSymbol?,                    // present if non anonymous
+    val functionName: LSymbol?,                // present if non anonymous
     val stdPars: List<LSymbol>,                // normal parameters
     val keyPars: Map<LSymbol, LObject>,        // &key name => default
     val optPars: List<Pair<LSymbol, LObject>>, // &optional name, default
@@ -72,9 +72,41 @@ abstract class LFunction(
 
     fun synopsis() = LCons(name, parlist()).toString()
 
+    open fun definition(): LObject {
+        val tag: LObject
+        val body: LObject
+        when (this) {
+            is LMacro -> {
+                tag = defmacroSym
+                body = bodyForms
+            }
+            is Lambda -> {
+                tag = if (functionName == null) LambdaSym else defunSym
+                body = bodyForms
+            }
+            else -> throw ArgumentError(
+                        "function-definition argument `$this` is not"
+                        + " a lambda function or macro")
+        }
+
+        return collectedList {
+            it.add(tag)
+            if (functionName != null) {
+                it.add(functionName)
+            }
+            it.add(parlist())
+            if (docBody != emptyString) {
+                it.add(docBody)
+            }
+            it.lastcdr(body)
+        }
+    }
+
     fun docHeader(): String {
         return "${typeDesc} ${synopsis()} => $retval"
     }
+
+    fun docstring() = docBody.value
 
     fun documentation(): String {
         val sb = StrBuf()
@@ -109,7 +141,8 @@ abstract class LFunction(
 
     open override fun dump() = desc()
 
-    open fun body() = Nil as LObject
+    open fun body(): LObject = throw ArgumentError(
+        "function-body argument `$this` is not a lambda function or macro")
 }
 
 // bind function call or macro expansion arguments to the right variables; with
