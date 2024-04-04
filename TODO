@@ -10,8 +10,8 @@ Weights/urgencies:
     Nice:  nice to have for sure, but lower priority
     TBD:   to be decided
 
-  @ pass the regtests. The regtests will in parts be adapted in the
-    process. Need.
+  @ pass the regtests. The regtests will be adapted in the process where
+    necessary. Need.
 
   - default return value in elt. Need. See elt tests in 006.
 
