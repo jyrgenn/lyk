@@ -12,12 +12,12 @@
                          (b a))
                     (cons a b)))
          "(4 . 4)")
-(test-is "flet" (flet((fac (lambda (n)
-                             (flet ((fac (lambda (n acc)
-                                           (if (zerop n)
-                                               acc
-                                             (fac (- n 1) (* n acc))))))
-                               (fac n 1)))))
+(test-is "flet" (flet((fac (n)
+                        (flet ((fac (n acc)
+                                 (if (zerop n)
+                                     acc
+                                     (fac (- n 1) (* n acc)))))
+                          (fac n 1))))
                   (fac 7))
          5040)
 

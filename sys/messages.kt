@@ -7,11 +7,9 @@ import kotlin.system.exitProcess
 
 fun printErr(vararg things: Any) {
     if (things[0] !is LispError) {
-        stderr.print("Error:")
+        stderr.print("Error: ")
     }
-    for (thing in things) {
-        stderr.print(" " + thing)
-    }
+    stderr.print(things.joinToString(" "))
     stderr.println()
 }
 
@@ -19,7 +17,7 @@ fun printErr(e: Exception) {
     stderr.println(e.toString())
 }
 
-fun errExit(message: String? = null) {
+fun errExit(message: Any? = null) {
     if (message != null) {
         printErr(message)
     }

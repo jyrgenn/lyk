@@ -169,3 +169,33 @@ fun measurePerfdata(closure: () -> Unit): String {
     // 347 pairs 558 evals in 0 ms, 844974 evals/s
     return "$conses conses $evals evals in $millis ms, $eval_s evals/s"
 }
+
+fun min(i1: Int, i2: Int) =
+    if (i1 < i2) i1 else i2
+
+fun shorten(s: String, width: Int, suffix: String = ""): String {
+    if (s.length <= width) {
+        return s
+    }
+    return s.substring(0, min(s.length, width - suffix.length)) + suffix
+}
+
+fun printEvalStack() {
+    for (frame in evalStack) {
+        val abbr = ob2bool(evalStackAbbrLines.getValueOptional() ?: T)
+        val width = getTermWidth()
+        // stderr.println(frame)
+        val (level, expr, env, location) = frame as LVector
+        val frameno = "#%d".format((level as LNumber).toInt())
+        val pad = mulString(" ", frameno.length)
+        // using format() here lead to spurious %s argument missing
+        // errors, so I work around it
+        
+        var line = StrBuf(frameno, location, env.desc()).join()
+        if (abbr) line = shorten(line, width, "[…]")
+        stderr.println(line)
+        line = StrBuf(pad, expr).join()
+        if (abbr) line = shorten(line, width, "[…]")
+        stderr.println(line)
+    }
+}
