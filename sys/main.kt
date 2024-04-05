@@ -130,6 +130,7 @@ fun main(args: Array<String>) {
         info(buildtag())
         init_Builtins()
 	init_Variables()
+        init_Streams()
         load_string(preload_code, "*preload-code*")
         
         for (fname in load_files) {
@@ -187,4 +188,5 @@ fun main(args: Array<String>) {
     } else {
         repl(Reader(stdin), "> ")
     }
+    exitLyk()
 }

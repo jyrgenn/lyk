@@ -1,6 +1,7 @@
 package org.w21.lyk
 
 import java.io.File
+import java.lang.ref.WeakReference
 
 val stdinName   = "*stdin*"
 val stdoutName  = "*stdout*"
@@ -11,6 +12,9 @@ val stdoutPath  = "/dev/stdout"
 val stderrPath  = "/dev/stderr"
 val consolePath = "/dev/tty"
 val newLine = 10
+
+
+val openStreams = mutableSetOf<WeakReference<LStream>>()
 
 
 class StringWriterStream(name: String? = null
@@ -35,6 +39,8 @@ class StringWriterStream(name: String? = null
         content = StrBuf()
         return s
     }
+
+    override fun close_specific() {}
 }
 
 
@@ -50,6 +56,8 @@ class StringReaderStream(content: String, name: String? = ""):
         }
         return null
     }
+    
+    override fun close_specific() {}
 }
 
 class FileReaderStream(file: File, name: String? = null):
@@ -76,9 +84,8 @@ class FileReaderStream(file: File, name: String? = null):
         }
     }
     
-    override fun close(): Boolean {
+    override fun close_specific() {
         fileReader.close()
-        return super.close()
     }
 }
 
@@ -123,10 +130,9 @@ class FileWriterStream(path: String,
         }
     }
 
-    override fun close(): Boolean {
+    override fun close_specific() {
         try {
             fileWriter.close()
-            return super.close()
         } catch (e: Exception) {
             throw IOError(e)
         }
@@ -145,9 +151,10 @@ abstract class LStream(
 {
     var charUnread: Char? = null
     var is_open = true
-    // init {
-    //     System.out.println("opened $this")
-    // }
+    
+    init {
+        openStreams.add(WeakReference(this))
+    }
 
     open fun read(): Char? {          // the actual reading
         throw ArgumentError("read on $this")
@@ -217,9 +224,13 @@ abstract class LStream(
         charUnread = ch
     }
 
+    abstract fun close_specific()
+
     open fun close(): Boolean {
         val result = is_open
         is_open = false
+        close_specific()
+        openStreams.minus(WeakReference(this))
         return result
     }
 
@@ -232,4 +243,19 @@ abstract class LStream(
     }
     override fun desc() = toString()
 
+}
+
+fun closeAllStreams() {
+    for (ref in openStreams) {
+        try {
+            val stream = ref.get()
+            if (stream != null) {
+                stream.close()
+            }
+        } catch (e: Exception) {}
+    }
+}
+
+fun init_Streams() {
+    atexit(::closeAllStreams)
 }
