@@ -243,6 +243,12 @@ abstract class LStream(
     }
     override fun desc() = toString()
 
+    fun finalize() {
+        debug(debugFinalizeSym) {
+            "$this"
+        }
+        close()
+    }
 }
 
 fun closeAllStreams() {
@@ -250,6 +256,9 @@ fun closeAllStreams() {
         try {
             val stream = ref.get()
             if (stream != null) {
+                debug(debugAtexitSym) {
+                    "close $stream"
+                }
                 stream.close()
             }
         } catch (e: Exception) {}

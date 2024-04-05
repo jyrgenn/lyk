@@ -25,6 +25,8 @@ object Options {
         debugPreloadSym to false,
         debugFormatSym to false,
         debugDefunSym to false,
+        debugAtexitSym to false,
+        debugFinalizeSym to false,
     )
     var print_estack = false
     var maxrecurse = 0

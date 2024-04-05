@@ -13,6 +13,9 @@ fun atexit(closure: () -> Unit) {
 
 fun exitLyk(status: Int = 0) {
     for (closure in cleanupRoutines) {
+        debug(debugAtexitSym) {
+            "calling $closure"
+        }
         closure()
     }
     exitProcess(status)
