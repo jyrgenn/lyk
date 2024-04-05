@@ -11,7 +11,7 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	builtins/tables.kt builtins/utils.kt builtins/vectors.kt \
 	builtins/sequences.kt builtins/macros.kt builtins/factor.kt \
 	utils/lists.kt utils/div.kt utils/interfaces.kt \
-	sys/messages.kt sys/main.kt sys/globalvars.kt
+	sys/messages.kt sys/main.kt sys/globalvars.kt sys/exit.kt
 GENSRCS = generated/buildtag.kt generated/init-builtins.kt \
 	generated/preload.kt
 ALLSRCS = $(SRCS) $(GENSRCS)

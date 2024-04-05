@@ -3,7 +3,7 @@
 package org.w21.lyk
 
 import kotlin.time.measureTime
-import kotlin.system.exitProcess
+
 
 fun mulString(s: String, n: Int): String {
     val sb = StringBuilder()

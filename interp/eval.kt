@@ -2,8 +2,6 @@
 
 package org.w21.lyk
 
-import kotlin.system.exitProcess
-
 
 // debug frame marker; if there is a second object, it is a return
 fun markFrame(level: Int, ob1: LObject, ob2: LObject? = null): String {
@@ -89,7 +87,7 @@ fun eval(form: LObject): LObject {
         stderr.print("${markFrame(evalLevel, form)}\n: ")
         val line = readLine()
         if (line == null) {
-            exitProcess(0)
+            exitLyk()
         }
         null
     }
@@ -133,7 +131,7 @@ fun eval(form: LObject): LObject {
             stderr.print(markFrame(evalLevel, form, value) + "\n: ")
             val line = readLine()
             if (line == null) {
-                exitProcess(0)
+                exitLyk()
             }
             null
         }

@@ -1,7 +1,6 @@
 
 package org.w21.lyk
 
-import kotlin.system.exitProcess
 
 val verbosityNotice = 1
 val verbosityInfo = 2
@@ -55,7 +54,7 @@ fun usage() {
 	print(" $opt")
     }
     println()
-    exitProcess(0)
+    exitLyk(0)
 }
 
 
@@ -167,7 +166,7 @@ fun main(args: Array<String>) {
             }
             errExit(e)
         }
-        exitProcess(0)
+        exitLyk(0)
     }
     if (args_lc.list !== Nil) {
         // first argument is the file to run, rest goes to *command-line-args*"

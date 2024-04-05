@@ -2,8 +2,6 @@
 
 package org.w21.lyk
 
-import kotlin.system.exitProcess
-
 
 fun printErr(vararg things: Any) {
     if (things[0] !is LispError) {
@@ -21,7 +19,7 @@ fun errExit(message: Any? = null) {
     if (message != null) {
         printErr(message)
     }
-    exitProcess(1)
+    exitLyk(1)
 }
 
 fun info(message: String) {
