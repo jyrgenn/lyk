@@ -17,14 +17,29 @@ class LRegexp(pattern: String): LObject() {
     override fun desc() = "#/${regexp.pattern}/"
     override fun toString() = desc()
 
-    fun match(s: String): LObject {
+    fun matchToList(match: MatchResult?): LObject {
         val lc = ListCollector()
-        val match = regexp.find(s)
         if (match != null) {
             // lc.add(makeString(match.value))
             for (group in match.groups) {
-                lc.add(if (group != null) makeString(group.value) else Nil)
+                lc.add(if (group != null)
+                           makeString(group.value)
+                       else
+                           emptyString)
             }
+        }
+        return lc.list        
+    }
+
+    fun match(s: String): LObject {
+        val match = regexp.find(s)
+        return matchToList(match)
+    }
+
+    fun findAll(s: String): LObject {
+        val lc = ListCollector()
+        for (match in regexp.findAll(s)) {
+            lc.add(matchToList(match))
         }
         return lc.list
     }

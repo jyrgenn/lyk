@@ -1,6 +1,22 @@
 
 package org.w21.lyk
 
+
+// return a list with the first n elements of list; all for 0
+fun firstN(list: LObject, n: Int): LObject {
+    val lc = ListCollector()
+    var l = list
+
+    for (i in 0..<n) {
+        if (l === Nil) {
+            return lc.list
+        }
+        lc.add(l.car)
+        l = l.cdr
+    }
+    return lc.list
+}
+
 fun collectedList(closure: (lc: ListCollector) -> Unit): LObject {
     val lc = ListCollector()
     closure(lc)

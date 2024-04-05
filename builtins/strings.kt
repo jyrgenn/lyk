@@ -73,7 +73,7 @@ fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// fun     bi_regexp_match
 /// std     regexp string
 /// key     
-/// opt     
+/// opt     limit
 /// rest    
 /// ret     value
 /// special no
@@ -81,7 +81,11 @@ fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// Return a list of matches if regexp `regexp` matches `string`, nil else.
 /// The returned value in case of a match is a list of the values for the
 /// whole match and possible group matches. If an optional group (...)?
-/// does not match, its value is nil. 
+/// does not match, its value is "".
+/// With optional third argument `limit`, a list of match lists for
+/// (potentially) multiple matches is returned. If `limit` is t, all matches
+/// are considered; otherwise, a number specifies the number of matches to
+/// be considered.
 ///
 /// Regular expression syntax is that of the Kotlin regexp package (RE2),
 /// which is largely similar to that of the Perl and Python languages.
@@ -97,10 +101,22 @@ fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_regexp_match(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    val (re, string) = args2(args)
-    val regex = regexpArg(re, "regexp-match regepx")
+    val (re, string, limit) = args3(args)
+    val regexp = regexpArg(re, "regexp-match regexp")
     val s = string.toString()
-    return regex.match(s)
+
+    if (limit === Nil) {
+        return regexp.match(s)
+    }
+    val matchlist = regexp.findAll(s)
+    if (limit === T) {
+        return matchlist
+    }
+    if (limit is LNumber) {
+        return firstN(matchlist, limit.toInt())
+    }
+    throw ArgumentError(
+        "regexp-match `limit` argument is not a number or t or nil: $limit")
 }
 
 /// builtin regexp-split
