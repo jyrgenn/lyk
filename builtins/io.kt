@@ -513,3 +513,48 @@ fun bi_dirname(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return makeString(dirname(fname))
 }
 
+/// builtin make-string-output-stream
+/// fun     bi_make_string_output_stream
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     string-stream
+/// special no
+/// doc {
+/// Return a output string stream that stores the text that is output to it.
+/// See get-output-stream-string for returning the contents of that stream.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_make_string_output_stream(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return StringWriterStream()
+}
+
+/// builtin get-output-stream-string
+/// fun     bi_get_output_stream_string
+/// std     string-output-stream
+/// key     
+/// opt     
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Return a string with the contents written to `string-output-stream`.
+/// This operation clears any characters on `string-output-stream`, so
+/// the string contains only those characters which have been output since
+/// the last call to get-output-stream-string or since the creation of the
+/// string-output-stream, whichever occurred most recently. 
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_get_output_stream_string(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+           val arg = arg1(args)
+           if (arg !is StringWriterStream) {
+               throw TypeError("get-output-stream-string argument is not a "
+                               + "output stream string")
+           }
+           return makeString(arg.value_and_reset())
+}

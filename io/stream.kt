@@ -13,7 +13,32 @@ val consolePath = "/dev/tty"
 val newLine = 10
 
 
-open class StringReaderStream(content: String, name: String? = ""):
+class StringWriterStream(name: String? = null
+): LStream(output = true, name = name) {
+    var content = StrBuf()
+    
+    override fun write(code: Int) {
+        content.add(code.toChar())
+    }
+
+    override fun write(s: String) {
+        content.add(s)
+    }
+
+    fun value_and_reset(): String {
+        // This operation clears any characters on string-output-stream, so the
+        // string contains only those characters which have been output since
+        // the last call to get-output-stream-string or since the creation of
+        // the string-output-stream, whichever occurred most recently.
+        // [CLHS, Function GET-OUTPUT-STREAM-STRING]
+        val s = content.toString()
+        content = StrBuf()
+        return s
+    }
+}
+
+
+class StringReaderStream(content: String, name: String? = ""):
     LStream(input = true, path = null, name = name)
 {
     val chars = content.toCharArray()
@@ -25,13 +50,9 @@ open class StringReaderStream(content: String, name: String? = ""):
         }
         return null
     }
-    
-    override fun close(): Boolean {
-        return super.close()
-    }
 }
 
-open class FileReaderStream(file: File, name: String? = null):
+class FileReaderStream(file: File, name: String? = null):
     LStream(input = true, path = file.path, name = name ?: file.path,
             error = false)
 {
@@ -61,7 +82,7 @@ open class FileReaderStream(file: File, name: String? = null):
     }
 }
 
-open class FileWriterStream(path: String,
+class FileWriterStream(path: String,
                             name: String? = null,
                             val flushln: Boolean = false,
                             val flushch: Boolean = false,
@@ -73,10 +94,6 @@ open class FileWriterStream(path: String,
 {
     val fileWriter = File(path).printWriter().buffered()
 
-    override fun read(): Char? {
-        throw ArgumentError("read on output stream $this")
-    }
-    
     override fun write(code: Int) {
         try {
             fileWriter.write(code)
@@ -98,7 +115,7 @@ open class FileWriterStream(path: String,
         }
     }
 
-    fun flush() {
+    override fun flush() {
         try {
             fileWriter.flush()
         } catch (e: Exception) {
@@ -133,7 +150,7 @@ abstract class LStream(
     // }
 
     open fun read(): Char? {          // the actual reading
-        throw ArgumentError("write on $this")
+        throw ArgumentError("read on $this")
     }
     open fun write(code: Int) {
         throw ArgumentError("write on $this")
@@ -144,6 +161,7 @@ abstract class LStream(
     open fun write(ch: Char) {
         write(ch.code)
     }
+    open fun flush() {}
     
     open fun readLine(trimNewline: Boolean): String? {
         val sb = StrBuf()
