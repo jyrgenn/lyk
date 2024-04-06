@@ -10,8 +10,9 @@
   (test-form "incf 3" (lambda () (incf n 3)) "9")
   (test-form "incf 4" (lambda () (progn (errset (incf n 'b)
                                               nil)
-                                      (car (#/:.*:/ sys:last-error))))
-           ": argument is not a number:")
+                                      (car (regexp-match #/:.*:/
+                                                         *last-error*))))
+           ": + argument is not a number:")
   (test-form "incf 5" (lambda () (incf m)) "8.25")
   (test-form "incf 6" (lambda () (incf o (- 3))) "-123459")
   (test-form "decf 1" (lambda () (progn (decf n)
@@ -21,8 +22,9 @@
   (test-form "decf 3" (lambda () (decf n 3)) "4")
   (test-form "decf 4" (lambda () (progn (errset (decf n 'b)
                                               nil)
-                                      (car (#/:.*:/ sys:last-error))))
-           ": argument is not a number:")
+                                      (car (regexp-match #/:.*:/
+                                                         *last-error*))))
+           ": - argument is not a number:")
   (test-form "decf 5" (lambda () (decf m)) "7.25")
   (test-form "decf 6" (lambda () (decf o (- 3))) "-123456")
   )
