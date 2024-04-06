@@ -359,7 +359,7 @@ fun makeLambdaOrMacro(params: LObject,
 
         when (action) {
             Ac.st_std -> {
-                stdPars.add(symbolArg(elem, "lamba parameter"))
+                stdPars.add(symbolArg(elem, "lambda parameter"))
             }
             Ac.st_key -> {
                 val (key, defval) = parse_2parlist(elem)

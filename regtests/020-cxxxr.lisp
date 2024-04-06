@@ -24,17 +24,26 @@
 (test-is "caddr" (caddr tree3) "g")
 (test-is "cdddr" (cdddr tree3) "h")
 
+(defun n2b (n width &optional (acc ""))
+  "Convert n to binary representation string of width."
+  (if (zerop width)
+      acc
+      (n2b (ash n -1)
+           (1- width)
+           (string (if (zerop (% n 2)) "0" "1")
+                   acc))))
+
 (defparameter tree4
   (let ((*next-tag* 0))
-    (flet ((next-symbol (lambda ()
-                          (prog1
-                              (intern (format nil "%04b" *next-tag*))
-                            (setq *next-tag* (1+ *next-tag*)))))
-           (mktree (lambda (depth)
-                     (if (zerop depth)
-                         (next-symbol)
-                       (cons (mktree (1- depth))
-                             (mktree (1- depth)))))))
+    (flet ((next-symbol ()
+             (prog1
+                 (intern (n2b *next-tag* 4))
+               (setq *next-tag* (1+ *next-tag*))))
+           (mktree (depth)
+             (if (zerop depth)
+                 (next-symbol)
+                 (cons (mktree (1- depth))
+                       (mktree (1- depth))))))
       (mktree 4))))
 ;;(format t "%s\n" tree4)
 (test-is "caaaar" (caaaar tree4) "0000")

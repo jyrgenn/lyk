@@ -101,7 +101,7 @@ fun bi_caaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_caadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return arg1(args).cdr.car.cdr
+    return arg1(args).cdr.car.car
 }
 
 /// builtin cadar
