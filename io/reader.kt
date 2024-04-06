@@ -535,9 +535,14 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                 // and for another to escape those that are special chars in
                 // strings. Holy bovine, she is dumping!
                 if (ch in escape2specialChar.keys) {
-                    to_append = escape2specialChar.getValue(ch)
+                    to_append = escape2specialChar.get(ch) ?:
+                        throw SyntaxError("invalid char in special char escape"
+                                          +": $ch", this)
                 } else if (ch in hexdigits) {
-                    to_append = parse_hexdigits(n_hexdigits.getValue(ch))
+                    to_append = parse_hexdigits(
+                        n_hexdigits.get(ch) ?:
+                            throw SyntaxError("invalid char in hexdigits escape"
+                                              +": $ch", this))
                 } else if (ch in octaldigits) {
                     to_append = parse_octaldigits(ch)
                 } else if (ch == endChar) {

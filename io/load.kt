@@ -6,19 +6,21 @@ package org.w21.lyk
 // return the result value of the load, and a Boolean if the file was actually
 // found
 fun load_file(pathname: String, throw_error: Boolean = true,
-              quiet: Boolean = false, print: Boolean = false
+              quiet: Boolean = false, print: Boolean = false,
+              debugline: Boolean = false
 ): LObject {
-    return load_stream(FileReaderStream(pathname),
+    return load_stream(FileReaderStream(pathname, debugline = debugline),
                        pathname, throw_error, quiet, print)
 }
 
 // return the result value of the load, and a Boolean if the file was actually
 // found
 fun load_file(dir: String, fname: String, throw_error: Boolean = true,
-              quiet: Boolean = false, print: Boolean = false
+              quiet: Boolean = false, print: Boolean = false,
+              debugline: Boolean = false
 ): LObject {
     
-    return load_stream(FileReaderStream(dir, fname),
+    return load_stream(FileReaderStream(dir, fname, debugline = debugline),
                        dir + "/" + fname, throw_error, quiet, print)
 }
 

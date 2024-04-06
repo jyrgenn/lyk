@@ -81,6 +81,7 @@ val debugFormatSym = intern("format")
 val debugDefunSym = intern("defun")
 val debugAtexitSym = intern("atexit")
 val debugFinalizeSym = intern("finalize")
+val debugLoadlineSym = intern("loadline")
 
 val debugOffSym = intern("=off")
 val debugListSym = intern("=list")

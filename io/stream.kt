@@ -51,34 +51,48 @@ class StringReaderStream(content: String, name: String? = ""):
     var nextpos = 0
 
     override fun read(): Char? {
-        if (is_open && nextpos < chars.size) {
+        if (hasNext()) {
             return chars[nextpos++]
         }
         return null
     }
+
+    fun hasNext() = is_open && nextpos < chars.size
     
     override fun close_specific() {}
 }
 
-class FileReaderStream(file: File, name: String? = null):
+class FileReaderStream(file: File, name: String? = null,
+                       val debugline: Boolean = false):
     LStream(input = true, path = file.path, name = name ?: file.path,
             error = false)
 {
-    constructor(pathname: String, name: String? = null):
-        this(File(pathname), name = name ?: pathname)
+    constructor(pathname: String, name: String? = null,
+                debugline: Boolean = false):
+        this(File(pathname), name = name ?: pathname, debugline = debugline)
 
-    constructor(dir: String, fname: String, name: String? = null):
-        this(File(dir, fname), name = name ?: fname)
+    constructor(dir: String, fname: String, name: String? = null,
+                debugline: Boolean = false):
+        this(File(dir, fname), name = name ?: fname, debugline = debugline)
 
     val fileReader = file.bufferedReader()
+    var linebuf = StringReaderStream("")
 
     override fun read(): Char? {
         try {
-            val c = fileReader.read()       // returns an Int!
-            if (c < 0) {                    // EOF as in C
-                return null
+            if (!linebuf.hasNext()) {
+                val line = fileReader.readLine()
+                if (line == null) {
+                    return null
+                }
+                if (debugline) {
+                    debug(debugLoadlineSym) {
+                        "\"$line\""
+                    }
+                }
+                linebuf = StringReaderStream(line + "\n")
             }
-            return c.toChar()
+            return linebuf.read()
         } catch (e: Exception) {
             throw IOError(e)
         }

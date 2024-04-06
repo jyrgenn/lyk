@@ -234,7 +234,8 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         for (suffix in suffixes) {
             val fullname = fname + suffix
             if (File(dir, fullname).exists()) {
-                return load_file(dir, fullname, throw_error, !verbose, print)
+                return load_file(dir, fullname, throw_error, !verbose, print,
+                                 debugline = Options.debug[debugLoadlineSym]!!)
             }
         }
         return null
@@ -242,7 +243,8 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 
     if (fname.contains("/")) {
         if (File(fname).exists()) {
-            return load_file(fname, throw_error, !verbose, print)
+            return load_file(fname, throw_error, !verbose, print,
+                             debugline = Options.debug[debugLoadlineSym]!!)
         }
         throw IOError("could not find load file: $fname")
     }
