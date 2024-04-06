@@ -1,0 +1,13 @@
+Lyk — a Lisp yn Kotlin
+======================
+
+Like my previous attempts, mostly, this Lisp interpreter implements
+a somewhat traditional form of Lisp, closer to Maclisp of Common
+Lisp than to Scheme. Somehow I seem to feel close to separate
+function and value properties of a symbol than to just one.
+
+While this is far from the vast comprehensiveness and sophistication
+of Common Lisp, I try to keep the names of and functionality of
+builtin functions somewhat similar, if far simpler.
+
+
