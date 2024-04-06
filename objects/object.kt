@@ -25,7 +25,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     open fun isList() = false
 
     open fun length(): Int {
-        throw ValueError("$this has no length")
+        throw ValueError("${typeOf(this)} $this has no length")
     }
 
     open fun isKeyword() = false

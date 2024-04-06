@@ -49,18 +49,19 @@ fun bi_table_put(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// fun     bi_make_table
 /// std     
 /// key     
-/// opt     alist
-/// rest    
+/// opt     
+/// rest    pairs
 /// ret     table
 /// special no
 /// doc {
-/// Return a new, empty key-value table.
+/// Return a new table, optionally filled with `pairs`.
+/// Every argument that is not a pair will be used as (arg . nil).
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_make_table(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return LTable(arg1(args))
+    return LTable(args)
 }
 
 /// builtin table-count

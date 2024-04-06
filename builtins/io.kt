@@ -187,7 +187,6 @@ fun bi_terpri(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_warning(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    // TODO: warnings as errors
     val (msg1, rest) = args
     val fields = mutableListOf(msg1.toString())
     for (arg in rest) {

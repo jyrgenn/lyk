@@ -13,7 +13,7 @@ class LTable(): LObject() {
             if (elem is LCons) {
                 the_table[elem.car] = elem.cdr
             } else {
-                throw InternalError("Table element is not Cons ($this, $elems)")
+                the_table[elem] = Nil
             }
         }
     }
@@ -36,7 +36,7 @@ class LTable(): LObject() {
         return value ?: Nil
     }
 
-    fun count() = the_table.size
+    override fun length() = the_table.size
 
     fun put(key: LObject, value: LObject) {
         the_table[key] = value
