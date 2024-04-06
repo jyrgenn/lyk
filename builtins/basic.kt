@@ -1332,6 +1332,40 @@ fun bi_append(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return lc.list
 }
 
+/// builtin nconc
+/// fun     bi_nconc
+/// std     
+/// key     
+/// opt     
+/// rest    lists
+/// ret     value
+/// special no
+/// doc {
+/// Return a new list that is the concatenation of `lists`.
+/// The list structure of all but the last list is modified.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_nconc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    var acc: LCons? = null              // accumulated lists
+    var lastcell: LCons? = null         // last cons of acc
+
+    for (list in args) {
+        if (list === Nil) {
+            continue
+        }
+        val next = consArg(list, "nconc")
+        if (acc == null) {
+            acc = next
+            lastcell = lastCons(acc)
+        } else {
+            lastcell!!.cdr = next
+            lastcell = lastCons(lastcell)
+        }
+    }
+    return acc ?: Nil
+}
+
 /// builtin fset
 /// fun     bi_fset
 /// std     symbol new-func
