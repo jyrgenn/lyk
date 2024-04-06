@@ -122,6 +122,8 @@ fun arrayIntern(array: Array<String>): List<LSymbol> {
     return symbols
 }
 
+// Of a string => object map, intern the strings as symbols and return
+// the result as a new map.
 fun mapInternKeys(map: Map<String, LObject>): Map<LSymbol, LObject> {
     val result = mutableMapOf<LSymbol, LObject>()
     for ((key, value) in map) {
@@ -130,6 +132,8 @@ fun mapInternKeys(map: Map<String, LObject>): Map<LSymbol, LObject> {
     return result
 }
 
+// Of an array of string, object pairs, intern the strings as symbols and return
+// the result as a list.
 fun pairsInternFirst(pairs: Array<Pair<String, LObject>>
 ): List<Pair<LSymbol, LObject>> {
     var result = mutableListOf<Pair<LSymbol, LObject>>()
@@ -138,6 +142,7 @@ fun pairsInternFirst(pairs: Array<Pair<String, LObject>>
     }
     return result
 }
+
 
 // Measure performance data while executing the passed closure. The returned
 // value is a Pair of the string with the performance data and the returned
