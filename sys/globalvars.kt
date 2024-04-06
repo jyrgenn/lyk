@@ -112,7 +112,6 @@ var maxEvalLevel: Int = 0
 var maxRecursionDepth: Int = 1_000_000_000
 var abortEval: Boolean = false
 var stepEval: Boolean = false
-var evalStack = ListCollector()
 
 fun getTermWidth(): Int {
     val w = terminalWidth.getValueOptional()

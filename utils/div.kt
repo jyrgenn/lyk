@@ -170,32 +170,43 @@ fun measurePerfdata(closure: () -> Unit): String {
     return "$conses conses $evals evals in $millis ms, $eval_s evals/s"
 }
 
+// Return the smaller of the two numbers.
 fun min(i1: Int, i2: Int) =
     if (i1 < i2) i1 else i2
 
-fun shorten(s: String, width: Int, suffix: String = ""): String {
+
+// Return the string `s` abbreviated to `width` if it is longer, otherwise
+// return the string. Optional `suffix` will be placed at the end of the
+// abbreviated string the show the string was abbreviated.
+fun abbreviate(s: String, width: Int, suffix: String = ""): String {
     if (s.length <= width) {
         return s
     }
     return s.substring(0, min(s.length, width - suffix.length)) + suffix
 }
 
-fun printEvalStack() {
-    for (frame in evalStack) {
-        val abbr = ob2bool(evalStackAbbrLines.getValueOptional() ?: T)
-        val width = getTermWidth()
-        // stderr.println(frame)
+
+// print the eval stack frames accumulated in `error` -- the first line shows
+// the depth of the eval recursion, the approximate location of the code, and
+// the environment of that frame; the second line shows the expression being
+// evaluated
+fun printEvalStack(error: LispError) {
+    val width = getTermWidth()
+    val abbr = ob2bool(evalStackAbbrLines.getValueOptional() ?: T)
+    
+    for (frame in error.evalStack) {
         val (level, expr, env, location) = frame as LVector
         val frameno = "#%d".format((level as LNumber).toInt())
-        val pad = mulString(" ", frameno.length)
-        // using format() here lead to spurious %s argument missing
-        // errors, so I work around it
-        
+
+        // print frame number, location, environment line
         var line = StrBuf(frameno, location, env.desc()).join()
-        if (abbr) line = shorten(line, width, "[…]")
+        if (abbr) line = abbreviate(line, width, "[…]")
         stderr.println(line)
-        line = StrBuf(pad, expr).join()
-        if (abbr) line = shorten(line, width, "[…]")
+
+        // print the expression line; indent it as far as the frame number in
+        // the line above is wide
+        line = StrBuf(mulString(" ", frameno.length), expr).join()
+        if (abbr) line = abbreviate(line, width, "[…]")
         stderr.println(line)
     }
 }

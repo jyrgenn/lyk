@@ -166,7 +166,7 @@ fun main(args: Array<String>) {
             info(perfdata)
         } catch (e: Exception) {
             if (e is LispError) {
-                printEvalStack()
+                printEvalStack(e)
             }
             errExit(e)
         }
@@ -180,7 +180,7 @@ fun main(args: Array<String>) {
         try {
             load_file(file)
         } catch (e: LispError) {
-            printEvalStack()
+            printEvalStack(e)
         } catch (e: Exception) {
             if (Options.print_estack) {
                 e.printStackTrace()

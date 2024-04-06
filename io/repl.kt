@@ -75,14 +75,13 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
                 e.printStackTrace()
             }
             printErr(e)
-            printEvalStack()
-            if (evalStack.size > 10) {
+            printEvalStack(e)
+            if (e.evalStack.size > 10) {
                 printErr(e)
             }
             debug(debugErrorSym) {
                 e.toObject().desc()
             }
-            evalStack = ListCollector()
             if (!interactive) {
                 return e
             }

@@ -10,6 +10,7 @@ class ErrorObject(val error: LispError): LObject() {
 
 open class LispError(message: String, val data: LObject = Nil
 ): Exception(message) {
+    val evalStack = ListCollector()
 
     fun toObject() = ErrorObject(this)
 
