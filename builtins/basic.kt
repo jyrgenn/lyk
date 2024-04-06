@@ -1062,6 +1062,28 @@ fun bi_listp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return bool2ob(arg is LCons || arg === Nil)
 }
 
+/// builtin sequencep
+/// fun     bi_sequencep
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if `object` is a sequence, else nil.
+/// Lists, strings, and vectors are sequences.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_sequencep(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val arg = arg1(args)
+    return bool2ob(arg is LCons
+                       || arg === Nil
+                       || arg is LVector
+                       || arg is LString)
+}
+
 /// builtin functionp
 /// fun     bi_functionp
 /// std     object

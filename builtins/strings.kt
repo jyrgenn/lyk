@@ -119,6 +119,14 @@ fun bi_regexp_match(args: LObject, kwArgs: Map<LSymbol, LObject>
         "regexp-match `limit` argument is not a number or t or nil: $limit")
 }
 
+fun regexp_split(regexp: LRegexp, s: String, limit: Int): LObject {
+    return collectedList {
+        for (elem in regexp.split(s, limit)) {
+            it.add(makeString(elem))
+        }
+    }
+}
+
 /// builtin regexp-split
 /// fun     bi_regexp_split
 /// std     re string
@@ -136,12 +144,8 @@ fun bi_regexp_match(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_regexp_split(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (re, s, limit) = args3(args)
-    return collectedList {
-        for (elem in regexpArg(re, "regexp-split regexp").split(
-                 s.toString(), intArg(limit, "regexp-split limit"))) {
-            it.add(makeString(elem))
-        }
-    }
+    return regexp_split(regexpArg(re, "regexp-split regexp"), s.toString(),
+                        intArg(limit, "regexp-split limit"))
 }
 
 /// builtin regexp-replace
@@ -165,3 +169,350 @@ fun bi_regexp_replace(args: LObject, kwArgs: Map<LSymbol, LObject>
                           intArg(limit, "regexp-replace limit"))
 }
 
+/// builtin string-split
+/// fun     bi_string_split
+/// std     string
+/// key     
+/// opt     separator, limit, keep-empty
+/// rest    
+/// ret     string-list
+/// special no
+/// doc {
+/// Split `string` into parts separated by `separator`; return them as list.
+/// If `separator` is a regexp object, a regexp match is done instead of a
+/// string match. If it is nil or unspecified, it is assumed to be
+/// whitespace. if `limit` is non-nil and positive, it is the maximum
+/// number of parts into which the string is split.
+/// If separator and keep-empty are both nil, don't keep empty parts at
+/// the beginning or the end of the list.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_split(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (string, separator, limit, keep_empty) = args4(args)
+    var s = string.toString()
+    var regexp: LRegexp
+    var ilimit: Int
+
+    if (separator === Nil) {
+        if (keep_empty === Nil) {
+            s = s.trim()
+        }
+        regexp = LRegexp("\\s+")
+    } else if (separator is LRegexp) {
+        regexp = separator
+    } else {
+        regexp = LRegexp(Regex.escape(separator.toString()))
+    }
+    if (limit === Nil) {
+        ilimit = 0
+    } else {
+        ilimit = intArg(limit, "string-split limit")
+        if (ilimit < 0) {
+            ilimit = 0
+        }
+    }
+    return regexp_split(regexp, s, ilimit)
+}
+
+fun substring_limits(start: LObject, end: LObject, len: Int, what: String
+): Pair<Int, Int> {
+    val pos1 = (if (start === Nil)
+                    0
+                else
+                    min(len, max(0, intArg(start, what + " start"))))
+    val pos2 = (if (end === Nil)
+                    len
+                else
+                    max(0, min(len, intArg(end, what + " start"))))
+    return Pair(pos1, pos2)
+}
+
+
+/// builtin string-upcase
+/// fun     bi_string_upcase
+/// std     string
+/// key     
+/// opt     start, end
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Return `string` with all lowercase chars replaced by uppercase chars.
+/// `start` and `end` may specify the region of the string to be treated;
+/// defaults are 0 and the end of the string.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_upcase(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (string, start, end) = args3(args)
+    val s = string.toString()
+    val len = s.length
+
+    val (pos1, pos2) = substring_limits(start, end, len, "string-upcase")
+
+    if (pos1 >= pos2) {
+        return makeString(s)
+    }
+    try {
+        val prefix = s.substring(0, pos1)
+        val selected = s.substring(pos1, pos2)
+        val suffix = s.substring(pos2, len)
+        return makeString(prefix + selected.uppercase() + suffix)
+    } catch (e: java.lang.StringIndexOutOfBoundsException) {
+        // cannot happen
+        throw IndexError("range [$pos1, $pos2) out of bounds for "
+                         + "length $len in string-upcase")
+    }
+}
+
+/// builtin string-downcase
+/// fun     bi_string_downcase
+/// std     string
+/// key     
+/// opt     start, end
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Return `string` with all lowercase chars replaced by uppercase chars.
+/// `start` and `end` may specify the region of the string to be treated;
+/// defaults are 0 and the end of the string.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_downcase(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (string, start, end) = args3(args)
+    val s = string.toString()
+    val len = s.length
+
+    val (pos1, pos2) = substring_limits(start, end, len, "string-downcase")
+
+    if (pos1 >= pos2) {
+        return makeString(s)
+    }
+    try {
+        val prefix = s.substring(0, pos1)
+        val selected = s.substring(pos1, pos2)
+        val suffix = s.substring(pos2, len)
+        return makeString(prefix + selected.lowercase() + suffix)
+    } catch (e: java.lang.StringIndexOutOfBoundsException) {
+        // cannot happen
+        throw IndexError("range [$pos1, $pos2) out of bounds for "
+                         + "length $len in string-downcase")
+    }
+}
+
+val word_chars =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+fun capitalize(s: String, is_in_word: Boolean): String {
+    val sb = StrBuf()
+    var in_word = is_in_word
+    
+    for (ch in s) {
+        if (in_word) {
+            if (!(ch in word_chars)) {
+                in_word = false
+            }
+            sb.add(ch.lowercase())
+        } else if (ch in word_chars) {
+            sb.add(ch.uppercase())
+            in_word = true
+        } else {
+            sb.add(ch)
+        }
+    }
+    return sb.toString()
+}
+
+
+/// builtin string-capitalize
+/// fun     bi_string_capitalize
+/// std     string
+/// key     
+/// opt     start, end
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Return `string` with all lowercase chars replaced by uppercase chars.
+/// `start` and `end` may specify the region of the string to be treated;
+/// defaults are 0 and the end of the string.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_capitalize(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (string, start, end) = args3(args)
+    val s = string.toString()
+    val len = s.length
+
+    val (pos1, pos2) = substring_limits(start, end, len, "string-capitalize")
+
+    if (pos1 >= pos2) {
+        return makeString(s)
+    }
+    try {
+        val prefix = s.substring(0, pos1)
+        val selected = s.substring(pos1, pos2)
+        val suffix = s.substring(pos2, len)
+        val is_in_word = pos1 > 0 && prefix[pos1 - 1] in word_chars
+        return makeString(prefix
+                          + capitalize(selected, is_in_word)
+                          + suffix)
+    } catch (e: java.lang.StringIndexOutOfBoundsException) {
+        // cannot happen
+        throw IndexError("range [$pos1, $pos2) out of bounds for "
+                         + "length $len in string-capitalize")
+    }
+}
+
+
+fun string_trim(s: String, pred: (Char) -> Boolean,
+                left: Boolean, right: Boolean): String {
+    val len = s.length
+    var leftstart = 0
+    var rightend = len
+
+    if (left) {
+        for (i in 0..len) {
+            if (i == len) {
+                return ""
+            }
+            if (!pred(s[i])) {
+                leftstart = i
+                break
+            }
+        }
+    }
+    if (right) {
+        for (i in len - 1 downTo -1) {
+            if (i == -1) {
+                return ""
+            }
+            if (!pred(s[i])) {
+                rightend = i + 1
+                break
+            }
+        }
+    }
+    return s.substring(leftstart, rightend)
+}
+
+/// builtin string-trim
+/// fun     bi_string_trim
+/// std     char-bag string
+/// key     
+/// opt     
+/// rest    
+/// ret     trimmed-string
+/// special no
+/// doc {
+/// Return a substring of `string`, with characters in `char-bag` stripped
+/// off the beginning and end. `char-bag` may be t, in which case all
+/// whitespace characters will be stripped, or a sequence of characters.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_trim(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    var (charbag, string) = args2(args)
+    val pred: (it: Char) -> Boolean
+
+    if (charbag === T) {
+        pred = { it.isWhitespace() }
+    } else {
+        val chars = charbag.toString()
+        pred = { it in chars }
+    }
+    return makeString(string_trim(string.toString(), pred, true, true))
+}
+
+/// builtin string-left-trim
+/// fun     bi_string_left_trim
+/// std     char-bag string
+/// key     
+/// opt     
+/// rest    
+/// ret     trimmed-string
+/// special no
+/// doc {
+/// Return a substring of `string`, with characters in `char-bag` stripped
+/// off the beginning. `char-bag` may be t, in which case all whitespace
+/// characters will be stripped, or a sequence of characters.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_left_trim(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    var (charbag, string) = args2(args)
+    val pred: (it: Char) -> Boolean
+
+    if (charbag === T) {
+        pred = { it.isWhitespace() }
+    } else {
+        val chars = charbag.toString()
+        pred = { it in chars }
+    }
+    return makeString(string_trim(string.toString(), pred, true, false))
+}
+
+/// builtin string-right-trim
+/// fun     bi_string_right_trim
+/// std     char-bag string
+/// key     
+/// opt     
+/// rest    
+/// ret     trimmed-string
+/// special no
+/// doc {
+/// Return a substring of `string`, with characters in `char-bag` stripped
+/// off the end. `char-bag` may be t, in which case all whitespace characters
+/// will be stripped, or a sequence of characters.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_right_trim(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject
+{
+    var (charbag, string) = args2(args)
+    val pred: (it: Char) -> Boolean
+
+    if (charbag === T) {
+        pred = { it.isWhitespace() }
+    } else {
+        val chars = charbag.toString()
+        pred = { it in chars }
+    }
+    return makeString(string_trim(string.toString(), pred, false, true))
+}
+
+/// builtin substring
+/// fun     bi_substring
+/// std     string start
+/// key     
+/// opt     end
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Return a substring of `string`, bounded by indices `start` and `end`
+/// (or the end of the original string).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_substring(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (string, start, end) = args3(args)
+    val s = string.toString()
+    val len = s.length
+    val n_start = min(len, intArg(start, "substring start"))
+    val n_end = if (end === Nil)
+        len
+    else
+        min(len, intArg(end, "substring end"))
+
+    if (n_start < 0) {
+        throw IndexError("substring start index is negative: $n_start")
+    }
+    if (n_end < 0) {
+        throw IndexError("substring end index is negative: $n_end")
+    }
+    return makeString(s.substring(n_start, n_end))
+}

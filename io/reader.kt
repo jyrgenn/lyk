@@ -538,7 +538,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     to_append = escape2specialChar.get(ch) ?:
                         throw SyntaxError("invalid char in special char escape"
                                           +": $ch", this)
-                } else if (ch in hexdigits) {
+                } else if (ch in n_hexdigits.keys) {
                     to_append = parse_hexdigits(
                         n_hexdigits.get(ch) ?:
                             throw SyntaxError("invalid char in hexdigits escape"

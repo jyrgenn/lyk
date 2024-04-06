@@ -69,7 +69,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
                  (unless args
                    (setf args
                          (list
-                          "FAIL: %s\n calculated: %s\n   expected: %s\n"
+                          "FAIL: %s\n calculated: »%s«\n   expected: »%s«\n"
                           name (princs result) (princs expect))))
                  (apply #'presult args)
                  (push (cons *load-pathname* name) fails))))

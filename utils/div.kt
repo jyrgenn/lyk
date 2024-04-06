@@ -179,6 +179,10 @@ fun measurePerfdata(closure: () -> Unit): String {
 fun min(i1: Int, i2: Int) =
     if (i1 < i2) i1 else i2
 
+// Return the bigger of the two numbers.
+fun max(i1: Int, i2: Int) =
+    if (i1 > i2) i1 else i2
+
 
 // Return the string `s` abbreviated to `width` if it is longer, otherwise
 // return the string. Optional `suffix` will be placed at the end of the

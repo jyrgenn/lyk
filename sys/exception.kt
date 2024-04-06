@@ -28,8 +28,10 @@ open class LispError(message: String, val data: LObject = Nil
     }
 }
 
-class IndexError(where: String, index: Int):
-    LispError("invalid index $index calling $where")
+class IndexError(message: String): LispError(message) {
+    constructor(where: String, index: Int):
+        this("invalid index $index calling $where")
+}
 
 class WarningError(message: String): LispError(message)
 

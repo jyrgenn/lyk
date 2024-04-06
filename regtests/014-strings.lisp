@@ -1,29 +1,36 @@
 (require 'regtests)
 
-(test-is "split-string 1" (split-string "/Users/ni/src/jnil/lib"
+(test-is "string-split 0a"
+         (string-split " The  rain\tin\fspain\nstays mainly in the plain")
+         '("The" "rain" "in" "spain" "stays" "mainly" "in" "the" "plain"))
+(test-is "string-split 0b"
+         (string-split " The  rain\tin\fspain\nstays mainly in the plain\t"
+                       nil nil t)
+         '("" "The" "rain" "in" "spain" "stays" "mainly" "in" "the" "plain" ""))
+(test-is "string-split 1" (string-split "/Users/ni/src/jnil/lib"
                                          "/")
          '("" "Users" "ni" "src" "jnil" "lib"))
-(test-is "split-string 2" (split-string "take me to the matador")
+(test-is "string-split 2" (string-split "take me to the matador")
          '("take" "me" "to" "the" "matador"))
-(test-is "split-string 3" (split-string "/Users/ni/src/jnil/lib"
+(test-is "string-split 3" (string-split "/Users/ni/src/jnil/lib"
                                          "/" 3)
          '("" "Users" "ni/src/jnil/lib"))
-(test-is "split-string 4" (split-string "/Users/ni/src/jnil/lib"
+(test-is "string-split 4" (string-split "/Users/ni/src/jnil/lib"
                                          "/" 0)
-         '())
-(test-is "split-string 5" (split-string "/Users/ni/src/jnil/lib"
+         '("" "Users" "ni" "src" "jnil" "lib"))
+(test-is "string-split 5" (string-split "/Users/ni/src/jnil/lib"
                                          "/" -1)
          '("" "Users" "ni" "src" "jnil" "lib"))
-(test-is "split-string 6" (split-string "/Users/ni/src/jnil/lib"
+(test-is "string-split 6" (string-split "/Users/ni/src/jnil/lib"
                                          "/" 1)
          '("/Users/ni/src/jnil/lib"))
-(test-is "split-string 7" (split-string "/Users/ni/src/jnil/lib"
+(test-is "string-split 7" (string-split "/Users/ni/src/jnil/lib"
                                          #r{/.} 3)
          '("" "sers" "i/src/jnil/lib"))
-(test-is "split-string 8" (split-string "/Users/ni/src/jnil/lib"
+(test-is "string-split 8" (string-split "/Users/ni/src/jnil/lib"
                                          #r{/.})
          '("" "sers" "i" "rc" "nil" "ib"))
-(test-is "split-string 9" (split-string "/Users/ni/src/jnil/lib"
+(test-is "string-split 9" (string-split "/Users/ni/src/jnil/lib"
                                          #r{/.} -3)
          '("" "sers" "i" "rc" "nil" "ib"))
 
@@ -110,10 +117,10 @@
 (test-is "string trim CLHS 1" (string-trim "abc" "abcaakaaakabcaaa")
          "kaaak")
 
-(test-is "string trim CLHS 2" (string-trim '(#\Space #\Tab #\Newline)
-                                            " garbanzo beans
-        ")
-         "garbanzo beans")
+;; TODO Char (test-is "string trim CLHS 2" (string-trim '(#\Space #\Tab #\Newline)
+;;                                             " garbanzo beans
+;;         ")
+;;          "garbanzo beans")
          
 (test-is "string trim CLHS 3" (string-trim " (*)"
                                             " ( *three (silly) words* ) ")
@@ -130,25 +137,26 @@
                                                   " ( *three (silly) words* ) ")
          " ( *three (silly) words")
 
-(test-is "string trim vector" (string-trim #(#\Space ?( ?* ?))
-                                            " ( *three (silly) words* ) ")
-         "three (silly) words")
+;; TODO Char (test-is "string trim vector" (string-trim #(#\Space ?( ?* ?))
+;;                                             " ( *three (silly) words* ) ")
+;;          "three (silly) words")
 
 (test-is "substring 0" (substring "shnargldings" 0) "shnargldings")
 (test-is "substring 1" (substring "shnargldings" 3) "argldings")
 (test-is "substring 2" (substring "shnargldings" 1 5) "hnar")
 (test-is "substring 3" (substring "shnargldings" 1 nil) "hnargldings")
 ;; alas, -1 is like nil (and not easy to avoid)
-(test-is "substring 4" (substring "shnargldings" 0 -1) "shnargldings")
+(test-err "substring 4" (substring "shnargldings" 0 -1)
+          #/end index is negative/)
 (test-is "substring 5" (substring "shnargldings" 0 12) "shnargldings")
 (test-is "substring 6" (substring "shnargldings" 0 13) "shnargldings")
 (test-is "substring 7" (substring "shnargldings" 1 117) "hnargldings")
 (test-err "substring 8" (substring "shnargldings" -3 117)
-          #/negative substring start index/)
+          #/start index is negative/)
 (test-err "substring 9" (substring "shnargldings" nil 'a)
-          #/start argument is not an integer/)
+          #/start argument is not a number/)
 (test-err "substring 10" (substring "shnargldings" 4 'a)
-          #/end argument is not an integer/)
+          #/end argument is not a number/)
 
 (test-is "plural-s 0" (plural-s 0) "s")
 (test-is "plural-s 1" (plural-s 1) "")
