@@ -381,8 +381,15 @@ fun bi_or(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_cond(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     for (arg in args) {
         val clause = consArg(arg, "cond clause")
-        if (eval(clause.car) !== Nil) {
-            return evalProgn(clause.cdr)
+        val condition = eval(clause.car)
+        if (condition !== Nil) {
+            val forms = clause.cdr
+            if (forms === Nil) {
+                /// CLHS says: If there are no forms in that clause, the primary
+                /// value of the test-form is returned by the cond form.
+                return condition
+            }
+            return evalProgn(forms)
         }
     }
     return Nil
