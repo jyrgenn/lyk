@@ -268,12 +268,57 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     unreadChar(ch)
                     return NumberToken(this, readFreeRadixNumber())
                 }
-                // '\\' -> return charLiteralToken(this)
+                '\\' -> return charLiteralToken()
                 else -> {}
             }
             throw SyntaxError("unexpected char `$ch` after '#'", this)
         }
         throw SyntaxError("EOF after '#'", this)
+    }
+
+    fun charLiteralToken(): ReaderToken {
+        val charName = (readAtomToken(wantSymbol = true)
+                            as SymbolToken).value
+        val len = charName.length
+
+        if (len == 0) {
+	    // Character is nothing that could be read like a symbol name,
+	    // so it is a control character or whitespace or a delimiter.
+	    // And it must be the next character, so we need another attempt
+	    // and read a character whatever comes.
+            val char = nextChar() ?:
+                throw SyntaxError("unexpected EOF reading character literal",
+                                  this)
+            return CharToken(this, char)
+        }
+	// Down from here we have a character with a symbol-like "name".
+
+	// defined character literal names first
+        val char = LChar.nameChar[charName.lowercase()]
+        if (char != null) {
+            return CharToken(this, char)
+        }
+
+        // if the name of the character has length one, it is
+        // literally the charcter itself
+        if (len == 1) {
+            return CharToken(this, charName[0])
+        }
+        val radix = charName[0]
+        val code: Int
+        if ((len == 3 && radix in "xX")
+                || (len == 5 && radix == 'u')
+                || (len == 9 && radix == 'U')) {
+            code = charName.substring(1).toInt(16)
+        } else if (radix in "bB") {
+            code = charName.substring(1).toInt(2)
+        } else if (radix in "01234567") {
+            code = charName.toInt(8)
+        } else {
+            throw SyntaxError("invalid character literal syntax: #\\$charName",
+                              this)
+        }
+        return CharToken(this, code.toChar())
     }
 
     fun readFreeRadixNumber(): Double {
@@ -367,7 +412,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     }
 
 
-    fun readAtomToken(): ReaderToken {
+    fun readAtomToken(wantSymbol: Boolean = false): ReaderToken {
         // Read an atom (symbol or number) and return it as a ReaderToken.
         // 
         // Barred can stop or begin anywhere! Also, backslash escapes. Holy
@@ -434,7 +479,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         }
 
         val result = collected.toString()
-        if (was_barred) {
+        if (was_barred || wantSymbol) {
             return SymbolToken(this, result)
         }
 
@@ -612,6 +657,8 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                 return Pair(readVector(), location)
             is RegexpToken ->
                 return Pair(LRegexp(token.value), location)
+            is CharToken ->
+                return Pair(makeChar(token.value), location)
             is QuoteToken ->
                 macroSymbol = QuoteSymbol
             is FunctionToken ->

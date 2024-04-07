@@ -30,6 +30,9 @@ class StringToken(reader: Reader, val value: String): ReaderToken(reader) {
 class SymbolToken(reader: Reader, val value: String): ReaderToken(reader) {
     override fun desc() = super.desc() + "($value)"
 }
+class CharToken(reader: Reader, val value: Char): ReaderToken(reader) {
+    override fun desc() = super.desc() + "($value)"
+}
 class NumberToken(reader: Reader, val value: Double): ReaderToken(reader) {
     override fun desc() = super.desc() + "($value)"
 }

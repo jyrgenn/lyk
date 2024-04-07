@@ -20,6 +20,16 @@ class LChar(val ch: Char): LObject() {
             '\u0008' to "Backspace",
             '\u0007' to "Bell",
         )            
+        val nameChar = mapOf(
+            "space"     to ' ',
+            "newline"   to '\n',
+            "tab"       to '\t',
+            "page"      to '\u000c',
+            "rubout"    to '\u007f',
+            "return"    to '\r',
+            "backspace" to '\u0008',
+            "bell"      to '\u0007',
+        )            
 
         fun mkChar(ch: Char): LChar {
             var chob = charTable.get(ch)
@@ -87,5 +97,5 @@ class LChar(val ch: Char): LObject() {
 }
 
 fun makeChar(ch: Char) = LChar.mkChar(ch)
-fun makeChar(s: String) = LChar.mkChar(s[0])
+// fun makeChar(s: String) = LChar.mkChar(s[0])
 fun makeChar(code: Int): LObject = LChar.mkChar(code.toChar())
