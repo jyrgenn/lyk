@@ -73,8 +73,8 @@ fun bi_make_vector(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_vector_set(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (vector, index, value) = args3(args)
-    vectorArg(vector, "aref vector").set(longArg(index, "aref index").toInt(),
-                                         value)
+    vectorArg(vector, "aref vector").setAt(intArg(index, "vector-set index"),
+                                           value)
     return value
 }
 

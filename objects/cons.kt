@@ -46,6 +46,19 @@ class LCons(override var car: LObject,
         return len
     }
 
+    override fun setAt(index: Int, value: LObject) {
+        var l: LObject = this
+        var i = 0
+        while (l is LCons) {
+            if (i++ == index) {
+                l.car = value
+                return
+            }
+            l = l.cdr
+        }
+        throw IndexError("index $index for ${typeOf(this)} too large: $this")
+    }
+
     override fun equal(other: LObject): Boolean {
         return other is LCons
             && car.equal(other.car)

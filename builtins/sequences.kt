@@ -52,11 +52,33 @@ fun bi_elements(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (seq, ind) = args2(args)
-    val index = longArg(ind, "elt index")
+    val index = intArg(ind, "elt index")
 
-    try {
-        return seq.elementAt(index.toInt())
-    } catch (e: IndexOutOfBoundsException) {
-        throw IndexError("elt", index.toInt())
+    return seq.elementAt(index)
+}
+
+/// builtin setelt
+/// fun     bi_setelt
+/// std     sequence index value
+/// key     
+/// opt     
+/// rest    
+/// ret     element
+/// special no
+/// doc {
+/// Set element `index` of sequence `sequence` to `value`; return `value`.
+/// The index is zero-based. It is an error if `index` is negative or
+/// greater than the length of the sequence.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_setelt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (seq, index, value) = args3(args)
+    val iindex = intArg(index, "setelt index")
+
+    if (iindex < 0) {
+        throw IndexError("index $index for ${typeOf(seq)} is negative")
     }
+    seq.setAt(iindex, value)
+    return value
 }

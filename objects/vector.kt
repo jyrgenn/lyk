@@ -51,10 +51,10 @@ class LVector(elems: LObject): LObject() {
         return null
     }
 
-    fun set(index: Int, value: LObject): LObject {
+    override fun setAt(index: Int, value: LObject) {
             if (index >= 0 && index < the_vector.size) {
                 the_vector[index] = value
-                return value
+                return
             }
             throw ValueError("invalid index $index for vector $this")
         }

@@ -107,6 +107,10 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
         return TypeError("cannot compare ${typeOf(this).lowercase()} `$this`"
                          +" to ${typeOf(other).lowercase()} `$other`")
     }
+
+    open fun setAt(index: Int, value: LObject) {
+        throw TypeError("${typeOf(this)} object is not a sequence")
+    }
 }
 
 
@@ -114,14 +118,22 @@ class ObjectIterator(var theObject: LObject): Iterator<LObject> {
     val original = theObject
     var nextIndex = 0
 
+    fun nonSeqError() = 
+        if (original is LCons) {
+            ValueError("iterating over improper list: $original")
+        } else {
+            TypeError("${typeOf(original)} object is not"
+                      + " a sequence: $original")
+        }
+
     override fun hasNext(): Boolean {
         val ob = theObject
         when (ob) {
             Nil -> return false
             is LCons -> return true
             is LVector -> return nextIndex < ob.the_vector.size
-            else ->
-                throw ValueError("iterating over improper list: $original")
+            is LString -> return nextIndex < ob.value.length
+            else -> throw nonSeqError()
         }
     }
 
@@ -138,8 +150,8 @@ class ObjectIterator(var theObject: LObject): Iterator<LObject> {
             is LVector -> {
                 return ob.get(nextIndex++)
             }
-            else -> ValueError("iterating over non-sequence: $original")
+            is LString -> return makeChar(ob.value[nextIndex++])
+            else -> throw nonSeqError()
         }
-        return Nil
     }
 }

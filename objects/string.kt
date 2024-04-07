@@ -67,6 +67,17 @@ class LString(val value: String): LObject() {
         return result.toString()
     }
 
+    fun atIndex(index: Int): LObject? {
+        if (index >= 0 && index < value.length) {
+            return makeChar(value[index])
+        }
+        return null
+    }
+
+    override fun setAt(index: Int, value: LObject) {
+        throw TypeError("string object is immutable: " + desc())
+    }
+
     override fun compareTo(other: LObject): Int {
         if (other is LString) {
             if (value < other.value) {
@@ -80,6 +91,7 @@ class LString(val value: String): LObject() {
             throw compareError(other)
         }
     }
+
     
 }
 
