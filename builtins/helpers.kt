@@ -17,6 +17,23 @@ fun streamArg(arg: LObject, what: String): LStream {
         throw ArgumentError("$what argument is not a stream: $arg")
 }
 
+fun charArg(arg: LObject, what: String): LChar { 
+    return (arg as? LChar) ?:
+        throw ArgumentError("$what argument is not a char: $arg")
+}
+
+fun charOrStringArg(arg: LObject, what: String): Char {
+    if (arg is LChar) {
+        return arg.ch
+    } else if (arg is LString) {
+        if (arg.value.length == 1) {
+            return arg.value[0]
+        }
+    }
+    throw ArgumentError("$what argument is not a char or string of"
+                        +" length 1: $arg")
+}
+
 fun envArg(arg: LObject, what: String): LEnv {
     return (arg as? LEnv) ?:
         throw ArgumentError("$what argument is not an environment: $arg")

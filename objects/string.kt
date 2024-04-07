@@ -29,8 +29,8 @@ class LString(val value: String): LObject() {
 
             val lc = ListCollector()
             
-            for (num in stringTable.values) {
-                lc.add(num)
+            for (string in stringTable.values) {
+                lc.add(string)
             }
             return lc.list
         }

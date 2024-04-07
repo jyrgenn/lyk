@@ -1,6 +1,6 @@
 SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	objects/environment.kt objects/number.kt objects/string.kt \
-	objects/table.kt objects/vector.kt objects/regexp.kt \
+	objects/table.kt objects/vector.kt objects/regexp.kt objects/char.kt \
 	io/reader.kt io/token.kt io/repl.kt io/stream.kt io/load.kt \
 	functions/function.kt functions/builtin.kt functions/lambda.kt \
 	functions/macro.kt \
@@ -9,6 +9,7 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	builtins/environments.kt builtins/io.kt builtins/strings.kt \
 	builtins/tables.kt builtins/utils.kt builtins/vectors.kt \
 	builtins/sequences.kt builtins/macros.kt builtins/factor.kt \
+	builtins/chars.kt \
 	utils/lists.kt utils/div.kt utils/interfaces.kt \
 	sys/exception.kt sys/eval.kt sys/messages.kt sys/main.kt \
 	sys/globalvars.kt sys/exit.kt
