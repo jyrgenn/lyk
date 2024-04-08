@@ -229,7 +229,7 @@ fun bi_assert(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject
 /// special no
 /// doc {
 /// Print all interned symbols whose name contains `string`.
-/// If optional `as-listz` is true, return a list of the symbol names.
+/// If optional `as-list` is true, return a list of the symbol names.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")

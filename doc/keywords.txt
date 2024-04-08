@@ -1,3 +1,4 @@
+;;; lyk doc
 
 Keyword arguments to functions
 ==============================

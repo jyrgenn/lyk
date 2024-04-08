@@ -1,5 +1,13 @@
 ;;; lys doc
 
+Numbers
+-------
+
+Numbers in Lyk are very simple -- they are Kotlin Double values,
+nothing else. If they have an integer value, they can be used as
+integers, but under the hood they are still Doubles. There are no
+complex or rational numbers.
+
 Number Literals
 ---------------
 

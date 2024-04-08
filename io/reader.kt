@@ -315,6 +315,11 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         } else if (radix in "01234567") {
             code = charName.toInt(8)
         } else {
+            print("char token len $len: ")
+            for (i in 0..<len) {
+                print("%02x ".format(charName[i].code))
+            }
+            println()
             throw SyntaxError("invalid character literal syntax: #\\$charName",
                               this)
         }

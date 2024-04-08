@@ -1084,11 +1084,12 @@ fun bi_listp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_sequencep(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val arg = arg1(args)
-    return bool2ob(arg is LCons
-                       || arg === Nil
-                       || arg is LVector
-                       || arg is LString)
+    val ob = arg1(args)
+    return bool2ob(if (ob is LSymbol) {
+                       ob === Nil
+                   } else {
+                       ob is LSeq
+                   })
 }
 
 /// builtin functionp

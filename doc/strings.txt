@@ -1,11 +1,11 @@
-;;; lingo.doc
+;;; lyk doc
 
 String Literals
 ---------------
 
 String literals are relatively C- or Go-like. They start with a
-double quote and end with one; a double quote inside of the string
-can be escaped with a backslash. There are a few special escapes:
+double quote and end with one. Strings may contain (literal)
+newlines. There are a few special character escapes:
 
    \a : bell
    \b : backspace
@@ -17,10 +17,10 @@ can be escaped with a backslash. There are a few special escapes:
 
 Characters in a string can be specified as Unicode code points:
 
-   \ddd       with each d an octal digit
-   \xXX       with each X a hexadecimal digit
-   \uXXXX     with each X a hexadecimal digit
-   \UXXXXXXXX with each X a hexadecimal digit
+   \ddd       with each d an octal digit (up to 3
+   \xXX       with each X a hexadecimal digit (exactly 2)
+   \uXXXX     with each X a hexadecimal digit (exactly 4)
+   \UXXXXXXXX with each X a hexadecimal digit (exactly 8)
 
 All others are taken literally when preceded by a backslash
 (including double quote and backslash).

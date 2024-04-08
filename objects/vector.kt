@@ -84,6 +84,14 @@ class LVector(elems: LObject): LObject(), LSeq {
     operator fun component6() = the_vector.get(5)
     operator fun component7() = the_vector.get(6)
 
+    override fun elements(): LObject {
+        return list2lisp(the_vector)
+    }
+
+    override fun copy(): LObject {
+        return LVector(elements())
+    }
+
     class VectorIterator(val vector: LVector): Iterator<LObject> {
         var nextIndex = 0
         
@@ -96,5 +104,5 @@ class LVector(elems: LObject): LObject(), LSeq {
         }
     }
 
-    override fun iterator() = VectorIterator(this)
+    override fun iterator(): Iterator<LObject> = VectorIterator(this)
 }

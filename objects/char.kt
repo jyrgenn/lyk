@@ -72,7 +72,9 @@ class LChar(val ch: Char): LObject() {
     override fun desc() = 
         "#\\" + (charName[ch] ?:
                      ascii_glyph() ?:
-                     if (ch.code < 0x100) {
+                     if (isPrintable(ch)) {
+                         ch
+                     } else if (ch.code < 0x100) {
                          "x%02x".format(ch.code)
                      } else if (ch.code < 0x10000) {
                          "u%04x".format(ch.code)

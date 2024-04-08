@@ -3,38 +3,6 @@
 package org.w21.lyk
 
 
-/// builtin elements
-/// fun     bi_elements
-/// std     sequence
-/// key     
-/// opt     
-/// rest    
-/// ret     list
-/// special no
-/// doc {
-/// Return the elements of `sequence` as a list. If the argument is a list,
-/// the resulting list is a shallow copy of it.
-/// }
-/// end builtin
-@Suppress("UNUSED_PARAMETER")
-fun bi_elements(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
-    val seq = arg1(args)
-
-    if (seq === Nil) {
-        return Nil
-    }
-    if (seq is LSymbol) {
-        throw ArgumentError("elements argument is not a sequence: $seq")
-    }
-    return collectedList {
-        for (elem in seq) {
-            it.add(elem)
-        }
-    }
-}
-
-
 /// builtin elt
 /// fun     bi_elt
 /// std     sequence index
@@ -85,3 +53,44 @@ fun bi_setelt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     seqArg(seq, "setelt").setAt(iindex, value)
     return value
 }
+
+/// builtin elements
+/// fun     bi_elements
+/// std     sequence
+/// key     
+/// opt     
+/// rest    
+/// ret     elements-list
+/// special no
+/// doc {
+/// Return a list with all elements of `sequence`, in order.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_elements(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return collectedList {
+        for (elem in seqArg(arg1(args), "elements")) {
+            it.add(elem)
+        }
+    }
+}
+
+/// builtin copy-seq
+/// fun     bi_copy_seq
+/// std     sequence
+/// key     
+/// opt     
+/// rest    
+/// ret     copied-sequence
+/// special no
+/// doc {
+/// Return a copy of `sequence`.
+/// The elements of the new sequence are the same as the corresponding
+/// elements of the given sequence.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_copy_seq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return seqArg(arg1(args), "copy-seq").copy()
+}
+

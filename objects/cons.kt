@@ -70,6 +70,16 @@ class LCons(override var car: LObject,
         throw IndexError(this, index)
     }
 
+    override fun elements(): LObject {
+        return collectedList {
+            for (elem in this) {
+                it.add(elem)
+            }
+        }
+    }
+
+    override fun copy() = elements()
+
     override fun equal(other: LObject): Boolean {
         return other is LCons
             && car.equal(other.car)
@@ -102,5 +112,5 @@ class LCons(override var car: LObject,
         }
     }
 
-    override fun iterator() = ConsIterator(this)
+    override fun iterator(): Iterator<LObject> = ConsIterator(this)
 }

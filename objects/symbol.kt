@@ -172,6 +172,15 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
         throw TypeError("not a sequence: $this")
     }
 
+    override fun elements(): LObject {
+        if (this === Nil) {
+            return Nil
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
+    override fun copy() = elements()
+
     override var car: LObject
         get() {
             if (this === Nil) {
@@ -232,7 +241,7 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
         }
     }
 
-    override fun iterator() = SymbolIterator(this)
+    override fun iterator(): Iterator<LObject> = SymbolIterator(this)
 }
 
 fun intern(name: String, immutable_and_selfvalued: Boolean = false) =

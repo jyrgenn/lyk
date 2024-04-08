@@ -1,4 +1,4 @@
-;;; lys doc
+;;; lyk doc
 
 Regular Expressions
 -------------------

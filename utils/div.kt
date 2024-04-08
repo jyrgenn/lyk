@@ -3,7 +3,33 @@
 package org.w21.lyk
 
 import kotlin.time.measureTime
+import kotlin.text.CharCategory.*
 
+val printables = setOf(
+    kotlin.text.CharCategory.UPPERCASE_LETTER,
+    kotlin.text.CharCategory.LOWERCASE_LETTER,
+    kotlin.text.CharCategory.TITLECASE_LETTER,
+    kotlin.text.CharCategory.MODIFIER_LETTER,
+    kotlin.text.CharCategory.OTHER_LETTER,
+    kotlin.text.CharCategory.DECIMAL_DIGIT_NUMBER,
+    kotlin.text.CharCategory.LETTER_NUMBER,
+    kotlin.text.CharCategory.OTHER_NUMBER,
+    kotlin.text.CharCategory.DASH_PUNCTUATION,
+    kotlin.text.CharCategory.START_PUNCTUATION,
+    kotlin.text.CharCategory.END_PUNCTUATION,
+    kotlin.text.CharCategory.CONNECTOR_PUNCTUATION,
+    kotlin.text.CharCategory.OTHER_PUNCTUATION,
+    kotlin.text.CharCategory.MATH_SYMBOL,
+    kotlin.text.CharCategory.CURRENCY_SYMBOL,
+    kotlin.text.CharCategory.MODIFIER_SYMBOL,
+    kotlin.text.CharCategory.OTHER_SYMBOL,
+    kotlin.text.CharCategory.INITIAL_QUOTE_PUNCTUATION,
+    kotlin.text.CharCategory.FINAL_QUOTE_PUNCTUATION,
+)
+
+fun isPrintable(ch: Char): Boolean {
+    return ch.category in printables
+}
 
 fun mulString(s: String, n: Int): String {
     val sb = StringBuilder()

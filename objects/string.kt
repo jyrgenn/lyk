@@ -79,6 +79,14 @@ class LString(val value: String): LObject(), LSeq {
         throw TypeError("string object is immutable: " + desc())
     }
 
+    override fun elements(): LObject {
+        return collectedList {
+            for (ch in value) {
+                it.add(makeChar(ch))
+            }
+        }
+    }
+
     override fun compareTo(other: LObject): Int {
         if (other is LString) {
             if (value < other.value) {
@@ -93,11 +101,26 @@ class LString(val value: String): LObject(), LSeq {
         }
     }
 
-    
+    // this is a null operation for a string, because identical content means
+    // identical string object anyway
+    override fun copy(): LObject {
+        return this
+    }
+
+    class StringIterator(val s: LString): Iterator<LObject> {
+        var nextIndex = 0
+
+        override fun hasNext(): Boolean {
+            return nextIndex < s.value.length
+        }
+
+        override fun next(): LObject {
+            return makeChar(s.value[nextIndex++])
+        }
+    }
 }
 
 fun makeString(value: String) = LString.mkString(value)
 
 
 // EOF
-
