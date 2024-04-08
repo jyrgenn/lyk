@@ -16,7 +16,7 @@ fun isNumberString(s: String): Boolean {
     }
 }
 
-class LSymbol(val name: String, val immutable: Boolean): LObject()
+class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
 {
     val props = mutableMapOf<LSymbol, LObject>()
     val descName = makeDescName()
@@ -158,6 +158,20 @@ class LSymbol(val name: String, val immutable: Boolean): LObject()
         return result
     }
 
+    override fun getAt(index: Int): LObject {
+        if (this === Nil) {
+            throw IndexError(this, index)
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
+    override fun setAt(index: Int, value: LObject) {
+        if (this === Nil) {
+            throw IndexError(this, index)
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
     override var car: LObject
         get() {
             if (this === Nil) {
@@ -202,6 +216,23 @@ class LSymbol(val name: String, val immutable: Boolean): LObject()
 	}
     }
 
+    class SymbolIterator(val sym: LObject): Iterator<LObject> {
+        override fun hasNext(): Boolean {
+            if (sym === Nil) {
+                return false
+            }
+            throw TypeError(sym, "sequence")
+        }
+
+        override fun next(): LObject {
+            if (sym === Nil) {
+                throw IndexError("no next on empty list")
+            }
+            throw TypeError(sym, "sequence")
+        }
+    }
+
+    override fun iterator() = SymbolIterator(this)
 }
 
 fun intern(name: String, immutable_and_selfvalued: Boolean = false) =

@@ -29,8 +29,11 @@ open class LispError(message: String, val data: LObject = Nil
 }
 
 class IndexError(message: String): LispError(message) {
+    // TODO: clean up, use second constructor
     constructor(where: String, index: Int):
         this("invalid index $index calling $where")
+    constructor(what: LObject, index: Int):
+        this("invalid index $index for ${typeOf(what)} $what")
 }
 
 class WarningError(message: String): LispError(message)
@@ -84,7 +87,9 @@ open class ValueError(message: String,
 }
 
 class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
-    constructor(message: String) : this(message, null) {}
+    constructor(message: String) : this(message, null)
+    constructor(obj: LObject, whatnot: String):
+        this("not a $whatnot: ${typeOf(obj)} $obj")
 }
 
 class CallError(message: String): LispError(message)

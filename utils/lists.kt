@@ -47,22 +47,6 @@ fun valueArray(elems: LObject): Array<Any> {
     return a
 }
 
-class ListIterator(var l: LObject): Iterator<LObject> {
-    val original = l                    // keep the original list for an error
-
-    override fun hasNext() =
-        when (l) {
-            is LCons -> true
-            else -> false
-        }
-
-    override fun next(): LObject {
-        val obj = l.car
-        l = l.cdr
-        return obj
-    }
-}
-
 
 class ListCollector(): Iterable<LObject> {
     var list: LObject = Nil
@@ -89,6 +73,6 @@ class ListCollector(): Iterable<LObject> {
 
     val size get() = list.length()
 
-    override fun iterator() = ListIterator(this.list)
+    override fun iterator() = this.list.iterator()
 }
 

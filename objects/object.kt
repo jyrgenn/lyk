@@ -74,9 +74,6 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     // be read by the reader to re-create the object.
     open fun desc() = toString()
 
-
-    override fun iterator() = ObjectIterator(this)
-
     open operator fun component1(): LObject {
         return (this as? LCons)?.car ?:
             throw TypeError("$this is not a pair")
@@ -108,50 +105,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
                          +" to ${typeOf(other).lowercase()} `$other`")
     }
 
-    open fun setAt(index: Int, value: LObject) {
-        throw TypeError("${typeOf(this)} object is not a sequence")
-    }
+    override fun iterator(): Iterator<LObject>
+        = throw TypeError(this, "iterable")
 }
 
-
-class ObjectIterator(var theObject: LObject): Iterator<LObject> {
-    val original = theObject
-    var nextIndex = 0
-
-    fun nonSeqError() = 
-        if (original is LCons) {
-            ValueError("iterating over improper list: $original")
-        } else {
-            TypeError("${typeOf(original)} object is not"
-                      + " a sequence: $original")
-        }
-
-    override fun hasNext(): Boolean {
-        val ob = theObject
-        when (ob) {
-            Nil -> return false
-            is LCons -> return true
-            is LVector -> return nextIndex < ob.the_vector.size
-            is LString -> return nextIndex < ob.value.length
-            else -> throw nonSeqError()
-        }
-    }
-
-    override fun next(): LObject {
-        val ob = theObject
-        when (ob) {
-            Nil ->
-                throw ValueError("called next() after end of list: $original")
-            is LCons -> {
-                val retVal = ob.car
-                theObject = ob.cdr
-                return retVal
-            }
-            is LVector -> {
-                return ob.get(nextIndex++)
-            }
-            is LString -> return makeChar(ob.value[nextIndex++])
-            else -> throw nonSeqError()
-        }
-    }
-}

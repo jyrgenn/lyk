@@ -4,7 +4,7 @@ package org.w21.lyk
 
 
 class LCons(override var car: LObject,
-            override var cdr: LObject = Nil): LObject() {
+            override var cdr: LObject = Nil): LObject(), LSeq {
 
     init {
         debug(debugConsSym) {
@@ -46,6 +46,17 @@ class LCons(override var car: LObject,
         return len
     }
 
+    override fun getAt(index: Int): LObject {
+        var l: LObject = this
+        var i = 0
+        while (l is LCons) {
+            if (i++ == index) {
+                return l.car
+            }
+            l = l.cdr
+        }
+        throw IndexError(this, index)
+    }
     override fun setAt(index: Int, value: LObject) {
         var l: LObject = this
         var i = 0
@@ -56,7 +67,7 @@ class LCons(override var car: LObject,
             }
             l = l.cdr
         }
-        throw IndexError("index $index for ${typeOf(this)} too large: $this")
+        throw IndexError(this, index)
     }
 
     override fun equal(other: LObject): Boolean {
@@ -74,4 +85,22 @@ class LCons(override var car: LObject,
         }
         return valueArray
     }
+
+    class ConsIterator(var l: LObject): Iterator<LObject> {
+        val original = l                // keep the original list for an error
+
+        override fun hasNext() =
+            when (l) {
+                is LCons -> true
+                else -> false
+            }
+
+        override fun next(): LObject {
+            val obj = l.car
+            l = l.cdr
+            return obj
+        }
+    }
+
+    override fun iterator() = ConsIterator(this)
 }

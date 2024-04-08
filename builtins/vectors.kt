@@ -30,8 +30,8 @@ package org.w21.lyk
 @Suppress("UNUSED_PARAMETER")
 fun bi_aref(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (vector, index) = args2(args)
-    return vectorArg(vector, "aref vector").get(longArg(index,
-                                                        "aref index").toInt())
+    return vectorArg(vector, "aref vector")
+        .getAt(longArg(index, "aref index").toInt())
 }
 
 /// builtin make-vector
@@ -73,8 +73,8 @@ fun bi_make_vector(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_vector_set(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (vector, index, value) = args3(args)
-    vectorArg(vector, "aref vector").setAt(intArg(index, "vector-set index"),
-                                           value)
+    vectorArg(vector, "aref vector")
+        .setAt(intArg(index, "vector-set index"), value)
     return value
 }
 

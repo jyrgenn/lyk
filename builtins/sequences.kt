@@ -51,10 +51,13 @@ fun bi_elements(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    val (seq, ind) = args2(args)
-    val index = intArg(ind, "elt index")
+    val (seq, index) = args2(args)
+    val iindex = intArg(index, "elt index")
 
-    return seq.elementAt(index)
+    if (iindex < 0) {
+        throw IndexError("index $index for ${typeOf(seq)} is negative")
+    }
+    return seqArg(seq, "elt").getAt(iindex)
 }
 
 /// builtin setelt
@@ -79,6 +82,6 @@ fun bi_setelt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     if (iindex < 0) {
         throw IndexError("index $index for ${typeOf(seq)} is negative")
     }
-    seq.setAt(iindex, value)
+    seqArg(seq, "setelt").setAt(iindex, value)
     return value
 }

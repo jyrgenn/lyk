@@ -80,6 +80,13 @@ fun listArg(arg: LObject, what: String): LObject {
     throw ArgumentError("$what argument is not a list: $arg")
 }
 
+fun seqArg(arg: LObject, what: String): LSeq {
+    if (arg is LSeq) {
+        return arg
+    }
+    throw ArgumentError("$what argument is not a sequence: $arg")
+}
+
 // fun sequenceArg(arg: LObject, what: String): ObjectSequence {
 //     if (arg is any) ObjectSequence {
 //         return arg

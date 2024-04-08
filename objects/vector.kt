@@ -1,6 +1,6 @@
 package org.w21.lyk
 
-class LVector(elems: LObject): LObject() {
+class LVector(elems: LObject): LObject(), LSeq {
     // key: int, backed by an array [Object]
     val the_vector = mutableListOf<LObject>()
 
@@ -37,14 +37,14 @@ class LVector(elems: LObject): LObject() {
     
     override fun length() = the_vector.size
 
-    fun get(index: Int): LObject {
-            if (index >= 0 && index < the_vector.size) {
-                return the_vector[index]
-            }
-            throw ValueError("invalid index $index for vector $this")
+    override fun getAt(index: Int): LObject {
+        if (index >= 0 && index < the_vector.size) {
+            return the_vector[index]
         }
+        throw IndexError(this, index)
+    }
 
-    fun atIndex(index: Int): LObject? {
+    fun getAtOptional(index: Int): LObject? {
         if (index >= 0 && index < the_vector.size) {
             return the_vector[index]
         }
@@ -56,7 +56,7 @@ class LVector(elems: LObject): LObject() {
                 the_vector[index] = value
                 return
             }
-            throw ValueError("invalid index $index for vector $this")
+            throw IndexError(this, index)
         }
 
     override fun equal(other: LObject): Boolean {
@@ -83,4 +83,18 @@ class LVector(elems: LObject): LObject() {
     operator fun component5() = the_vector.get(4)
     operator fun component6() = the_vector.get(5)
     operator fun component7() = the_vector.get(6)
+
+    class VectorIterator(val vector: LVector): Iterator<LObject> {
+        var nextIndex = 0
+        
+        override fun hasNext(): Boolean {
+            return nextIndex < vector.the_vector.size
+        }
+
+        override fun next(): LObject {
+            return vector.getAt(nextIndex++)
+        }
+    }
+
+    override fun iterator() = VectorIterator(this)
 }

@@ -5,7 +5,7 @@ package org.w21.lyk
 import java.util.WeakHashMap
 
 
-class LString(val value: String): LObject() {
+class LString(val value: String): LObject(), LSeq {
 
     // deinit {
     //     stringTable[value] = nil
@@ -67,13 +67,14 @@ class LString(val value: String): LObject() {
         return result.toString()
     }
 
-    fun atIndex(index: Int): LObject? {
+    override fun getAt(index: Int): LObject {
         if (index >= 0 && index < value.length) {
             return makeChar(value[index])
         }
-        return null
+        throw IndexError(this, index)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     override fun setAt(index: Int, value: LObject) {
         throw TypeError("string object is immutable: " + desc())
     }
