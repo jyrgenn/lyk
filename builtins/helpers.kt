@@ -229,27 +229,57 @@ fun arg3(list: LObject): LObject {
 // not a cons or not long enough, return Nil for efficiency reasons. The caller
 // must know or not care.
 fun args2(list: LObject): Pair<LObject, LObject> {
-    val (a1, rest) = list
-    return Pair(a1, arg1(rest))
+    var rest = list
+    val a1 = rest.car
+    rest = rest.cdr
+    val a2 = rest.car
+    return Pair(a1, a2)
 }
 
 // Return the first three elements of list. This is not checked -- if the list
 // is not a cons or not long enough, return Nil for efficiency reasons. The
 // caller must know or not care.
 fun args3(list: LObject): Triple<LObject, LObject, LObject> {
-    val (a1, rest1) = list
-    val (a2, rest2) = rest1
-    return Triple(a1, a2, arg1(rest2))
+    var rest = list
+    val a1 = rest.car
+    rest = rest.cdr
+    val a2 = rest.car
+    rest = rest.cdr
+    val a3 = rest.car
+    return Triple(a1, a2, a3)
 }
 
 // Return the first four elements of list. This is not checked -- if the list
 // is not a cons or not long enough, return Nil for efficiency reasons. The
 // caller must know or not care.
 fun args4(list: LObject): Array<LObject> {
-    val (a1, rest1) = list
-    val (a2, rest2) = rest1
-    val (a3, rest3) = rest2
-    return arrayOf(a1, a2, a3, rest3.car)
+    var rest = list
+    val a1 = rest.car
+    rest = rest.cdr
+    val a2 = rest.car
+    rest = rest.cdr
+    val a3 = rest.car
+    rest = rest.cdr
+    val a4 = rest.car
+    return arrayOf(a1, a2, a3, a4)
+}
+
+
+// Return the first five elements of list. This is not checked -- if the list
+// is not a cons or not long enough, return Nil for efficiency reasons. The
+// caller must know or not care.
+fun args5(list: LObject): Array<LObject> {
+    var rest = list
+    val a1 = rest.car
+    rest = rest.cdr
+    val a2 = rest.car
+    rest = rest.cdr
+    val a3 = rest.car
+    rest = rest.cdr
+    val a4 = rest.car
+    rest = rest.cdr
+    val a5 = rest.car
+    return arrayOf(a1, a2, a3, a4, a5)
 }
 
 
@@ -349,4 +379,14 @@ fun isqrt(n: Long): Long {
         one = one shr 2
     }
     return res
+}
+
+// Return the checked int value of form if it evals to non-nil, or default
+fun intValueOr(form: LObject, default: Int?, what: String): Int? {
+    val value = eval(form)
+    if (value === Nil) {
+        return default
+    } else {
+        return intArg(value, what)
+    }
 }

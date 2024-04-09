@@ -107,6 +107,14 @@ class LString(val value: String): LObject(), LSeq {
         return this
     }
 
+    override fun subseq(start: Int, end: Int?): LObject {
+        return makeString(if (end == null) {
+                              value.substring(start)
+                          } else {
+                              value.substring(start, end)
+                          })
+    }
+
     class StringIterator(val s: LString): Iterator<LObject> {
         var nextIndex = 0
 

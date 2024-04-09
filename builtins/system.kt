@@ -322,23 +322,23 @@ fun bi_build_info(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val obj = arg1(args)
-    var lc = ListCollector()
+    var map = LTable()
 
     fun entry(name: String, s: String, asSym: Boolean) {
         if (asSym) {
-            lc.add(LCons(intern(name), intern(s)))
+            map.put(intern(name), intern(s))
         } else {
-            lc.add(LCons(intern(name), makeString(s)))
+            map.put(intern(name), makeString(s))
         }
     }
     fun entry(name: String, obj: LObject) {
-        lc.add(LCons(intern(name), obj))
+        map.put(intern(name), obj)
     }
     fun entry(name: String, value: Double) {
-        lc.add(LCons(intern(name), makeNumber(value)))
+        map.put(intern(name), makeNumber(value))
     }
     fun entry(name: String, value: Int) {
-        lc.add(LCons(intern(name), makeNumber(value)))
+        map.put(intern(name), makeNumber(value))
     }
     
     entry("type", typeOf(obj).lowercase(), true)
@@ -353,7 +353,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
                                    c.add(LCons(prop, value))
                                }
                            })
-            entry("boundp", bool2ob(obj.getValueOptional() == null))
+            entry("boundp", bool2ob(obj.getValueOptional() != null))
             entry("value", obj.getValueOptional() ?: Nil)
         }
         is LFunction -> {
@@ -388,7 +388,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         }
         else -> Nil
     }
-    return lc.list
+    return map
 }
 
 

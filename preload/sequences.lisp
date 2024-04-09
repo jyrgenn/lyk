@@ -35,16 +35,16 @@ If optional FROM-END is true, return the last item.
 If optional TEST is supplied, use it instead of eq.
 Optional START and END indexes may limit the scope of the search
 to the designated subsequence with START <= index < END."
-  (flet ((test (or test #'eq)))
-    (let (result)
-      (if from-end
-          (doseq (el sequence result start end)
-                 (when (test item el)
-                   (setf result el)))
+  (let ((test (or test #'eq))
+        (result))
+    (if from-end
+        (doseq (el sequence result start end)
+          (when (funcall test item el)
+            (setf result el)))
         (catch :found
           (doseq (el sequence result start end)
-                 (when (test item el)
-                   (throw :found el))))))))
+            (when (funcall test item el)
+              (throw :found el)))))))
 
 (defun find-if (predicate sequence &optional from-end start end)
   "Find first item in SEQUENCE for which PREDICATE is true; return it, or nil.

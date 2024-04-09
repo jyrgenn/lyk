@@ -141,13 +141,13 @@
                                     (equal l1 l2)))
          '(nil t))
 ;; copy last cdr, too
-(test-is "copy-seq list 3" (let* ((l1 '(3 4 'shoonana "Mufti, Dufti" . t))
+(test-err "copy-seq list 3" (let* ((l1 '(3 4 'shoonana "Mufti, Dufti" . t))
                                   (l2 (copy-seq l1)))
                              (println 'l1 l1)
                              (println 'l2 l2)
                              (list (eq l1 l2)
                                    (equal l1 l2)))
-         '(nil t))
+         #/not a proper list/)
 
 (test-is "copy-seq symbol" (errset (copy-seq 'shoo) nil) nil)
 

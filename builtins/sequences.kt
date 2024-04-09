@@ -94,3 +94,66 @@ fun bi_copy_seq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return seqArg(arg1(args), "copy-seq").copy()
 }
 
+/// builtin doseq
+/// fun     bi_doseq
+/// std     control-vars
+/// key     
+/// opt     
+/// rest    bodyforms
+/// ret     result
+/// special yes
+/// doc {
+/// Bind `var` to every element of `seq`, execute body and return the result.
+/// `control-vars` is a list of (var seq [result-form [start [end]]]])
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_doseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (cvars, bodyforms) = args
+    val (symbol, sequence, resultform, start, end) = args5(cvars)
+    val sym = symbolArg(symbol, "doseq var")
+    System.err.println("doseq start = $start")
+    val i_start = intValueOr(start, 0, "doseq start")
+    val i_end = intValueOr(end, null, "doseq end")
+
+    val seq = eval(sequence)
+    if (seq !is LSeq) {
+        throw TypeError(seq, "sequence")
+    }
+    val subseq = seq.subseq(i_start!!, i_end)
+    return withNewEnvironment {
+        // if (resultform is LSymbol) {
+        //     resultform.setValue(Nil)
+        // }
+        for (elem in subseq) {
+            sym.bind(elem)
+            evalProgn(bodyforms)
+        }
+        sym.bind(Nil)
+        eval(resultform)
+    }
+}
+
+/// builtin subseq
+/// fun     bi_subseq
+/// std     sequence start
+/// key     
+/// opt     end
+/// rest    
+/// ret     subsequence
+/// special no
+/// doc {
+/// Return a copy of the subsequence of `sequence` from `start` to `end`.
+/// If `end` is omitted, the end of the sequence is assumed.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_subseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (sequence, start, end) = args3(args)
+    val i_start = if (start === Nil) 0 else intArg(eval(start), "subseq start")
+    val i_end = if (start === Nil) null else intArg(eval(end), "subseq end")
+    val seq = seqArg(sequence, "subseq sequence")
+
+    return seq.subseq(i_start, i_end)
+}
+

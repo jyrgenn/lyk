@@ -181,6 +181,14 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
 
     override fun copy() = elements()
 
+    override fun subseq(start: Int, end: Int?): LObject {
+        if (this === Nil) {
+            throw IndexError(
+                "invalid indexes [$start, ${end ?: "nil"}) for empty list")
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
     override var car: LObject
         get() {
             if (this === Nil) {

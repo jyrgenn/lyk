@@ -20,6 +20,12 @@ class LVector(elems: LObject): LObject(), LSeq {
         }
     }
 
+    constructor(elems: Iterable<LObject>) : this(Nil) {
+        for (elem in elems) {
+            the_vector.add(elem)
+        }
+    }
+
     constructor(length: Int, elem: LObject) : this(Nil) {
         for (n in 1..length) {
             the_vector.add(elem)
@@ -90,6 +96,21 @@ class LVector(elems: LObject): LObject(), LSeq {
 
     override fun copy(): LObject {
         return LVector(elements())
+    }
+
+    override fun subseq(start: Int, end: Int?): LObject {
+        val real_end = (if (end == null) {
+                            the_vector.size
+                        } else {
+                            end
+                        })
+        if (start < 0 || start > the_vector.size) {
+            throw IndexError(this, start)
+        }
+        if (real_end < 0 || real_end > the_vector.size) {
+            throw IndexError(this, real_end)
+        }
+        return LVector(the_vector.subList(start, real_end))
     }
 
     class VectorIterator(val vector: LVector): Iterator<LObject> {

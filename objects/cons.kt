@@ -71,14 +71,48 @@ class LCons(override var car: LObject,
     }
 
     override fun elements(): LObject {
+        var l: LObject = this
         return collectedList {
-            for (elem in this) {
-                it.add(elem)
+            while (l is LCons) {
+                it.add(l.car)
+                l = l.cdr
+            }
+            if (l !== Nil) {
+                throw TypeError("not a proper list: $this")
             }
         }
     }
 
     override fun copy() = elements()
+
+    override fun subseq(start: Int, end: Int?): LObject {
+        if (start < 0) {
+            IndexError(this, start)
+        }
+        if (end != null && end < 0) {
+            IndexError(this, end)
+        }
+        var l: LObject = this
+        var lc = ListCollector()
+        var i = 0
+        while (l is LCons) {
+            if (end != null && i >= end) {
+                break
+            }
+            if (i >= start) {
+                lc.add(l.car)
+            }
+            i++
+            l = l.cdr
+        }
+        if (i <= start) {
+            IndexError(this, start)
+        }
+        if (end != null && i < end) {
+            IndexError(this, end)
+        }
+        return lc.list
+    }
 
     override fun equal(other: LObject): Boolean {
         return other is LCons

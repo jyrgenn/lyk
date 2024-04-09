@@ -13,4 +13,5 @@ interface LSeq {
     operator fun iterator(): Iterator<LObject>
     fun copy(): LObject
     fun elements(): LObject
+    fun subseq(start: Int, end: Int?): LObject
 }

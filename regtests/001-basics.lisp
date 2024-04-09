@@ -4,7 +4,7 @@
 (test "zerop 0.0" (zerop (- 3.4 3.4)))
 (test-not "zerop !0" (zerop (- 3 3.4)))
 (test-is "describe" (describe 'newsymbol)
-          "((type . symbol) (name . \"newsymbol\") (immutable) (desc-name . \"newsymbol\") (function) (props) (boundp . t) (value))")
+          "#:((type . symbol)(name . \"newsymbol\")(immutable . nil)(desc-name . \"newsymbol\")(function . nil)(props . nil)(boundp . nil)(value . nil))")
 (test "null" (null (null 'a)))
 (test "not" (not (not 'a)))
 (test-is "princ" (princ 'lala devnull) "lala")
