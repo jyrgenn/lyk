@@ -6,7 +6,7 @@ import java.util.WeakHashMap
 
 
 // class LNumber: LObject, Comparable {
-class LNumber(val value: Double): LObject() {
+class LNumber(val the_number: Double): LObject() {
     // this is a rudimentary number implementation for now
 
     constructor(longValue: Long) : this(longValue.toDouble()) {}
@@ -42,30 +42,30 @@ class LNumber(val value: Double): LObject() {
     // Return true iff object is an atom
     override fun isAtom() = true 
 
-    fun isLong() = value == value.toLong().toDouble()
-    fun isInt() = value == value.toInt().toDouble()
+    fun isLong() = the_number == the_number.toLong().toDouble()
+    fun isInt() = the_number == the_number.toInt().toDouble()
 
-    fun toLong() = value.toLong()
-    fun toInt() = value.toInt()
+    fun toLong() = the_number.toLong()
+    fun toInt() = the_number.toInt()
     
     override fun desc(): String {
-        if (value <= Long.MAX_VALUE.toDouble()
-                && value >= Long.MIN_VALUE.toDouble()) {
-            val longVal = value.toLong()
-            if (value == longVal.toDouble()) {
+        if (the_number <= Long.MAX_VALUE.toDouble()
+                && the_number >= Long.MIN_VALUE.toDouble()) {
+            val longVal = the_number.toLong()
+            if (the_number == longVal.toDouble()) {
                 return longVal.toString()
             }
         }
-        return value.toString()
+        return the_number.toString()
     }
 
     override fun toString() = desc()
 
     override fun compareTo(other: LObject): Int {
         if (other is LNumber) {
-            if (value < other.value) {
+            if (the_number < other.the_number) {
                 return -1
-            } else if (value > other.value) {
+            } else if (the_number > other.the_number) {
                 return 1
             } else {
                 return 0

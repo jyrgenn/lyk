@@ -24,10 +24,10 @@ fun charArg(arg: LObject, what: String): LChar {
 
 fun charOrStringArg(arg: LObject, what: String): Char {
     if (arg is LChar) {
-        return arg.ch
+        return arg.the_char
     } else if (arg is LString) {
-        if (arg.value.length == 1) {
-            return arg.value[0]
+        if (arg.the_string.length == 1) {
+            return arg.the_string[0]
         }
     }
     throw ArgumentError("$what argument is not a char or string of"
@@ -40,7 +40,7 @@ fun envArg(arg: LObject, what: String): LEnv {
 }
 
 fun numberArg(arg: LObject, what: String): Double {
-    return (arg as? LNumber)?.value ?:
+    return (arg as? LNumber)?.the_number ?:
         throw ArgumentError("$what argument is not a number: $arg (${typeOf(arg)})")
 }
 
@@ -58,7 +58,7 @@ fun intArg(arg: LObject, what: String) = numberArg(arg, what).toInt()
 
 fun longArg(arg: LObject, what: String): Long {
     if (arg is LNumber && arg.isLong()) {
-        return arg.value.toLong()
+        return arg.the_number.toLong()
     }
     throw ArgumentError("$what argument is not an integer: $arg")
 }
@@ -95,13 +95,13 @@ fun seqArg(arg: LObject, what: String): LSeq {
 // }
 
 fun stringArg(arg: LObject, what: String): String {
-    return (arg as? LString)?.value ?:
+    return (arg as? LString)?.the_string ?:
         throw ArgumentError("$what argument is not a string: $arg")
 }
 
 fun stringlikeArg(arg: LObject, what: String): String {
     if (arg is LString) {
-        return arg.value
+        return arg.the_string
     }
     if (arg is LSymbol) {
         return arg.name

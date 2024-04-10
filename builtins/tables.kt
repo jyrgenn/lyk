@@ -132,7 +132,7 @@ fun bi_table_inc(args: LObject, kwArgs: Map<LSymbol, LObject>
         if (value !is LNumber) {
             throw TypeError("key value $value in table $table not a number")
         }
-        val new_value = makeNumber(value.value + increment)
+        val new_value = makeNumber(value.the_number + increment)
         table.put(key, new_value)
         return new_value
     } else if (kwArgs[createKeySym] !== Nil) {

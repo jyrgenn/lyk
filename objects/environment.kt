@@ -7,14 +7,14 @@ package org.w21.lyk
 class LEnv(val parent: LEnv? = null): LObject() {
     val level: Int = if (parent == null) 0 else parent.level + 1
     val levelstring = if (level > 0) "$level" else "root"
-    val map: MutableMap<LSymbol, LObject> = mutableMapOf()
+    val the_env: MutableMap<LSymbol, LObject> = mutableMapOf()
 
     // must only be called by symbol.bind
     fun bind(symbol: LSymbol, value: LObject) {
 	debug(debugBindSymSym) {
              "$symbol <= $value in $this"
         }
-        map[symbol] = value
+        the_env[symbol] = value
     }
 
     fun unbind(symbol: LSymbol) {
@@ -26,7 +26,7 @@ class LEnv(val parent: LEnv? = null): LObject() {
 	    debug(debugBindSymSym) {
                  "unbind $symbol in $this"
             }
-            env.map.remove(symbol)
+            env.the_env.remove(symbol)
             env = env.parent
         }
     }
@@ -34,7 +34,7 @@ class LEnv(val parent: LEnv? = null): LObject() {
     fun getValueMaybe(symbol: LSymbol): LObject? {
         var env: LEnv? = this
         while (env != null) {
-            val maybe = env.map[symbol]
+            val maybe = env.the_env[symbol]
             if (maybe != null) {
                 return maybe
             }
@@ -51,26 +51,26 @@ class LEnv(val parent: LEnv? = null): LObject() {
     fun setValue(symbol: LSymbol, value: LObject): Boolean {
         var env: LEnv? = this
         while (env != null) {
-            if (symbol in env.map.keys) {
-                env.map[symbol] = value
+            if (symbol in env.the_env.keys) {
+                env.the_env[symbol] = value
                 return true
             }
             env = env.parent
         }
-        rootEnv.map[symbol] = value
+        rootEnv.the_env[symbol] = value
         return false
     }
 
     val descFormat = "#<${typeOf(this)}$id[$levelstring:%d]%s>"
 
-    override fun toString() = descFormat.format(map.size, "")
+    override fun toString() = descFormat.format(the_env.size, "")
 
     override fun desc() =
-        descFormat.format(map.size,
+        descFormat.format(the_env.size,
                           if (level == 0) {
                               "{...}"
                           } else {
-                              map.toString()
+                              the_env.toString()
                           }
         )
     

@@ -219,7 +219,7 @@ fun bi_let(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             }
         } else if (binding is LCons) {
 	    val (sym, rest) = binding
-	    if (rest !is LCons) {
+	    if (rest != Nil && rest !is LCons) {
 		throw ArgumentError("let: malformed variable clause for `$sym`")
 	    }
 	    if (rest.cdr != Nil) {
@@ -1489,7 +1489,7 @@ fun bi_read(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     } else if (tentative_stream is LStream) {
         input_stream = tentative_stream
     } else if (tentative_stream is LString) {
-        input_stream = StringReaderStream(tentative_stream.value)
+        input_stream = StringReaderStream(tentative_stream.the_string)
     }
     if (input_stream == null) {
         throw ArgumentError("read argument not a stream or string: "
@@ -1684,26 +1684,20 @@ fun bi_remprop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 
 /// builtin reverse
 /// fun     bi_reverse
-/// std     list
+/// std     sequence
 /// key     
 /// opt     
 /// rest    
 /// ret     list
 /// special no
 /// doc {
-/// Reverse `list` and return the result.
-/// The resulting list does not share structure with the argument list.
+/// Reverse `sequence` (by copying) and return the result.
+/// The resulting sequence does not share structure with the argument list.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_reverse(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    var list = arg1(args)
-    var newlist: LObject = Nil
-
-    for (elem in list) {
-        newlist = LCons(elem, newlist)
-    }
-    return newlist
+    return seqArg(arg1(args), "reverse").reversed()
 }
 
 /// builtin nreverse

@@ -174,7 +174,7 @@ fun main(args: Array<String>) {
     }
     if (args_lc.list !== Nil) {
         // first argument is the file to run, rest goes to *command-line-args*"
-        val file = (args_lc.list.car as LString).value
+        val file = (args_lc.list.car as LString).the_string
         commandLineArgs.setValue(args_lc.list.cdr)
 
         try {

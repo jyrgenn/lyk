@@ -113,6 +113,10 @@ class LVector(elems: LObject): LObject(), LSeq {
         return LVector(the_vector.subList(start, real_end))
     }
 
+    override fun reversed(): LObject {
+        return LVector(the_vector.reversed())
+    }
+
     class VectorIterator(val vector: LVector): Iterator<LObject> {
         var nextIndex = 0
         

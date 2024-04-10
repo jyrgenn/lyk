@@ -114,6 +114,14 @@ class LCons(override var car: LObject,
         return lc.list
     }
 
+    override fun reversed(): LObject {
+        var l: LObject = Nil
+        for (elem in this) {
+            l = LCons(elem, l)
+        }
+        return l
+    }
+
     override fun equal(other: LObject): Boolean {
         return other is LCons
             && car.equal(other.car)

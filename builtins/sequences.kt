@@ -112,7 +112,6 @@ fun bi_doseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (cvars, bodyforms) = args
     val (symbol, sequence, resultform, start, end) = args5(cvars)
     val sym = symbolArg(symbol, "doseq var")
-    System.err.println("doseq start = $start")
     val i_start = intValueOr(start, 0, "doseq start")
     val i_end = intValueOr(end, null, "doseq end")
 

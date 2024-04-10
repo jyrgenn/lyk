@@ -5,10 +5,10 @@ package org.w21.lyk
 import java.util.WeakHashMap
 
 
-class LString(val value: String): LObject(), LSeq {
+class LString(val the_string: String): LObject(), LSeq {
 
     // deinit {
-    //     stringTable[value] = nil
+    //     stringTable[the_string] = nil
     // }
 
     companion object {
@@ -43,7 +43,7 @@ class LString(val value: String): LObject(), LSeq {
         if (other !is LString) {
             return false
         }
-        if (value == other.value) {
+        if (the_string == other.the_string) {
             return true
         }
         return false
@@ -52,12 +52,12 @@ class LString(val value: String): LObject(), LSeq {
     // Return true iff object is an atom
     override fun isAtom() = true
 
-    override fun toString() = value
+    override fun toString() = the_string
 
     // with all quoting and stuff
     override fun desc(): String {
         var result = CharBuf('\"')
-        for (ch in value) {
+        for (ch in the_string) {
             if (ch in "\\\"") {
                 result.add('\\')
             }
@@ -68,8 +68,8 @@ class LString(val value: String): LObject(), LSeq {
     }
 
     override fun getAt(index: Int): LObject {
-        if (index >= 0 && index < value.length) {
-            return makeChar(value[index])
+        if (index >= 0 && index < the_string.length) {
+            return makeChar(the_string[index])
         }
         throw IndexError(this, index)
     }
@@ -81,7 +81,7 @@ class LString(val value: String): LObject(), LSeq {
 
     override fun elements(): LObject {
         return collectedList {
-            for (ch in value) {
+            for (ch in the_string) {
                 it.add(makeChar(ch))
             }
         }
@@ -89,9 +89,9 @@ class LString(val value: String): LObject(), LSeq {
 
     override fun compareTo(other: LObject): Int {
         if (other is LString) {
-            if (value < other.value) {
+            if (the_string < other.the_string) {
                 return -1
-            } else if (value > other.value) {
+            } else if (the_string > other.the_string) {
                 return 1
             } else {
                 return 0
@@ -109,21 +109,32 @@ class LString(val value: String): LObject(), LSeq {
 
     override fun subseq(start: Int, end: Int?): LObject {
         return makeString(if (end == null) {
-                              value.substring(start)
+                              the_string.substring(start)
                           } else {
-                              value.substring(start, end)
+                              the_string.substring(start, end)
                           })
     }
+
+    override fun reversed(): LObject {
+        // val sb = StrBuf()
+        // for (ch in the_string.length - 1 downTo 0) {
+        //     sb.add(ch)
+        // }
+        // return makeString(sb.toString())
+        return makeString(the_string.reversed())
+    }
+
+    override fun length() = the_string.length
 
     class StringIterator(val s: LString): Iterator<LObject> {
         var nextIndex = 0
 
         override fun hasNext(): Boolean {
-            return nextIndex < s.value.length
+            return nextIndex < s.the_string.length
         }
 
         override fun next(): LObject {
-            return makeChar(s.value[nextIndex++])
+            return makeChar(s.the_string[nextIndex++])
         }
     }
 }

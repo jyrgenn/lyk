@@ -59,11 +59,7 @@ class LBuiltin(
                 wantKeywordParam = null
                 continue
             }
-            if (arg.isKeyword()) {
-                if (arg !in kwArgs.keys) {
-                    throw ArgumentError("keyword $arg invalid"
-                                        + " for $typeDesc `${this.name}'")
-                }
+            if (arg.isKeyword() && arg in kwArgs.keys) {
                 wantKeywordParam = arg as LSymbol
                 continue
             }

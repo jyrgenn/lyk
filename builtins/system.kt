@@ -365,13 +365,13 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             entry("special", bool2ob(obj.isSpecial))
         }
         is LString -> {
-            entry("len", obj.value.length)
+            entry("len", obj.the_string.length)
             entry("value", obj)
         }
         is LEnv -> {
             entry("level", obj.level)
-            entry("size", obj.map.size)
-            entry("mapping", LTable(obj.map))
+            entry("size", obj.the_env.size)
+            entry("mapping", LTable(obj.the_env))
         }
         is LNumber -> {
             entry("value", obj)
@@ -384,7 +384,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
              entry("size", obj.the_table.size)
         }
         is LRegexp -> {
-            entry("pattern", obj.regexp.toString(), false)
+            entry("pattern", obj.the_regexp.toString(), false)
         }
         else -> Nil
     }
@@ -551,7 +551,7 @@ fun bi_env_table(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         envArg(arg, "env-table")
     }
 
-    for ((key, value) in environment.map) {
+    for ((key, value) in environment.the_env) {
         table.put(key, value)
     }
     return table
@@ -579,7 +579,7 @@ fun bi_env_vars(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         envArg(arg, "env-vars")
     }
 
-    return list2lisp(environment.map.keys)
+    return list2lisp(environment.the_env.keys)
 }
 
 /// builtin function-definition

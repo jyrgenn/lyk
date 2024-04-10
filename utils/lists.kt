@@ -38,9 +38,9 @@ fun valueArray(elems: LObject): Array<Any> {
     for (elem in elems) {
         a[index++] = when (elem) {
             is LNumber -> if (elem.isLong())
-                              elem.value.toLong()
+                              elem.the_number.toLong()
                           else
-                              elem.value
+                              elem.the_number
             else -> elem.toString()
         }
     }

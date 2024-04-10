@@ -5,7 +5,7 @@ package org.w21.lyk
 import java.util.WeakHashMap
 
 
-class LChar(val ch: Char): LObject() {
+class LChar(val the_char: Char): LObject() {
 
     companion object {
         val charTable = WeakHashMap(mutableMapOf<Char, LChar>())
@@ -52,7 +52,7 @@ class LChar(val ch: Char): LObject() {
         if (other !is LChar) {
             return false
         }
-        if (ch == other.ch) {
+        if (the_char == other.the_char) {
             return true
         }
         return false
@@ -60,33 +60,33 @@ class LChar(val ch: Char): LObject() {
     
     override fun isAtom() = true
 
-    override fun toString() = ch.toString()
+    override fun toString() = the_char.toString()
 
     fun ascii_glyph() =
-        if (ch.code in 33..126) {
-            ch.toString()
+        if (the_char.code in 33..126) {
+            the_char.toString()
         } else {
             null
         }
 
     override fun desc() = 
-        "#\\" + (charName[ch] ?:
+        "#\\" + (charName[the_char] ?:
                      ascii_glyph() ?:
-                     if (isPrintable(ch)) {
-                         ch
-                     } else if (ch.code < 0x100) {
-                         "x%02x".format(ch.code)
-                     } else if (ch.code < 0x10000) {
-                         "u%04x".format(ch.code)
+                     if (isPrintable(the_char)) {
+                         the_char
+                     } else if (the_char.code < 0x100) {
+                         "x%02x".format(the_char.code)
+                     } else if (the_char.code < 0x10000) {
+                         "u%04x".format(the_char.code)
                      } else {
-                         "U%08x".format(ch.code)
+                         "U%08x".format(the_char.code)
                      })
 
     override fun compareTo(other: LObject): Int {
         if (other is LChar) {
-            if (ch < other.ch) {
+            if (the_char < other.the_char) {
                 return -1
-            } else if (ch > other.ch) {
+            } else if (the_char > other.the_char) {
                 return 1
             } else {
                 return 0

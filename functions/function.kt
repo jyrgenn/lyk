@@ -26,7 +26,7 @@ abstract class LFunction(
         if (functionName != null) {
             functionName.function = this
             if (location != null) {
-                val parts = location.value.split(":")
+                val parts = location.the_string.split(":")
                 val newloc = parts[0] + ":" + parts[1]
                 functionName.putprop(definedInPropSym, makeString(newloc))
             }
@@ -106,20 +106,20 @@ abstract class LFunction(
         return "${typeDesc} ${synopsis()} => $retval"
     }
 
-    fun docstring() = docBody.value
+    fun docstring() = docBody.the_string
 
     fun documentation(): String {
         val sb = StrBuf()
         sb.add(docHeader())
         sb.add("\n")
-        if (docBody.value != "") {
-            sb.add(docBody.value)
+        if (docBody.the_string != "") {
+            sb.add(docBody.the_string)
             sb.add("\n")
         }
         val defined_in = name.getprop(definedInPropSym)
         if (defined_in is LString) {
             sb.add("[defined in ")
-            sb.add(defined_in.value)
+            sb.add(defined_in.the_string)
             sb.add("]\n")
         }
         return sb.toString()
@@ -149,7 +149,7 @@ abstract class LFunction(
 // complex arglists, this is a complex task
 fun bindPars(arglist: LObject, func: LFunction) {
     // first establish the kwArgs[] with the default values
-    var kwArgs = func.keyPars.toMutableMap()
+    var kwArgs = mutableMapOf<LSymbol, LObject>()
     var wantStdArgs = func.stdPars.size
     var hadStdArgs = 0              // stdPars seen
     var wantOptArgs = func.optPars.size
@@ -172,12 +172,10 @@ fun bindPars(arglist: LObject, func: LFunction) {
         }
         if (arg.isKeyword()) {
             val sym = key2var(arg as LSymbol)
-            if (sym !in kwArgs.keys) {
-                throw ArgumentError("keyword $arg invalid"
-                                    + " for ${func.typeDesc} `${func.name}'")
+            if (sym in func.keyPars.keys) {
+                wantKeyArg = sym
+                continue
             }
-            wantKeyArg = sym
-            continue
         }
         if (hadStdArgs < wantStdArgs) {
             currentEnv.bind(func.stdPars[hadStdArgs], arg)
@@ -216,8 +214,10 @@ fun bindPars(arglist: LObject, func: LFunction) {
     if (func.restPar != null) {
         currentEnv.bind(func.restPar, restArgs.list)
     }
-    // bind keyword arguments
-    for ((symbol, value) in kwArgs) {
+    // bind keyword arguments; if not present in the call, get the value from
+    // the defaults in keyPars, which must be evaluated
+    for (symbol in func.keyPars.keys) {
+        val value = kwArgs[symbol] ?: eval(func.keyPars[symbol]!!)
         currentEnv.bind(symbol, value)
     }
 }

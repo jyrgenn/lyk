@@ -47,7 +47,7 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
 
         fun makeGlobal(name: String, value: LObject = Nil): LSymbol {
             val symbol = intern(name)
-            rootEnv.map[symbol] = value
+            rootEnv.the_env[symbol] = value
             return symbol
         }
     }                           // end companion object
@@ -185,6 +185,13 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
         if (this === Nil) {
             throw IndexError(
                 "invalid indexes [$start, ${end ?: "nil"}) for empty list")
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
+    override fun reversed(): LObject {
+        if (this === Nil) {
+            return Nil
         }
         throw TypeError("not a sequence: $this")
     }

@@ -14,4 +14,6 @@ interface LSeq {
     fun copy(): LObject
     fun elements(): LObject
     fun subseq(start: Int, end: Int?): LObject
+    fun reversed(): LObject
+    fun length(): Int
 }

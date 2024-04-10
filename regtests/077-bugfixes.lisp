@@ -12,4 +12,13 @@
           #/setting unbound variable/)
 (test "unset-var post" (not (boundp 'unset-var)))
 
+;; seems like let cannot cope with a binding form that is a list with
+;; one element. Two, yes, a symbol, yes, but not a list like (result).
+
+;; so, this triggered an error "let: malformed variable clause for `result`",
+;; which it must not
+(test-is "let one-elem-binding" (let ((result))
+                                  result)
+         nil)
+
 (done-testing)
