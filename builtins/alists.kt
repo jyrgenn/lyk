@@ -3,20 +3,13 @@
 package org.w21.lyk
 
 
-fun assoc_check_function(pred: LObject, what: String): LFunction {
-    if (pred is LFunction) {
-        return pred
-    }
-    throw ArgumentError("predicate arg to $what is not a function: $pred")
-}
-
 fun assoc_iter_elems(alist: LObject, what: String,
                      closure: (elem_car: LObject) -> Boolean): LObject {
     if (alist === Nil) {
         return Nil
     }
     if (alist !is LCons) {
-        throw ArgumentError("alist argument to $what is not a alist: $alist")
+        throw ArgumentError("alist argument to $what is not an alist: $alist")
     }
     for (elem in alist) {
         if (elem !is LCons) {
@@ -41,7 +34,7 @@ fun assoc_iter_elems(alist: LObject, what: String,
 /// special no
 /// doc {
 /// Look up `item` in `alist` and return the pair whose car is equal to `item`.
-/// Return nil if `item` is not found as a car in one of the pairs in `alist`.
+/// Return nil if `item` is not found.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
@@ -51,6 +44,36 @@ fun bi_assoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return assoc_iter_elems(alist, "assoc") {
         it.equal(item)
     }
+}
+
+/// builtin sassoc
+/// fun     bi_sassoc
+/// std     item alist default
+/// key     
+/// opt     
+/// rest    
+/// ret     cons/nil
+/// special no
+/// doc {
+/// Look up `item` in `alist`; return the pair whose car is equal to `item`.
+/// If `item` is not in `alist`, return `default`, or if it is a function,
+/// call it with no args and return the result.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_sassoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (item, alist, default) = args3(args)
+
+    val result = assoc_iter_elems(alist, "sassoc") {
+        it.equal(item)
+    }
+    if (result === Nil) {
+        if (default is LFunction) {
+            return default.call(Nil)
+        }
+        return default
+    }
+    return result
 }
 
 /// builtin assq
@@ -75,6 +98,36 @@ fun bi_assq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     }
 }
 
+/// builtin sassq
+/// fun     bi_sassq
+/// std     item alist default
+/// key     
+/// opt     
+/// rest    
+/// ret     cons/nil
+/// special no
+/// doc {
+/// Look up `item` in `alist`; return the pair whose car is eq to `item`.
+/// If `item` is not in `alist`, return `default`, or if it is a function,
+/// call it with no args and return the result.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_sassq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (item, alist, default) = args3(args)
+
+    val result = assoc_iter_elems(alist, "sassq") {
+        it === item
+    }
+    if (result === Nil) {
+        if (default is LFunction) {
+            return default.call(Nil)
+        }
+        return default
+    }
+    return result
+}
+
 /// builtin assoc-if
 /// fun     bi_assoc_if
 /// std     predicate alist
@@ -92,7 +145,7 @@ fun bi_assq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_assoc_if(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (pred, alist) = args2(args)
-    var predicate = assoc_check_function(pred, "assoc-if")
+    var predicate = functionArg(pred, "assoc-if")
 
     return assoc_iter_elems(alist, "assoc-if") {
         ob2bool(predicate.call(LCons(it, Nil)))
@@ -116,7 +169,7 @@ fun bi_assoc_if(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_assoc_if_not(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (pred, alist) = args2(args)
-    var predicate = assoc_check_function(pred, "assoc-if-not")
+    var predicate = functionArg(pred, "assoc-if-not")
 
     return assoc_iter_elems(alist, "assoc-if-not") {
         !ob2bool(predicate.call(LCons(it, Nil)))

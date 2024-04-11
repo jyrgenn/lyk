@@ -709,4 +709,53 @@ fun bi_signum(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
                       })
 }
 
+/// builtin evenp
+/// fun     bi_evenp
+/// std     n
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return a true value iff the number is an even integer.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_evenp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val arg = arg1(args)
+
+    if (arg is LNumber) {
+        if (arg.isLong()) {
+            return bool2ob(arg.the_number.toLong() % 2 == 0L)
+        }
+        return Nil
+    }
+    throw ArgumentError("evenp argument is not a number: $arg (${typeOf(arg)})")
+}
+
+/// builtin oddp
+/// fun     bi_oddp
+/// std     n
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return a true value iff the number is an odd integer.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_oddp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val arg = arg1(args)
+    
+    if (arg is LNumber) {
+        if (arg.isLong()) {
+            return bool2ob(arg.the_number.toLong() % 2 != 0L)
+        }
+        return Nil
+    }
+    throw ArgumentError("oddp argument is not a number: $arg (${typeOf(arg)})")
+}
 
