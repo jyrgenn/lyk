@@ -5,16 +5,8 @@
            (dolist (el '(a b c d e f g h i) (nreverse result))
              (push el result)))
          '(a b c d e f g h i))
-(test-is "dolist 1"
-         (let (result)
-           (dolist (el '(a b c d e f g h i) (nreverse result) 3)
-             (push el result)))
-         '(d e f g h i))
-(test-is "dolist 2"
-         (let (result)
-           (dolist (el '(a b c d e f g h i) (nreverse result) 3 6)
-             (push el result)))
-         '(d e f))
+
+;; deleted ones: dolist in CL has no start/end
 
 (test-is "doseq 10"
          (let (result)
