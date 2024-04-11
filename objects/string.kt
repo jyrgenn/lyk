@@ -137,6 +137,8 @@ class LString(val the_string: String): LObject(), LSeq {
             return makeChar(s.the_string[nextIndex++])
         }
     }
+
+    override fun iterator() = StringIterator(this)
 }
 
 fun makeString(value: String) = LString.mkString(value)
