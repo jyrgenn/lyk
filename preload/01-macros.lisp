@@ -1,7 +1,7 @@
 
 (defmacro unless (condition &rest bodyforms)
   "If CONDITION yields nil, eval BODYFORMS and return the result of the last."
-  `(cond (,condition)
+  `(cond (,condition nil)
          (t ,@bodyforms)))
 
 (defmacro when (condition &rest bodyforms)
