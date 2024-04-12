@@ -87,6 +87,9 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     }
     
     fun nextChar(): Char? {
+        debug(debugReaderSym) {
+            "nextChar() from $input"
+        }
         try {
             val ch = input.readChar()
             if (ch != null) {
@@ -102,8 +105,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                 return ch
             }
         } catch (e: Exception) {
-            // IOError
-            throw Exception("reading character from $input: #error")
+            throw IOError(e, "reading character from $input")
         }
         debug(debugReaderSym) {
             "nextChar() returns null"
@@ -291,7 +293,8 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                                   this)
             return CharToken(this, char)
         }
-	// Down from here we have a character with a symbol-like "name".
+	// Down from here we have a character with a symbol-like name or
+	// hexadecimal code.
 
 	// defined character literal names first
         val char = LChar.nameChar[charName.lowercase()]
@@ -300,7 +303,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         }
 
         // if the name of the character has length one, it is
-        // literally the charcter itself
+        // literally the character itself
         if (len == 1) {
             return CharToken(this, charName[0])
         }
@@ -315,12 +318,14 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         } else if (radix in "01234567") {
             code = charName.toInt(8)
         } else {
-            print("char token len $len: ")
-            for (i in 0..<len) {
-                print("%02x ".format(charName[i].code))
+            debug (debugReadCharSym) {
+                debug_out.print("token len $len: ")
+                for (i in 0..<len) {
+                    debug_out.print("%02x ".format(charName[i].code))
+                }
+                "($charName)"
             }
-            println()
-            throw SyntaxError("invalid character literal syntax: #\\$charName",
+            throw SyntaxError("invalid character literal: #\\$charName",
                               this)
         }
         return CharToken(this, code.toChar())

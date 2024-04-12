@@ -103,6 +103,77 @@ class FileReaderStream(file: File, name: String? = null,
     }
 }
 
+class FileIOStream(path: String,
+                            name: String? = null,
+                            val flushln: Boolean = false,
+                            val flushch: Boolean = false,
+                            error: Boolean = false,
+                            // append: Boolean = false,
+                            // create: Boolean = true,
+                            // exclusive: Boolean = false
+): LStream(input = true, output = true, path = path,
+           name = name ?: "'$path'", error = error)
+{
+    val file = File(path)
+    val fileWriter = file.printWriter().buffered()
+    val fileReader = file.bufferedReader()
+    var linebuf = StringReaderStream("")
+
+    override fun read(): Char? {
+        try {
+            if (!linebuf.hasNext()) {
+                val line = fileReader.readLine()
+                if (line == null) {
+                    return null
+                }
+                linebuf = StringReaderStream(line + "\n")
+            }
+            return linebuf.read()
+        } catch (e: Exception) {
+            throw IOError(e)
+        }
+    }
+    
+    override fun write(code: Int) {
+        try {
+            fileWriter.write(code)
+            if (flushch || (flushln && code == newLine)) {
+                fileWriter.flush()
+            }
+        } catch (e: Exception) {
+            throw IOError(e)
+        }
+    }
+    override fun write(s: String) {
+        try {
+            fileWriter.write(s)
+            if (flushch) {
+                fileWriter.flush()
+            }
+        } catch (e: Exception) {
+            throw IOError(e)
+        }
+    }
+
+    override fun flush() {
+        try {
+            fileWriter.flush()
+        } catch (e: Exception) {
+            throw IOError(e)
+        }
+    }
+
+    override fun close_specific() {
+        try {
+            fileReader.close()
+            fileWriter.close()
+        } catch (e: Exception) {
+            throw IOError(e)
+        }
+    }
+
+}
+
 class FileWriterStream(path: String,
                             name: String? = null,
                             val flushln: Boolean = false,

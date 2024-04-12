@@ -39,8 +39,9 @@ class IndexError(message: String): LispError(message) {
 class WarningError(message: String): LispError(message)
 
 open class IOError(message: String): LispError(message) {
-    constructor(err: Exception):
-        this("${err::class.simpleName}: ${err.message}")
+    constructor(err: Exception, message: String? = null):
+        this((if (message == null) "" else message + ": ")
+             + "${err::class.simpleName}: ${err.message}")
 }
 
 

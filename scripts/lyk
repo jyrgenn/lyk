@@ -4,8 +4,10 @@
 # this is also a base for the load path
 export LYKPATH=${LYKPATH-.:/opt/w21/lyk:$HOME/devel/lyk}
 
-stty size | read LINES COLUMNS
-export LINES COLUMNS
+if [ -t 0 ]; then
+    stty size | read LINES COLUMNS
+    export LINES COLUMNS
+fi
 
 IFS=:
 for dir in $LYKPATH; do

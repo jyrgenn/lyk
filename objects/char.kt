@@ -23,6 +23,7 @@ class LChar(val the_char: Char): LObject() {
         val nameChar = mapOf(
             "space"     to ' ',
             "newline"   to '\n',
+            "linefeed"  to '\n',
             "tab"       to '\t',
             "page"      to '\u000c',
             "rubout"    to '\u007f',
