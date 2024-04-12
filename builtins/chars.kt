@@ -86,12 +86,187 @@ fun bi_char_not_equal(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val seen = mutableSetOf<Int>()
 
     for (ch in args) {
-        val code = charOrStringArg(arg1(args),
-                                   "char-equal first").lowercase()[0].code
+        val code = charOrStringArg(
+            ch, "char-not-equal first").lowercase()[0].code
         if (code in seen) {
             return Nil
         }
         seen.add(code)
+    }
+    return T
+}
+
+/// builtin char/=
+/// fun     bi_char_not_equal2
+/// std     
+/// key     
+/// opt     
+/// rest    characters
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true iff all given characters are unequal to each other.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_char_not_equal2(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    var things = mutableSetOf<Int>()
+    
+    for (arg in args) {
+        val code = charArg(arg, "char/=").code
+        if (things.contains(code)) {
+            return Nil
+        } else {
+            things.add(code)
+        }
+    }
+    return T
+}
+
+/// builtin char<
+/// fun     bi_char_lt
+/// std     
+/// key     
+/// opt     
+/// rest    characters
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true iff the characters are monotonically increasing.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_char_lt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (ch1, rest) = args
+    if (ch1 === Nil) {
+        return T
+    }
+    var previous: Int = charArg(ch1, "char< first").code
+    for (ch in rest) {
+        val code = charArg(ch, "char<").code
+        if (previous < code) {
+            previous = code
+        } else {
+            return Nil
+        }
+    }
+    return T
+}
+
+/// builtin char<=
+/// fun     bi_char_le
+/// std     
+/// key     
+/// opt     
+/// rest    characters
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true if the characters are monotonically non-decreasing.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_char_le(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (ch1, rest) = args
+    if (ch1 === Nil) {
+        return T
+    }
+    var previous: Int = charArg(ch1, "char< first").code
+    for (ch in rest) {
+        val code = charArg(ch, "char<").code
+        if (previous <= code) {
+            previous = code
+        } else {
+            return Nil
+        }
+    }
+    return T
+}
+
+/// builtin char=
+/// fun     bi_char_eql
+/// std     
+/// key     
+/// opt     
+/// rest    characters
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true if the characters are all equal.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_char_eql(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (ch1, rest) = args
+    if (ch1 === Nil) {
+        return T
+    }
+    var previous: Int = charArg(ch1, "char< first").code
+    for (ch in rest) {
+        val code = charArg(ch, "char<").code
+        if (previous != code) {
+            return Nil
+        }
+    }
+    return T
+}
+
+/// builtin char>
+/// fun     bi_char_gt
+/// std     
+/// key     
+/// opt     
+/// rest    characters
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true iff the characters are monotonically decreasing.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_char_gt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (ch1, rest) = args
+    if (ch1 === Nil) {
+        return T
+    }
+    var previous: Int = charArg(ch1, "char> first").code
+    for (ch in rest) {
+        val code = charArg(ch, "char>").code
+        if (previous > code) {
+            previous = code
+        } else {
+            return Nil
+        }
+    }
+    return T
+}
+
+/// builtin char>=
+/// fun     bi_char_ge
+/// std     
+/// key     
+/// opt     
+/// rest    characters
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true iff the characters are monotonically not increasing.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_char_ge(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (ch1, rest) = args
+    if (ch1 === Nil) {
+        return T
+    }
+    var previous: Int = charArg(ch1, "char>= first").code
+    for (ch in rest) {
+        val code = charArg(ch, "char>=").code
+        if (previous >= code) {
+            previous = code
+        } else {
+            return Nil
+        }
     }
     return T
 }

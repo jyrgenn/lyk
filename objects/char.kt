@@ -70,6 +70,9 @@ class LChar(val the_char: Char): LObject() {
             null
         }
 
+    val code: Int
+        get () = the_char.code
+
     override fun desc() = 
         "#\\" + (charName[the_char] ?:
                      ascii_glyph() ?:

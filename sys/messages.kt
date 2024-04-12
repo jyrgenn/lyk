@@ -15,7 +15,7 @@ fun printErr(e: Exception) {
     stderr.println(e.toString())
 }
 
-fun errExit(message: Any? = null) {
+fun errExit(message: Any? = null): Nothing {
     if (message != null) {
         printErr(message)
     }

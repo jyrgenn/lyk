@@ -11,7 +11,7 @@ fun atexit(closure: () -> Unit) {
     cleanupRoutines.add(closure)
 }
 
-fun exitLyk(status: Int = 0) {
+fun exitLyk(status: Int = 0): Nothing {
     for (closure in cleanupRoutines) {
         debug(debugAtexitSym) {
             "calling $closure"
