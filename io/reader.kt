@@ -476,11 +476,9 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             }
             val cclass = charclass(ch)
             val act = action[the_state.ordinal][cclass.ordinal]
-            // println("next char is `$ch`, state $the_state cclass $cclass"
-            //         + " action $act")
 
             when (act) {
-                Ac.none    -> break
+                Ac.none    -> { unreadChar(ch); break }
                 Ac.collect -> collected.add(ch)
                 Ac.membar  -> was_barred = true
                 Ac.finish  -> unreadChar(ch)
