@@ -7,7 +7,7 @@ META-INF
 org
 
 # added by ni/gitignore 2024-02-11T17:40:48
-*.jar
+/lyk.jar
 
 # added by ni/gitignore 2024-03-03T15:36:40
 /generated/
