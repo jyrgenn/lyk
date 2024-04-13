@@ -35,9 +35,13 @@ INSTALLBIN=/opt/w21/bin
 
 build: lyk.jar
 
-lyk.jar: $(ALLSRCS) Makefile
-	$(COMP) $(ALLSRCS) -include-runtime -d lyk.jar
+lyk.jar: $(ALLSRCS) generated/org generated/jline Makefile
+	$(COMP) -cp generated $(ALLSRCS) -include-runtime -d lyk.jar
+	cd generated; jar -f ../lyk.jar -u org jline
 	./scripts/lyk -qe '(build-info t)'
+
+generated/org generated/jline:
+	cd generated; jar -xf ../jline/jline.jar
 
 generated:
 	mkdir -p generated
@@ -65,7 +69,7 @@ test: lyk.jar Makefile
 	./scripts/lyk -l l/regtests.lisp -e "(run-tests)"
 
 clean:
-	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar generated META-INF lyk
+	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar generated lyk
 
 install: lyk.jar
 	mkdir -p $(INSTALLDIR)

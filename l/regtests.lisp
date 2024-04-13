@@ -69,7 +69,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
                  (unless args
                    (setf args
                          (list
-                          "FAIL: %s\n calculated: »%s«\n   expected: »%s«\n"
+                          "FAIL: »%s«\n calculated: »%s«\n   expected: »%s«\n"
                           name (princs result) (princs expect))))
                  (apply #'presult args)
                  (push (cons *load-pathname* name) fails))))
@@ -81,9 +81,9 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
                        (if (regexp-match expect result)
                            (pass)
                          (fail))
-                     (fail "FAIL: %s wrong, not a regexp: %s\n"
+                     (fail "FAIL: »%s« wrong, not a regexp: %s\n"
                            name expect))
-                 (fail "FAIL: %s RAISED ERROR: %s\n" name *last-error*)))
+                 (fail "FAIL: »%s« RAISED ERROR: %s\n" name *last-error*)))
       ;; no error
       (setf result (car result))
       (cond ((eq type 'true) (if result (pass) (fail)))
@@ -99,7 +99,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
              (setf result (princs (round-deep result)))
              (setf expect (princs (round-deep expect)))
              (if (= result expect) (pass) (fail)))
-            ((eq type 'error) (fail "FAIL: %s NO ERROR\n" name))
+            ((eq type 'error) (fail "FAIL: »%s« NO ERROR\n" name))
             (t (error "invalid test type %s" type))))))
 
 (test-internal 'test-is ''lala "lala" 'cmp) ;check if the *testing* works

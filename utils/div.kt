@@ -74,6 +74,9 @@ class CharBuf {
     fun add(ch: Char) {
         chars.add(ch)
     }
+
+    val size: Int
+        get () = chars.size
     
     override fun toString(): String {
         return chars.joinToString(separator = "")

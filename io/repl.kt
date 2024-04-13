@@ -30,7 +30,9 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
     }
 
     while (true) {
-        iprint(promptString, true)
+        if (interactive) {
+            reader.input.setPrompt(promptString)
+        }
         try {
             // Read, 
             var (expr, where) = reader.read()
@@ -91,5 +93,8 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
             return OtherError("unexpected exception in REPL", e)
         }
     }                           // end Loop
+    if (interactive) {
+        console.println()
+    }
     return null
 }

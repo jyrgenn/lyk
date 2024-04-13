@@ -87,6 +87,9 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     }
     
     fun nextChar(): Char? {
+        debug(debugReaderSym) {
+            "nextChar() from $input"
+        }
         try {
             val ch = input.readChar()
             if (ch != null) {
@@ -102,8 +105,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                 return ch
             }
         } catch (e: Exception) {
-            // IOError
-            throw Exception("reading character from $input: #error")
+            throw IOError(e, "reading character from $input")
         }
         debug(debugReaderSym) {
             "nextChar() returns null"
@@ -171,6 +173,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             debug(debugReaderSym) {
                  "nextNonSpaceChar() returns '$ch'"
             }
+            input.setPrompt("")
             return ch
         }
     }
@@ -259,11 +262,11 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     }
                 }
                 'O', 'o' ->
-                    return NumberToken(this, readRadixNumber(8))
+                    return NumberToken(this, readRadixNumber(8, "#$ch"))
                 'B', 'b' ->
-                    return NumberToken(this, readRadixNumber(2))
+                    return NumberToken(this, readRadixNumber(2, "#$ch"))
                 'X', 'x' ->
-                    return NumberToken(this, readRadixNumber(16))
+                    return NumberToken(this, readRadixNumber(16, "#$ch"))
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
                     unreadChar(ch)
                     return NumberToken(this, readFreeRadixNumber())
@@ -277,21 +280,36 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     }
 
     fun charLiteralToken(): ReaderToken {
-        val charName = (readAtomToken(wantSymbol = true)
-                            as SymbolToken).value
+        // we have seen the #\ beginning, now read the rest of the token
+
+        val cb = CharBuf()
+
+        while (true) {
+            val ch = nextChar()
+            if (ch == null) {
+                if (cb.size == 0) {
+                    throw SyntaxError("unexpected EOF reading"
+                                      + " character literal", this)
+                }
+                break
+            }
+            if (!(ch.isLetter() || ch.isDigit())) {
+                if (cb.size > 0) {
+                    unreadChar(ch)
+                } else {
+                    cb.add(ch)
+                }
+                break
+            } else {
+                cb.add(ch)
+            }
+        }
+
+        val charName = cb.toString()
         val len = charName.length
 
-        if (len == 0) {
-	    // Character is nothing that could be read like a symbol name,
-	    // so it is a control character or whitespace or a delimiter.
-	    // And it must be the next character, so we need another attempt
-	    // and read a character whatever comes.
-            val char = nextChar() ?:
-                throw SyntaxError("unexpected EOF reading character literal",
-                                  this)
-            return CharToken(this, char)
-        }
-	// Down from here we have a character with a symbol-like "name".
+	// Down from here we have a character with a symbol-like name or
+	// hexadecimal code.
 
 	// defined character literal names first
         val char = LChar.nameChar[charName.lowercase()]
@@ -300,7 +318,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         }
 
         // if the name of the character has length one, it is
-        // literally the charcter itself
+        // literally the character itself
         if (len == 1) {
             return CharToken(this, charName[0])
         }
@@ -315,12 +333,14 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         } else if (radix in "01234567") {
             code = charName.toInt(8)
         } else {
-            print("char token len $len: ")
-            for (i in 0..<len) {
-                print("%02x ".format(charName[i].code))
+            debug (debugReadCharSym) {
+                debug_out.print("token len $len: ")
+                for (i in 0..<len) {
+                    debug_out.print("%02x ".format(charName[i].code))
+                }
+                "($charName)"
             }
-            println()
-            throw SyntaxError("invalid character literal syntax: #\\$charName",
+            throw SyntaxError("invalid character literal: #\\$charName",
                               this)
         }
         return CharToken(this, code.toChar())
@@ -333,9 +353,10 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             '5' to 5, '6' to 6, '7' to 7, '8' to 8, '9' to 9
         )
         var radix: Int = 0
+        var ch: Char?
 
         while (true) {
-            val ch = nextChar()
+            ch = nextChar()
             if (ch == null) {
                 throw SyntaxError("unexpected EOF reading integer radix", this)
             }
@@ -350,16 +371,17 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             }
         }
         if (radix <= 36 && radix > 0) {
-            return readRadixNumber(radix)
+            return readRadixNumber(radix, "#$radix$ch")
         }
         throw ValueError("invalid number radix $radix", this)
     }
 
-    fun readRadixNumber(radix: Int): Double {
+    fun readRadixNumber(radix: Int, prefix: String): Double {
         val digits = CharBuf()
         var sign = 1
         var first = true
         var ch: Char?
+        var signch: Char? = null
 
         while (true) {
             ch = nextChar()
@@ -369,12 +391,9 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             if (first) {
                 first = false
                 when (ch) {
-                    '-' ->{
-                        sign = -1
-                        continue
-                    }
-                    '+' -> continue
-                    else -> break
+                    '-' -> { signch = ch; sign = -1; continue }
+                    '+' -> { signch = ch; continue }
+                    else -> {}
                 }
             }
             if (ch.isWhitespace() || ch in delimiter_chars) {
@@ -385,9 +404,11 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         }
         val digs = digits.toString()
         try {
-            return digs.toDouble() * sign
+            return digs.toLong(radix).toDouble() * sign
         } catch (nfe: NumberFormatException) {
-            throw SyntaxError("not a number of base $radix: $digs", this)
+            println(nfe)
+            throw SyntaxError("not a number of base $radix: "
+                              + "`$prefix${signch ?: ""}$digs`", this)
         }
     }
 
@@ -471,11 +492,9 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             }
             val cclass = charclass(ch)
             val act = action[the_state.ordinal][cclass.ordinal]
-            // println("next char is `$ch`, state $the_state cclass $cclass"
-            //         + " action $act")
 
             when (act) {
-                Ac.none    -> break
+                Ac.none    -> { unreadChar(ch); break }
                 Ac.collect -> collected.add(ch)
                 Ac.membar  -> was_barred = true
                 Ac.finish  -> unreadChar(ch)
@@ -485,6 +504,9 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
 
         val result = collected.toString()
         if (was_barred || wantSymbol) {
+            if (result == "" && was_barred) {
+                unreadChar('|')
+            }
             return SymbolToken(this, result)
         }
 

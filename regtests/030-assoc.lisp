@@ -43,12 +43,14 @@
 (makunbound 'shnuddel)
 (test-is "assoc-if 0" (errset (assoc-if 'shnuddel the-alist) nil) nil)
 
-(test-is "assoc-if 1" (assoc-if 'evenp num-alist) '(2 . "two"))
+(test-err "assoc-if 1" (assoc-if 'evenp num-alist)
+          #/not a function/)
 (test-is "assoc-if 2" (assoc-if #'evenp num-alist) '(2 . "two"))
 (test-is "assoc-if 3" (assoc-if (lambda (n) (> n 5)) num-alist) '(6 . "six"))
 (test-is "assoc-if 4" (assoc-if (lambda (n) (> n 15)) num-alist) nil)
 
-(test-is "assoc-if-not 1" (assoc-if-not 'evenp num-alist) '(1 . "one"))
+(test-err "assoc-if-not 1" (assoc-if-not 'evenp num-alist)
+          #/not a function/)
 (test-is "assoc-if-not 2" (assoc-if-not #'evenp num-alist) '(1 . "one"))
 (test-is "assoc-if-not 3" (assoc-if-not #'numberp the-alist) '(lala . humdi))
 (test-is "assoc-if-not 4" (assoc-if-not #'tablep the-alist) '(3 . 4))

@@ -4,15 +4,15 @@
       1
     (* base (pow base (1- power)))))
 
-(defun evenp (n)
-  "Return a true value iff the number is an even integer."
-  (and (integerp n)
-       (zerop (% n 2))))
+;; (defun evenp (n)
+;;   "Return a true value iff the number is an even integer."
+;;   (and (integerp n)
+;;        (zerop (% n 2))))
 
-(defun oddp (n)
-  "Return a true value iff the number is an odd integer."
-  (and (integerp n)
-       (null (zerop (% n 2)))))
+;; (defun oddp (n)
+;;   "Return a true value iff the number is an odd integer."
+;;   (and (integerp n)
+;;        (null (zerop (% n 2)))))
 
 (defun float (number)
   "Return the argument as a float.

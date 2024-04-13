@@ -7,33 +7,37 @@ import sys
 import jpylib as y
 
 print("""\
-// initialise the builtin functions; should be generated one day
+// initialise the builtin functions -- generated; DO NOT EDIT HERE!!
 
 package org.w21.lyk
 
-val noStd = arrayOf<String>()
-val noKey = mapOf<String, LObject>()
-val noOpt = arrayOf<Pair<String, LObject>>()
-val noRest = null
-val noRet = "nil"
+// a few emptynesses predeclared for convenience
+val noStd = arrayOf<String>()                  // no standard parameters
+val noKey = mapOf<String, LObject>()           // no &key parameters
+val noOpt = arrayOf<Pair<String, LObject>>()   // no &optional parameters
+val noRest = null                              // no &rest parameter
+val noRet = "nil"                              // no return value
 
 
+// initialise all builtin functions
 fun init_Builtins() {
 
 """)
 
 builtin = None                          # keyword => value, also, in one?
-in_doc = False
-docstring = None
-filename = None
-lineno = 0
+in_doc = False                          # in a docstring, if true
+docstring = None                        # the collected docstring
+filename = None                         # filename, for defined-in and errors
+lineno = 0                              # line#, for defined-in and errors
 
 
 def prin(*args, **kwargs):
+    """Print all arguments, without separator or line end."""
     print(*args, sep="", end="", **kwargs)
 
 
 def print_init(builtin):
+    """Print the initialisation call of the builtin function."""
     errors = False
     for key in builtin:
         if builtin.get(key) == None:
@@ -99,15 +103,18 @@ def print_init(builtin):
 
 
 def errx(message):
+    """Exit with an error message that can be parsed by Emacs."""
     sys.exit(f"\n{filename}:{lineno}: " + message)
 
 def err(message):
+    """Print an error message that can be parsed by Emacs."""
     print("\n{filename}:{lineno}: " + message, file=sys.stderr)
 
-wrap_column = 76
-column = 0
+wrap_column = 76                          # wrap the infotainment output here
+column = 0                                # keep track of column for line wrap
 
 def notef(s):
+    """Print a notice for infotainment; wrap at wrap_column."""
     global column
     if y.is_notice():
         if len(s) + column > wrap_column:
@@ -118,6 +125,7 @@ def notef(s):
 
     
 def all_lines(files):
+    """Return lines from all input files with builtin function information."""
     global filename
     global lineno
     for file in files:
@@ -126,7 +134,7 @@ def all_lines(files):
             lineno = 0
             for line in f:
                 lineno += 1
-                if line.startswith("///"):
+                if line.startswith("/// "):
                     yield re.sub("^/// ?", "", line)
                 
 
@@ -137,13 +145,14 @@ ovc, args = y.pgetopts({
           "increase verbosity (up to 3 make sense)"),
 })
 
+# Now go ahead and assemble the builtin function information.
 try:
     notef("register builtins ")
     for line in all_lines(args):
         line = line.rstrip()
         y.debug("I read:", line)
 
-        if in_doc:
+        if in_doc:                        # assemble docstring
             if line.lstrip() == "}":
                 builtin["doc"] = "\n".join(docstring)
                 in_doc = False
@@ -156,6 +165,7 @@ try:
         if not line or line.startswith("#"):
             continue
 
+        # split line into command and arguments
         parts = line.split()
         cmd = parts[0]
 
@@ -182,12 +192,12 @@ try:
                 if len(parts) != 2 or parts[1] != "builtin":
                     errx("missing 'builtin' after 'end'")
                 print_init(builtin)
-                builtin = None
+                builtin = None            # end this, signal we are out of one
             else:
                 errx(f"unexpected command '{cmd}'")
             continue
 
-        if cmd == "builtin":
+        if cmd == "builtin":              # prepare the data structure
             if len(parts) != 2:
                 errx("builtin without name")
             builtin = y.Namespace(name=parts[1], fun=None, std=None, key=None,
@@ -197,6 +207,7 @@ try:
         else:
             errx(f"unexpected command '{cmd}', expected 'builtin <name>'")
 
+    # end the builtin functions init file
     print("""\
 }
 // EOF

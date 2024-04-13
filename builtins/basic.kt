@@ -110,6 +110,26 @@ fun bi_list(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return args
 }
 
+/// builtin list*
+/// fun     bi_list_star
+/// std     
+/// key     
+/// opt     
+/// rest    elems+
+/// ret     list
+/// special no
+/// doc {
+/// Return a list of `elems`, with the last as the end of the list.
+/// list* is like list except that the last argument to list becomes
+/// the car of the last cons constructed, while the last argument to
+/// list* becomes the cdr of the last cons constructed.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_list_star(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return spreadArglist(args)
+}
+
 /// builtin cons
 /// fun     bi_cons
 /// std     car cdr

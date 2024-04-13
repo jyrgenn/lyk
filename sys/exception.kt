@@ -39,8 +39,9 @@ class IndexError(message: String): LispError(message) {
 class WarningError(message: String): LispError(message)
 
 open class IOError(message: String): LispError(message) {
-    constructor(err: Exception):
-        this("${err::class.simpleName}: ${err.message}")
+    constructor(err: Exception, message: String? = null):
+        this((if (message == null) "" else message + ": ")
+             + "${err::class.simpleName}: ${err.message}")
 }
 
 
@@ -86,10 +87,19 @@ open class ValueError(message: String,
 
 }
 
+// return the appropriate indefinite article for the passed noun, meaning
+// "an" if the noun starts with a vowel, else "a"
+fun indef_a(noun: String): String {
+    if (Regex("^[aeiou]").find(noun) != null) {
+        return "an"
+    }
+    return "a"
+}
+
 class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
     constructor(message: String) : this(message, null)
-    constructor(obj: LObject, whatnot: String):
-        this("not a $whatnot: ${typeOf(obj)} $obj")
+    constructor(obj: LObject, whatnot: String): 
+        this("not ${indef_a(whatnot)} $whatnot: ${typeOf(obj)} $obj")
 }
 
 class CallError(message: String): LispError(message)

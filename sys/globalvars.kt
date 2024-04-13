@@ -29,7 +29,7 @@ val stdout = FileWriterStream(stdoutPath, name = stdoutName, flushln = true)
 val stderr = FileWriterStream(stderrPath, name = stderrName, flushch = true,
                               error = true)
 
-var console = FileWriterStream(consolePath, name = consoleName, flushch = true)
+var console = FileIOStream(consolePath, name = consoleName, flushch = true)
 
 var debug_out = console
 
@@ -82,6 +82,8 @@ val debugDefunSym = intern("defun")
 val debugAtexitSym = intern("atexit")
 val debugFinalizeSym = intern("finalize")
 val debugLoadlineSym = intern("loadline")
+val debugReadCharSym = intern("readchar")
+val debugStartupSym = intern("startup")
 
 val debugOffSym = intern("=off")
 val debugListSym = intern("=list")
