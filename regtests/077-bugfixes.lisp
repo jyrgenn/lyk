@@ -21,4 +21,7 @@
                                   result)
          nil)
 
+;; (when t) returned t while SBCL showed it shouldn't
+(test-is "when t" (when t) nil)
+
 (done-testing)

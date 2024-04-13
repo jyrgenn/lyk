@@ -33,7 +33,8 @@ fun load_string(code: String, name: String, throw_error: Boolean = true,
 fun load_stream(load_stream: LStream, name: String,
                 throw_error: Boolean, quiet: Boolean, print: Boolean): LObject {
     var success = Nil
-    
+
+    debug(debugLoadlineSym) { "loading $name" }
     withVariableAs(loadPathnameSym, makeString(name)) {
         try {
             var error: LispError? = null
@@ -51,8 +52,12 @@ fun load_stream(load_stream: LStream, name: String,
                     info("load $name: " + perfdata)
                 }
             }
+        } catch (e: Exception) {
+            debug(debugLoadlineSym) { "$name: $e" }
+            throw e
         } finally {
             load_stream.close()
+            debug(debugLoadlineSym) { "finished $name" }
         }
     }
     return success

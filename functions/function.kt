@@ -103,6 +103,9 @@ abstract class LFunction(
     }
 
     fun docHeader(): String {
+        if (retval == null) {
+            return "${typeDesc} ${synopsis()}"
+        }
         return "${typeDesc} ${synopsis()} => $retval"
     }
 
