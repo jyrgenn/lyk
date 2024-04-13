@@ -38,23 +38,31 @@ fun bi_aref(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// fun     bi_make_vector
 /// std     length
 /// key     
-/// opt     value
+/// opt     initial
 /// rest    
 /// ret     vector
 /// special no
 /// doc {
-/// Return a new vector of length `length` and each element set to `value`.
+/// Return a new vector of length `length` and each element set to `initial`.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_make_vector(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    val (len, value) = args2(args)
-    val length = longArg(len, "make-vector length")
+    val (len, initial) = args2(args)
+    val length = intArg(len, "make-vector length")
     if (length < 0) {
         throw ValueError("make-vector length argument < 0: $length")
     }
-    return LVector(length.toInt(), value)
+
+    if (initial is LFunction) {
+        val lc = ListCollector()
+        for (i in 0..<length) {
+            lc.add(initial.call(Nil))
+        }
+        return LVector(lc.list)
+    }
+    return LVector(length, initial)
 }
 
 /// builtin vector-set

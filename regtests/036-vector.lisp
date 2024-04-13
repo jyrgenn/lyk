@@ -31,31 +31,10 @@
 (test-is "vector-set -1b" (errset (vector-set v -1 0)
                                    nil) nil)
 
-;; same as above, with vector as callable
-(setf v #(4 4 4))
-(test-is "vector-get 0/c" (v 0) 4)
-(test-is "vector-get 1/c" (v 1) 4)
-(test-is "vector-get 2/c" (v 2) 4)
-(test-is "vector-get 3/c" (errset (v 3)
-                                   nil) nil)
-(test-is "vector-get -1/c" (errset (v -1)
-                                    nil) nil)
+;;; removed the tests with vector as a callable being called directly;
+;;; we don't have that in this implementation
 
-(test-is "vector-set 1/c" (v 1 5) 5)
 
-(test-is "vector after set/c" v "#(4 5 4)")
-
-(test-is "vector-get 0a/c" (v 0) 4)
-(test-is "vector-get 1a/c" (v 1) 5)
-(test-is "vector-get 2a/c" (v 2) 4)
-
-(test-is "vector-set 0b/c" (v 0 6) 6)
-(test-is "vector-set 1b/c" (v 1 7) 7)
-(test-is "vector-set 2b/c" (v 2 8) 8)
-(test-is "vector-set 3b/c" (errset (v 3 9)
-                                    nil) nil)
-(test-is "vector-set -1b/c" (errset (v -1 0)
-                                     nil) nil)
 (test-is "vector again" v "#(6 7 8)")
 
 ;; same as above, with aref
