@@ -43,6 +43,18 @@ class LVector(elems: LObject): LObject(), LSeq {
     
     override fun length() = the_vector.size
 
+    override fun delete(item: LObject): LObject {
+        val lc = ListCollector()
+        
+        for (elem in this) {
+            if (!elem.equal(item)) {
+                lc.add(elem)
+            }
+        }
+        return LVector(lc.list)
+    }
+
+
     override fun getAt(index: Int): LObject {
         if (index >= 0 && index < the_vector.size) {
             return the_vector[index]

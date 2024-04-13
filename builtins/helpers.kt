@@ -29,6 +29,11 @@ fun charOrStringArg(arg: LObject, what: String): Char {
         if (arg.the_string.length == 1) {
             return arg.the_string[0]
         }
+    } else {
+        val s = arg.toString()
+        if (s.length == 1) {
+            return s[0]
+        }
     }
     throw ArgumentError("$what argument is not a char or string of"
                         +" length 1: $arg")

@@ -156,3 +156,21 @@ fun bi_subseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return seq.subseq(i_start, i_end)
 }
 
+/// builtin delete
+/// fun     bi_delete
+/// std     item sequence
+/// key     
+/// opt     
+/// rest    
+/// ret     result-sequence
+/// special no
+/// doc {
+/// Return a sequence from which the occurences of `item` have been removed.
+/// The sequence may be modified.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_delete(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (item, seq) = args2(args)
+    return seqArg(seq, "delete sequence").delete(item)
+}

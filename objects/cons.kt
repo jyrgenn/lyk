@@ -46,6 +46,17 @@ class LCons(override var car: LObject,
         return len
     }
 
+    override fun delete(item: LObject): LObject {
+        val lc = ListCollector()
+        
+        for (elem in this) {
+            if (!elem.equal(item)) {
+                lc.add(elem)
+            }
+        }
+        return lc.list
+    }
+
     override fun getAt(index: Int): LObject {
         var l: LObject = this
         var i = 0
@@ -144,7 +155,9 @@ class LCons(override var car: LObject,
         override fun hasNext() =
             when (l) {
                 is LCons -> true
-                else -> false
+                Nil -> false
+                else -> throw TypeError("not a proper list: $original")
+
             }
 
         override fun next(): LObject {

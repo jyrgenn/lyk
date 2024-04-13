@@ -16,4 +16,5 @@ interface LSeq {
     fun subseq(start: Int, end: Int?): LObject
     fun reversed(): LObject
     fun length(): Int
+    fun delete(item: LObject): LObject
 }

@@ -99,6 +99,13 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
         return super.length()
     }
 
+    override fun delete(item: LObject): LObject {
+        if (this === Nil) {
+            return Nil
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
     override fun isKeyword(): Boolean {
         return name.startsWith(':')
     }

@@ -126,6 +126,20 @@ class LString(val the_string: String): LObject(), LSeq {
 
     override fun length() = the_string.length
 
+    override fun delete(item: LObject): LObject {
+        if (item is LChar) {
+            val sb = StrBuf()
+            val char = item.the_char
+            for (ch in the_string) {
+                if (ch != char) {
+                    sb.add(ch)
+                }
+            }
+            return makeString(sb.toString())
+        }
+        return this
+    }
+
     class StringIterator(val s: LString): Iterator<LObject> {
         var nextIndex = 0
 
