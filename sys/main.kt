@@ -201,7 +201,7 @@ fun main(args: Array<String>) {
             }
         } else {
             debug(debugStartupSym) { "start REPL" }
-            repl(Reader(stdin), "> ")
+            repl(Reader(ConsoleReaderStream()), "> ")
         }
         exitLyk()
     } catch (e: Exception) {

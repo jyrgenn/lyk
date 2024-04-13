@@ -91,7 +91,7 @@ fun char_compare_unique(args: LObject, what: String, case_i: Boolean): LObject
     var things = mutableSetOf<Int>()
     
     for (arg in args) {
-        val char = charArg(arg, "char/=").the_char
+        val char = charArg(arg, what).the_char
         val code = (if (case_i) char.lowercase()[0] else char).code
         
         if (code in things) {

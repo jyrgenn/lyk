@@ -2,6 +2,8 @@ package org.w21.lyk
 
 import java.io.File
 import java.lang.ref.WeakReference
+import jline.console.ConsoleReader
+
 
 val stdinName   = "*stdin*"
 val stdoutName  = "*stdout*"
@@ -43,6 +45,34 @@ class StringWriterStream(name: String? = null
     override fun close_specific() {}
 }
 
+
+class ConsoleReaderStream(): LStream(input = true, path = null,
+                                     name = consoleName) {
+    val cr = ConsoleReader()
+    var linebuf = StringReaderStream("")
+    var promptString: String = ""
+
+    override fun read(): Char? {
+        try {
+            if (!linebuf.hasNext()) {
+                val line = cr.readLine(promptString)
+                if (line == null) {
+                    return null
+                }
+                linebuf = StringReaderStream(line + "\n")
+            }
+            return linebuf.read()
+        } catch (e: Exception) {
+            throw IOError(e)
+        }
+    }
+
+    override fun setPrompt(prompt: String) {
+        promptString = prompt
+    }
+
+    override fun close_specific() {}
+}
 
 class StringReaderStream(content: String, name: String? = ""):
     LStream(input = true, path = null, name = name)
@@ -241,6 +271,9 @@ abstract class LStream(
         openStreams.add(WeakReference(this))
     }
 
+    
+    open fun setPrompt(prompt: String) {}
+    
     open fun read(): Char? {          // the actual reading
         throw ArgumentError("read on $this")
     }

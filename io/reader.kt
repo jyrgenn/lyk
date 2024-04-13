@@ -173,6 +173,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             debug(debugReaderSym) {
                  "nextNonSpaceChar() returns '$ch'"
             }
+            input.setPrompt("")
             return ch
         }
     }
