@@ -69,7 +69,7 @@ test: lyk.jar Makefile
 	./scripts/lyk -l l/regtests.lisp -e "(run-tests)"
 
 clean:
-	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar generated lyk
+	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar *.log generated
 
 install: lyk.jar
 	mkdir -p $(INSTALLDIR)
