@@ -9,7 +9,7 @@
                                                  (lambda ()
                                                    (incf n))))
          "234567891111")
-(test-is "make-string func \"\"" (errset (make-string 12 (lambda () "")) nil)
-         nil)
+(test-err "make-string func \"\"" (make-string 12 (lambda () ""))
+         #/initializer function .* returns an empty string/)
 
 (done-testing)

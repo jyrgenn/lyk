@@ -30,6 +30,48 @@ fun bi_string(args: LObject, kwArgs: Map<LSymbol , LObject>): LObject {
     return string_from_list(args)
 }
 
+/// builtin make-string
+/// fun     bi_make_string
+/// std     length
+/// key     
+/// opt     initial makeString("\u0020")
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Return a string of `length` with the contents taken from `initial`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_make_string(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (length, initial) = args2(args)
+    val len = intArg(length, "make-string length")
+    val sb = StrBuf()
+    
+    // If we have a function argument as initial value, call it for every
+    // element of the string to build, and use the first rune of the resulting
+    // string value of the result.
+    
+    if (initial is LFunction) {
+        for (i in 0..<len) {
+            val elem = initial.call(Nil).toString()
+            if (elem.length < 1) {
+                throw ArgumentError("initializer function ${initial.desc()} "
+                                    + "returns an empty string")
+            }
+            sb.add(elem[0])
+        }
+    } else {
+        val init = initial.toString()
+        for (i in 0..<len) {
+            sb.add(init[i % init.length])
+        }
+        
+    }
+    return makeString(sb.toString())
+}
+
+
 /// builtin join
 /// fun     bi_join
 /// std     items

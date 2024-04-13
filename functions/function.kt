@@ -394,7 +394,7 @@ fun makeLambdaOrMacro(params: LObject,
     }
     if (body is LCons) {
         val maybeDoc = body.car
-        if (maybeDoc is LString) {
+        if (maybeDoc is LString && body.cdr !== Nil) {
             docBody = maybeDoc
             bodyForms = body.cdr
         } else {
