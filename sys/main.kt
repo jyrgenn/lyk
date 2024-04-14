@@ -54,10 +54,10 @@ fun usage() {
 """)
     // -R maxrecurse    : maximum eval recursion depth 
 
-    print("Available debug options:")
-    for (opt in Options.debug.keys.sorted()) {
-	print(" $opt")
-    }
+    println("Available debug options:")
+    printThingsWrapped(Options.debug.keys.sorted()
+                           .joinToString(", ").split(" "),
+                       prefix = "   ")
     println()
     exitLyk(0)
 }

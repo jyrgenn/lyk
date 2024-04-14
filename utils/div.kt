@@ -248,3 +248,43 @@ fun printEvalStack(error: LispError) {
         stderr.println(line)
     }
 }
+
+// Print things; if the next thing would not fit into the linewidth any more,
+// print a newline and the prefix before printing thing. Print a separator
+// between things. startpos is where we are on the line before starting. Return
+// the reached position on the current line; this can be used as startpos on the
+// next call.
+fun printThingsWrapped(things: Collection<Any>, linewidth: Int = 79,
+                       separator: String = " ", prefix: String = "",
+                       startpos: Int = 0): Int {
+    var position = startpos
+    var first = true
+    for (thing in things) {
+        if (first) {
+            if (position == 0) {
+                print(prefix)
+                position += prefix.length
+            }
+            first = false
+        } else {
+            print(separator)
+            position += separator.length
+        }
+        position = printThingWrapped(thing, linewidth = linewidth,
+                                     prefix = prefix, startpos = position)
+    }
+    return position
+}
+
+fun printThingWrapped(thing: Any, linewidth: Int = 79,
+                      prefix: String = "", startpos: Int = 0): Int {
+    val s = thing.toString()
+    var position = startpos
+    
+    if (position + s.length > linewidth) {
+        print("\n" + prefix)
+        position = prefix.length
+    }
+    print(s)
+    return position + s.length
+}
