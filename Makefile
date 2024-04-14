@@ -72,7 +72,7 @@ test: lyk.jar Makefile
 clean:
 	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar *.log generated
 
-install: lyk.jar
+install: test
 	mkdir -p $(INSTALLDIR)
 	-rm -rf $(INSTALLDIR)/*
 	install -c lyk.jar $(INSTALLDIR)

@@ -142,8 +142,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
     (pop *command-line-args*)
     (setf verbose t))
 
-  (let* ((allfiles (mapcar #'basename
-                           (directory (string testdir "/" "[0-9]*.lisp"))))
+  (let* ((allfiles (directory (string testdir "/" "[0-9]*.lisp")))
          (files (or *command-line-args* allfiles)))
     (when verbose
       (format t "load files: %s\n" files))
