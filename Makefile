@@ -38,7 +38,7 @@ build: lyk.jar
 lyk.jar: $(ALLSRCS) generated/org generated/jline Makefile
 	$(COMP) -cp generated $(ALLSRCS) -include-runtime -d lyk.jar
 	cd generated; jar -f ../lyk.jar -u org jline
-	./scripts/lyk -qe '(build-info t)'
+	./scripts/lyk -J . -qe '(build-info t)'
 
 generated/org generated/jline:
 	cd generated; jar -xf ../jline/jline.jar
