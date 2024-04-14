@@ -1,13 +1,15 @@
 
 (defun concatenate (result-type &rest seqs)
   (let ((type (or result-type (type-of (car seqs)))))
-    (apply type (let (result)           ;nonchalantly exploiting the fact that
-                                        ;we have variadic creator functions of
-                                        ;just the type name for each of the
-                                        ;sequence types.
-                  (dolist (seq seqs (nreverse result))
-                    (doseq (el seq)
-                           (push el result)))))))
+    (apply (symbol-function type)
+           ;; nonchalantly exploiting the fact that
+           ;; we have variadic creator functions of
+           ;; just the type name for each of the
+           ;; sequence types.
+           (let (result)     
+             (dolist (seq seqs (nreverse result))
+               (doseq (el seq)
+                 (push el result)))))))
 
 (defun sort (seq pred)
   "Sort sequence SEQ with predicate PRED and return the result."
