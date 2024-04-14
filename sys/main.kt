@@ -162,24 +162,9 @@ fun main(args: Array<String>) {
             // in this case, all command line args are in *command-line-args*
             commandLineArgs.setValue(args_lc.list)
             debug(debugStartupSym) { "eval -e argument \"$lispExpression\"" }
-            try {
-                val reader = Reader(StringReaderStream(lispExpression),
-                                    "*command-arg*")
-                val (expr, where) = reader.read()
-                if (expr == null) {
-                    throw EOFError("$where: no Lisp expression to eval")
-                }
-                var result: LObject = Nil
-                val perfdata = measurePerfdata {
-                    result = eval(expr)
-                }
-                stdout.println(result)
-                info(perfdata)
-            } catch (e: LispError) {
-                printEvalStack(e)
-                errExit(e)
-            }
-            exitLyk(0)
+            val result = load_string(lispExpression, "*cmd-expr*",
+                                     true, false, true)
+            exitLyk(if (result === Nil) 1 else 0)
         }
         if (args_lc.list !== Nil) {
             // first argument is the file to run, rest goes to
@@ -204,6 +189,9 @@ fun main(args: Array<String>) {
             repl(Reader(ConsoleReaderStream()), "> ")
         }
         exitLyk()
+    } catch (e: LispError) {
+        printEvalStack(e)
+        errExit(e)
     } catch (e: Exception) {
         if (Options.print_estack) {
             e.printStackTrace()
