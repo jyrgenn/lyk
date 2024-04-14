@@ -463,7 +463,10 @@ fun bi_string_trim(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     if (charbag === T) {
         pred = { it.isWhitespace() }
     } else {
-        val chars = charbag.toString()
+        val chars = if (charbag is LSeq)
+            charbag.elements().joinToString("")
+        else
+            charbag.toString()
         pred = { it in chars }
     }
     return makeString(string_trim(string.toString(), pred, true, true))

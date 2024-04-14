@@ -142,22 +142,20 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
     (pop *command-line-args*)
     (setf verbose t))
 
-  (let ((files (or *command-line-args*
-                   (directory (string testdir "/" "[0-9]*.lisp")))))
+  (let* ((allfiles (mapcar #'basename
+                           (directory (string testdir "/" "[0-9]*.lisp"))))
+         (files (or *command-line-args* allfiles)))
     (when verbose
       (format t "load files: %s\n" files))
     (dolist (f files)
-      (let ((number (car (regexp-match #/^[0-9][0-9][0-9]/ f))))
+      (let ((number (car (regexp-match #/^[0-9]*$/ f))))
         ;; if we have just a number (as a command-line arg), we still
         ;; find and load the file from the regtests directory
         (when number
-          (println "the list:" (directory (string testdir "/"
-                                                  number "%s*.lisp")))
           (let ((fname (car (directory (string testdir "/"
-                                                  number "%s*.lisp")))))
+                                                  number "*.lisp")))))
             (when fname
-              (printlin "fname:" fname)
-              (setf f (string testdir "/" fname))))))
+              (setf f fname)))))
       (presult "\nloading %s\n" f)
       (setf testing-done nil)
       (unless verbose

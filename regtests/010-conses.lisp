@@ -14,7 +14,7 @@
 (test "atom t" (atom t))
 (test "atom number" (atom 13))
 (test "atom string" (atom "aa"))
-;; TODO Char (test "atom char" (atom #\4))
+(test "atom char" (atom #\4))
 (test-not "atom cons" (atom '(nil)))
 (test-is "car cons" (car '(a . b)) "a")
 (test-not "car nil" (car nil))

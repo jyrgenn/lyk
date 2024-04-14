@@ -21,11 +21,11 @@
          (make-table '(3 . 4) '(5 . 6) '(gaga . lady) '(hu . nil))
          #:((3 . 4)(5 . 6)(gaga . lady)(hu . nil)))
 
-;; TODO Char (test-is "make table from non-pairs"
-;;          (make-table 5 '(hu . nil) #\u4567 '(gaga . lady))
-;;          #:((#\䕧 . nil)(5 . nil)(gaga . lady)(hu . nil)))
+(test-is "make table from non-pairs"
+         (make-table 5 '(hu . nil) #\u4567 '(gaga . lady))
+         #:((5 . nil)(hu . nil)(#\䕧 . nil)(gaga . lady)))
 
-;; TODO Char (test-is "table string" #:((#\3 #\Newline #x123))
-;;          "#:((#\\3 . (#\\Newline 291)))")
+(test-is "table string" #:((#\3 #\Newline #x123))
+         "#:((#\\3 . (#\\Newline 291)))")
 
 (done-testing)

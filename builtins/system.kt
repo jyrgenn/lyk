@@ -592,7 +592,7 @@ fun bi_env_vars(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// special no
 /// doc {
 /// Return `function`'s definition form.
-/// `function` must be a lambda function {TODO or a macro}, not a builtin.
+/// `function` must be a lambda function or a macro, not a builtin.
 /// The function definition returned contains the real function body,
 /// not a copy.
 /// }

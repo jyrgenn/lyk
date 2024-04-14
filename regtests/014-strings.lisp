@@ -117,10 +117,10 @@
 (test-is "string trim CLHS 1" (string-trim "abc" "abcaakaaakabcaaa")
          "kaaak")
 
-;; TODO Char (test-is "string trim CLHS 2" (string-trim '(#\Space #\Tab #\Newline)
-;;                                             " garbanzo beans
-;;         ")
-;;          "garbanzo beans")
+(test-is "string trim CLHS 2" (string-trim '(#\Space #\Tab #\Newline)
+                                            " garbanzo beans
+	")
+         "garbanzo beans")
          
 (test-is "string trim CLHS 3" (string-trim " (*)"
                                             " ( *three (silly) words* ) ")
@@ -137,9 +137,9 @@
                                                   " ( *three (silly) words* ) ")
          " ( *three (silly) words")
 
-;; TODO Char (test-is "string trim vector" (string-trim #(#\Space ?( ?* ?))
-;;                                             " ( *three (silly) words* ) ")
-;;          "three (silly) words")
+(test-is "string trim vector" (string-trim #(#\Space ?( ?* ?))
+                                            " ( *three (silly) words* ) ")
+         "three (silly) words")
 
 (test-is "substring 0" (substring "shnargldings" 0) "shnargldings")
 (test-is "substring 1" (substring "shnargldings" 3) "argldings")

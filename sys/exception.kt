@@ -29,9 +29,6 @@ open class LispError(message: String, val data: LObject = Nil
 }
 
 class IndexError(message: String): LispError(message) {
-    // TODO: clean up, use second constructor
-    constructor(where: String, index: Int):
-        this("invalid index $index calling $where")
     constructor(what: LObject, index: Int):
         this("invalid index $index for ${typeOf(what)} $what")
 }
