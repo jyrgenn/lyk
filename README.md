@@ -22,3 +22,12 @@ regression test suite of lingo to work, an earlier implementation of
 Lisp in Go. Bigger things ahead are fixing the macros (there is
 still something wrong with them), some debugging help in eval,
 integrating a readline editor, and many more builtin functions.
+
+Lyk uses the JLine line editor Version 2 for the interactive input
+line; see the subdirectory `jline/`. This works fine and was
+surprisingly easy to integrate, in particular as I failed to do that
+with JLine version 3, which required much more code to set up and
+still failed to work for me in the end. With JLine 2 it was a
+breeze. The version 2.14.6 I have incorporated here is the last of
+the JLine 2 development, which has been laid to rest in favour of
+working on JLine 3, as I understand it.
