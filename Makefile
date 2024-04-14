@@ -66,8 +66,8 @@ native: $(SRCS) Makefile
 	$(NATIVECOMP) $(SRCS) -o lykn
 	mv lykn.pexe lykn
 
-test: lyk.jar Makefile
-	./scripts/lyk -l l/regtests.lisp -e "(run-tests)"
+test: lyk.jar
+	./run-tests.lisp
 
 clean:
 	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar *.log generated

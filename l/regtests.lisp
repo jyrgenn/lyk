@@ -136,6 +136,8 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
     (run-tests-with-out)))
 
 (defun run-tests-with-out ()
+  (unless *warnings-as-errors*
+    (error "-W option not set; tests needs *warnings-as-errors*!"))
   (setf fails nil)
   (setf warnings 0)
   (when (eq (car *command-line-args*) "-v")

@@ -118,7 +118,10 @@ fun main(args: Array<String>) {
                     'R' -> {
                         Options.maxrecurse = getOptValInt("maxrecurse") ?: 0
                     }
-                    'W' -> { Options.warnIsError = true }
+                    'W' -> {
+                        Options.warnIsError = true
+                        warningsAsErrors.setValue(T, true)
+                    }
                     else -> {
                         printErr("unknown option `-$ch`")
                         opterrors = true
@@ -190,7 +193,9 @@ fun main(args: Array<String>) {
         }
         exitLyk()
     } catch (e: LispError) {
-        printEvalStack(e)
+        if (Options.print_estack) {
+            printEvalStack(e)
+        }
         errExit(e)
     } catch (e: Exception) {
         if (Options.print_estack) {
