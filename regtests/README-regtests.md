@@ -1,5 +1,5 @@
-Lyk regresstion tests
-=====================
+Lyk regression tests
+====================
 
 These are the regression tests I have imported from lingo, a
 previous implementation of Lisp in Go (hence the name). Due to a
@@ -26,5 +26,5 @@ mess, and I would probably do it differently today. But it is also
 imported from lingo and thus a bit older (2016/17).
 
 I have no idea how good the test coverage acutually is. But the idea
-is to have relatively comprehensive test for at least each of the
+is to have relatively comprehensive tests for at least each of the
 builtin funcions. 
