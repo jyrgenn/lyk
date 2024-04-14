@@ -18,7 +18,7 @@ GENSRCS = generated/buildtag.kt generated/init-builtins.kt \
 ALLSRCS = $(SRCS) $(GENSRCS)
 PRELOAD = $(shell echo preload/*.lisp)
 
-BUILDSCRIPTS = scripts/buildtag.sh scripts/gen-bi-init
+BUILDSCRIPTS = scripts/buildtag.sh scripts/generate-builtin-init
 
 BUILTINSRC = $(shell ls builtins/*.kt | egrep -v '(helpers)\.kt')
 
@@ -52,10 +52,11 @@ generated/preload.kt: Makefile generated scripts/preload.sh $(PRELOAD)
 generated/buildtag.kt: Makefile generated $(SRCS) $(BUILDSCRIPTS)
 	scripts/buildtag.sh lyk > generated/buildtag.kt
 
-generated/init-builtins.kt: Makefile generated scripts/gen-bi-init $(BUILTINSRC)
+generated/init-builtins.kt: Makefile generated scripts/generate-builtin-init \
+			    $(BUILTINSRC)
 	-rm -f generated/Makefile && \
 	    ln -s ../scripts/Subdirmakefile generated/Makefile
-	scripts/gen-bi-init $(BUILTINSRC) > generated/init-builtins.kt
+	scripts/generate-builtin-init $(BUILTINSRC) > generated/init-builtins.kt
 
 new: remove-buildtag build
 remove-buildtag:
