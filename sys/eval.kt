@@ -71,6 +71,7 @@ fun evalArgs(arglist: LObject): LObject {
 
 fun eval(form: LObject): LObject {
     evalCounter += 1
+    abortEval = false
     
     val savedLevel: Int = evalLevel
     val deferList = listOf({ evalLevel = savedLevel })

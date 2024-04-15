@@ -1,6 +1,9 @@
 
 package org.w21.lyk
 
+import sun.misc.Signal
+import sun.misc.SignalHandler
+
 
 val verbosityNotice = 1
 val verbosityInfo = 2
@@ -140,6 +143,16 @@ fun main(args: Array<String>) {
             // i.e. running non-interactively, so no buildtag printing etc.
             Options.verbosity -= 1
         }
+
+        // at least try to handle an interrupt signal, even if it seem to work
+        // only sporadically
+        Signal.handle(Signal("INT"),
+                      object : SignalHandler {
+                          override fun handle(sig: Signal) {
+                              abortEval = true
+                          }
+                      })
+
         // now start the machine!
         info(buildtag())
         debug(debugStartupSym) { "init builtin functions" }
