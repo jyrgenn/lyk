@@ -1,3 +1,6 @@
+;;; we don't have callables like these any more, so these tests are
+;;; now retired.
+
 (require 'regtests)
 
 ;; callable vector
