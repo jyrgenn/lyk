@@ -50,6 +50,9 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
                 // }
                 expr = macroExpandForm(expr)
             }
+            debug(debugReplSym) {
+                expr
+            }
 
             // Eval,
             val (perfdata, value) = measurePerfdataValue {

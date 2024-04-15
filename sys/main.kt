@@ -30,6 +30,8 @@ object Options {
         debugLoadlineSym to false,
         debugReadCharSym to false,
         debugStartupSym to false,
+        debugReplSym to false,
+        debugReadSymSym to false,
     )
     var print_estack = false
     var maxrecurse = 0

@@ -465,16 +465,16 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
 
         // state transition table, by state (vertical) and cclass
         val newstate = arrayOf(
-            // Bar        Backsl      Delim       Member
+            //      Bar         Backsl      Delim       Member
             arrayOf(St.barred,  St.normesc, St.done,    St.initial), // initial
             arrayOf(St.initial, St.initial, St.initial, St.initial), // normesc
-            arrayOf(St.initial, St.barresc, St.barred,  St.barred ), // barred
+            arrayOf(St.done,    St.barresc, St.barred,  St.barred ), // barred
             arrayOf(St.barred,  St.barred,  St.barred,  St.barred )  // barresc
         )
         
         // action table, by state (vertical) and cclass
         val action = arrayOf(
-            // Bar        Backsl      Delim       Member
+            //      Bar         Backsl      Delim       Member
             arrayOf(Ac.membar,  Ac.none,    Ac.finish,  Ac.collect), // initial
             arrayOf(Ac.collect, Ac.collect, Ac.collect, Ac.collect), // normesc
             arrayOf(Ac.none,    Ac.none,    Ac.collect, Ac.collect), // barred
@@ -484,6 +484,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         var was_barred = false          // was barred at some point => no number
         val collected = CharBuf()
         var the_state = St.initial
+        var new_state: St
 
         while (the_state != St.done) {
             val ch = nextChar()
@@ -493,13 +494,17 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             val cclass = charclass(ch)
             val act = action[the_state.ordinal][cclass.ordinal]
 
+            new_state = newstate[the_state.ordinal][cclass.ordinal]
+            debug(debugReadSymSym) {
+                "state $the_state, `$ch`:$cclass act $act => $new_state"
+            }
             when (act) {
-                Ac.none    -> { unreadChar(ch); break }
+                Ac.none    -> {}
                 Ac.collect -> collected.add(ch)
                 Ac.membar  -> was_barred = true
                 Ac.finish  -> unreadChar(ch)
             }
-            the_state = newstate[the_state.ordinal][cclass.ordinal]
+            the_state = new_state
         }
 
         val result = collected.toString()

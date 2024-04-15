@@ -61,16 +61,6 @@ fun setDebug(sym: LSymbol, value: Boolean = true): Boolean { // false if error
     return false
 }
 
-fun setDebug(vararg syms: LSymbol, value: Boolean = true): Boolean {
-    for (sym in syms) {
-        val result = setDebug(sym, value)
-        if (!result) {
-            return false
-        }
-    }
-    return true
-}
-
 fun setDebug(options: String?): Boolean {
     options ?: return false
     var isgood = true

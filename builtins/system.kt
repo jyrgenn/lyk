@@ -642,5 +642,42 @@ fun bi_function_parameters(args: LObject, kwArgs: Map<LSymbol, LObject>
     return function.parlist()
 }
 
+/// builtin make-symbol
+/// fun     bi_make_symbol
+/// std     name
+/// key     
+/// opt     
+/// rest    
+/// ret     symbol
+/// special no
+/// doc {
+/// Create and return a fresh, uninterned symbol whose name is `name`.
+/// The new symbol is neither bound nor fbound and has a null property list.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_make_symbol(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val name = arg1(args)
+    return LSymbol(stringArg(name, "make-symbol"), false)
+}
+
+/// builtin symbol-value
+/// fun     bi_symbol_value
+/// std     symbol
+/// key     
+/// opt     
+/// rest    
+/// ret     value
+/// special no
+/// doc {
+/// Return the value of `symbol`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_symbol_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val sym = arg1(args)
+    return symbolArg(sym, "symbol-value").getValue()
+}
+
 
 // EOF

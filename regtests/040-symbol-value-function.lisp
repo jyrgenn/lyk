@@ -35,9 +35,8 @@
 
 (defvar nofunsym 'foomly)
 (fmakunbound 'foomly)
-(test-is "symbol-function double trouble"
-         (errset (symbol-function nofunsym) nil)
-	 nil)
+(test-err "symbol-function double trouble" (symbol-function nofunsym)
+          #/symbol foomly has no function value/)
 
 (defvar gugu 123)
 (defvar gigi 'gugu)
@@ -45,7 +44,7 @@
 
 (makunbound 'gipsnich)
 (test-err "symbol-value 2" (symbol-value 'gipsnich)
-          #/unbound variable/)
+          #/variable .* is undefined/)
 
 (defvar usym-name "hulalla")
 (defvar uninterned-1 (make-symbol usym-name))

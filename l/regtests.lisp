@@ -102,23 +102,23 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
             ((eq type 'error) (fail "FAIL: »%s« NO ERROR\n" name))
             (t (error "invalid test type %s" type))))))
 
-(test-internal 'test-is ''lala "lala" 'cmp) ;check if the *testing* works
-(decf ntests)                               ;but don't count this one
+(test-internal 'test-test ''lala "lala" 'cmp) ;check if the *testing* works
+(decf ntests)                           ;but don't count this one
 
 (defmacro roundto5 (n)
   "Round to 5 places."
   `(let ((factor 1e5))
      (/ (round (* ,n factor)) factor)))
 
-;; (defun round-deep (ob)
-;;   "Round all numbers in the object OB for numeric comparison.
-;; Traverse conses and vectors to find numbers."
-;;   (cond ((numberp ob) (roundto5 ob))
-;;         ((consp ob) (cons (round-deep (car ob))
-;;                           (round-deep (cdr ob))))
-;;         ((vectorp ob) (dotimes (i (length ob) ob)
-;;                         (ob i (round-deep (ob i)))))
-;;         (t ob)))
+(defun round-deep (ob)
+  "Round all numbers in the object OB for numeric comparison.
+Traverse conses and vectors to find numbers."
+  (cond ((numberp ob) (roundto5 ob))
+        ((consp ob) (cons (round-deep (car ob))
+                          (round-deep (cdr ob))))
+        ((vectorp ob) (dotimes (i (length ob) ob)
+                        (ob i (round-deep (ob i)))))
+        (t ob)))
 
 (defvar testing-done nil
   "A test file is not completed until this is true.")
