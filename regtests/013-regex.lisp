@@ -79,4 +79,8 @@
                                     "gooey")
          "mgooeyo bgooeyy hgooey schoomgooey")
 
+(test-is "match-date" (car (regexp-match #/\d\d\d\d-\d\d-\d\d/
+                                         "234234322024-04-16005"))
+         "2024-04-16")
+
 (done-testing)

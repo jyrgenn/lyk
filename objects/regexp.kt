@@ -14,7 +14,9 @@ class LRegexp(pattern: String): LObject() {
         }
     }
 
-    override fun desc() = "#/${the_regexp.pattern}/"
+    override fun desc() =
+        "#/${the_regexp.pattern.replace("/", "\\/")}/"
+    
     override fun toString() = desc()
 
     fun matchToList(match: MatchResult?): LObject {

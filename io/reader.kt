@@ -87,9 +87,6 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     }
     
     fun nextChar(): Char? {
-        debug(debugReaderSym) {
-            "nextChar() from $input"
-        }
         try {
             val ch = input.readChar()
             if (ch != null) {
@@ -100,7 +97,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     column += 1
                 }
                 debug(debugReaderSym) {
-                    "nextChar() returns '$ch'"
+                    "nextChar() from $input returns '$ch'"
                 }
                 return ch
             }
@@ -108,7 +105,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             throw IOError(e, "reading character from $input")
         }
         debug(debugReaderSym) {
-            "nextChar() returns null"
+            "nextChar() from $input returns null"
         }
         return null
     }
@@ -406,7 +403,6 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         try {
             return digs.toLong(radix).toDouble() * sign
         } catch (nfe: NumberFormatException) {
-            println(nfe)
             throw SyntaxError("not a number of base $radix: "
                               + "`$prefix${signch ?: ""}$digs`", this)
         }
@@ -612,6 +608,9 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                 // and for another to escape those that are special chars in
                 // strings. Holy bovine, she is dumping!
                 if (ch in escape2specialChar.keys) {
+                    if (regexpp && ch == '\\') {
+                        result.add('\\') // need one extra for a literal one
+                    }
                     to_append = escape2specialChar.get(ch) ?:
                         throw SyntaxError("invalid char in special char escape"
                                           +": $ch", this)
@@ -624,7 +623,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     to_append = parse_octaldigits(ch)
                 } else if (ch == endChar) {
                     // insert this if it is backslash-escaped
-                } else if (regexpp) {  // need literal backslash after all
+                } else if (regexpp) {   // need literal backslash after all
                     result.add('\\')
                 }
                 after_backslash = false
