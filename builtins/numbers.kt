@@ -1351,3 +1351,196 @@ fun bi_min(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return makeNumber(the_min)
 }
 
+/// builtin rem
+/// fun     bi_rem
+/// std     number divisor
+/// key     
+/// opt     
+/// rest    
+/// ret     remainder
+/// special no
+/// doc {
+/// Return the remainder of the division of `number` by `divisor`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_rem(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (number, divisor) = args2(args)
+    return makeNumber(numberArg(number, "rem first").IEEErem(
+                          numberArg(divisor, "rem divisor")))
+}
+
+/// builtin mod
+/// fun     bi_mod
+/// std     number divisor
+/// key     
+/// opt     
+/// rest    
+/// ret     modulus
+/// special no
+/// doc {
+/// Return the modulus of the division of `number` by `divisor`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_mod(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (number, divisor) = args2(args)
+    return makeNumber(numberArg(number, "mod first").mod(
+                          numberArg(divisor, "mod divisor")))
+}
+
+/// builtin div
+/// fun     bi_div_int
+/// std     number divisor
+/// key     
+/// opt     
+/// rest    
+/// ret     number
+/// special no
+/// doc {
+/// Return the result of the integer division of `number` by `divisor`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_div_int(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (number, divisor) = args2(args)
+    return makeNumber(truncate(numberArg(number, "div first")
+                                   / numberArg(divisor, "div divisor")))
+}
+
+val dig_weights = mapOf<Char, Int>(
+    '0' to 0,
+    '1' to 1,
+    '2' to 2,
+    '3' to 3,
+    '4' to 4,
+    '5' to 5,
+    '6' to 6,
+    '7' to 7,
+    '8' to 8,
+    '9' to 9,
+    'a' to 10,
+    'b' to 11,
+    'c' to 12,
+    'd' to 13,
+    'e' to 14,
+    'f' to 15,
+    'g' to 16,
+    'h' to 17,
+    'i' to 18,
+    'j' to 19,
+    'k' to 20,
+    'l' to 21,
+    'm' to 22,
+    'n' to 23,
+    'o' to 24,
+    'p' to 25,
+    'q' to 26,
+    'r' to 27,
+    's' to 28,
+    't' to 29,
+    'u' to 30,
+    'v' to 31,
+    'w' to 32,
+    'x' to 33,
+    'y' to 34,
+    'z' to 35,
+)
+
+/// builtin digit-char-p
+/// fun     bi_digit_char_p
+/// std     char
+/// key     
+/// opt     radix makeNumber(10)
+/// rest    
+/// ret     weight
+/// special no
+/// doc {
+/// If `char` is a digit in the given `radix`, return its integer value, or nil.
+/// The radix must be in the range 2..36.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_digit_char_p(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (char, radix) = args2(args)
+    val ch = charArg(char, "digit-char-p char").the_char.lowercase()[0]
+    val rad = intArg(radix, "digit-char-p radix")
+
+    if (rad < 2 || rad > 36) {
+        throw ArgumentError("radix `$radix` is not in the range [2..36)")
+    }
+    val weight = dig_weights.get(ch)
+    if (weight == null) {
+        return Nil
+    }
+    if (weight >= rad) {
+        return Nil
+    }
+    return makeNumber(weight)
+}
+
+val startKeyw = intern(":start")
+val endKeyw = intern(":end")
+val radixKeyw = intern(":radix")
+val junkAllowedKeyw = intern(":junk-allowed")
+
+/// builtin parse-integer
+/// fun     bi_parse_integer
+/// std     string
+/// key     "start" to makeNumber(0), "end" to Nil, "radix" to Nil, "junk-allowed" to Nil
+/// opt     
+/// rest    
+/// ret     integer
+/// special no
+/// doc {
+/// 
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_parse_integer(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val string = arg1(args)
+    val s = stringArg(string, "parse-integer")
+    val start = intOrDefault(kwArgs[startKeyw]!!, 0, "parse-integer start")
+    val end = intOrDefault(kwArgs[endKeyw]!!, s.length, "parse-integer end")
+    val radix = intOrDefault(kwArgs[radixKeyw]!!, 10, "parse-integer radix")
+    val subs = s.substring(start, end).trim()
+    val junk_allowed = ob2bool(kwArgs[junkAllowedKeyw]!!)
+    var sign = 1
+    var first = true
+    var integer = 0L
+    var found_something = false
+
+    if (radix < 2 || radix > 36) {
+        throw ArgumentError("radix `$radix` is not in the range [2..36)")
+    }
+
+    for (ch in subs) {
+        if (first) {
+            first = false
+            if (ch == '-') {
+                sign = -1
+                continue
+            }
+            if (ch == '+') {
+                continue
+            }
+        }
+        val digit = ch.lowercase()[0]
+        val weight = dig_weights.get(digit)
+        // println("str $subs digit $digit weight $weight radix $radix")
+        if (weight != null && weight < radix) {
+            integer *= radix
+            integer += weight
+            found_something = true
+        } else if (junk_allowed) {
+            break
+        } else {
+            throw ArgumentError("invalid character `$ch`")
+        }
+    }
+    if (found_something) {
+        return makeNumber(integer * sign)
+    }
+    return Nil
+}
+

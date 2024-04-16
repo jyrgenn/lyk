@@ -144,6 +144,12 @@ fun vectorArg(arg: LObject, what: String): LVector {
     throw ArgumentError("$what argument is not a vector: $arg")
 }
 
+fun intOrDefault(arg: LObject, default: Int, what: String): Int {
+    if (arg === Nil) {
+        return default
+    }
+    return intArg(arg, what)
+}
 
 fun spreadArglist(args: LObject): LObject {
     // spreadable argument list designator n. a designator for a list of

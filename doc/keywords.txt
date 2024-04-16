@@ -9,7 +9,7 @@ Builtins
 Keyword arguments to builtin functions are declared in the Builtin
 description comment with "key" like this:
 
-/// key     ":if-does-not-exist" to Symbol.intern(":error"), ":direction" to Symbol.intern(":input"), ":if-exists" to Symbol.intern(":overwrite")
+/// key     "if-does-not-exist" to Symbol.intern("error"), "direction" to Symbol.intern(":input"), ":if-exists" to Symbol.intern(":overwrite")
 
 This is, sadly, a bit over-verbose and boilerplatey, but the easiest
 to transform to the actual Builtin(...) call. Maybe there will be a

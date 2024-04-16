@@ -140,6 +140,10 @@ fun eval(form: LObject): LObject {
     } catch (err: LispError) {
         err.pushFrame(evalLevel, form, currentEnv, lastTopLevelLocation)
         throw err
+    } catch (e: ArithmeticException) {
+        throw LispError("integer divide by zero")
+    } catch (e: StringIndexOutOfBoundsException) {
+        throw IndexError("substring " + e.message)
     } catch (exc: Exception) {
         val err = makeLispError(exc)
         err.pushFrame(evalLevel, form, currentEnv, lastTopLevelLocation)

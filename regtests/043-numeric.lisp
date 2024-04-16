@@ -757,7 +757,7 @@
 (test-is "> 91 33 13 4.002 4 4 3 1" (> 91 33 13 4.002 4 4 3 1) nil)
 (test-is "> 91 13 33 4.002 4 4 3 1" (> 91 13 33 4.002 4 4 3 1) nil)
 
-(test-err "% 5" (% 5) #/too few arguments/)
+(test-err "% 5" (% 5) #/too few args/)
 (test-is "% 5 6" (% 5 6) 5)
 (test-is "% 30 5" (% 30 5) 0)
 (test-is "% 30 7" (% 30 7) 2)
@@ -785,7 +785,7 @@
 (test-is "* 0 119" (* 0 119) 0)
 (test-is "* 119 13 12" (* 119 13 12) 18564)
 
-(test-err "-" (-) #/too few arguments/)
+(test-err "-" (-) #/too few args/)
 (test-is "- 5" (- 5) -5)
 (test-is "- 5 6" (- 5 6) -1)
 (test-is "- 30 5" (- 30 5) 25)
@@ -1230,39 +1230,50 @@
 (test-is "digit-char-p 3 3" (digit-char-p #\3 3) nil)
 
 (test-err "digit-char-p 3 1" (digit-char-p #\3 1)
-           #r"radix must be in the range 2..36 \(is 1\)")
+           #r"radix .* is not in the range")
 (test-err "digit-char-p 3 37" (digit-char-p #\3 37)
-           #r"radix must be in the range 2..36 \(is 37\)")
+           #r"radix .* is not in the range")
 
 (test-is "parse-integer 0" (parse-integer "0") 0)
 (test-is "parse-integer 12" (parse-integer "12") 12)
 (test-is "parse-integer +12" (parse-integer "+12") 12)
 (test-is "parse-integer -12" (parse-integer "-12") -12)
 (test-is "parse-integer 123456" (parse-integer "123456") 123456)
-(test-is "parse-integer 123456 2" (parse-integer "123456" 2) 3456)
-(test-err "parse-integer 123456 19" (parse-integer "123456" 19)
-          #/invalid substring start index 19 for string of length 6 /)
-(test-err "parse-integer 123456 rad 2" (parse-integer "123456" 0 nil 2)
+(test-is "parse-integer 123456 2" (parse-integer "123456" :start 2) 3456)
+(test-err "parse-integer 123456 19" (parse-integer "123456" :start 19)
+          #/out of bounds for length/)
+(test-err "parse-integer 123456 rad 2" (parse-integer "123456" :radix 2)
           #/invalid char/)
-(test-is "parse-integer -11101 rad 2" (parse-integer "-11101" 0 nil 2) -29)
-(test-is "parse-integer +11101 rad 9" (parse-integer "+11101" 0 nil 9) 7372)
+(test-is "parse-integer -11101 rad 2" (parse-integer "-11101" :radix 2) -29)
+(test-is "parse-integer +11101 rad 9" (parse-integer "+11101" :radix 9) 7372)
 
-(test-err "parse-integer 11" (parse-integer "   123456  " 1 10 10 nil)
-          #/invalid char ' ' /)
-(test-is "parse-integer 11a" (parse-integer "   123456  " 1 10 10 t) 123456)
+(test-err "parse-integer 11" (parse-integer "   123456  "
+                                            :start 11 :end 10 :radix 10)
+          #/out of bounds/)
+(test-is "parse-integer 11a" (parse-integer "   123456defg"
+                                            :start 1 :end 10 :radix 10
+                                            :junk-allowed t)
+         123456)
 
-(test-is "parse-integer 13" (parse-integer "\n\t\r\v 64927" 0 nil 13 t) 181708)
+(test-is "parse-integer 13" (parse-integer "\n\t\r\v 64927"
+                                           :radix 13 :junk-allowed t)
+         181708)
 
-(test-is "parse-integer 14" (parse-integer "   deadbeef " 0 nil 19 t)
+(test-is "parse-integer 14" (parse-integer "   deadbeef "
+                                           :radix 19 :junk-allowed t)
          12305510888)
-(test-err "parse-integer 14a" (parse-integer "   deadbeef " 0 nil 19 nil)
-         #/invalid char ' ' /)
-(test-err "parse-integer 14b" (parse-integer "deadbeef" 0 nil 10 nil)
-         #/invalid char 'd' /)
+(test-err "parse-integer 14a" (parse-integer "   deadbeef xxx"
+                                             :start 0 :end nil :radix 19
+                                             :junk-allowed nil)
+         #/invalid character ` `/)
+(test-err "parse-integer 14b" (parse-integer "deadbeef" :radix 10)
+         #/invalid character `d`/)
 
-(test-is "parse-integer 15" (parse-integer "123") 123)
-(test-is "parse-integer 16" (parse-integer "123" 1 nil  5) 13)
-(test-is "parse-integer 17" (parse-integer "no-integer" 0 nil 10 t) nil)
+(test-is "parse-integer 15" (parse-integer "123")
+         123)
+(test-is "parse-integer 16" (parse-integer "123" :start 1 :radix 5) 13)
+(test-is "parse-integer 17" (parse-integer "no-integer" :junk-allowed t)
+         nil)
 
 
 

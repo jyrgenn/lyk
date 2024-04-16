@@ -302,11 +302,11 @@ fun bi_letrec(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject{
             vals.add(Nil)
         } else if (binding is LCons) {
 	    val (sym, rest) = binding
-	    if (rest !is LCons) {
-		throw ArgumentError("let*: malformed variable clause")
+	    if (rest != Nil && rest !is LCons) {
+		throw ArgumentError("let*: malformed variable clause for `$sym`")
 	    }
 	    if (rest.cdr != Nil) {
-		throw ArgumentError("let*: malformed binding clause")
+		throw ArgumentError("let*: malformed binding clause for `%sym`")
 	    }
 	    val value = rest.car
 	    syms.add(symbolArg(sym, "let* binding variable"))
