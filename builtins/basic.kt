@@ -1895,3 +1895,57 @@ fun bi_ignore(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return Nil
 }
 
+/// builtin nth
+/// fun     bi_nth
+/// std     n list
+/// key     
+/// opt     
+/// rest    
+/// ret     object
+/// special no
+/// doc {
+/// Return the `n`th element of `list`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_nth(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (n, list) = args2(args)
+    var l = listArg(list, "nth list")
+    val n_n = intArg(n, "nth n")
+    if (n_n < 0) {
+        throw ArgumentError("nth `n` argument must not be negative")
+    }
+
+    for (i in 0..<n_n) {
+        l = l.cdr
+    }
+    return l.car
+}
+
+/// builtin nthcdr
+/// fun     bi_nthcdr
+/// std     n list
+/// key     
+/// opt     
+/// rest    
+/// ret     object
+/// special no
+/// doc {
+/// Return the `n`th cons of `list`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_nthcdr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (n, list) = args2(args)
+    var l = listArg(list, "nthcdr list")
+    val n_n = intArg(n, "nthcdr n")
+    if (n_n < 0) {
+        throw ArgumentError("nthcdr `n` argument must not be negative")
+    }
+
+    for (i in 0..<n_n) {
+        l = l.cdr
+    }
+    return l
+}
+
