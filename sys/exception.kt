@@ -28,6 +28,9 @@ open class LispError(message: String, val data: LObject = Nil
     }
 }
 
+class NotImplementedError(what: String):
+    LispError("function `$what` is not implemented")
+
 class IndexError(message: String): LispError(message) {
     constructor(what: LObject, index: Int):
         this("invalid index $index for ${typeOf(what)} $what")

@@ -3,6 +3,7 @@
 package org.w21.lyk
 
 import kotlin.math.*
+import kotlin.random.Random
 
 /// builtin +
 /// fun     bi_plus
@@ -608,6 +609,20 @@ fun bi_easter(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// special no
 /// doc {
 /// Return `number` rounded to the nearest integer.
+/// Ties (<integer> + 0.5) are rounded towards an even integer.
+/// }
+/// end builtin
+/// builtin fround
+/// fun     bi_round
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     number
+/// special no
+/// doc {
+/// Return `number` rounded to the nearest integer.
+/// Ties (<integer> + 0.5) are rounded towards an even integer.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
@@ -634,6 +649,18 @@ fun bi_ceiling(args: LObject, kwArgs: Map<LSymbol, LObject>
 }
 
 /// builtin floor
+/// fun     bi_floor
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     number
+/// special no
+/// doc {
+/// Return `number` truncated to an integer towards negative infinity.
+/// }
+/// end builtin
+/// builtin ffloor
 /// fun     bi_floor
 /// std     number
 /// key     
@@ -757,5 +784,570 @@ fun bi_oddp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         return Nil
     }
     throw ArgumentError("oddp argument is not a number: $arg (${typeOf(arg)})")
+}
+
+/// builtin conjugate
+/// fun     bi_conjugate
+/// std     
+/// key     
+/// opt     
+/// rest    &rest nothing
+/// ret     nothing
+/// special no
+/// doc {
+/// Function is not implemented; will throw an error.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_conjugate(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    throw NotImplementedError("conjugate")
+}
+
+/// builtin cis
+/// fun     bi_cis
+/// std     
+/// key     
+/// opt     
+/// rest    &rest nothing
+/// ret     nothing
+/// special no
+/// doc {
+/// Function is not implemented; will throw an error.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_cis(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    throw NotImplementedError("cis")
+}
+
+/// builtin rational
+/// fun     bi_rational
+/// std     
+/// key     
+/// opt     
+/// rest    &rest nothing
+/// ret     nothing
+/// special no
+/// doc {
+/// Function is not implemented; will throw an error.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_rational(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    throw NotImplementedError("rational")
+}
+
+/// builtin rationalize
+/// fun     bi_rationalize
+/// std     
+/// key     
+/// opt     
+/// rest    &rest nothing
+/// ret     nothing
+/// special no
+/// doc {
+/// Function is not implemented; will throw an error.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_rationalize(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    throw NotImplementedError("rationalize")
+}
+
+/// builtin minusp
+/// fun     bi_minusp
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true iff `number` is less than zero.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_minusp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return bool2ob(numberArg(arg1(args), "minusp") < 0)
+}
+
+/// builtin plusp
+/// fun     bi_plusp
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true iff `number` is greater than zero.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_plusp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return bool2ob(numberArg(arg1(args), "plusp") > 0)
+}
+
+/// builtin integer-length
+/// fun     bi_integer_length
+/// std     integer
+/// key     
+/// opt     
+/// rest    
+/// ret     length
+/// special no
+/// doc {
+/// Returns the number of bits needed to represent `integer`.
+/// If the argument is not an integer, it will be rounded to the nearest one.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_integer_length(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val num = numberArg(arg1(args), "integer-length")
+    var integer = round(num).toLong()
+    if (integer < 0) {
+        integer = -integer - 1
+    }
+    var mask = 0L
+    var count = 0
+    while (integer != mask and integer) {
+        count++
+        mask = (mask shl 1) or 1
+    }
+    return makeNumber(count)
+}
+
+/// builtin expt
+/// fun     bi_expt
+/// std     base power
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return `base` raise to the power `power`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_expt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (base, power) = args2(args)
+    return makeNumber(numberArg(base, "expt base")
+                          .pow(numberArg(power, "expt power")))
+}
+
+/// builtin numerator
+/// fun     bi_numerator
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     number
+/// special no
+/// doc {
+/// Return the numerator of `number`.
+/// As only real numbers are supported, the numerator of a number is
+/// always the number itself.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_numerator(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val num = arg1(args)
+    numberArg(num, "numerator")
+    return num
+}
+
+/// builtin denominator
+/// fun     bi_denominator
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     number
+/// special no
+/// doc {
+/// Return the denominator of `number`.
+/// As only real numbers are supported, the denominator of a number is
+/// always 1.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_denominator(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val num = arg1(args)
+    numberArg(num, "denominator")
+    return makeNumber(1)
+}
+
+/// builtin realpart
+/// fun     bi_realpart
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     number
+/// special no
+/// doc {
+/// Return the realpart of `number`.
+/// As only real numbers are supported, the real part of a number is
+/// always the number itself.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_realpart(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val num = arg1(args)
+    numberArg(num, "realpart")
+    return num
+}
+
+/// builtin imagpart
+/// fun     bi_imagpart
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     number
+/// special no
+/// doc {
+/// Return the imagpart of `number`.
+/// As only real numbers are supported, the imaginary part of a number is
+/// always zero.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_imagpart(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val num = arg1(args)
+    numberArg(num, "imagpart")
+    return makeNumber(0)
+}
+
+/// builtin phase
+/// fun     bi_phase
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     phase
+/// special no
+/// doc {
+/// Return the angle part of `number`'s polar representation.
+/// As only real numbers are supported, the return value is only -Pi for
+/// negative numbers, Pi for positive numbers, and zero for zero.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_phase(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val num = numberArg(arg1(args), "phase")
+
+    return makeNumber(if (num < 0) {
+                          -PI
+                      } else if (num > 0) {
+                          PI
+                      } else {
+                          0.0
+                      })
+}
+
+/// builtin pi
+/// fun     bi_pi
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     pi
+/// special no
+/// doc {
+/// Return the value of the constant Pi.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_pi(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(PI)
+}
+
+/// builtin e
+/// fun     bi_e
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     e
+/// special no
+/// doc {
+/// Return the value of the constant E.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_e(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(E)
+}
+
+/// builtin fceiling
+/// fun     bi_fceiling
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return `number` truncated to an integer towards positive infinity.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_fceiling(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(ceil(numberArg(arg1(args), "fceiling")))
+}
+
+/// builtin log
+/// fun     bi_log
+/// std     number
+/// key     
+/// opt     base makeNumber(E)
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return the logarithm of `number` in base `base` (defaults to e).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_log(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (number, base) = args2(args)
+    return makeNumber(log(numberArg(number, "log number"),
+                          numberArg(base, "log base")))
+}
+
+/// builtin exp
+/// fun     bi_exp
+/// std     power
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return e raised to the power of `power`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_exp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(exp(numberArg(arg1(args), "exp")))
+}
+
+/// builtin tanh
+/// fun     bi_tanh
+/// std     radians
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return the hyperbolic tangent of `radians`
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_tanh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(tanh(numberArg(arg1(args), "tanh")))
+}
+
+/// builtin cosh
+/// fun     bi_cosh
+/// std     radians
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return the hyperbolic cosine of `radians`
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_cosh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(cosh(numberArg(arg1(args), "cosh")))
+}
+
+/// builtin sinh
+/// fun     bi_sinh
+/// std     radians
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return the hyperbolic sine of `radians`
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_sinh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(sinh(numberArg(arg1(args), "sinh")))
+}
+
+/// builtin tan
+/// fun     bi_tan
+/// std     radians
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return the tangent of `radians`
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_tan(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(tan(numberArg(arg1(args), "tan")))
+}
+
+/// builtin cos
+/// fun     bi_cos
+/// std     radians
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return the cosine of `radians`
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_cos(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(cos(numberArg(arg1(args), "cos")))
+}
+
+/// builtin sin
+/// fun     bi_sin
+/// std     radians
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return the sine of `radians`
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_sin(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(sin(numberArg(arg1(args), "sin")))
+}
+
+/// builtin truncate
+/// fun     bi_truncate
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return `number` truncated towards zero.
+/// }
+/// end builtin
+/// builtin ftruncate
+/// fun     bi_truncate
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return `number` truncated towards zero.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_truncate(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return makeNumber(truncate(numberArg(arg1(args), "truncate")))
+}
+
+/// builtin random
+/// fun     bi_random
+/// std     
+/// key     
+/// opt     limit, int
+/// rest    
+/// ret     random-number
+/// special no
+/// doc {
+/// Return a non-negative pseudo-random number less than 1 (or `limit`).
+/// If optional `int` is non-nil, the returned number is an integer.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_random(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (limit, int) = args2(args)
+    val rnd = Random.Default
+
+    if (limit === Nil) {
+        if (ob2bool(int)) {
+            return makeNumber(rnd.nextInt())
+        } else {
+            return makeNumber(rnd.nextDouble())
+        }
+    } else {
+        val until = numberArg(limit, "random limit")
+        if (ob2bool(int)) {
+            return makeNumber(rnd.nextInt(until.toInt()))
+        } else {
+            return makeNumber(rnd.nextDouble(until))
+        }
+    }
+}
+
+/// builtin max
+/// fun     bi_max
+/// std     number
+/// key     
+/// opt     
+/// rest    numbers
+/// ret     maximum
+/// special no
+/// doc {
+/// Return the largest number of all arguments
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_max(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (number, rest) = args
+    var the_max = numberArg(number, "max first")
+
+    for (next in rest) {
+        val num = numberArg(next, "max")
+        if (num > the_max) {
+            the_max = num
+        }
+    }
+    return makeNumber(the_max)
+}
+
+/// builtin min
+/// fun     bi_min
+/// std     number
+/// key     
+/// opt     
+/// rest    numbers
+/// ret     minimum
+/// special no
+/// doc {
+/// Return the smallest number of all arguments
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_min(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (number, rest) = args
+    var the_min = numberArg(number, "min first")
+
+    for (next in rest) {
+        val num = numberArg(next, "min")
+        if (num < the_min) {
+            the_min = num
+        }
+    }
+    return makeNumber(the_min)
 }
 

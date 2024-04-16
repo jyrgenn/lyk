@@ -117,7 +117,7 @@ Traverse conses and vectors to find numbers."
         ((consp ob) (cons (round-deep (car ob))
                           (round-deep (cdr ob))))
         ((vectorp ob) (dotimes (i (length ob) ob)
-                        (ob i (round-deep (ob i)))))
+                        (vector-set ob i (round-deep (vector-get ob i)))))
         (t ob)))
 
 (defvar testing-done nil

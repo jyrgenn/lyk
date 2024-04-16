@@ -30,6 +30,9 @@ print("""//
 
 package org.w21.lyk
 
+import kotlin.math.E
+
+
 // a few emptynesses predeclared for convenience
 val noStd = arrayOf<String>()                  // no standard parameters
 val noKey = mapOf<String, LObject>()           // no &key parameters
