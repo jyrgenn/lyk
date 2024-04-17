@@ -127,12 +127,8 @@ class NotProvidedError(val feature: LSymbol):
     LispError("Required feature `$feature` has not been provided") {
 }
 
-class AssertionFail(form: LObject, val moreInfo: LObject):
-    LispError(form.toString())
-{
-    override fun toString(): String =
-        "${super.toString()}" + if (moreInfo === Nil) "" else ", $moreInfo"
-}
+class AssertionFail(form: LObject, val moreInfo: LObject? = Nil):
+    LispError(form.toString() + if (moreInfo === Nil) "" else ", $moreInfo")
 
 class RegexpError(val e: java.util.regex.PatternSyntaxException
 ): LispError(e.pattern) {

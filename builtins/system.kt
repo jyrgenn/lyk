@@ -221,14 +221,14 @@ fun bi_assert(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject
 
 /// builtin apropos
 /// fun     bi_apropos
-/// std     string
+/// std     pattern
 /// key     
 /// opt     as-list
 /// rest    
 /// ret     none/list
 /// special no
 /// doc {
-/// Print all interned symbols whose name contains `string`.
+/// Print all interned symbols whose name contains `pattern`.
 /// If optional `as-list` is true, return a list of the symbol names.
 /// }
 /// end builtin
@@ -236,12 +236,26 @@ fun bi_assert(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject
 fun bi_apropos(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (pattern, as_list) = args2(args)
-    val patternstring = pattern.toString()
+    var pattern_re = Regex("")
+    var pattern_s = ""
+    val match_fun: (String) -> Boolean
+
+    fun match_s(s: String) = s.contains(pattern_s)
+    fun match_r(s: String) = pattern_re.find(s) != null
+
+    if (pattern is LRegexp) {
+        pattern_re = pattern.the_regexp
+        match_fun = ::match_r
+    } else {
+        pattern_s = pattern.toString()
+        match_fun = ::match_s
+    }
+
     val symlist_lc = ListCollector()
     var maxsymlen = 0
 
     for (sym in symbolTable.values) {
-        if (sym.name.contains(patternstring)) {
+        if (match_fun(sym.name)) {
             symlist_lc.add(sym)
             val len = sym.name.length
             if (len > maxsymlen) {
@@ -678,6 +692,37 @@ fun bi_symbol_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val sym = arg1(args)
     return symbolArg(sym, "symbol-value").getValue()
 }
+
+/// builtin collect-performance-data
+/// fun     bi_collect_perfdata
+/// std     
+/// key     
+/// opt     
+/// rest    bodyforms
+/// ret     alist
+/// special yes
+/// doc {
+/// Evaluate `bodyforms` and return a list of performance data.
+/// This list is an alist with the number of conses created, the number
+/// of evals performed, and the number of seconds taken to perform the
+/// evaluation, e.g.
+///     ((conses . 6055097) (evals . 4755187) (secs . 0.265043))
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_collect_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val bodyforms = args
+    val (conses, evals, seconds) = measurePerfdataDetail {
+        evalProgn(bodyforms)
+    }
+    return LCons(LCons(intern("conses"), makeNumber(conses)),
+                 LCons(LCons(intern("evals"), makeNumber(evals)),
+                       LCons(LCons(intern("secs"),
+                                   makeNumber(seconds)),
+                             Nil)))
+}
+
+
 
 
 // EOF

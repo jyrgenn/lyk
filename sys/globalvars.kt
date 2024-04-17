@@ -36,8 +36,8 @@ var debug_out = console
 val verboseSym = intern("verbose")
 val errorSym = intern("error")
 
-var consCounter = 0
-var evalCounter = 0
+var consCounter = 0L
+var evalCounter = 0L
 
 // location of the last top level expression read in a repl
 var lastTopLevelLocation = ""

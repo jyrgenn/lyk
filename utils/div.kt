@@ -2,6 +2,9 @@
 
 package org.w21.lyk
 
+import kotlin.math.round
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import kotlin.time.measureTime
 import kotlin.text.CharCategory.*
 
@@ -49,10 +52,13 @@ fun typeOf(obj: Any) =
     when (obj) {
         is LEnv ->  "environment"
         is LFunction -> "function"
-        is LispError -> "Error"
         else -> {
             val typ = "${obj::class.simpleName}"
-            if (typ.startsWith("L")) {
+            if (typ.startsWith("Lisp")) {
+                typ.substring(4)
+            } else if (typ.startsWith("L")) {
+                // TODO: this is far too simple, rather have all
+                // L... types here like above.
                 typ.substring(1)
             } else {
                 typ
@@ -188,6 +194,18 @@ fun measurePerfdataValue(closure: () -> LObject): Pair<String, LObject> {
 // Measure performance data while executing the passed closure. The returned
 // value is a string with the performance data.
 fun measurePerfdata(closure: () -> Unit): String {
+    val (conses, evals, seconds) = measurePerfdataDetail(closure)
+
+    val millis = round(seconds * 1000)
+    val eval_s = (evals.toDouble() / seconds).toLong()
+
+    // 347 pairs 558 evals in 0 ms, 844974 evals/s
+    return "$conses conses $evals evals in $millis ms, $eval_s evals/s"
+}
+
+// Measure performance data while executing the passed closure. The returned
+// value is a string with the performance data.
+fun measurePerfdataDetail(closure: () -> Unit): Triple<Long,Long,Double> {
     val consCountBefore = consCounter
     val evalCountBefore = evalCounter
 
@@ -196,12 +214,7 @@ fun measurePerfdata(closure: () -> Unit): String {
     }
     val conses = consCounter - consCountBefore
     val evals  = evalCounter - evalCountBefore
-    val millis = timeTaken.inWholeMilliseconds
-    val eval_s =
-        (evals.toDouble() / timeTaken.inWholeMicroseconds * 1000000).toLong()
-
-    // 347 pairs 558 evals in 0 ms, 844974 evals/s
-    return "$conses conses $evals evals in $millis ms, $eval_s evals/s"
+    return Triple(conses, evals, timeTaken.toDouble(DurationUnit.SECONDS))
 }
 
 // Return the smaller of the two numbers.

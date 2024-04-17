@@ -1,20 +1,20 @@
 (require 'regtests)
 
 (test-is "performance data" (let ((pdata (collect-performance-data t)))
-                              (and (equal (elt pdata 0) '(evals . 1))
-                                   (equal (elt pdata 1) '(pairs . 0))
+                              (and (equal (elt pdata 0) '(conses . 0))
+                                   (equal (elt pdata 1) '(evals . 1))
                                    (eq (car (elt pdata 2)) 'secs)
                                    (numberp (cdr (elt pdata 2)))))
          t)
 
-(test-is "apropos string 1" (> (length (apropos-list "a")) 100) t)
-(test-is "apropos string 2" (= (length (apropos-list "^a")) 0) t)
+(test-is "apropos string 1" (> (length (apropos "a" t)) 200) t)
+(test-is "apropos string 2" (= (length (apropos "^a" t)) 0) t)
 
 ;; the correctness of this *may* change some time; currently we are at 15
 ;; matches
-(test-is "apropos regexp" (let ((len (length (apropos-list #/^a/))))
-                            (and (> len 10)
-                                 (< len 40)))
+(test-is "apropos regexp" (let ((len (length (apropos #/^a/ t))))
+                            (and (> len 30)
+                                 (< len 70)))
          t)
 
 (defparameter a 19)
@@ -23,13 +23,13 @@
 (test-is "assertion good" (assert (< a b) "Apfel < Birne") nil)
 (incf a 2)
 (test-err "assertion fail 1" (assert (< a b) "Apfel < Birne")
-          #/assertion failed: Apfel < Birne/)
+          #/AssertionFail: \(< a b\), Apfel < Birne/)
 (test-err "assertion fail 2" (assert (< a b))
-          #/assertion failed: \(< a b\)/)
+          #/AssertionFail: \(< a b\)/)
 (test-err "assertion fail 3" (assert (< a b) (format nil "%s < %s" 'a 'b))
-          #/assertion failed: a < b/)
+          #/AssertionFail: \(< a b\), a < b/)
 (test-err "assertion fail 4" (assert (< a b) (format nil "%s < %s" a b))
-          #/assertion failed: 21 < 21/)
+          #/AssertionFail: \(< a b\), 21 < 21/)
 
 (test-is "declare good" (declare (number a b)) nil)
 (test-err "declare err" (declare (int a b))
