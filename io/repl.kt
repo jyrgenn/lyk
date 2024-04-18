@@ -56,7 +56,7 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
 
             // Eval,
             val (perfdata, value) = measurePerfdataValue {
-                eval(macroExpandForm(expr))
+                eval(expr)
             }
             if (print) {
                 println(value)
