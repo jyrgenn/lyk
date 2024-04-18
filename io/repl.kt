@@ -41,8 +41,8 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
             }
             lastTopLevelLocation = where
 
-            // Expand macros (just not macro definitions),
-            if (expr is LCons && expr.car === defmacroSym) {
+            // Expand macros (just not macro definitions (or do I?)),
+            if (false && expr is LCons && expr.car === defmacroSym) {
                 // println("skip expanding (${expr.car} ${expr.cdr.car} ...)")
             } else {
                 // if (expr is LCons) {
