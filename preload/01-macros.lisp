@@ -1,31 +1,26 @@
 
 
-(defmacro unless (condition &rest bodyforms)
-  "If `condition` yields nil, eval `bodyforms` and return the result of the last."
-  (cond ((not bodyforms) (setq bodyforms '(nil))))      
-  `(cond (,condition nil)
-         (t ,@bodyforms)))
+;; (defmacro unless (condition &rest bodyforms)
+  ;; "If `condition` yields nil, eval `bodyforms` and return the result of the last."
+  ;; (cond ((not bodyforms) (setq bodyforms '(nil))))      
+  ;; `(cond (,condition nil)
+         ;; (t ,@bodyforms)))
 
-(defmacro when (condition &rest bodyforms)
-  "If `condition` yields true, eval `bodyforms` and return the result of the last."
-  (cond ((not bodyforms) (setq bodyforms '(nil))))      
-  `(cond (,condition ,@bodyforms)))
+;; (defmacro when (condition &rest bodyforms)
+  ;; "If `condition` yields true, eval `bodyforms` and return the result of the last."
+  ;; (cond ((not bodyforms) (setq bodyforms '(nil))))      
+  ;; `(cond (,condition ,@bodyforms)))
 
-(defmacro if (condition then-clause &rest else-clauses)
-  "If `condition` evals to non-nil, eval `then-clause` and return the value.
-Otherwise, evaluate `else-clauses` and return the last value."
-  (cond ((not else-clauses) (setq else-clauses '(nil))))      
-  `(cond (,condition ,then-clause)
-         (t ,@else-clauses)))
+;; (defmacro if (condition then-clause &rest else-clauses)
+  ;; "If `condition` evals to non-nil, eval `then-clause` and return the value.
+;; Otherwise, evaluate `else-clauses` and return the last value."
+  ;; (cond ((not else-clauses) (setq else-clauses '(nil))))      
+  ;; `(cond (,condition ,then-clause)
+         ;; (t ,@else-clauses)))
 
 (defmacro =/= (ob1 ob2)
   "Return true iff OB1 and OB2 are unequal (in terms of #'equal)."
   `(not (equal ,ob1 ,ob2)))
-
-(defmacro regex-match (regexp string &optional limit)
-  "If STRING matches REGEXP, return list of match and sub-matches, else nil.
-See (doc #//) for details."
-  `((regexp ,regexp) ,string ,limit))
 
 (defmacro dolist (cvars &rest bodyforms)
   "(dolist (var listform &optional resultform) &rest bodyforms)"
