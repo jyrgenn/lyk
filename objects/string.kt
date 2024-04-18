@@ -11,6 +11,8 @@ class LString(val the_string: String): LObject(), LSeq {
     //     stringTable[the_string] = nil
     // }
 
+    override val type = "string"
+
     companion object {
         // val stringTable = mutableMapOf<String, LString>()
         val stringTable = WeakHashMap(mutableMapOf<String, LString>())

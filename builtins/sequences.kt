@@ -23,7 +23,7 @@ fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>
     val iindex = intArg(index, "elt index")
 
     if (iindex < 0) {
-        throw IndexError("index $index for ${typeOf(seq)} is negative")
+        throw IndexError("index $index for ${seq.type} is negative")
     }
     return seqArg(seq, "elt").getAt(iindex)
 }
@@ -48,7 +48,7 @@ fun bi_setelt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val iindex = intArg(index, "setelt index")
 
     if (iindex < 0) {
-        throw IndexError("index $index for ${typeOf(seq)} is negative")
+        throw IndexError("index $index for ${seq.type} is negative")
     }
     seqArg(seq, "setelt").setAt(iindex, value)
     return value

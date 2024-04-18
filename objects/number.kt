@@ -39,6 +39,8 @@ class LNumber(val the_number: Double): LObject() {
     }
 
     
+    override val type = "number"
+
     // Return true iff object is an atom
     override fun isAtom() = true 
 

@@ -48,23 +48,26 @@ fun padString(s: String, width: Int, pad: Char = ' '): String {
     return result
 }
 
-fun typeOf(obj: Any) =
-    when (obj) {
-        is LEnv ->  "environment"
-        is LFunction -> "function"
-        else -> {
-            val typ = "${obj::class.simpleName}"
-            if (typ.startsWith("Lisp")) {
-                typ.substring(4)
-            } else if (typ.startsWith("L")) {
-                // TODO: this is far too simple, rather have all
-                // L... types here like above.
-                typ.substring(1)
-            } else {
-                typ
+// convert camelCase name to lisp-style-name
+fun lispifyName(name: String): String {
+    var first = true
+    val cb = CharBuf()
+
+    for (ch in name) {
+        if (ch.isUpperCase()) {
+            if (!first) {
+                cb.add('-')
             }
+            cb.add(ch.lowercase()[0])
+        } else if (ch == '_') {
+            cb.add('-')
+        } else {
+            cb.add(ch)
         }
+        first = false
     }
+    return cb.toString()
+}
 
 
 class CharBuf {

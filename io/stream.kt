@@ -23,6 +23,8 @@ class StringWriterStream(name: String? = null
 ): LStream(output = true, name = name) {
     var content = StrBuf()
     
+    override val type = "string-writer-stream"
+
     override fun write(code: Int) {
         content.add(code.toChar())
     }
@@ -52,6 +54,8 @@ class ConsoleReaderStream(): LStream(input = true, path = null,
     var linebuf = StringReaderStream("")
     var promptString: String = ""
 
+    override val type = "console-reader-stream"
+
     override fun read(): Char? {
         try {
             if (!linebuf.hasNext()) {
@@ -80,6 +84,8 @@ class StringReaderStream(content: String, name: String? = ""):
     val chars = content.toCharArray()
     var nextpos = 0
 
+    override val type = "string-reader-stream"
+
     override fun read(): Char? {
         if (hasNext()) {
             return chars[nextpos++]
@@ -107,6 +113,8 @@ class FileReaderStream(file: File, name: String? = null,
 
     val fileReader = file.bufferedReader()
     var linebuf = StringReaderStream("")
+
+    override val type = "file-reader-stream"
 
     override fun read(): Char? {
         try {
@@ -148,6 +156,8 @@ class FileIOStream(path: String,
     val fileWriter = file.printWriter().buffered()
     val fileReader = file.bufferedReader()
     var linebuf = StringReaderStream("")
+
+    override val type = "file-io-stream"
 
     override fun read(): Char? {
         try {
@@ -215,6 +225,8 @@ class FileWriterStream(path: String,
 ): LStream(output = true, path = path, name = name ?: "'$path'", error = error)
 {
     val fileWriter = File(path).printWriter().buffered()
+
+    override val type = "file-writer-stream"
 
     override fun write(code: Int) {
         try {
@@ -357,7 +369,7 @@ abstract class LStream(
         val i = if (input) "I" else ""
         val o = if (output) "O" else ""
         val e = if (error) "E" else ""
-        return "#<${typeOf(this)}[$i$o$e$x]$name>"
+        return "#<${this.type}[$i$o$e$x]$name>"
     }
     override fun desc() = toString()
 

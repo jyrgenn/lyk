@@ -2,22 +2,29 @@
 
 (defvar *object-types*
   '(
-    ;; char
-    environment
-    lambda
     builtin
-    macro
-    ;; netaddr
-    number
+    char
     cons
-    ;; port
+    console-reader-stream
+    environment
+    error-object
+    file-io-stream
+    file-reader-stream
+    file-writer-stream
+    lambda
+    macro
+    number
     regexp
     string
-    ;; struct
+    string-reader-stream
+    string-writer-stream
     symbol
     table
     vector
     )
-  "List of types known to the system.")
+  "List of types known to the system.
+These are the leaves of the object type tree; there are also type
+categories like `function` or `stream`, which don't appear here, but
+for which type predicates exist. TODO check")
 (put '*object-types* t '*system*)
 

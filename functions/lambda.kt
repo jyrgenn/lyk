@@ -16,6 +16,8 @@ open class Lambda(                         // Macro will inherit this
 ): LFunction(functionName, stdPars, keyPars, optPars, restPar,
              intern("value"), false, docBody, location)
 {
+    override val type = "lambda"
+
     override val typeDesc = "lambda function"
     
     override fun desc(): String {

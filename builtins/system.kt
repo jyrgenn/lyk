@@ -24,7 +24,7 @@ fun bi_set_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val lc = ListCollector()
     for (arg in args) {
         debug(debugDebugSym) {
-            "debug sym is $arg, ${typeOf(arg)}"
+            "debug sym is $arg, ${arg.type}"
         }
         when (arg) {
             debugOffSym -> {
@@ -355,7 +355,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         map.put(intern(name), makeNumber(value))
     }
     
-    entry("type", typeOf(obj).lowercase(), true)
+    entry("type", obj.type, true)
     when (obj) {
         is LSymbol -> {
             entry("name", obj.name, false)

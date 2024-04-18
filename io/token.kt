@@ -8,7 +8,7 @@ open class ReaderToken(reader: Reader): LocationHolder {
     val readerLocation = reader.location()
 
     open override fun location() = readerLocation
-    open fun desc() = typeOf(this)
+    open fun desc() = this::class.simpleName.toString()
     override fun toString() = desc()
 }
 

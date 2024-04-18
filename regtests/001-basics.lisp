@@ -18,7 +18,7 @@
 (test-is "type-of table" (type-of #:()) "table")
 (test-is "type-of vector" (type-of #()) "vector")
 (test-is "type-of string" (type-of "") "string")
-(test-is "type-of function" (type-of #'car) "function")
+(test-is "type-of function" (type-of #'car) "builtin")
 ;; TODO (defstruct str "teststructtype" x y)
 ;; TODO (test-is "type-of struct" (type-of (make-str)) 'struct)
 (test-is "princs" (princs (list (* 3 4) t)) "(12 t)")

@@ -13,6 +13,8 @@ class LCons(override var car: LObject,
         consCounter++
     }
 
+    override val type = "cons"
+
     override fun toString(): String {
         val result = StrBuf("(")
 

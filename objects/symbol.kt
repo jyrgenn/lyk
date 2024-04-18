@@ -22,6 +22,8 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
     val descName = makeDescName()
     var function: LFunction? = null
 
+    override val type = "symbol"
+
     companion object {
         fun interned(name: String, immutable_and_selfvalued: Boolean = false
         ): LSymbol {

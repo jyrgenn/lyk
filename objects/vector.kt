@@ -14,6 +14,8 @@ class LVector(elems: LObject): LObject(), LSeq {
         }
     }
 
+    override val type = "vector"
+
     constructor(vararg elems: LObject) : this(Nil) {
         for (elem in elems) {
             the_vector.add(elem)

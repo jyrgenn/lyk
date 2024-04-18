@@ -16,7 +16,8 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
         objectCounter += 1
         id = objectCounter
     }
-    
+
+    abstract val type: String
 
     open fun bool() = true
 
@@ -25,7 +26,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     open fun isList() = false
 
     open fun length(): Int {
-        throw ValueError("${typeOf(this)} $this has no length")
+        throw ValueError("${this.type} $this has no length")
     }
 
     open fun isKeyword() = false
@@ -49,7 +50,8 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
 
         val padsize = width - s.length
         debug(debugFormatSym) {
-            "$this[${typeOf(this)}].format(fmtr = '$fmtr', flags = $flags, width = $width, prec = $prec)"
+            ("$this[${this.type}].format(fmtr = '$fmtr', flags = $flags,"
+             + " width = $width, prec = $prec)")
         }
         if (padsize > 0) {
             val pad = mulString(" ", padsize)
@@ -68,7 +70,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     }
 
     // Print as much information about the object as can be helpful debugging.
-    open fun dump() = "${typeOf(this)}[$id]"
+    open fun dump() = "${this.type}[$id]"
 
     // The output of this shall, if at all possible, be sufficent to
     // be read by the reader to re-create the object.
@@ -101,8 +103,8 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     }
 
     fun compareError(other: LObject): Throwable {
-        return TypeError("cannot compare ${typeOf(this).lowercase()} `$this`"
-                         +" to ${typeOf(other).lowercase()} `$other`")
+        return TypeError("cannot compare ${this.type} `$this`"
+                         +" to ${other.type} `$other`")
     }
 
     override fun iterator(): Iterator<LObject>
