@@ -69,12 +69,13 @@
                                        (stringw1 "lili" "huhu" nil)))
          '("lalahohodone" . "lili"))
 
-(test-is "expand when 0" (macroexpand '(when condition))
-         '(cond (condition nil)))
-(test-is "expand when 1" (macroexpand '(when condition (doit)))
-         '(cond (condition (doit))))
-(test-is "expand when 2" (macroexpand '(when condition (dothis) (dothat)))
-         '(cond (condition (dothis) (dothat))))
+;;; #'when is no longer a macro
+;; (test-is "expand when 0" (macroexpand '(when condition))
+;;          '(cond (condition nil)))
+;; (test-is "expand when 1" (macroexpand '(when condition (doit)))
+;;          '(cond (condition (doit))))
+;; (test-is "expand when 2" (macroexpand '(when condition (dothis) (dothat)))
+;;          '(cond (condition (dothis) (dothat))))
 
 (test-is "defun w/ unless" (progn (defun stringu1 (base adder do)
                                      (unless do
@@ -99,7 +100,7 @@
          "ha!.......")
 
 (test-is "nested expanded 1" (function-body #'func_nm1)
-         '((while (not (>= (length base) len)) (cond (do (setq base (string base adder)) (setq base (string base "|")))) (setq base (string base "."))) base))
+         '((while (not (>= (length base) len)) (when do (setq base (string base adder)) (setq base (string base "|"))) (setq base (string base "."))) base))
 
 (defmacro do-until (bodyforms condition)
   (let ((controlvar (gensym "do-until-controlvar")))
@@ -122,6 +123,6 @@
 
 ;; must remove gensym tags from expanded macro
 (test-is "nested expanded 2" (function-body #'addup)
-         '((let ((sum base) (count 0)) (let ((do-until-controlvar nil)) (until do-until-controlvar (setq sum (+ sum inc)) (setq count (1+ count)) (cond ((>= sum limit) (setq do-until-controlvar t))))) (cons count sum))))
+         '((let ((sum base) (count 0)) (let ((do-until-controlvar nil)) (until do-until-controlvar (setq sum (+ sum inc)) (setq count (1+ count)) (when (>= sum limit) (setq do-until-controlvar t)))) (cons count sum))))
 
 (done-testing)
