@@ -32,7 +32,7 @@ fun list2lisp(elems: Collection<LObject>): LObject {
 }
 
 fun valueArray(elems: LObject): Array<Any> {
-    val a = Array<Any>(elems.length()) { 0 }
+    val a = Array<Any>(elems.length) { 0 }
 
     var index = 0
     for (elem in elems) {
@@ -71,7 +71,7 @@ class ListCollector(): Iterable<LObject> {
         }
     }
 
-    val size get() = list.length()
+    val size = list.length
 
     override fun iterator() = this.list.iterator()
 }

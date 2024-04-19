@@ -16,7 +16,7 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 GENSRCS = generated/buildtag.kt generated/init-builtins.kt \
 	generated/preload.kt
 ALLSRCS = $(SRCS) $(GENSRCS)
-PRELOAD = $(shell echo preload/*.lisp)
+PRELOAD = $(shell echo preload/*.lisp) generated/10-types.lisp
 
 BUILDSCRIPTS = scripts/buildtag.sh scripts/generate-builtin-init
 
@@ -43,6 +43,9 @@ lyk.jar: $(ALLSRCS) generated/org generated/jline Makefile
 generated/org generated/jline:
 	cd generated; jar -xf ../jline/jline.jar
 
+generated/10-types.lisp: Makefile scripts/list-types.sh $(SRCS)
+	./scripts/list-types.sh > generated/10-types.lisp
+
 generated:
 	mkdir -p generated
 
@@ -58,9 +61,7 @@ generated/init-builtins.kt: Makefile generated scripts/generate-builtin-init \
 	    ln -s ../scripts/Subdirmakefile generated/Makefile
 	scripts/generate-builtin-init $(BUILTINSRC) > generated/init-builtins.kt
 
-new: remove-buildtag build
-remove-buildtag:
-	rm generated/buildtag.kt
+new: clean build
 
 native: $(SRCS) Makefile
 	$(NATIVECOMP) $(SRCS) -o lykn

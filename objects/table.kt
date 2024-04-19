@@ -38,7 +38,7 @@ class LTable(): LObject() {
         return value ?: Nil
     }
 
-    override fun length() = the_table.size
+    override val length get() = the_table.size
 
     fun put(key: LObject, value: LObject) {
         the_table[key] = value

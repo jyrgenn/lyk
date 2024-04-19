@@ -38,16 +38,17 @@ class LCons(override var car: LObject,
 
     override fun desc() = toString()
 
-    override fun length(): Int {
-        var len = 0
-        var cell: LObject = this
-        while (cell is LCons) {
-            len++
-            cell = cell.cdr
+    override val length: Int
+        get () {
+            var len = 0
+            var cell: LObject = this
+            while (cell is LCons) {
+                len++
+                cell = cell.cdr
+            }
+            return len
         }
-        return len
-    }
-
+    
     override fun delete(item: LObject): LObject {
         val lc = ListCollector()
         
@@ -142,7 +143,7 @@ class LCons(override var car: LObject,
     }
 
     fun toArray(): Array<LObject> {
-        val valueArray = Array<LObject>(length()) { Nil }
+        val valueArray = Array<LObject>(length) { Nil }
 
         var index = 0
         for (elem in this) {

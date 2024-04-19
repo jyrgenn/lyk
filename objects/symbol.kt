@@ -94,13 +94,14 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
 
     override fun isList() = this === Nil
 
-    override fun length(): Int {
-        if (this === Nil) {
-            return 0
+    override val length: Int
+        get() {
+            if (this === Nil) {
+                return 0
+            }
+            return super.length
         }
-        return super.length()
-    }
-
+    
     override fun delete(item: LObject): LObject {
         if (this === Nil) {
             return Nil

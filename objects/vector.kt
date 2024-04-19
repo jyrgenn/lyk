@@ -43,7 +43,7 @@ class LVector(elems: LObject): LObject(), LSeq {
     }
     override fun toString() = desc()
     
-    override fun length() = the_vector.size
+    override val length get() = the_vector.size
 
     override fun delete(item: LObject): LObject {
         val lc = ListCollector()

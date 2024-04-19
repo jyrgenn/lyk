@@ -186,22 +186,34 @@ fun bi_quote(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 
 /// builtin setq
 /// fun     bi_setq
-/// std     symbol expr
+/// std     
 /// key     
 /// opt     
-/// rest    
+/// rest    symbol-value-settings
 /// ret     new-value
 /// special yes
 /// doc {
 /// Assign the value of `expr` to (un-evaluated) `symbol` and return the value.
+/// Multiple settings like `(setq var1 form1 var2 form2 ...)` are possible.
+/// First form1 is evaluated and the result is stored in the variable var1,
+/// then form2 is evaluated and the result stored in var2, and so forth.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_setq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val (sym, value) = args2(args)
-    val newvalue = eval(value)
-    symbolArg(sym, "setq").setValue(newvalue)
-    return newvalue
+    if (args.length % 2 != 0) {
+        throw ArgumentError("odd number of arguments to setq")
+    }
+    var list: LObject = args
+    var value: LObject = Nil
+    while (list is LCons) {
+        val symbol = symbolArg(list.car, "setq symbol")
+        list = list.cdr
+        value = eval(list.car)
+        symbol.setValue(value)
+        list = list.cdr
+    }
+    return value
 }
 
 /// builtin let
@@ -1179,7 +1191,7 @@ fun bi_macrop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_length(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return makeNumber(arg1(args).length())
+    return makeNumber(arg1(args).length)
 }
 
 /// builtin type-of

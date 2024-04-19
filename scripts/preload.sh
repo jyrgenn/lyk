@@ -9,11 +9,9 @@ val preload_code = """
 EOF
 
 for file; do
-    echo ";; from $file"
-    echo "(debug preload \"$file\")"
-    echo
+    echo ";#$file"
+    printf %s "(debug preload \"$file\") "
     cat $file
-    echo ";; end $file"
     echo
 done
 

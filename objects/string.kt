@@ -126,7 +126,7 @@ class LString(val the_string: String): LObject(), LSeq {
         return makeString(the_string.reversed())
     }
 
-    override fun length() = the_string.length
+    override val length get() = the_string.length
 
     override fun delete(item: LObject): LObject {
         if (item is LChar) {
