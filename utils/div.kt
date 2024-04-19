@@ -48,6 +48,33 @@ fun padString(s: String, width: Int, pad: Char = ' '): String {
     return result
 }
 
+// Return true iff `needle` is in `haystack` at `index`
+fun lookingAt(haystack: CharSequence, index: Int, needle: CharSequence): Boolean
+{
+    for (i in 0..< min(needle.length, haystack.length - index)) {
+        if (haystack.get(index + i) != needle.get(i)) {
+            return false
+        }
+    }
+    return true
+}
+
+// Return the characters in `chars` between `index` and the next newline
+// character
+fun restOfLine(chars: CharSequence, index: Int): String {
+    val cb = CharBuf()
+    var i = index
+
+    while (i < chars.length) {
+        val ch = chars.get(i++)
+        if (ch == '\n') {
+            break
+        }
+        cb.add(ch)
+    }
+    return cb.toString()
+}
+
 // convert camelCase name to lisp-style-name
 fun lispifyName(name: String): String {
     var first = true

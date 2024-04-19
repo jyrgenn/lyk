@@ -26,7 +26,7 @@ fun load_file(dir: String, fname: String, throw_error: Boolean = true,
 
 fun load_string(code: String, name: String, throw_error: Boolean = true,
                 quiet: Boolean = false, print: Boolean = false): LObject {
-    return load_stream(StringReaderStream(code),
+    return load_stream(StringReaderStream(code, name = name),
                        name, throw_error, quiet, print)
 }
 

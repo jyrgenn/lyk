@@ -25,6 +25,8 @@ class StringWriterStream(name: String? = null
     
     override val type = "string-writer-stream"
 
+    override fun read_location() = ""
+
     override fun write(code: Int) {
         content.add(code.toChar())
     }
@@ -52,14 +54,19 @@ class ConsoleReaderStream(): LStream(input = true, path = null,
                                      name = consoleName) {
     val cr = ConsoleReader()
     var linebuf = StringReaderStream("")
+    var linenum = 0
+    var current_name = name
     var promptString: String = ""
 
     override val type = "console-reader-stream"
+
+    override fun read_location() = "$current_name:$linenum"
 
     override fun read(): Char? {
         try {
             if (!linebuf.hasNext()) {
                 val line = cr.readLine(promptString)
+                linenum++
                 if (line == null) {
                     return null
                 }
@@ -78,22 +85,37 @@ class ConsoleReaderStream(): LStream(input = true, path = null,
     override fun close_specific() {}
 }
 
-class StringReaderStream(content: String, name: String? = ""):
+class StringReaderStream(val content: String, name: String? = "",
+                         lineno: Int = 1):
     LStream(input = true, path = null, name = name)
 {
-    val chars = content.toCharArray()
     var nextpos = 0
+    var current_name = name
+    var linenum = lineno
 
     override val type = "string-reader-stream"
 
+    override fun read_location() = "$current_name:$linenum"
+
     override fun read(): Char? {
         if (hasNext()) {
-            return chars[nextpos++]
+            val char = content[nextpos]
+            if (char == '\n') {
+                linenum++
+                if (lookingAt(content, nextpos + 1, loadFileNameInd)) {
+                    current_name =
+                        restOfLine(content,
+                                   nextpos + 1 + loadFileNameInd.length).trim()
+                    linenum = 0
+                }
+            }
+            nextpos++
+            return char
         }
         return null
     }
 
-    fun hasNext() = is_open && nextpos < chars.size
+    fun hasNext() = is_open && nextpos < content.length
     
     override fun close_specific() {}
 }
@@ -112,9 +134,12 @@ class FileReaderStream(file: File, name: String? = null,
         this(File(dir, fname), name = name ?: fname, debugline = debugline)
 
     val fileReader = file.bufferedReader()
-    var linebuf = StringReaderStream("")
+    var linebuf = StringReaderStream("", name = name)
+    val linenum = 0
 
     override val type = "file-reader-stream"
+
+    override fun read_location() = linebuf.read_location()
 
     override fun read(): Char? {
         try {
@@ -128,7 +153,7 @@ class FileReaderStream(file: File, name: String? = null,
                         "\"$line\""
                     }
                 }
-                linebuf = StringReaderStream(line + "\n")
+                linebuf = StringReaderStream(line + "\n", name = name)
             }
             return linebuf.read()
         } catch (e: Exception) {
@@ -155,9 +180,11 @@ class FileIOStream(path: String,
     val file = File(path)
     val fileWriter = file.printWriter().buffered()
     val fileReader = file.bufferedReader()
-    var linebuf = StringReaderStream("")
+    var linebuf = StringReaderStream("", name = name)
 
     override val type = "file-io-stream"
+
+    override fun read_location() = linebuf.read_location()
 
     override fun read(): Char? {
         try {
@@ -166,7 +193,7 @@ class FileIOStream(path: String,
                 if (line == null) {
                     return null
                 }
-                linebuf = StringReaderStream(line + "\n")
+                linebuf = StringReaderStream(line + "\n", name = name)
             }
             return linebuf.read()
         } catch (e: Exception) {
@@ -228,6 +255,8 @@ class FileWriterStream(path: String,
 
     override val type = "file-writer-stream"
 
+    override fun read_location() = ""
+
     override fun write(code: Int) {
         try {
             fileWriter.write(code)
@@ -284,6 +313,8 @@ abstract class LStream(
     }
 
     
+    abstract fun read_location(): String
+
     open fun setPrompt(prompt: String) {}
     
     open fun read(): Char? {          // the actual reading

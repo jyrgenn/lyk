@@ -81,7 +81,7 @@
 (test-is "λ 2+" (map #'(λ (n) (+ 2 n)) '(2 3 5 7 11 13 17 19 23))
          '(4 5 7 9 13 15 19 21 25))
 
-;; lingo version
+;; lyl version
 
 (test "build-info string" (stringp (build-info t)))
 (test-is "build-info program" (cdr (assoc 'program (build-info))) "lyk")

@@ -71,7 +71,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     fun desc() = toString()
 
     override fun location(): String {
-        return "${readerName}:$line:$column"
+        return input.read_location()
     }
 
     fun unreadToken(token: ReaderToken) {

@@ -25,10 +25,9 @@ abstract class LFunction(
         name = functionName ?: anonLambdaSym
         if (functionName != null) {
             functionName.function = this
-            if (location != null) {
-                val parts = location.the_string.split(":")
-                val newloc = parts[0] + ":" + parts[1]
-                functionName.putprop(definedInPropSym, makeString(newloc))
+            if (location != null && location.the_string != "") {
+                functionName.putprop(definedInPropSym,
+                                     makeString(location.the_string))
             }
         }
     }
@@ -121,7 +120,7 @@ abstract class LFunction(
         }
         val defined_in = name.getprop(definedInPropSym)
         if (defined_in is LString) {
-            sb.add("[defined in ")
+            sb.add("[$typeDesc defined in ")
             sb.add(defined_in.the_string)
             sb.add("]\n")
         }

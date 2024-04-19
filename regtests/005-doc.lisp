@@ -7,7 +7,9 @@
          "(dog collar &optional leash)")
 (defun cat (&optional collar) t)
 (test-match "docstring 3" (doc 'cat t nil)
-            #/lambda function \(cat &optional collar\) => value\n\[defined in/)
+            #/lambda function \(cat &optional collar\) => value
+\[lambda function defined in/)
+
 (test-is "docstring 4" (doc 'cat t t)
          "(cat &optional collar)")
 (test-is "docstring 5" (doc 'symbolp t t)

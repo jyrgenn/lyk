@@ -105,6 +105,9 @@ val loadPrintSym = LSymbol.makeGlobal("*load-print*")
 val loadPathSym = LSymbol.makeGlobal("*load-path*")
 val loadPathnameSym = LSymbol.makeGlobal("*load-pathname*")
 
+// indicates the name of the load file that should be shown in error messages
+val loadFileNameInd = ";#file"
+
 val evalStackAbbrLines = LSymbol.makeGlobal("*eval-stack-abbr-lines*", T)
 
 // set of features provided

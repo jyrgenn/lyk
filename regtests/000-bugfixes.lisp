@@ -24,4 +24,17 @@
 ;; (when t) returned t while SBCL showed it shouldn't
 (test-is "when t" (when t) nil)
 
+
+;; not *really* a bugfix, but we can assume that is was a bug that
+;; setq wasn't multi-variable before...
+
+
+(test-is "setq multi-var" (let (a b c d e f g h)
+                            (setq a 1 b 1
+                                  c (+ a b) d (+ b c)
+                                  e (+ c d) f (+ d e)
+                                  g (+ e f) h (+ f g))
+                            h)
+         21)
+
 (done-testing)
