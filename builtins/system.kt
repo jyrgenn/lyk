@@ -722,6 +722,31 @@ fun bi_collect_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
                              Nil)))
 }
 
+/// builtin no-warnings
+/// fun     bi_no_warnings
+/// std     
+/// key     
+/// opt     
+/// rest    bodyforms
+/// ret     result
+/// special yes
+/// doc {
+/// Eval bodyforms and return the result while suppressing warnings
+/// (and other info/notice messages). If *warnings-as-errors* is true,
+/// the error is raised nevertheless.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_no_warnings(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val previous_verbosity = Options.verbosity
+    try {
+        Options.verbosity = 0
+        return evalProgn(args)
+    } finally {
+        Options.verbosity = previous_verbosity
+    }
+}
+
 
 
 

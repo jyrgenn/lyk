@@ -65,7 +65,7 @@ class LEnv(val parent: LEnv? = null): LObject() {
 
     val descFormat = "#<${this.type}$id[$levelstring:%d]%s>"
 
-    override fun toString() = descFormat.format(the_env.size, "")
+    override fun toString() = desc() //descFormat.format(the_env.size, "")
 
     override fun desc() =
         descFormat.format(the_env.size,

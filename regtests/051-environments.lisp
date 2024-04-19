@@ -16,18 +16,18 @@
 (test-is "env new 1" (with-environment env2 (boundp 'a)) nil)
 (test-is "env new 2" (with-environment env3 (boundp 'a)) t)
 
-;; lingo is started by run-rests.lisp with -W
+;; lyk is started by run-rests.lisp with -W
 (test-err "env setq 1a" (setq a 110)
           #/setting unbound variable a to 110/)
 (test-is "env setq 1b" (boundp 'a) nil)
 
-(test-is "sys:warnings-as-errors" sys:warnings-as-errors t)
+(test-is "*warnings-as-errors*" *warnings-as-errors* t)
 
-(setq sys:warnings-as-errors nil)
-(test-is "sys:warnings-... 2" sys:warnings-as-errors nil)
 
-(test-is "env setq 1c" (progn (setq a 110)
-                              a)
+(test-is "env setq 1c" (no-warnings
+                         (let ((*warnings-as-errors* nil))
+                           (progn (setq a 110)
+                                  a)))
          110)
 
 (defparameter a 119)

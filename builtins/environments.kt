@@ -75,7 +75,7 @@ fun bi_the_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// opt     
 /// rest    bodyforms
 /// ret     value
-/// special no
+/// special yes
 /// doc {
 /// Eval `bodyforms` in environment `env` and return the last value.
 /// }
@@ -87,7 +87,7 @@ fun bi_with_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
 
     val savedEnv = currentEnv
     try {
-        currentEnv = environmentArg(env_arg, "with-environment env")
+        currentEnv = environmentArg(eval(env_arg), "with-environment env")
         return evalProgn(bodyforms)
     } finally {
         currentEnv = savedEnv
