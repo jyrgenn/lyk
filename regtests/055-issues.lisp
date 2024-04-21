@@ -2,7 +2,7 @@
 
 ;; Bug: string-literal in defun is swallowed even if return value #26
 (test-is "swallowed docstring" (progn (defun version () "1.3.29f-14")
-                                       (version))
+                                      (version))
          "1.3.29f-14")
 
 ;; Bug: quasiquote misses non-list unquote #25
@@ -14,7 +14,7 @@
 (defun use-macro ()
   (my-macro))
 
-(test-is "missed unquote" #'use-macro
-         "#<function use-macro () \"shoo\">")
+(test-is "missed unquote" (function-definition #'use-macro)
+         "(defun use-macro nil \"shoo\")")
 
 (done-testing)
