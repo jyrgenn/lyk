@@ -13,6 +13,7 @@ val stdinPath   = "/dev/stdin"
 val stdoutPath  = "/dev/stdout"
 val stderrPath  = "/dev/stderr"
 val consolePath = "/dev/tty"
+val devNullPath = "/dev/null"
 val newLine = 10
 
 

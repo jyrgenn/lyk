@@ -39,6 +39,10 @@ open class LispError(message: String, val data: LObject = Nil
     }
 }
 
+class ProcessError(exit_status: Int, function: String,
+                   command: String):
+    LispError("$function: command exit status $exit_status: `$command`")
+
 class NotImplementedError(what: String):
     LispError("function `$what` is not implemented")
 

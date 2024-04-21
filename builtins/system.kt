@@ -2,6 +2,8 @@
 
 package org.w21.lyk
 
+import java.io.File
+
 
 /// builtin set-debug
 /// fun     bi_set_debug
@@ -745,6 +747,162 @@ fun bi_no_warnings(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     } finally {
         Options.verbosity = previous_verbosity
     }
+}
+
+val inShellKSym = intern(":in-shell")
+val inputKSym = intern(":input")
+val outputKSym = intern(":output")
+val errorOutputKSym = intern(":error-output")
+val envKSym = intern(":env")
+val raiseErrorKSym = intern(":raise-error")
+
+val shell_meta_characters = "\"'`|&,;[{(<>)}]*?$".toSet()
+
+fun has_shellmeta(s: String): Boolean {
+    for (ch in s) {
+        if (ch in shell_meta_characters) {
+            return true
+        }
+    }
+    return false
+}
+
+/// builtin run-program
+/// fun     bi_run_program
+/// std     command
+/// key     "in-shell" to Nil, "input" to Nil, "output" to T, "error-output" to T, "env" to T, "raise-error" to Nil
+/// opt     
+/// rest    command-arguments
+/// ret     exit-status
+/// special no
+/// doc {
+/// Run an external command and return its exit status. If the command is
+/// more than one string, run it directly. Otherwise, if it is a single
+/// string:
+///   - if &key `in-shell` is t, run command as a shell command line with
+///     `/bin/sh`.
+///   - if &key `in-shell` is a string, use it as the shell and run the
+///     command in it.
+///   - if &key `in-shell` is nil (the default), run command with `/bin/sh`
+///     if it contains shell meta characters (`"'\`|&;[(<>)]*?$`). Otherwise,
+///     split the string on whitespace and run it directly.
+///
+/// If &key `input` is a string or a stream, use it as the standard input
+/// stream of the command. If it is t, the command reads from the normal
+/// standard input; if it is nil, redirect it from the null device.
+///
+/// If &key `output` is a stream, use it as the standard output stream
+/// of the command. You can use `make-string-output-stream` (with
+/// `get-output-stream-string`) to capture the output of the command in the
+/// program. The same goes for `error-output` and the standard error output.
+/// If `output` is t, use the standard output; if it is nil,  redirect the
+/// command's output to the null device. The same goes for `error-output`.
+///
+/// If &key `env` (a table) is non-nil, use it as the process environment of
+/// the command.
+///
+/// If &key `raise-error` is true, raise an error if the command returns a
+/// non-zero exit status.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val (command, rest) = args
+    val command_s = stringArg(command, "run-program command")
+    val key_in_shell = kwArgs[inShellKSym] ?: Nil
+    var cmd_arg =
+        if (rest == Nil) {
+            when (key_in_shell) {
+                T -> listOf("/bin/sh", "-c", command_s)
+                Nil -> if (has_shellmeta(command_s)) {
+                           listOf("/bin/sh", "-c", command_s)
+                       } else {
+                           command_s.split(' ', '\t')
+                       }
+                is LString -> listOf(key_in_shell.the_string, "-c", command_s)
+                else ->
+                    throw ArgumentError("&key in-shell is not t or nil or a "
+                                        + "string: ${key_in_shell.type} "
+                                        + "$key_in_shell")
+            }
+        } else {
+            stringlistArg(args, "run-program")
+        }
+
+    val pb = ProcessBuilder(cmd_arg)
+
+    val key_input = kwArgs[inputKSym] ?: Nil
+    if (key_input is LString) {
+        pb.redirectInput(ProcessBuilder.Redirect.PIPE)
+    } else if (key_input === T) {
+        pb.redirectInput(ProcessBuilder.Redirect.INHERIT)
+    } else if (key_input === Nil) {
+        pb.redirectInput(ProcessBuilder.Redirect.from(File(devNullPath)))
+    } else {
+        throw ArgumentError("&key input is not a string or t or nil:"
+                            +" ${key_input.type} $key_input")
+    }
+    val key_output = kwArgs[outputKSym] ?: Nil
+    if (key_output is LStream) {
+        pb.redirectOutput(ProcessBuilder.Redirect.PIPE)
+    } else if (key_output === T) {
+        pb.redirectOutput(ProcessBuilder.Redirect.INHERIT)
+    } else if (key_output === Nil) {
+        pb.redirectOutput(ProcessBuilder.Redirect.to(File(devNullPath)))
+    } else {
+        throw ArgumentError("&key output is not a stream or t or nil:"
+                            +" ${key_output.type} $key_output")
+    }
+    val key_error_output = kwArgs[errorOutputKSym] ?: Nil
+    if (key_error_output is LStream) {
+        pb.redirectError(ProcessBuilder.Redirect.PIPE)
+    } else if (key_error_output === T) {
+        pb.redirectError(ProcessBuilder.Redirect.INHERIT)
+    } else if (key_error_output === Nil) {
+        pb.redirectError(ProcessBuilder.Redirect.to(File(devNullPath)))
+    } else {
+        throw ArgumentError("&key error-stream is not a stream or t or nil:"
+                            +" ${key_error_output.type} $key_error_output")
+    }
+
+    val proc = pb.start()
+
+    // Of course, what we *really* want to do there is multiplexed reading and
+    // writing, so we don't run into any blocking situations. This would also
+    // give us the option to interact with the subprocess, by way of callback
+    // functions. That would be *nice*.
+    //
+    // But for the moment I think I can get by with this, hoping that all
+    // streams involded have a sufficiently large buffer size for my little
+    // applications.
+
+    if (key_input is LString) {
+        val writer = proc.getOutputStream().bufferedWriter()
+        writer.write(key_input.the_string)
+        writer.close()
+        // proc.getOutputStream().close()
+    }
+    val exit_status = proc.waitFor()
+
+    if (key_output is LStream) {
+        val reader = proc.getInputStream().bufferedReader()
+        while (reader.ready()) {
+            key_output.write(reader.readLine())
+        }
+        reader.close()
+    }
+    if (key_error_output is LStream) {
+        val reader = proc.getErrorStream().bufferedReader()
+        while (reader.ready()) {
+            key_error_output.write(reader.readLine())
+        }
+        reader.close()
+    }
+
+    if (exit_status != 0 && kwArgs[raiseErrorKSym] !== Nil) {
+        throw ProcessError(exit_status, "run-program", command_s)
+    }
+    return makeNumber(exit_status)
 }
 
 

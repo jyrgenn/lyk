@@ -151,6 +151,14 @@ fun intOrDefault(arg: LObject, default: Int, what: String): Int {
     return intArg(arg, what)
 }
 
+fun stringlistArg(list: LObject, what: String): List<String> {
+    val mlos = mutableListOf<String>()
+    for (elem in list) {
+        mlos.add(stringArg(elem, what))
+    }
+    return mlos
+}
+
 fun spreadArglist(args: LObject): LObject {
     // spreadable argument list designator n. a designator for a list of
     // objects; that is, an object that denotes a list and that is a non-null
