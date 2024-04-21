@@ -330,6 +330,11 @@ abstract class LStream(
     open fun write(ch: Char) {
         write(ch.code)
     }
+    open fun write(buf: CharArray, n: Int) {
+        for (i in 0 ..< n) {
+            write(buf[i])
+        }
+    }
     open fun flush() {}
     
     open fun readLine(trimNewline: Boolean): String? {

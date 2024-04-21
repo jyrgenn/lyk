@@ -864,6 +864,7 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         throw ArgumentError("&key error-stream is not a stream or t or nil:"
                             +" ${key_error_output.type} $key_error_output")
     }
+    // TODO prepare process environment
 
     val proc = pb.start()
 
@@ -886,15 +887,19 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 
     if (key_output is LStream) {
         val reader = proc.getInputStream().bufferedReader()
+        val buf = CharArray(4096)
         while (reader.ready()) {
-            key_output.write(reader.readLine())
+            val n = reader.read(buf)
+            key_output.write(buf, n)
         }
         reader.close()
     }
     if (key_error_output is LStream) {
         val reader = proc.getErrorStream().bufferedReader()
+        val buf = CharArray(4096)
         while (reader.ready()) {
-            key_error_output.write(reader.readLine())
+            val n = reader.read(buf)
+            key_error_output.write(buf, n)
         }
         reader.close()
     }
