@@ -22,6 +22,8 @@ BUILDSCRIPTS = scripts/buildtag.sh scripts/generate-builtin-init
 
 BUILTINSRC = $(shell ls builtins/*.kt | egrep -v '(helpers)\.kt')
 
+CP = lib/jline.jar:lib/kotlinx.jar
+
 COMP = kotlinc
 NATIVECOMP = kotlinc-native
 
@@ -36,12 +38,16 @@ INSTALLBIN=/opt/w21/bin
 build: lyk.jar
 
 lyk.jar: $(ALLSRCS) generated/org generated/jline Makefile
-	$(COMP) -cp generated $(ALLSRCS) -include-runtime -d lyk.jar
+	$(COMP) -cp $(CP) $(ALLSRCS) -include-runtime -d lyk.jar
 	cd generated; jar -f ../lyk.jar -u org jline
+	cd generated; jar -f ../lyk.jar -u *Main
 	./scripts/lyk -J . -e '(build-info t)'
 
 generated/org generated/jline:
-	cd generated; jar -xf ../jline/jline.jar
+	cd generated; jar -xf ../lib/jline.jar
+
+generated/nativeMain:
+	cd generated; jar -xf ../lib/kotlinx.jar
 
 generated/10-types.lisp: Makefile scripts/list-types.sh $(SRCS)
 	./scripts/list-types.sh > generated/10-types.lisp

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+out () {
+    echo "$@"
+}
+
+err () {
+    echo "$@" 1>&2
+}
+
+out this is 1
+sleep 1
+err this is 2
+sleep 1
+out this is 3
+sleep 1
+err this is 4
+sleep 1
+out this is 5
+sleep 1
+err this is 6
+sleep 1
+

@@ -3,7 +3,7 @@
 package org.w21.lyk
 
 import java.io.File
-
+import kotlinx.coroutines.*
 
 /// builtin set-debug
 /// fun     bi_set_debug
@@ -877,40 +877,44 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     // streams involded have a sufficiently large buffer size for my little
     // applications.
 
-    if (key_input is LString) {
-        val writer = proc.getOutputStream().bufferedWriter()
-        writer.write(key_input.the_string)
-        writer.close()
-        // proc.getOutputStream().close()
-    }
+    // if (key_input is LString) {
+    //     val writer = proc.getOutputStream().bufferedWriter()
+    //     launch {
+    //         writer.write(key_input.the_string)
+    //         writer.close()
+    //     }
+    // }
+    // if (key_output is LStream) {
+    //     val reader = proc.getInputStream().bufferedReader()
+    //     val buf = CharArray(4096)
+    //     launch {
+    //         while (proc.isActive) {
+    //             val n = reader.read(buf)
+    //             key_output.write(buf, n)
+    //         }
+    //         reader.close()
+    //         key_output.close()
+    //     }
+    // }
+    // if (key_error_output is LStream) {
+    //     val reader = proc.getErrorStream().bufferedReader()
+    //     val buf = CharArray(4096)
+    //     launch {
+    //         while (proc.isActive) {
+    //             val n = reader.read(buf)
+    //             key_error_output.write(buf, n)
+    //         }
+    //         reader.close()
+    //         key_error_output.close()
+    //     }
+    // }
     val exit_status = proc.waitFor()
-
-    if (key_output is LStream) {
-        val reader = proc.getInputStream().bufferedReader()
-        val buf = CharArray(4096)
-        while (reader.ready()) {
-            val n = reader.read(buf)
-            key_output.write(buf, n)
-        }
-        reader.close()
-    }
-    if (key_error_output is LStream) {
-        val reader = proc.getErrorStream().bufferedReader()
-        val buf = CharArray(4096)
-        while (reader.ready()) {
-            val n = reader.read(buf)
-            key_error_output.write(buf, n)
-        }
-        reader.close()
-    }
 
     if (exit_status != 0 && kwArgs[raiseErrorKSym] !== Nil) {
         throw ProcessError(exit_status, "run-program", command_s)
     }
     return makeNumber(exit_status)
 }
-
-
 
 
 // EOF
