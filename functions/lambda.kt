@@ -20,7 +20,7 @@ open class Lambda(                         // Macro will inherit this
 
     override val typeDesc = "lambda function"
     
-    override fun desc(): String {
+    override fun desc(seen: MutableSet<LObject>?): String {
         var body: String
 
         if (bodyForms === Nil) {
@@ -38,7 +38,7 @@ open class Lambda(                         // Macro will inherit this
         return withNewEnvironment(environment) {
             bindPars(arglist, this)
             debug(debugLambdaParamsSym) {
-                currentEnv.desc() + "\nin " + bodyForms.toString()
+                currentEnv.desc(null) + "\nin " + bodyForms.toString()
             }
             evalProgn(bodyForms)
         }

@@ -408,7 +408,7 @@ abstract class LStream(
         val e = if (error) "E" else ""
         return "#<${this.type}[$i$o$e$x]$name>"
     }
-    override fun desc() = toString()
+    override fun desc(seen: MutableSet<LObject>?) = toString()
 
     fun finalize() {
         debug(debugFinalizeSym) {

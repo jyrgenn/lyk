@@ -75,7 +75,7 @@ fun bi_print(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_prin1(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (arg, stream) = args2(args)
-    outputStreamArg(stream, "prin1 stream").write(arg.desc())
+    outputStreamArg(stream, "prin1 stream").write(arg.desc(null))
     return arg
 }
 
@@ -94,7 +94,7 @@ fun bi_prin1(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_prin1_to_string(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return makeString(arg1(args).desc())
+    return makeString(arg1(args).desc(null))
 }
 
 /// builtin princ
@@ -370,11 +370,11 @@ fun bi_open(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     ioKeyw ->     { inp = true; outp = true }
     else ->
         throw ArgumentError("open :direction not :input or :output or :io : "
-                            + direction.desc())
+                            + direction.desc(null))
     }
     if (!inp && !outp) {
         throw ArgumentError("open :direction not :input or :output or :io : "
-                            + direction.desc())
+                            + direction.desc(null))
     }
     when (if_exists) {
         new_versionKeyw, overwriteKeyw, supersedeKeyw -> {}

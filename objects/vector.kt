@@ -34,14 +34,24 @@ class LVector(elems: LObject): LObject(), LSeq {
         }
     }
 
-    override fun desc(): String {
+    override fun desc(seen: MutableSet<LObject>?): String {
+        val seen_set =
+            if (seen == null) {
+                mutableSetOf<LObject>()
+            } else {
+                seen
+            }
+        if (this in seen_set) {
+            return "..."
+        }
+        seen_set.add(this)
         var elems = StrBuf()
         for (elem in the_vector) {
-            elems.add(elem.desc())
+            elems.add(elem.desc(seen_set))
         }
         return "#(" + elems.join(" ") + ")"
     }
-    override fun toString() = desc()
+    override fun toString() = desc(null)
     
     override val length get() = the_vector.size
 

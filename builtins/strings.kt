@@ -56,7 +56,7 @@ fun bi_make_string(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         for (i in 0..<len) {
             val elem = initial.call(Nil).toString()
             if (elem.length < 1) {
-                throw ArgumentError("initializer function ${initial.desc()} "
+                throw ArgumentError("initializer function ${initial.desc(null)} "
                                     + "returns an empty string")
             }
             sb.add(elem[0])

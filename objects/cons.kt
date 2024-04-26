@@ -15,12 +15,30 @@ class LCons(override var car: LObject,
 
     override val type = "cons"
 
-    override fun toString(): String {
+    override fun toString() = desc(null)
+
+    override fun isList() = true
+
+    override fun desc(seen: MutableSet<LObject>?): String {
+        val seen_set =
+            if (seen == null) {
+                mutableSetOf<LObject>()
+            } else {
+                seen
+            }
+        if (this in seen_set) {
+            return "..."
+        }
         val result = StrBuf("(")
 
         var elem: LObject = this
         while (elem is LCons) {
-            result.add(elem.car.desc())
+            if (elem in seen_set) {
+                break
+            } else {
+                seen_set.add(elem)
+                result.add(elem.car.desc(seen_set))
+            }
             if (elem.cdr !== Nil) {
                 result.add(" ")
             }
@@ -28,15 +46,11 @@ class LCons(override var car: LObject,
         }
         if (elem !== Nil) {
             result.add(". ")
-            result.add(elem.desc())
+            result.add(elem.desc(seen_set))
         }
         result.add(")")
         return result.toString()
     }
-
-    override fun isList() = true
-
-    override fun desc() = toString()
 
     override val length: Int
         get () {
