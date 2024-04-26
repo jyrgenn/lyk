@@ -57,7 +57,7 @@ class LString(val the_string: String): LObject(), LSeq {
     override fun toString() = the_string
 
     // with all quoting and stuff
-    override fun desc(): String {
+    override fun desc(seen: MutableSet<LObject>?): String {
         var result = CharBuf('\"')
         for (ch in the_string) {
             if (ch in "\\\"") {
@@ -78,7 +78,7 @@ class LString(val the_string: String): LObject(), LSeq {
 
     @Suppress("UNUSED_PARAMETER")
     override fun setAt(index: Int, value: LObject) {
-        throw TypeError("string object is immutable: " + desc())
+        throw TypeError("string object is immutable: " + desc(null))
     }
 
     override fun elements(): LObject {

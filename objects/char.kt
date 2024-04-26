@@ -75,7 +75,7 @@ class LChar(val the_char: Char): LObject() {
     val code: Int
         get () = the_char.code
 
-    override fun desc() = 
+    override fun desc(seen: MutableSet<LObject>?) = 
         "#\\" + (charName[the_char] ?:
                      ascii_glyph() ?:
                      if (isPrintable(the_char)) {

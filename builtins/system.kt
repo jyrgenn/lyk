@@ -134,7 +134,7 @@ fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             return theNonPrintingObject
         }
     }
-    throw FunctionError("`${ob.desc()}` is not a function or function symbol")
+    throw FunctionError("`${ob.desc(null)}` is not a function or function symbol")
 }
 
 

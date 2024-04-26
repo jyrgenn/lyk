@@ -44,7 +44,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
                           width: Int,
                           prec: Int) {
         val s = if ((flags and ALTERNATE) == ALTERNATE) {
-            this.desc()
+            this.desc(null)
         } else {
             this.toString()
         }
@@ -75,7 +75,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
 
     // The output of this shall, if at all possible, be sufficent to
     // be read by the reader to re-create the object.
-    open fun desc() = toString()
+    open fun desc(seen: MutableSet<LObject>?) = toString()
 
     open operator fun component1(): LObject {
         return (this as? LCons)?.car ?:

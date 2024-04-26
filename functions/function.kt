@@ -67,7 +67,8 @@ abstract class LFunction(
 
     override open fun toString() = "#<function $name>"
 
-    override open fun desc() = "#<${typeDesc} (${parlist()})=$retval>"
+    override open fun desc(seen: MutableSet<LObject>?) =
+        "#<${typeDesc} (${parlist()})=$retval>"
 
     fun synopsis() = LCons(name, parlist()).toString()
 
@@ -141,7 +142,7 @@ abstract class LFunction(
         throw InternalError("calling $this in LFunction, not Subclass!")
     }
 
-    open override fun dump() = desc()
+    open override fun dump() = desc(null)
 
     open fun body(): LObject = throw ArgumentError(
         "function-body argument `$this` is not a lambda function or macro")

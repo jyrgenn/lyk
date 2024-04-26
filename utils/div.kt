@@ -280,7 +280,7 @@ fun printEvalStack(error: LispError) {
         val frameno = "#%d".format((level as LNumber).toInt())
 
         // print frame number, location, environment line
-        var line = StrBuf(frameno, location, env.desc()).join()
+        var line = StrBuf(frameno, location, env.desc(null)).join()
         if (abbr) line = abbreviate(line, width, "[…]")
         stderr.println(line)
 

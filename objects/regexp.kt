@@ -16,10 +16,10 @@ class LRegexp(pattern: String): LObject() {
 
     override val type = "regexp"
 
-    override fun desc() =
+    override fun desc(seen: MutableSet<LObject>?) =
         "#/${the_regexp.pattern.replace("/", "\\/")}/"
     
-    override fun toString() = desc()
+    override fun toString() = desc(null)
 
     fun matchToList(match: MatchResult?): LObject {
         val lc = ListCollector()

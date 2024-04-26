@@ -64,7 +64,7 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
 
             // Print,
             if (value !== theNonPrintingObject) {
-                iprintln(value.desc())
+                iprintln(value.desc(null))
             }
             iprintln()
             if (interactive) {
@@ -85,7 +85,7 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
                 printErr(e)
             }
             debug(debugErrorSym) {
-                e.toObject().desc()
+                e.toObject().desc(null)
             }
             if (!interactive) {
                 return e
