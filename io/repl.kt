@@ -35,19 +35,15 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
         }
         try {
             // Read, 
-            var (expr, where) = reader.read()
+            var (expr, loc) = reader.read()
             if (expr == null) {
                 break
             }
-            lastTopLevelLocation = where
-
+            lastTopLevelLocation = loc
+            
             // Expand macros (just not macro definitions (or do I?)),
-            if (false && expr is LCons && expr.car === defmacroSym) {
-                // println("skip expanding (${expr.car} ${expr.cdr.car} ...)")
-            } else {
-                // if (expr is LCons) {
-                //     println("(${expr.car} ${expr.cdr.car} ...)")
-                // }
+            // expr = macroExpandForm(expr)
+            if (expr is LCons && expr.car !== defmacroSym) {
                 expr = macroExpandForm(expr)
             }
             debug(debugReplSym) {

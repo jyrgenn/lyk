@@ -43,12 +43,31 @@ fun bi_defmacro(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// special no
 /// doc {
 /// Expand macros in `form` and return the expanded form.
+/// macroexpand repeatedly expands form until it is no longer a macro form. 
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_macroexpand(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     return macroExpandForm(arg1(args))
+}
+
+/// builtin macroexpand-1
+/// fun     bi_macroexpand_1
+/// std     form
+/// key     
+/// opt     
+/// rest    
+/// ret     expanded-form
+/// special no
+/// doc {
+/// Do one step of macro expansion in `form` and return the expanded form.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_macroexpand_1(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return macroExpandFormRecurse(arg1(args)).first
 }
 
 // Core of quasiquote, the internal recursion.

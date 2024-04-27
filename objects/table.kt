@@ -91,16 +91,15 @@ class LTable(): LObject() {
     }
 
     override fun desc(seen: MutableSet<LObject>?): String {
-        val seen_set =
-            if (seen == null) {
-                mutableSetOf<LObject>()
-            } else {
-                seen
+        val seen_set = mutableSetOf<LObject>()
+        if (seen != null) {
+            if (this in seen) {
+                return "..."
             }
-        if (this in seen_set) {
-            return "..."
+            seen_set.addAll(seen)
         }
         seen_set.add(this)
+
         val buf = StrBuf("#:(")
         for ((key, value) in the_table) {
             buf.add("(")

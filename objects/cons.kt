@@ -20,29 +20,26 @@ class LCons(override var car: LObject,
     override fun isList() = true
 
     override fun desc(seen: MutableSet<LObject>?): String {
-        val seen_set =
-            if (seen == null) {
-                mutableSetOf<LObject>()
-            } else {
-                seen
+        val seen_set = mutableSetOf<LObject>()
+        if (seen != null) {
+            if (this in seen) {
+                return "..."
             }
-        if (this in seen_set) {
-            return "..."
+            seen_set.addAll(seen)
         }
-        val result = StrBuf("(")
 
+        val result = StrBuf("(")
         var elem: LObject = this
         while (elem is LCons) {
-            if (elem in seen_set) {
-                break
-            } else {
-                seen_set.add(elem)
-                result.add(elem.car.desc(seen_set))
-            }
+            seen_set.add(elem)
+            result.add(elem.car.desc(seen_set))
             if (elem.cdr !== Nil) {
                 result.add(" ")
             }
             elem = elem.cdr
+            if (elem in seen_set) {
+                break
+            }
         }
         if (elem !== Nil) {
             result.add(". ")

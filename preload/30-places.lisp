@@ -98,7 +98,7 @@ function plus the value argument."
 (defsetf table-get table-put)
 (defsetf symbol-function fset)
 (defsetf symbol-value set)
-(defsetf get propput)
+(defsetf get put)
 (defsetf nth (n l value) (rplaca-ret-value (nthcdr n l) value))
 
 (defmacro setf (place value)
