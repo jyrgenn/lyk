@@ -230,7 +230,7 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
 
     override fun toString() = name
 
-    override fun desc(seen: MutableSet<LObject>?) = descName
+    override fun desc(seen: Set<Int>?) = descName
 
     override fun dump(): String {
         return super.dump() + "($descName:$function:$props)"

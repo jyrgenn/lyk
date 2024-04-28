@@ -4,7 +4,7 @@ package org.w21.lyk
 
 
 class LCons(override var car: LObject,
-            override var cdr: LObject = Nil): LObject(), LSeq {
+            override var cdr: LObject): LObject(), LSeq {
 
     init {
         debug(debugConsSym) {
@@ -19,33 +19,31 @@ class LCons(override var car: LObject,
 
     override fun isList() = true
 
-    override fun desc(seen: MutableSet<LObject>?): String {
-        val seen_set = mutableSetOf<LObject>()
-        if (seen != null) {
-            if (this in seen) {
-                return "..."
-            }
-            seen_set.addAll(seen)
+    override fun desc(seen: Set<Int>?): String {
+        if (seen != null && this.id in seen) {
+            return "..."
         }
+        val seen1 = (seen ?: setOf<Int>()) + this.id
 
         val result = StrBuf("(")
-        var elem: LObject = this
-        while (elem is LCons) {
-            seen_set.add(elem)
-            result.add(elem.car.desc(seen_set))
-            if (elem.cdr !== Nil) {
-                result.add(" ")
+        val car_s = car.desc(seen1)
+        result.add(car_s)
+        when (cdr) {
+            Nil -> result.add(")")
+            is LCons -> {
+                if (cdr.id in seen1) {
+                    result.add(" . ...)")
+                } else {
+                    result.add(" ")
+                    result.add(cdr.desc(seen1).substring(1))
+                }
             }
-            elem = elem.cdr
-            if (elem in seen_set) {
-                break
+            else -> {
+                result.add(" . ")
+                result.add(cdr.desc(seen1))
+                result.add(")")
             }
         }
-        if (elem !== Nil) {
-            result.add(". ")
-            result.add(elem.desc(seen_set))
-        }
-        result.add(")")
         return result.toString()
     }
 

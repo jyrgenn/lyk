@@ -57,7 +57,7 @@ class LString(val the_string: String): LObject(), LSeq {
     override fun toString() = the_string
 
     // with all quoting and stuff
-    override fun desc(seen: MutableSet<LObject>?): String {
+    override fun desc(seen: Set<Int>?): String {
         var result = CharBuf('\"')
         for (ch in the_string) {
             if (ch in "\\\"") {

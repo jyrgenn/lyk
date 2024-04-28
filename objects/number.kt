@@ -50,7 +50,7 @@ class LNumber(val the_number: Double): LObject() {
     fun toLong() = the_number.toLong()
     fun toInt() = the_number.toInt()
     
-    override fun desc(seen: MutableSet<LObject>?): String {
+    override fun desc(seen: Set<Int>?): String {
         if (the_number <= Long.MAX_VALUE.toDouble()
                 && the_number >= Long.MIN_VALUE.toDouble()) {
             val longVal = the_number.toLong()

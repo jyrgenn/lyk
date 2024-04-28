@@ -337,7 +337,7 @@ abstract class LStream(
     }
     open fun flush() {}
     
-    open fun readLine(trimNewline: Boolean): String? {
+    open fun readLine(trimNewline: Boolean = false): String? {
         val sb = StrBuf()
         while (true) {
             val ch = read()
@@ -408,7 +408,7 @@ abstract class LStream(
         val e = if (error) "E" else ""
         return "#<${this.type}[$i$o$e$x]$name>"
     }
-    override fun desc(seen: MutableSet<LObject>?) = toString()
+    override fun desc(seen: Set<Int>?) = toString()
 
     fun finalize() {
         debug(debugFinalizeSym) {

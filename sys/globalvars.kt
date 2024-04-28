@@ -89,6 +89,7 @@ val debugReplSym = intern("repl")
 
 val debugOffSym = intern("=off")
 val debugListSym = intern("=list")
+val debugStopSym = intern("=stop")
 
 val defunSym = debugDefunSym
 val quoteSymbol = intern("quote")

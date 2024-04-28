@@ -67,7 +67,7 @@ abstract class LFunction(
 
     override open fun toString() = "#<function $name>"
 
-    override open fun desc(seen: MutableSet<LObject>?) =
+    override open fun desc(seen: Set<Int>?) =
         "#<${typeDesc} (${parlist()})=$retval>"
 
     fun synopsis() = LCons(name, parlist()).toString()

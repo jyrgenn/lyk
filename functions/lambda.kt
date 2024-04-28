@@ -20,7 +20,7 @@ open class Lambda(                         // Macro will inherit this
 
     override val typeDesc = "lambda function"
     
-    override fun desc(seen: MutableSet<LObject>?): String {
+    override fun desc(seen: Set<Int>?): String {
         var body: String
 
         if (bodyForms === Nil) {

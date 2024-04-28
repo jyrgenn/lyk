@@ -1,0 +1,12 @@
+#!/bin/ksh
+
+SRCPATH=$(find * -name \*.kt -exec dirname {} \; |
+          sort -u |
+          sed s,^,$PWD/, |
+          tr '
+' :)
+
+#jdb -sourcepath $SRCPATH -attach 64927
+jdb -attach 64927
+
+

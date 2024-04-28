@@ -5,7 +5,7 @@ import java.io.IOException
 class ErrorObject(val error: LispError): LObject() {
     override fun toString() = error.toString()
 
-    override fun desc(seen: MutableSet<LObject>?) =
+    override fun desc(seen: Set<Int>?) =
         "#<${this.type}: ${error.toString()}>"
 
     override val type = "error-object"

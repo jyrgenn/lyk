@@ -16,7 +16,7 @@ class LRegexp(pattern: String): LObject() {
 
     override val type = "regexp"
 
-    override fun desc(seen: MutableSet<LObject>?) =
+    override fun desc(seen: Set<Int>?) =
         "#/${the_regexp.pattern.replace("/", "\\/")}/"
     
     override fun toString() = desc(null)
