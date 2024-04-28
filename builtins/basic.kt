@@ -216,6 +216,68 @@ fun bi_setq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return value
 }
 
+fun let_internal(args: LObject, is_letrec: Boolean): LObject {
+    if (args === Nil) {
+        return Nil                      // no bindings *and* no bodyforms
+    }
+
+    val name = if (is_letrec) "let*" else "let"
+    val (bindings, bodyforms) = args
+    // now we're talking
+    var syms = mutableListOf<LSymbol>()     // variable symbols to bind
+    var vals = mutableListOf<LObject>() // values to bind to them
+    
+    for (binding in bindings) {
+        if (binding is LSymbol) {
+            syms.add(binding)
+            vals.add(Nil)
+	    debug(debugLetBindSym) {
+                "will bind lone $binding to nil"
+            }
+        } else if (binding is LCons) {
+	    val (sym, rest) = binding
+	    if (rest != Nil && rest !is LCons) {
+		throw ArgumentError(
+                    "$name: malformed variable clause for `$sym`")
+	    }
+	    if (rest.cdr != Nil) {
+		throw ArgumentError(
+                    "$name: malformed binding clause for `$sym`") 
+	    }
+	    var value = rest.car
+            if (!is_letrec) {
+	        value = eval(value)
+            }
+            syms.add(symbolArg(sym, "$name binding variable"))
+	    vals.add(value)
+	    debug(debugLetBindSym) {
+                if (is_letrec) {
+                    "will bind $sym to eval($value)"
+                } else {
+                    "will bind $sym to $value"
+                }
+            }
+        } else {
+            throw ArgumentError("$name: malformed variables list")
+        }
+    }
+    // do the bindings
+    return withNewEnvironment() {
+        val sym_i = syms.iterator()
+        val val_i = vals.iterator()
+
+        while (sym_i.hasNext()) {
+            val sym = sym_i.next()
+            var value = val_i.next()
+            if (is_letrec) {
+                value = eval(value)
+            }
+            sym.bind(value)
+        }
+        evalProgn(bodyforms)
+    }
+}
+
 /// builtin let
 /// fun     bi_let
 /// std     bindings
@@ -233,53 +295,7 @@ fun bi_setq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_let(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    if (args === Nil) {
-        return Nil                      // no bindings *and* no bodyforms
-    }
-
-    val (bindings, bodyforms) = args
-    // now we're talking
-    var syms = mutableListOf<LSymbol>()     // variable symbols to bind
-    var vals = mutableListOf<LObject>() // values to bind to them
-    
-    for (binding in bindings) {
-        if (binding is LSymbol) {
-            syms.add(binding)
-            vals.add(Nil)
-	    debug(debugLetBindSym) {
-                "will bind lone $binding to nil"
-            }
-        } else if (binding is LCons) {
-	    val (sym, rest) = binding
-	    if (rest != Nil && rest !is LCons) {
-		throw ArgumentError("let: malformed variable clause for `$sym`")
-	    }
-	    if (rest.cdr != Nil) {
-		throw ArgumentError("let: malformed binding clause for `$sym`") 
-	    }
-	    val form = rest.car
-	    val value = eval(form)
-            syms.add(symbolArg(sym, "let binding variable"))
-	    vals.add(value)
-	    debug(debugLetBindSym) {
-                "will bind $sym to $value, was $form"
-            }
-        } else {
-            throw ArgumentError("let: malformed variables list")
-        }
-    }
-    // do the bindings
-    return withNewEnvironment() {
-        val sym_i = syms.iterator()
-        val val_i = vals.iterator()
-
-        while (sym_i.hasNext()) {
-            val sym = sym_i.next()
-            val value = val_i.next()
-            sym.bind(value)
-        }
-        evalProgn(bodyforms)
-    }
+    return let_internal(args, false)
 }
 
 /// builtin let*
@@ -299,49 +315,7 @@ fun bi_let(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_letrec(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject{
-    if (args === Nil) {
-        return Nil                      // no bindings *and* no bodyforms
-    }
-
-    val (bindings, bodyforms) = args
-    // now we're talking
-    var syms = mutableListOf<LSymbol>()     // variable symbols to bind
-    var vals = mutableListOf<LObject>() // values to bind to them
-    
-    for (binding in bindings) {
-        if (binding is LSymbol) {
-            syms.add(binding)
-            vals.add(Nil)
-        } else if (binding is LCons) {
-	    val (sym, rest) = binding
-	    if (rest != Nil && rest !is LCons) {
-		throw ArgumentError("let*: malformed variable clause for `$sym`")
-	    }
-	    if (rest.cdr != Nil) {
-		throw ArgumentError("let*: malformed binding clause for `%sym`")
-	    }
-	    val value = rest.car
-	    syms.add(symbolArg(sym, "let* binding variable"))
-	    vals.add(value)
-	    debug(debugLetBindSym) {
-                "will bind $sym to eval($value)"
-            }
-        } else {
-            throw ArgumentError("let*: malformed variables list")
-        }
-    }
-    // do the bindings
-    return withNewEnvironment() {
-        val sym_i = syms.iterator()
-        val val_i = vals.iterator()
-
-        while (sym_i.hasNext()) {
-            val sym = sym_i.next()
-            val value = val_i.next()
-            sym.bind(eval(value))
-        }
-        evalProgn(bodyforms)
-    }
+    return let_internal(args, true)
 }
 
 
