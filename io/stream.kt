@@ -179,7 +179,7 @@ class FileIOStream(path: String,
            name = name ?: "'$path'", error = error)
 {
     val file = File(path)
-    val fileWriter = file.printWriter().buffered()
+    val fileWriter = file.bufferedWriter()
     val fileReader = file.bufferedReader()
     var linebuf = StringReaderStream("", name = name)
 
@@ -252,7 +252,7 @@ class FileWriterStream(path: String,
                             // exclusive: Boolean = false
 ): LStream(output = true, path = path, name = name ?: "'$path'", error = error)
 {
-    val fileWriter = File(path).printWriter().buffered()
+    val fileWriter = File(path).bufferedWriter()
 
     override val type = "file-writer-stream"
 

@@ -28,5 +28,14 @@
 (test-is "run-program signal" (run-program "kill -15 $$" :in-shell t)
          143)
 
+(load "backquote")
+(test-is "test-run-program" (backquote "scripts/test-run-program.sh")
+         (list 0 "o2:lulu liebt sich
+o3:huhu hält sich
+o5:gaga gibt sich
+" "e1:lala legt sich
+e4:momo müht sich
+"))
+
 
 (done-testing)

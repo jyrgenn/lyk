@@ -224,38 +224,10 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val fname = arg1(args).toString()
     val verbose = kwArgs[verboseSym] !== Nil
     val throw_error = ob2bool(kwArgs[errorSym] ?: T)
-    val suffixes = listOf("", ".l", ".lisp")
-    val loadpath = loadPathSym.getValueOptional() ?: Nil
     val print = ob2bool(kwArgs[printKeyw] ?: Nil)
         || ob2bool(loadPrintSym.getValueOptional() ?: Nil)
 
-    fun trySuffixes(dir: String, fname: String): LObject? {
-        for (suffix in suffixes) {
-            val fullname = fname + suffix
-            if (File(dir, fullname).exists()) {
-                return load_file(dir, fullname, throw_error, !verbose, print,
-                                 debugline = Options.debug[debugLoadlineSym]!!)
-            }
-        }
-        return null
-    }
-
-    if (fname.contains("/")) {
-        if (File(fname).exists()) {
-            return load_file(fname, throw_error, !verbose, print,
-                             debugline = Options.debug[debugLoadlineSym]!!)
-        }
-        throw IOError("could not find load file: $fname")
-    }
-
-    // no slash in name, so try the load path
-    for (dir in loadpath) {
-        val result = trySuffixes(dir.toString(), fname)
-        if (result != null) {
-            return result
-        }
-    }
-    throw IOError("could not find load file: $fname")
+    return load(fname, throw_error, print, verbose)
 }
 
 /// builtin make-string-input-stream
@@ -690,4 +662,29 @@ fun bi_streamp(args: LObject, kwArgs: Map<LSymbol, LObject>
     return bool2ob(arg1(args) is LStream)
 }
 
+/// builtin finish-output
+/// fun     bi_finish_output
+/// std     
+/// key     
+/// opt     output-stream
+/// rest    
+/// ret     nil
+/// special no
+/// doc {
+/// Flush pending output to `output-stream` and then return.
+/// If `output-stream` is not specified, use *stdout*.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_finish_output(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val output_stream = arg1(args)
+    val stream =
+        if (output_stream === Nil) {
+            stdout
+        } else {
+            streamArg(output_stream, "finish_output")
+        }
+    stream.flush()
+    return Nil
+}
 

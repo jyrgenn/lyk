@@ -17,8 +17,10 @@
 
 (defun presult (format-string &rest args)
   (when verbose
-    (apply #'format t format-string args))
-  (apply #'format out format-string args))
+    (apply #'format t format-string args)
+    (finish-output))
+  (apply #'format out format-string args)
+  (finish-output out))
 
 (defmacro test (name expr)
   "Run test NAME; success if EXPR evaluates to a true value"
@@ -161,7 +163,8 @@ Traverse conses and vectors to find numbers."
       (setf testing-done nil)
       (unless verbose
         (let ((number (cadr (regexp-match #r{/([0-9]+)} f))))
-          (format t " %s " number)))
+          (format t " %s " number)
+          (finish-output)))
       (let ((result (errset (load f))))
        (if (atom result)
             (progn (presult "load FAIL: %s %s\n" f *last-error*)

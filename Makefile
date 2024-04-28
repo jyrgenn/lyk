@@ -22,8 +22,6 @@ BUILDSCRIPTS = scripts/buildtag.sh scripts/generate-builtin-init
 
 BUILTINSRC = $(shell ls builtins/*.kt | egrep -v '(helpers)\.kt')
 
-# this, too, did not help finding the kotlinx library
-#COMP = kotlinc -kotlin-home /opt/local/share/java/kotlin/lib
 COMP = kotlinc
 
 INSTALLDIR=/opt/w21/lyk
