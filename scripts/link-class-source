@@ -1,0 +1,10 @@
+#!/bin/ksh
+
+mkdir -p org/w21/lyk
+rm -f org/w21/lyk/*
+
+grepp '^\s*class ' */*.kt |
+    sed 's/\(.*\):.*class \([A-Za-z_]*\).*/\1 \2/' |
+    while read file class; do
+        ln -vs ../../../$file org/w21/lyk/$class.java
+    done
