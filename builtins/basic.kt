@@ -1961,3 +1961,37 @@ fun bi_nthcdr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return l
 }
 
+/// builtin charp
+/// fun     bi_charp
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a character, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_charp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return bool2ob(arg1(args) is LChar)
+}
+
+/// builtin lambdap
+/// fun     bi_lambdap
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a lambda, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_lambdap(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return bool2ob(arg1(args) is Lambda)
+}
+

@@ -911,6 +911,24 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return makeNumber(exit_status)
 }
 
+/// builtin error-object-p
+/// fun     bi_error_object_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is an error object, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_error_object_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is ErrorObject)
+}
+
 
 
 

@@ -559,3 +559,135 @@ fun bi_get_output_stream_string(args: LObject, kwArgs: Map<LSymbol, LObject>
            }
            return makeString(arg.value_and_reset())
 }
+
+/// builtin console-reader-stream-p
+/// fun     bi_console_reader_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a console reader stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_console_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is ConsoleReaderStream)
+}
+
+
+/// builtin file-reader-stream-p
+/// fun     bi_file_reader_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a file reader stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_file_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is FileReaderStream)
+}
+
+
+/// builtin string-reader-stream-p
+/// fun     bi_string_reader_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a string reader stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is StringReaderStream)
+}
+
+
+/// builtin string-writer-stream-p
+/// fun     bi_string_writer_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a string writer stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is StringWriterStream)
+}
+
+
+/// builtin file-writer-stream-p
+/// fun     bi_file_writer_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a file writer stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_file_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is FileWriterStream)
+}
+
+/// builtin file-io-stream-p
+/// fun     bi_file_io_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a file io stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_file_io_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is FileIOStream)
+}
+
+/// builtin streamp
+/// fun     bi_streamp
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_streamp(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is LStream)
+}
+
+

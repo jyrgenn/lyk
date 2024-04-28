@@ -561,3 +561,23 @@ fun bi_substring(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     }
     return makeString(s.substring(n_start, n_end))
 }
+
+/// builtin string-contains-p
+/// fun     bi_string_contains_p
+/// std     haystack needle
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if string `haystack` contains `needle`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_contains_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    val (haystack, needle) = args2(args)
+    return bool2ob(needle.toString() in haystack.toString())
+}
+
