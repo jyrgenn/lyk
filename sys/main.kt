@@ -4,6 +4,8 @@ package org.w21.lyk
 import sun.misc.Signal
 import sun.misc.SignalHandler
 
+import java.util.Locale
+
 
 val verbosityNotice = 1
 val verbosityInfo = 2
@@ -156,6 +158,8 @@ fun main(args: Array<String>) {
                               abortEval = true
                           }
                       })
+        // no weird number formatting and things
+        Locale.setDefault(Locale.Builder().setLanguage("en").build())
 
         // now start the machine!
         info(buildtag())

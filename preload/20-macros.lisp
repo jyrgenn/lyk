@@ -160,3 +160,18 @@ the variable *object-types*."
       `(progn ,first-form (prog1 ,result-form ,@otherforms))
     `(progn ,first-form ,result-form)))
 
+(defmacro with-input-from-string (control &rest bodyforms)
+  "(with-input-from-string (variable string-value) bodyforms ...)
+Bind variable to a stream make from string-value and evaluate `bodyforms`."
+  (let (((symbol string-value) control))
+    `(let ((,symbol (make-string-input-stream ,string-value)))
+       ,@bodyforms)))
+
+(defmacro with-output-to-string (control &rest bodyforms)
+  "(with-output-to-string (variable) bodyforms ...)
+Bind variable to an output stream and evaluate `bodyforms`;
+return the content written to the output stream as a string."
+  (let (((variable) control))
+    `(let ((,variable (make-string-output-stream)))
+       ,@bodyforms
+       (get-output-stream-string ,variable))))
