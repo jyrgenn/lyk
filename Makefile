@@ -35,13 +35,14 @@ INSTALLBIN=/opt/w21/bin
 
 build: lyk.jar
 
-lyk.jar: $(ALLSRCS) generated/org generated/jline Makefile
-	$(COMP) -cp generated $(ALLSRCS) -include-runtime -d lyk.jar
-	cd generated; jar -f ../lyk.jar -u org jline
+lyk.jar: $(ALLSRCS) generated/jline Makefile
+	$(COMP) -cp generated/jline $(ALLSRCS) -include-runtime -d lyk.jar
+	cd generated/jline; jar -f ../../lyk.jar -u [a-z]*
 	./scripts/lyk -J . -e '(build-info t)'
 
-generated/org generated/jline:
-	cd generated; jar -xf ../jline/jline.jar
+generated/jline:
+	mkdir generated/jline
+	cd generated/jline; jar -xf ../../jline/jline.jar
 
 generated/10-types.lisp: Makefile scripts/list-types.sh $(SRCS)
 	./scripts/list-types.sh > generated/10-types.lisp
