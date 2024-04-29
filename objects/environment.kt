@@ -65,16 +65,25 @@ class LEnv(val parent: LEnv? = null): LObject() {
 
     val descFormat = "#<${this.type}$id[$levelstring:%d]%s>"
 
-    override fun toString() = desc() //descFormat.format(the_env.size, "")
+    override fun toString() = desc(null) //descFormat.format(the_env.size, "")
 
-    override fun desc() =
-        descFormat.format(the_env.size,
+    override fun desc(seen: Set<Int>?): String {
+        if (seen != null && this.id in seen) {
+            return "..."
+        }
+        val seen1 = seen ?: setOf<Int>()
+        return descFormat.format(the_env.size,
                           if (level == 0) {
                               "{...}"
                           } else {
-                              the_env.toString()
+                              val l = mutableListOf<String>()
+                              for ((key, value) in the_env) {
+                                  l.add("$key=${value.desc(seen1 + this.id)}")
+                              }
+                              "{" + l.joinToString(", ") + "}"
                           }
         )
+    }
     
 }
 

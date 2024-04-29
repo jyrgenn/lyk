@@ -75,7 +75,7 @@ fun bi_print(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_prin1(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (arg, stream) = args2(args)
-    outputStreamArg(stream, "prin1 stream").write(arg.desc())
+    outputStreamArg(stream, "prin1 stream").write(arg.desc(null))
     return arg
 }
 
@@ -94,7 +94,7 @@ fun bi_prin1(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_prin1_to_string(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return makeString(arg1(args).desc())
+    return makeString(arg1(args).desc(null))
 }
 
 /// builtin princ
@@ -224,38 +224,10 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val fname = arg1(args).toString()
     val verbose = kwArgs[verboseSym] !== Nil
     val throw_error = ob2bool(kwArgs[errorSym] ?: T)
-    val suffixes = listOf("", ".l", ".lisp")
-    val loadpath = loadPathSym.getValueOptional() ?: Nil
     val print = ob2bool(kwArgs[printKeyw] ?: Nil)
         || ob2bool(loadPrintSym.getValueOptional() ?: Nil)
 
-    fun trySuffixes(dir: String, fname: String): LObject? {
-        for (suffix in suffixes) {
-            val fullname = fname + suffix
-            if (File(dir, fullname).exists()) {
-                return load_file(dir, fullname, throw_error, !verbose, print,
-                                 debugline = Options.debug[debugLoadlineSym]!!)
-            }
-        }
-        return null
-    }
-
-    if (fname.contains("/")) {
-        if (File(fname).exists()) {
-            return load_file(fname, throw_error, !verbose, print,
-                             debugline = Options.debug[debugLoadlineSym]!!)
-        }
-        throw IOError("could not find load file: $fname")
-    }
-
-    // no slash in name, so try the load path
-    for (dir in loadpath) {
-        val result = trySuffixes(dir.toString(), fname)
-        if (result != null) {
-            return result
-        }
-    }
-    throw IOError("could not find load file: $fname")
+    return load(fname, throw_error, print, verbose)
 }
 
 /// builtin make-string-input-stream
@@ -370,11 +342,11 @@ fun bi_open(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     ioKeyw ->     { inp = true; outp = true }
     else ->
         throw ArgumentError("open :direction not :input or :output or :io : "
-                            + direction.desc())
+                            + direction.desc(null))
     }
     if (!inp && !outp) {
         throw ArgumentError("open :direction not :input or :output or :io : "
-                            + direction.desc())
+                            + direction.desc(null))
     }
     when (if_exists) {
         new_versionKeyw, overwriteKeyw, supersedeKeyw -> {}
@@ -559,3 +531,160 @@ fun bi_get_output_stream_string(args: LObject, kwArgs: Map<LSymbol, LObject>
            }
            return makeString(arg.value_and_reset())
 }
+
+/// builtin console-reader-stream-p
+/// fun     bi_console_reader_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a console reader stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_console_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is ConsoleReaderStream)
+}
+
+
+/// builtin file-reader-stream-p
+/// fun     bi_file_reader_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a file reader stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_file_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is FileReaderStream)
+}
+
+
+/// builtin string-reader-stream-p
+/// fun     bi_string_reader_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a string reader stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is StringReaderStream)
+}
+
+
+/// builtin string-writer-stream-p
+/// fun     bi_string_writer_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a string writer stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is StringWriterStream)
+}
+
+
+/// builtin file-writer-stream-p
+/// fun     bi_file_writer_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a file writer stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_file_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is FileWriterStream)
+}
+
+/// builtin file-io-stream-p
+/// fun     bi_file_io_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a file io stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_file_io_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is FileIOStream)
+}
+
+/// builtin streamp
+/// fun     bi_streamp
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_streamp(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is LStream)
+}
+
+/// builtin finish-output
+/// fun     bi_finish_output
+/// std     
+/// key     
+/// opt     output-stream
+/// rest    
+/// ret     nil
+/// special no
+/// doc {
+/// Flush pending output to `output-stream` and then return.
+/// If `output-stream` is not specified, use *stdout*.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_finish_output(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val output_stream = arg1(args)
+    val stream =
+        if (output_stream === Nil) {
+            stdout
+        } else {
+            streamArg(output_stream, "finish_output")
+        }
+    stream.flush()
+    return Nil
+}
+

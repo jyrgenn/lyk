@@ -54,13 +54,19 @@ fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
         val elem = elems.car
         val (newelem, expanded) = macroExpandFormRecurse(elem)
         lc.add(newelem)
-        haveExpanded = haveExpanded || expanded
+        // haveExpanded = haveExpanded || expanded
+        if (expanded) {
+            haveExpanded = true
+        }
         elems = elems.cdr
     }
-    if (elems !== Nil) {
+    if (elems !== Nil) {                // last cdr of improper list
         val (newrest, expanded) = macroExpandFormRecurse(elems)
         lc.lastcdr(newrest)
-        haveExpanded = haveExpanded || expanded
+        // haveExpanded = haveExpanded || expanded
+        if (expanded) {
+            haveExpanded = true
+        }
     }
     return Pair(lc.list, haveExpanded)
 }
@@ -71,7 +77,7 @@ fun macroExpandFormRecurse(form: LObject): Pair<LObject, Boolean> {
     }
     if (form is LCons) {
         debug(debugMacroSym) {
-            "is cons"
+            "is a cons"
         }
         val (head, args) = form
         if (head is LSymbol) {
@@ -89,6 +95,9 @@ fun macroExpandFormRecurse(form: LObject): Pair<LObject, Boolean> {
                 }
                 return Pair(expanded, true)
             }
+        }
+        debug(debugMacroSym) {
+            "list form to expand: $form"
         }
         val result = macroExpandList(form)
         debug(debugMacroSym) {
@@ -110,9 +119,13 @@ fun macroExpandForm(form: LObject): LObject {
         debug(debugMacroSym) {
             "need expand $formvar"
         }
+        // println("expanding $formvar")
         val (newForm, stillNeedExpansion) = macroExpandFormRecurse(formvar)
         formvar = newForm
         needExpansion = stillNeedExpansion
+    }
+    debug(debugMacroSym) {
+        "finally expanded to $formvar"
     }
     return formvar
 }

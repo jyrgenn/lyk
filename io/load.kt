@@ -2,6 +2,43 @@
 
 package org.w21.lyk
 
+import java.io.File
+
+
+// load file, possibly from *load-path*, with suffixes
+fun load(fname: String, throw_error: Boolean, print: Boolean, verbose: Boolean
+): LObject {
+    val suffixes = listOf("", ".l", ".lisp")
+    val loadpath = loadPathSym.getValueOptional() ?: Nil
+
+    fun trySuffixes(dir: String, fname: String): LObject? {
+        for (suffix in suffixes) {
+            val fullname = fname + suffix
+            if (File(dir, fullname).exists()) {
+                return load_file(dir, fullname, throw_error, !verbose, print,
+                                 debugline = Options.debug[debugLoadlineSym]!!)
+            }
+        }
+        return null
+    }
+
+    if (fname.contains("/")) {
+        if (File(fname).exists()) {
+            return load_file(fname, throw_error, !verbose, print,
+                             debugline = Options.debug[debugLoadlineSym]!!)
+        }
+        throw IOError("could not find load file: $fname")
+    }
+
+    // no slash in name, so try the load path
+    for (dir in loadpath) {
+        val result = trySuffixes(dir.toString(), fname)
+        if (result != null) {
+            return result
+        }
+    }
+    throw IOError("could not find load file: $fname")
+}
 
 // return the result value of the load, and a Boolean if the file was actually
 // found

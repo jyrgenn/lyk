@@ -4,6 +4,8 @@ package org.w21.lyk
 import sun.misc.Signal
 import sun.misc.SignalHandler
 
+import java.util.Locale
+
 
 val verbosityNotice = 1
 val verbosityInfo = 2
@@ -35,11 +37,13 @@ object Options {
         debugStartupSym to false,
         debugReplSym to false,
         debugReadSymSym to false,
+        debugStopSym to false,
     )
     var print_estack = false
     var maxrecurse = 0
     var verbosity = 2           // 0: errors-only, 1: notice, 2: info
     var warnIsError = false     // let warnings be errors
+    var noPreload = false       // don't load perload code
 }
 
 
@@ -55,6 +59,7 @@ fun usage() {
   -q               : suppress info messages (-qq: also notice/warning)
   -v               : increase verbosity
   -E               : print exception stack
+  -N               : don't load preload Lisp code
   -W               : let warnings be errors
 """)
     // -R maxrecurse    : maximum eval recursion depth 
@@ -108,6 +113,7 @@ fun main(args: Array<String>) {
 
             for (ch in arg.substring(1)) {
                 when (ch) {
+                    'N' -> { Options.noPreload = true }
                     'E' -> { Options.print_estack = true }
                     'q' -> { Options.verbosity -= 1 }
                     'v' -> { Options.verbosity += 1 }
@@ -152,6 +158,8 @@ fun main(args: Array<String>) {
                               abortEval = true
                           }
                       })
+        // no weird number formatting and things
+        Locale.setDefault(Locale.Builder().setLanguage("en").build())
 
         // now start the machine!
         info(buildtag())
@@ -161,8 +169,10 @@ fun main(args: Array<String>) {
 	init_Variables()
         debug(debugStartupSym) { "init streams" }
         init_Streams()
-        debug(debugStartupSym) { "load preload code" }
-        load_string(preload_code, "*preload-code*")
+        if (!Options.noPreload) {
+            debug(debugStartupSym) { "load preload code" }
+            load_string(preload_code, "*preload-code*")
+        }
         
         for (fname in load_files) {
             debug(debugStartupSym) { "load file \"$fname\"" }

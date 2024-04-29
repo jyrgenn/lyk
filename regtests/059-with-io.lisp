@@ -1,6 +1,6 @@
 (require 'regtests)
 
-(test-is "with-output-to-sting"
+(test-is "with-output-to-string"
          (with-output-to-string (s)
                                 (print "lalala" s)
                                 (format s "%08.3f\n" 13.4))

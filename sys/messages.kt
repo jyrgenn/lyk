@@ -74,13 +74,16 @@ fun setDebug(options: String?): Boolean {
     return isgood
 }
 
-
 fun debug(topic: LSymbol, closure: () -> Any?) {
     if (debugOn && Options.debug[topic] ?: false) {
         debug_out.print("DBG:$topic ")
         val value = closure()
         if (value != null) {
             debug_out.println(value)
+        }
+        if (Options.debug[debugStopSym] ?: false) {
+            debug_out.print(": ")
+            console.readLine()
         }
     }
 }

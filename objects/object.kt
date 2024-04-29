@@ -44,7 +44,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
                           width: Int,
                           prec: Int) {
         val s = if ((flags and ALTERNATE) == ALTERNATE) {
-            this.desc()
+            this.desc(null)
         } else {
             this.toString()
         }
@@ -71,11 +71,11 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     }
 
     // Print as much information about the object as can be helpful debugging.
-    open fun dump() = "${this.type}[$id]"
+    open fun dump() = "#<${this.type}[$id]>"
 
     // The output of this shall, if at all possible, be sufficent to
     // be read by the reader to re-create the object.
-    open fun desc() = toString()
+    open fun desc(seen: Set<Int>?) = toString()
 
     open operator fun component1(): LObject {
         return (this as? LCons)?.car ?:
@@ -109,6 +109,6 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     }
 
     override fun iterator(): Iterator<LObject>
-        = throw TypeError(this, "iterable")
+        = throw TypeError(this, "iterable", "iterator request")
 }
 

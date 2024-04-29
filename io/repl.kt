@@ -35,21 +35,17 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
         }
         try {
             // Read, 
-            var (expr, where) = reader.read()
+            var (expr, loc) = reader.read()
             if (expr == null) {
                 break
             }
-            lastTopLevelLocation = where
-
+            lastTopLevelLocation = loc
+            
             // Expand macros (just not macro definitions (or do I?)),
-            if (false && expr is LCons && expr.car === defmacroSym) {
-                // println("skip expanding (${expr.car} ${expr.cdr.car} ...)")
-            } else {
-                // if (expr is LCons) {
-                //     println("(${expr.car} ${expr.cdr.car} ...)")
-                // }
-                expr = macroExpandForm(expr)
-            }
+            expr = macroExpandForm(expr)
+            // if (expr is LCons && expr.car !== defmacroSym) {
+            //     expr = macroExpandForm(expr)
+            // }
             debug(debugReplSym) {
                 expr
             }
@@ -64,7 +60,7 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
 
             // Print,
             if (value !== theNonPrintingObject) {
-                iprintln(value.desc())
+                iprintln(value.desc(null))
             }
             iprintln()
             if (interactive) {
@@ -85,7 +81,7 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
                 printErr(e)
             }
             debug(debugErrorSym) {
-                e.toObject().desc()
+                e.toObject().desc(null)
             }
             if (!interactive) {
                 return e

@@ -1,5 +1,5 @@
-#!/usr/bin/env -S java -jar lyk.jar -W # -d repl,eval
+#!/usr/bin/env -S java -jar lyk.jar -W # -d macro
 
-(load "l/regtests.lisp")
+(require 'regtests)
 (exit (run-tests))
 

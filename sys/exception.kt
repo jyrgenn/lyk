@@ -5,7 +5,8 @@ import java.io.IOException
 class ErrorObject(val error: LispError): LObject() {
     override fun toString() = error.toString()
 
-    override fun desc() = "#<${this.type}: ${error.toString()}>"
+    override fun desc(seen: Set<Int>?) =
+        "#<${this.type}: ${error.toString()}>"
 
     override val type = "error-object"
 }
@@ -105,7 +106,7 @@ open class ValueError(message: String,
 // return the appropriate indefinite article for the passed noun, meaning
 // "an" if the noun starts with a vowel, else "a"
 fun indef_a(noun: String): String {
-    if (Regex("^[aeiou]").find(noun) != null) {
+    if (Regex("^[aeiouAEIOU]").find(noun) != null) {
         return "an"
     }
     return "a"
@@ -113,8 +114,8 @@ fun indef_a(noun: String): String {
 
 class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
     constructor(message: String) : this(message, null)
-    constructor(obj: LObject, whatnot: String): 
-        this("not ${indef_a(whatnot)} $whatnot: ${obj.type} $obj")
+    constructor(obj: LObject, whatnot: String, where: String): 
+        this("$where, not ${indef_a(whatnot)} $whatnot: ${obj.type} $obj")
 }
 
 class CallError(message: String): LispError(message)

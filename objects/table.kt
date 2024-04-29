@@ -90,19 +90,24 @@ class LTable(): LObject() {
         return true
     }
 
-    override fun desc() = toString()
+    override fun desc(seen: Set<Int>?): String {
+        if (seen != null && this.id in seen) {
+            return "..."
+        }
+        val seen1 = seen ?: setOf<Int>()
 
-    override fun toString(): String {
         val buf = StrBuf("#:(")
         for ((key, value) in the_table) {
             buf.add("(")
-            buf.add(key.desc())
+            buf.add(key.desc(seen1 + this.id))
             buf.add(" . ")
-            buf.add(value.desc())
+            buf.add(value.desc(seen1 + this.id))
             buf.add(")")
         }
         buf.add(")")
         return buf.toString()
     }
+
+    override fun toString() = desc(null)
 
 }

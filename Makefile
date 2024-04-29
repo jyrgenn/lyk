@@ -23,7 +23,6 @@ BUILDSCRIPTS = scripts/buildtag.sh scripts/generate-builtin-init
 BUILTINSRC = $(shell ls builtins/*.kt | egrep -v '(helpers)\.kt')
 
 COMP = kotlinc
-NATIVECOMP = kotlinc-native
 
 INSTALLDIR=/opt/w21/lyk
 INSTALLBIN=/opt/w21/bin
@@ -63,10 +62,6 @@ generated/init-builtins.kt: Makefile generated scripts/generate-builtin-init \
 	scripts/generate-builtin-init $(BUILTINSRC) > generated/init-builtins.kt
 
 new: clean build
-
-native: $(SRCS) Makefile
-	$(NATIVECOMP) $(SRCS) -o lykn
-	mv lykn.pexe lykn
 
 test: lyk.jar
 	./run-tests.lisp

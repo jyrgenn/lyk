@@ -117,7 +117,7 @@ fun bi_doseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 
     val seq = eval(sequence)
     if (seq !is LSeq) {
-        throw TypeError(seq, "sequence")
+        throw TypeError(seq, "sequence", "doseq")
     }
     val subseq = seq.subseq(i_start!!, i_end)
     return withNewEnvironment {

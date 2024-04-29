@@ -179,7 +179,7 @@ class FileIOStream(path: String,
            name = name ?: "'$path'", error = error)
 {
     val file = File(path)
-    val fileWriter = file.printWriter().buffered()
+    val fileWriter = file.bufferedWriter()
     val fileReader = file.bufferedReader()
     var linebuf = StringReaderStream("", name = name)
 
@@ -252,7 +252,7 @@ class FileWriterStream(path: String,
                             // exclusive: Boolean = false
 ): LStream(output = true, path = path, name = name ?: "'$path'", error = error)
 {
-    val fileWriter = File(path).printWriter().buffered()
+    val fileWriter = File(path).bufferedWriter()
 
     override val type = "file-writer-stream"
 
@@ -337,7 +337,7 @@ abstract class LStream(
     }
     open fun flush() {}
     
-    open fun readLine(trimNewline: Boolean): String? {
+    open fun readLine(trimNewline: Boolean = false): String? {
         val sb = StrBuf()
         while (true) {
             val ch = read()
@@ -408,7 +408,7 @@ abstract class LStream(
         val e = if (error) "E" else ""
         return "#<${this.type}[$i$o$e$x]$name>"
     }
-    override fun desc() = toString()
+    override fun desc(seen: Set<Int>?) = toString()
 
     fun finalize() {
         debug(debugFinalizeSym) {

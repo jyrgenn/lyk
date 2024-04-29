@@ -216,6 +216,107 @@ fun bi_setq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return value
 }
 
+fun destructuringBind(name: String, vars: LObject, values: LObject,
+                      syms: MutableList<LSymbol>, vals: MutableList<LObject>) {
+    val lfvars = ListFeed(vars)
+    var lfvalues = ListFeed(values)
+    
+    while (lfvars.hasNext()) {
+        if (!lfvalues.isList()) {
+            ArgumentError("$name: bind value for ${lfvars.rest} not "
+                          +"a pair: ${lfvalues.rest}")
+        }
+        val curvar = lfvars.next()
+        val curvalue = lfvalues.next()
+        when (curvar) {
+            is LSymbol -> if (curvar !== Nil) {
+			      // skip assignment if symbol is Nil, meaning we
+			      // don't need that particular value
+                              syms.add(curvar)
+                              vals.add(curvalue)
+                          }
+            is LCons -> destructuringBind(name, curvar, curvalue, syms, vals)
+            else -> throw TypeError(curvar, "symbol", "$name varlist")
+        }
+    }
+    // if the variable list is ended by a non-nil symbol, bind remaining
+    // values to it (or nil)
+    val the_end = lfvars.rest
+    when (the_end) {
+        Nil -> return
+        is LSymbol -> {
+            syms.add(the_end)
+            vals.add(lfvalues.rest)
+        }
+        else ->
+            throw TypeError(the_end, "symbol", "$name binding")
+    }
+}
+
+fun let_internal(args: LObject, is_letrec: Boolean): LObject {
+    if (args === Nil) {
+        return Nil                      // no bindings *and* no bodyforms
+    }
+
+    val name = if (is_letrec) "let*" else "let"
+    val (bindings, bodyforms) = args
+    // now we're talking
+    var syms = mutableListOf<LSymbol>()     // variable symbols to bind
+    var vals = mutableListOf<LObject>() // values to bind to them
+    
+    for (binding in bindings) {
+        if (binding is LSymbol) {
+            syms.add(binding)
+            vals.add(Nil)
+	    debug(debugLetBindSym) {
+                "will bind lone $binding to nil"
+            }
+        } else if (binding is LCons) {
+	    val (varlist, rest) = binding
+	    if (rest != Nil && rest !is LCons) {
+		throw ArgumentError(
+                    "$name: malformed variable clause for `$varlist`")
+	    }
+	    if (rest.cdr != Nil) {
+		throw ArgumentError(
+                    "$name: malformed binding clause for `$varlist`") 
+	    }
+	    var value = rest.car
+            if (!is_letrec) {
+	        value = eval(value)
+            }
+            // I could check for a single symbol to bind before pulling out the
+            // big gun, but it turns out this optimisation does not bring a
+            // preceptible speed advantage.
+            destructuringBind(name, varlist, value, syms, vals)
+	    debug(debugLetBindSym) {
+                if (is_letrec) {
+                    "will bind $varlist to eval($value)"
+                } else {
+                    "will bind $varlist to $value"
+                }
+            }
+        } else {
+            throw ArgumentError("$name: malformed variables list")
+        }
+    }
+    // do the bindings
+    return withNewEnvironment() {
+        val sym_i = syms.iterator()
+        val val_i = vals.iterator()
+
+        while (sym_i.hasNext()) {
+            val sym = sym_i.next()
+            var value = val_i.next()
+            if (is_letrec) {
+                value = eval(value)
+            }
+            sym.bind(value)
+        }
+        evalProgn(bodyforms)
+    }
+}
+
 /// builtin let
 /// fun     bi_let
 /// std     bindings
@@ -233,53 +334,7 @@ fun bi_setq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_let(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    if (args === Nil) {
-        return Nil                      // no bindings *and* no bodyforms
-    }
-
-    val (bindings, bodyforms) = args
-    // now we're talking
-    var syms = mutableListOf<LSymbol>()     // variable symbols to bind
-    var vals = mutableListOf<LObject>() // values to bind to them
-    
-    for (binding in bindings) {
-        if (binding is LSymbol) {
-            syms.add(binding)
-            vals.add(Nil)
-	    debug(debugLetBindSym) {
-                "will bind lone $binding to nil"
-            }
-        } else if (binding is LCons) {
-	    val (sym, rest) = binding
-	    if (rest != Nil && rest !is LCons) {
-		throw ArgumentError("let: malformed variable clause for `$sym`")
-	    }
-	    if (rest.cdr != Nil) {
-		throw ArgumentError("let: malformed binding clause for `$sym`") 
-	    }
-	    val form = rest.car
-	    val value = eval(form)
-            syms.add(symbolArg(sym, "let binding variable"))
-	    vals.add(value)
-	    debug(debugLetBindSym) {
-                "will bind $sym to $value, was $form"
-            }
-        } else {
-            throw ArgumentError("let: malformed variables list")
-        }
-    }
-    // do the bindings
-    return withNewEnvironment() {
-        val sym_i = syms.iterator()
-        val val_i = vals.iterator()
-
-        while (sym_i.hasNext()) {
-            val sym = sym_i.next()
-            val value = val_i.next()
-            sym.bind(value)
-        }
-        evalProgn(bodyforms)
-    }
+    return let_internal(args, false)
 }
 
 /// builtin let*
@@ -299,49 +354,7 @@ fun bi_let(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_letrec(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject{
-    if (args === Nil) {
-        return Nil                      // no bindings *and* no bodyforms
-    }
-
-    val (bindings, bodyforms) = args
-    // now we're talking
-    var syms = mutableListOf<LSymbol>()     // variable symbols to bind
-    var vals = mutableListOf<LObject>() // values to bind to them
-    
-    for (binding in bindings) {
-        if (binding is LSymbol) {
-            syms.add(binding)
-            vals.add(Nil)
-        } else if (binding is LCons) {
-	    val (sym, rest) = binding
-	    if (rest != Nil && rest !is LCons) {
-		throw ArgumentError("let*: malformed variable clause for `$sym`")
-	    }
-	    if (rest.cdr != Nil) {
-		throw ArgumentError("let*: malformed binding clause for `%sym`")
-	    }
-	    val value = rest.car
-	    syms.add(symbolArg(sym, "let* binding variable"))
-	    vals.add(value)
-	    debug(debugLetBindSym) {
-                "will bind $sym to eval($value)"
-            }
-        } else {
-            throw ArgumentError("let*: malformed variables list")
-        }
-    }
-    // do the bindings
-    return withNewEnvironment() {
-        val sym_i = syms.iterator()
-        val val_i = vals.iterator()
-
-        while (sym_i.hasNext()) {
-            val sym = sym_i.next()
-            val value = val_i.next()
-            sym.bind(eval(value))
-        }
-        evalProgn(bodyforms)
-    }
+    return let_internal(args, true)
 }
 
 
@@ -1959,5 +1972,39 @@ fun bi_nthcdr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         l = l.cdr
     }
     return l
+}
+
+/// builtin charp
+/// fun     bi_charp
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a character, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_charp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return bool2ob(arg1(args) is LChar)
+}
+
+/// builtin lambdap
+/// fun     bi_lambdap
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is a lambda, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_lambdap(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    return bool2ob(arg1(args) is Lambda)
 }
 

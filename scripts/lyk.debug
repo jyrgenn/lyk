@@ -1,0 +1,32 @@
+#!/bin/ksh
+# start the lyk Lisp interpreter
+
+# this is also a base for the load path
+export LYKPATH=${LYKPATH-.:/opt/w21/lyk:$HOME/devel/lyk}
+
+if [ -t 0 ]; then
+    stty size | read LINES COLUMNS
+    export LINES COLUMNS
+fi
+
+if [ "$1" = -J ]; then
+    JARPATH="$2"
+    shift; shift
+else
+    JARPATH=
+    IFS=:
+    for dir in $LYKPATH; do
+        if [ -f $dir/lyk.jar ]; then
+            JARPATH=$dir
+            break
+        fi
+    done
+fi
+
+if [ -z "$JARPATH" ]; then
+    echo $(basename $0): "lyk.jar not found in $LYKPATH" 1>&2
+    exit 2
+fi
+
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=64927 \
+     -jar $JARPATH/lyk.jar "$@"

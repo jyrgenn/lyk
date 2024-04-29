@@ -3,6 +3,8 @@
 package org.w21.lyk
 
 import java.io.File
+import java.io.InputStream
+import kotlin.concurrent.thread
 
 
 /// builtin set-debug
@@ -133,7 +135,7 @@ fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
             return theNonPrintingObject
         }
     }
-    throw FunctionError("`${ob.desc()}` is not a function or function symbol")
+    throw FunctionError("`${ob.desc(null)}` is not a function or function symbol")
 }
 
 
@@ -431,18 +433,25 @@ fun bi_provide(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// fun     bi_require
 /// std     feature
 /// key     
-/// opt     
+/// opt     filename
 /// rest    
 /// ret     t
 /// special no
 /// doc {
-/// Declare `feature` (a symbol) as required to have been provided earlier.
-/// If that is not the case, raise an error
+/// If `feature` (a symbol) is not already provided, load it from `filename`
+/// (default: name of the feature). If the feature is still not provided,
+/// throw an error.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_require(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val feature = symbolArg(arg1(args), "require feature")
+    val (sym, fname) = args2(args)
+    val feature = symbolArg(sym, "require feature")
+    if (feature in featureSet) {
+        return T
+    }
+    val filename = (if (fname !== Nil) fname else sym).toString()
+    load(filename, true, false, true)
     if (feature in featureSet) {
         return T
     }
@@ -784,8 +793,8 @@ fun has_shellmeta(s: String): Boolean {
 ///   - if &key `in-shell` is a string, use it as the shell and run the
 ///     command in it.
 ///   - if &key `in-shell` is nil (the default), run command with `/bin/sh`
-///     if it contains shell meta characters (`"'\`|&;[(<>)]*?$`). Otherwise,
-///     split the string on whitespace and run it directly.
+///     if it contains shell meta characters ("'`|&,;[{(<>)}]*?$).
+///     Otherwise, split the string on whitespace and run it directly.
 ///
 /// If &key `input` is a string or a stream, use it as the standard input
 /// stream of the command. If it is t, the command reads from the normal
@@ -868,41 +877,50 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 
     val proc = pb.start()
 
-    // Of course, what we *really* want to do there is multiplexed reading and
-    // writing, so we don't run into any blocking situations. This would also
-    // give us the option to interact with the subprocess, by way of callback
-    // functions. That would be *nice*.
+    // What I do there is multiplexed reading and writing, so I don't run into
+    // any blocking situations. This should also give me the option to interact
+    // with the subprocess, by way of callback functions or the like. That would
+    // be *nice*.
     //
-    // But for the moment I think I can get by with this, hoping that all
-    // streams involded have a sufficiently large buffer size for my little
-    // applications.
+    // I wanted to do this with coroutines, which seems to be the modern
+    // lightweight way to go, but the parallel executrion that I hoped for
+    // wasn't there. With threads, it worked instantly. In the end, I don't
+    // really mind. The three threads I create here are probably still cheap
+    // comparted to the effort to create a separate process start an external
+    // program.
 
-    if (key_input is LString) {
-        val writer = proc.getOutputStream().bufferedWriter()
-        writer.write(key_input.the_string)
-        writer.close()
-        // proc.getOutputStream().close()
+    fun handleProcessOutput(in_stream: InputStream, writer: LStream) {
+        val reader = in_stream.bufferedReader()
+        val buf = CharArray(4096)
+        while (true) {
+            val n = reader.read(buf)
+            if (n < 0) {
+                break
+            }
+            writer.write(buf, n)
+        }
+        reader.close()
+    }
+    
+    thread {
+        if (key_input is LString) {
+            val writer = proc.getOutputStream().bufferedWriter()
+            writer.write(key_input.the_string)
+            writer.close()
+        }
+    }
+    thread {
+        if (key_output is LStream) {
+            handleProcessOutput(proc.getInputStream(), key_output)
+        }
+    }
+    thread {
+        if (key_error_output is LStream) {
+            handleProcessOutput(proc.getErrorStream(), key_error_output)
+        }
     }
     val exit_status = proc.waitFor()
 
-    if (key_output is LStream) {
-        val reader = proc.getInputStream().bufferedReader()
-        val buf = CharArray(4096)
-        while (reader.ready()) {
-            val n = reader.read(buf)
-            key_output.write(buf, n)
-        }
-        reader.close()
-    }
-    if (key_error_output is LStream) {
-        val reader = proc.getErrorStream().bufferedReader()
-        val buf = CharArray(4096)
-        while (reader.ready()) {
-            val n = reader.read(buf)
-            key_error_output.write(buf, n)
-        }
-        reader.close()
-    }
 
     if (exit_status != 0 && kwArgs[raiseErrorKSym] !== Nil) {
         throw ProcessError(exit_status, "run-program", command_s)
@@ -910,7 +928,45 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return makeNumber(exit_status)
 }
 
+/// builtin error-object-p
+/// fun     bi_error_object_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t iff `object` is an error object, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_error_object_p(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return bool2ob(arg1(args) is ErrorObject)
+}
 
+/// builtin sleep
+/// fun     bi_sleep
+/// std     seconds
+/// key     
+/// opt     
+/// rest    
+/// ret     nil
+/// special no
+/// doc {
+/// Suspend execution for approximately the number of `seconds` and return.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_sleep(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val ms = (numberArg(arg1(args), "sleep") * 1000).toLong()
+    if (ms < 0) {
+        throw ArgumentError("seconds argument must not be negative")
+    }
+    Thread.sleep(ms)
+    return Nil
+}
 
 
 // EOF

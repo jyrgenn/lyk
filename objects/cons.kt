@@ -4,7 +4,7 @@ package org.w21.lyk
 
 
 class LCons(override var car: LObject,
-            override var cdr: LObject = Nil): LObject(), LSeq {
+            override var cdr: LObject): LObject(), LSeq {
 
     init {
         debug(debugConsSym) {
@@ -15,28 +15,37 @@ class LCons(override var car: LObject,
 
     override val type = "cons"
 
-    override fun toString(): String {
-        val result = StrBuf("(")
-
-        var elem: LObject = this
-        while (elem is LCons) {
-            result.add(elem.car.desc())
-            if (elem.cdr !== Nil) {
-                result.add(" ")
-            }
-            elem = elem.cdr
-        }
-        if (elem !== Nil) {
-            result.add(". ")
-            result.add(elem.desc())
-        }
-        result.add(")")
-        return result.toString()
-    }
+    override fun toString() = desc(null)
 
     override fun isList() = true
 
-    override fun desc() = toString()
+    override fun desc(seen: Set<Int>?): String {
+        if (seen != null && this.id in seen) {
+            return "..."
+        }
+        val seen1 = (seen ?: setOf<Int>()) + this.id
+
+        val result = StrBuf("(")
+        val car_s = car.desc(seen1)
+        result.add(car_s)
+        when (cdr) {
+            Nil -> result.add(")")
+            is LCons -> {
+                if (cdr.id in seen1) {
+                    result.add(" . ...)")
+                } else {
+                    result.add(" ")
+                    result.add(cdr.desc(seen1).substring(1))
+                }
+            }
+            else -> {
+                result.add(" . ")
+                result.add(cdr.desc(seen1))
+                result.add(")")
+            }
+        }
+        return result.toString()
+    }
 
     override val length: Int
         get () {
@@ -162,7 +171,6 @@ class LCons(override var car: LObject,
                 else -> throw TypeError("not a proper list: $original")
 
             }
-
         override fun next(): LObject {
             val obj = l.car
             l = l.cdr

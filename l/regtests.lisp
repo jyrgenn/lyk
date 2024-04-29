@@ -17,8 +17,10 @@
 
 (defun presult (format-string &rest args)
   (when verbose
-    (apply #'format t format-string args))
-  (apply #'format out format-string args))
+    (apply #'format t format-string args)
+    (finish-output))
+  (apply #'format out format-string args)
+  (finish-output out))
 
 (defmacro test (name expr)
   "Run test NAME; success if EXPR evaluates to a true value"

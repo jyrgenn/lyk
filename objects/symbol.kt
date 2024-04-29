@@ -230,7 +230,7 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
 
     override fun toString() = name
 
-    override fun desc() = descName
+    override fun desc(seen: Set<Int>?) = descName
 
     override fun dump(): String {
         return super.dump() + "($descName:$function:$props)"
@@ -255,14 +255,14 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
             if (sym === Nil) {
                 return false
             }
-            throw TypeError(sym, "sequence")
+            throw TypeError(sym, "sequence", "iterator")
         }
 
         override fun next(): LObject {
             if (sym === Nil) {
                 throw IndexError("no next on empty list")
             }
-            throw TypeError(sym, "sequence")
+            throw TypeError(sym, "sequence", "iterator")
         }
     }
 

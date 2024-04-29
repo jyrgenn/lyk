@@ -274,16 +274,12 @@
                         (setf (elt v 2) 'bb)
                         v)
          #(22 33 bb 55 66))
-(test-is "setf elt S" (let ((s "abcdefg"))
-                        (setf (elt s 2) #\4)
-                        s)
-         "ab4defg")
 (test-is "setf elt !S" (progn (errset (let ((s "abcdefg"))
                                         (setf (elt s 2) 4)
                                         s)
                                       nil)
-                              sys:last-error)
-         "setelt: cannot set string element to object type number")
+                              *last-error*)
+         "TypeError: string object is immutable: \"abcdefg\"")
 
 (defparameter v #(3 4 5 6))
 (test-is "setf vector-get" (progn (setf (vector-get v 2) 119)
@@ -302,7 +298,7 @@
 (defun square (n) (* n n))
 (test-is "setf symbol-function" (progn (setf (symbol-function '^2) #'square)
                                        #'^2)
-         "#<function square (n) (* n n)>")
+         "#<function square>")
 
 (defparameter symbol 'prop-bearer)
 (test-is "setf get" (progn (setf (get symbol 'shlongity) 1e19)
@@ -327,6 +323,7 @@
          '((x 1 x 3) . (1 x 3)))
 
 (defparameter b '((3) (4) ((5 6))))
+;;; TODO macroexpand is stackexplode
 (test-is "incf" (progn (incf (car (cdr (caaddr b))) 2)
                        b)
          '((3) (4) ((5 8))))
