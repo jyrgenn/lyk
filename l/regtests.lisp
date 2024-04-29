@@ -161,7 +161,7 @@ Traverse conses and vectors to find numbers."
       (setf testing-done nil)
       (unless verbose
         (let ((number (cadr (regexp-match #r{/([0-9]+)} f))))
-          (format t " %s " number)))
+          (format *stderr* " %s " number)))
       (let ((result (errset (load f))))
        (if (atom result)
             (progn (presult "load FAIL: %s %s\n" f *last-error*)
