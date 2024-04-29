@@ -109,6 +109,6 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     }
 
     override fun iterator(): Iterator<LObject>
-        = throw TypeError(this, "iterable")
+        = throw TypeError(this, "iterable", "iterator request")
 }
 
