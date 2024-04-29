@@ -76,3 +76,23 @@ class ListCollector(): Iterable<LObject> {
     override fun iterator() = this.list.iterator()
 }
 
+class ListFeed(var rest: LObject) {
+    // This is like a list iterator, but meant to deal with improper
+    // lists as well. Also it has two extras: the rest of the
+    // iterated list can be snarfed at any time, and there is a
+    // function to check if what remains is still a list.
+    
+    fun next(): LObject {
+        when (rest) {
+            Nil -> return Nil
+            is LCons -> {
+                val result = rest.car
+                rest = rest.cdr
+                return result
+            }
+            else -> throw InternalError("improper ListFeed is drained early")
+        }
+    }
+    fun isList() = rest === Nil || rest is LCons
+    fun hasNext() = rest is LCons
+}

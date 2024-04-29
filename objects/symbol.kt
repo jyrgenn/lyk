@@ -255,14 +255,14 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
             if (sym === Nil) {
                 return false
             }
-            throw TypeError(sym, "sequence")
+            throw TypeError(sym, "sequence", "iterator")
         }
 
         override fun next(): LObject {
             if (sym === Nil) {
                 throw IndexError("no next on empty list")
             }
-            throw TypeError(sym, "sequence")
+            throw TypeError(sym, "sequence", "iterator")
         }
     }
 

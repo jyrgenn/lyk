@@ -171,7 +171,6 @@ class LCons(override var car: LObject,
                 else -> throw TypeError("not a proper list: $original")
 
             }
-
         override fun next(): LObject {
             val obj = l.car
             l = l.cdr

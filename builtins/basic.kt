@@ -216,6 +216,43 @@ fun bi_setq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return value
 }
 
+fun destructuringBind(name: String, vars: LObject, values: LObject,
+                      syms: MutableList<LSymbol>, vals: MutableList<LObject>) {
+    val lfvars = ListFeed(vars)
+    var lfvalues = ListFeed(values)
+    
+    while (lfvars.hasNext()) {
+        if (!lfvalues.isList()) {
+            ArgumentError("$name: bind value for ${lfvars.rest} not "
+                          +"a pair: ${lfvalues.rest}")
+        }
+        val curvar = lfvars.next()
+        val curvalue = lfvalues.next()
+        when (curvar) {
+            is LSymbol -> if (curvar !== Nil) {
+			      // skip assignment if symbol is Nil, meaning we
+			      // don't need that particular value
+                              syms.add(curvar)
+                              vals.add(curvalue)
+                          }
+            is LCons -> destructuringBind(name, curvar, curvalue, syms, vals)
+            else -> throw TypeError(curvar, "symbol", "$name varlist")
+        }
+    }
+    // if the variable list is ended by a non-nil symbol, bind remaining
+    // values to it (or nil)
+    val the_end = lfvars.rest
+    when (the_end) {
+        Nil -> return
+        is LSymbol -> {
+            syms.add(the_end)
+            vals.add(lfvalues.rest)
+        }
+        else ->
+            throw TypeError(the_end, "symbol", "$name binding")
+    }
+}
+
 fun let_internal(args: LObject, is_letrec: Boolean): LObject {
     if (args === Nil) {
         return Nil                      // no bindings *and* no bodyforms
@@ -235,26 +272,25 @@ fun let_internal(args: LObject, is_letrec: Boolean): LObject {
                 "will bind lone $binding to nil"
             }
         } else if (binding is LCons) {
-	    val (sym, rest) = binding
+	    val (varlist, rest) = binding
 	    if (rest != Nil && rest !is LCons) {
 		throw ArgumentError(
-                    "$name: malformed variable clause for `$sym`")
+                    "$name: malformed variable clause for `$varlist`")
 	    }
 	    if (rest.cdr != Nil) {
 		throw ArgumentError(
-                    "$name: malformed binding clause for `$sym`") 
+                    "$name: malformed binding clause for `$varlist`") 
 	    }
 	    var value = rest.car
             if (!is_letrec) {
 	        value = eval(value)
             }
-            syms.add(symbolArg(sym, "$name binding variable"))
-	    vals.add(value)
+            destructuringBind(name, varlist, value, syms, vals)
 	    debug(debugLetBindSym) {
                 if (is_letrec) {
-                    "will bind $sym to eval($value)"
+                    "will bind $varlist to eval($value)"
                 } else {
-                    "will bind $sym to $value"
+                    "will bind $varlist to $value"
                 }
             }
         } else {
