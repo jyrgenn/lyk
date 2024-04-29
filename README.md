@@ -19,9 +19,9 @@ fast.
 
 Work in progress as of April 2024, currently working on getting the
 regression test suite of lingo to work, an earlier implementation of
-Lisp in Go. Bigger things ahead are fixing the macros (there is
-still something wrong with them), some debugging help in eval,
-integrating a readline editor, and many more builtin functions.
+Lisp in Go. Bigger things ahead are fixing the macros (there is still
+something wrong with them), some debugging help in eval, and many more
+builtin functions.
 
 Lyk uses the JLine line editor Version 2 for the interactive input
 line; see the subdirectory `jline/`. This works fine and was
