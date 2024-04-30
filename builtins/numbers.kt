@@ -1544,3 +1544,24 @@ fun bi_parse_integer(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return Nil
 }
 
+/// builtin float
+/// fun     bi_float
+/// std     number
+/// key     
+/// opt     
+/// rest    
+/// ret     number
+/// special no
+/// doc {
+/// Return the argument as a float.
+/// This is a null operation for a number  (as all numbers are floats).
+/// For any other argument type, this function raises an error.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_float(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    val number = arg1(args)
+    numberArg(number, "float")
+    return number
+}
+
