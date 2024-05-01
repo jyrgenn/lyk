@@ -5,11 +5,11 @@
 
 ;;(trace 'mod t)
 
-(defvar *lic-stack* nil)		;the whole stack
-(defvar *lic-values* nil)		;all computed values
-(defvar *lic-print-stack* nil)		;print stack after every input line
+(defvar *lyc-stack* nil)		;the whole stack
+(defvar *lyc-values* nil)		;all computed values
+(defvar *lyc-print-stack* nil)		;print stack after every input line
 (defvar *period-char* (elt "." 0))      ;due to different char literal syntaxes
-(defvar *lic-history-file* (string (getenv "HOME") "/.lic-history"))
+(defvar *lyc-history-file* (string (getenv "HOME") "/.lyc-history"))
 
 ;; format strings for lyk
 (defvar *fstring-prompt* "[%d]; ") ;input prompt with stack size argument
@@ -41,28 +41,28 @@
 (defparameter *tty*
   (open-interactive-stream (lambda ()
                              (format nil *fstring-prompt*
-                                     (length *lic-stack*)))))
+                                     (length *lyc-stack*)))))
 
-(defvar *lic-functions* nil)            ;list of function names
-(defvar *lic-max-padding* 24)		;max. padding for number justification
-(defvar *lic-user-variables* (make-table))  ;places to sto and rcl values
-(defvar *lic-history* '())              ;input history
+(defvar *lyc-functions* nil)            ;list of function names
+(defvar *lyc-max-padding* 24)		;max. padding for number justification
+(defvar *lyc-user-variables* (make-table))  ;places to sto and rcl values
+(defvar *lyc-history* '())              ;input history
 
-;; Functions are stored in the properties of their symbol: lic-function,
-;; lic-arity, lic-resultsp, lic-help (a description); if lic-resultsp is nil, no
+;; Functions are stored in the properties of their symbol: lyc-function,
+;; lyc-arity, lyc-resultsp, lyc-help (a description); if lyc-resultsp is nil, no
 ;; results are pushed on the stack. The function is applied to the appropriate
 ;; number of arguments from the stack and returns a single result or a list of
 ;; results, which are then placed on the stack if resultsp.
 
-;; define a lic function
-(defun deflic (symbol arity resultsp function help)
-  ;;(ldebug "deflic" (list symbol arity resultsp function help))
-  (setf (get symbol 'lic-function) function)
-  ;;(ldebug "retrieve" (get symbol 'lic-function))
-  (setf (get symbol 'lic-arity) arity)
-  (setf (get symbol 'lic-resultsp) resultsp)
-  (setf (get symbol 'lic-help) help)
-  (push symbol *lic-functions*)
+;; define a lyc function
+(defun deflyc (symbol arity resultsp function help)
+  ;;(ldebug "deflyc" (list symbol arity resultsp function help))
+  (setf (get symbol 'lyc-function) function)
+  ;;(ldebug "retrieve" (get symbol 'lyc-function))
+  (setf (get symbol 'lyc-arity) arity)
+  (setf (get symbol 'lyc-resultsp) resultsp)
+  (setf (get symbol 'lyc-help) help)
+  (push symbol *lyc-functions*)
   symbol)
 
 ;; make this even shorter (but needs bodyforms)
@@ -76,11 +76,11 @@
 		     (join " " args)
 		     (if result (format nil *fstring-simple* result) "")
 		     documentation)))
-    `(deflic ',sym (length ',args) ',result
+    `(deflyc ',sym (length ',args) ',result
        #'(lambda ,args ,@body)
        ,doc)))
 
-(defun lic-help ()
+(defun lyc-help ()
   (format t "
 Enter numbers, function symbols, or Lisp expressions. Numbers are
 pushed on the stack, functions remove their arguments from the stack
@@ -112,31 +112,31 @@ Example:
 (defl lisp-functions () nil "print Lisp function symbols"
   (format t "%s\n" (join " " (function-symbols))))
 
-(defun lic-pop ()
+(defun lyc-pop ()
   "Remove the value on top of the stack and return it."
-  (pop *lic-stack*))
+  (pop *lyc-stack*))
 
-(defun lic-tos ()
+(defun lyc-tos ()
   "Return the value on top of the stack. The stack is not changed."
-  (car *lic-stack*))
+  (car *lyc-stack*))
 
 (defl pos (position) value
   "Get a value from the specified stack position."
-  (nth (- (length *lic-stack*) position) *lic-stack*))
+  (nth (- (length *lyc-stack*) position) *lyc-stack*))
 
 (defl stack-size () size
   "Return the stack size (before calling stack-size)."
-  (length *lic-stack*))
+  (length *lyc-stack*))
 
-(defun lic-describe (symbol)
-  (if (get symbol 'lic-function)
-      (let ((arity (get symbol 'lic-arity)))
+(defun lyc-describe (symbol)
+  (if (get symbol 'lyc-function)
+      (let ((arity (get symbol 'lyc-arity)))
 	(format t *fstring-describe*
 		symbol arity (if (= 1 arity) "" "s")
-                (if (get symbol 'lic-resultsp)
+                (if (get symbol 'lyc-resultsp)
                     "has"
                   "no")
-		(get symbol 'lic-help)))
+		(get symbol 'lyc-help)))
     (error *fstring-error-nosymbol* symbol)))
   
 
@@ -160,7 +160,7 @@ Example:
 
 ;; define lots of unary Lisp functions in one go
 (mapcar (lambda (sym)
-          (deflic sym 1 t (symbol-function sym)
+          (deflyc sym 1 t (symbol-function sym)
             (format nil "x -> y; as the corresponding Lisp function `%s':\n%s"
                     sym (function-docstring (symbol-function sym)))))
 	'(float 1+ 1- fac sin cos tan abs asin acos atan sinh cosh tanh
@@ -351,26 +351,26 @@ Example:
 (defl drop (x) nil "drop and ignore tos")
 (defl dup (x) "x x" "duplicate tos" (list x x))
 (defl swap (x y) "y x" "swap tos and 2nd" (list y x))
-(defl cls () nil "clear stack" (setf *lic-stack* nil))
-(defl clv () nil "clear value list" (setf *lic-values* nil))
+(defl cls () nil "clear stack" (setf *lyc-stack* nil))
+(defl clv () nil "clear value list" (setf *lyc-values* nil))
 (defl rot () nil "rotate stack up"
-    (setf *lic-stack* (append (cdr *lic-stack*)
-			      (list (car *lic-stack*)))))
+    (setf *lyc-stack* (append (cdr *lyc-stack*)
+			      (list (car *lyc-stack*)))))
 (defl tor () nil "rotate stack down"
-  (let ((lastel (car (last *lic-stack*))))
-    (setf *lic-stack* (cons lastel (butlast *lic-stack*)))))
+  (let ((lastel (car (last *lyc-stack*))))
+    (setf *lyc-stack* (cons lastel (butlast *lyc-stack*)))))
 
 (defl functions () nil
   "show all functions"
-  (format t *fstring-functions* (join " " (sort *lic-functions* #'string<))))
+  (format t *fstring-functions* (join " " (sort *lyc-functions* #'string<))))
 
 (defl describe-functions () nil
   "show all functions"
-  (dolist (f (sort *lic-functions* #'string<))
+  (dolist (f (sort *lyc-functions* #'string<))
     (let* ((ellipsis "[...]")
            (elllen (length ellipsis))
            (outs (format nil *fstring-describe-functions* f
-                         (car (split-string (get f 'lic-help) "\n")))))
+                         (car (split-string (get f 'lyc-help) "\n")))))
       (if (> (length outs) 80)
           (setf outs (string (substring outs 0 (- 80 elllen)) ellipsis)))
       (if (#/:$/ outs)
@@ -381,42 +381,42 @@ Example:
 
 (defl apropos (search) nil
   "print all function descriptions matching `search'"
-  (dolist (f (sort *lic-functions* #'string<))
-    (let* ((doc (get f 'lic-help)))
+  (dolist (f (sort *lyc-functions* #'string<))
+    (let* ((doc (get f 'lyc-help)))
       (if (regexp-match search doc)
           (format t (string *fstring-describe-functions* "\n") f doc)))))
   
 
-(defl ? () nil "print some help" (lic-help))
-(defl h () nil "print some help" (lic-help))
-(defl help () nil "print some help" (lic-help))
+(defl ? () nil "print some help" (lyc-help))
+(defl h () nil "print some help" (lyc-help))
+(defl help () nil "print some help" (lyc-help))
 (defl values () nil "show all computed values"
-  (format t *fstring-simple* (join " " (reverse *lic-values*))))
-(defl desc (symbol) nil "describe a function" (lic-describe symbol))
-(defl exit () nil "exit lic" (exit))
+  (format t *fstring-simple* (join " " (reverse *lyc-values*))))
+(defl desc (symbol) nil "describe a function" (lyc-describe symbol))
+(defl exit () nil "exit lyc" (exit))
 
 (defl history () nil "print input history"
-  (format t *fstring-simple-nl* (join " " (reverse *lic-history*))))
+  (format t *fstring-simple-nl* (join " " (reverse *lyc-history*))))
 
 (defl acc (func) result
   "accumulate all values with `func', leaving only result"
-  (let ((func (get func 'lic-function))
-        (result (pop *lic-stack*)))
-    (while *lic-stack*
-      (setf result (funcall func result (pop *lic-stack*))))
+  (let ((func (get func 'lyc-function))
+        (result (pop *lyc-stack*)))
+    (while *lyc-stack*
+      (setf result (funcall func result (pop *lyc-stack*))))
     result))
 
 (defl { () nil "push the opening brace on the stack"
-  (progn (push '{ *lic-stack*)))
+  (progn (push '{ *lyc-stack*)))
 
 (defun {-accumulate (funcsym)
   "Accumulate all values on the stack since { with FUNCSYM.
 Helper for }, +}, and *}."
-  (let ((func (get funcsym 'lic-function))
-        (result (pop *lic-stack*))
+  (let ((func (get funcsym 'lyc-function))
+        (result (pop *lyc-stack*))
         arg)
-    (while (and *lic-stack*
-                (progn (setf arg (pop *lic-stack*))
+    (while (and *lyc-stack*
+                (progn (setf arg (pop *lyc-stack*))
                        (not (eq arg '{))))
       (setf result (funcall func result arg)))
     result))
@@ -456,13 +456,13 @@ Helper for }, +}, and *}."
 ;; User variables, to be accessed with a variable name an STO/RCL
 
 (defl sto (x symbol) x "store value in user variable"
-  (table-put *lic-user-variables* symbol x))
+  (table-put *lyc-user-variables* symbol x))
 (defl rcl (symbol) x "recall value from user variable"
-  (table-get *lic-user-variables* symbol))
+  (table-get *lyc-user-variables* symbol))
 ;; (defl vars () nil "show all user variables"
 ;;   (format t *fstring-simple*
 ;; 	  (join " "
-;;                 (sort (loop for key being the hash-keys in *lic-user-variables*
+;;                 (sort (loop for key being the hash-keys in *lyc-user-variables*
 ;;                         using (hash-value val)
 ;;                         collect (format nil *fstring-vars* key val))
 ;;                       #'string<))))
@@ -471,36 +471,36 @@ Helper for }, +}, and *}."
   (format t *fstring-simple*
 	  (join " "
                 (sort (let (descs)
-                        (dolist (key (table-keys *lic-user-variables*))
+                        (dolist (key (table-keys *lyc-user-variables*))
                           (push (format nil *fstring-vars*
-                                        key (*lic-user-variables* key))
+                                        key (*lyc-user-variables* key))
                                 descs))
                         descs)
                       #'string<))))
 
 
 ;; run a function; return non-nil if we have a value worth showing
-(defun lic-run-function (sym)
-  (let ((fun (get sym 'lic-function)))
+(defun lyc-run-function (sym)
+  (let ((fun (get sym 'lyc-function)))
     ;;(ldebug "function-function" fun)
     (if fun
-	(let ((arity (get sym 'lic-arity)))
-	  (if (>= (length *lic-stack*) arity)
-	      (let ((args (reverse (subseq *lic-stack* 0 arity))))
-		(setf *lic-stack* (subseq *lic-stack* arity))
+	(let ((arity (get sym 'lyc-arity)))
+	  (if (>= (length *lyc-stack*) arity)
+	      (let ((args (reverse (subseq *lyc-stack* 0 arity))))
+		(setf *lyc-stack* (subseq *lyc-stack* arity))
 		(let ((result (apply fun args)))
-		  (when (get sym 'lic-resultsp)
-		    (lic-push-result result))))
+		  (when (get sym 'lyc-resultsp)
+		    (lyc-push-result result))))
 	    (error *fstring-too-few-args* sym arity)))
       (error *fstring-error-nosymbol* sym))))
 
 ;; return non-nil for a non-nil result
-(defun lic-push-result (result)
+(defun lyc-push-result (result)
   (if (listp result)			;may be nil, too
-      (setf *lic-stack*
-	    (append (reverse result) *lic-stack*))
-    (push result *lic-stack*))
-  (push result *lic-values*)
+      (setf *lyc-stack*
+	    (append (reverse result) *lyc-stack*))
+    (push result *lyc-stack*))
+  (push result *lyc-values*)
   result)
 
 
@@ -519,11 +519,11 @@ Helper for }, +}, and *}."
 		     (apply #'max posl)
 		   0)))
     (mapcar (lambda (pos)
-              (make-blanks-string (min *lic-max-padding* (- maxlen pos))))
+              (make-blanks-string (min *lyc-max-padding* (- maxlen pos))))
 	    posl)))
 
-(defun lic-print-stack ()
-  (let* ((revstack (reverse *lic-stack*))
+(defun lyc-print-stack ()
+  (let* ((revstack (reverse *lyc-stack*))
          (paddings (make-paddings revstack))
          (n 1)
          (el revstack)
@@ -537,9 +537,9 @@ Helper for }, +}, and *}."
         (pop revstack)
         (pop paddings)))))
 
-(defl p () nil "print the whole stack" (lic-print-stack))
+(defl p () nil "print the whole stack" (lyc-print-stack))
 (defl fp () nil "print the top of the stack as float"
-	    (format t *fstring-simple-nl* (car *lic-stack*)))
+	    (format t *fstring-simple-nl* (car *lyc-stack*)))
 
 ;; to accept floating point numbers with a comma instead of a period,
 ;; try to replace the comma with a period in a symbol and see if that
@@ -553,32 +553,32 @@ Helper for }, +}, and *}."
     e))
 
 ;; handle all expressions in a string; return the last result
-(defun lic-do-string (string)
+(defun lyc-do-string (string)
   (let ((result nil))
     (with-input-from-string (s string)
       (let ((exp t))
         (while (setf exp (maybe-number (read s nil)))
           (when exp
-            (push exp *lic-history*)
+            (push exp *lyc-history*)
             (setf result
-                  (cond ((numberp exp) (push exp *lic-stack*))
+                  (cond ((numberp exp) (push exp *lyc-stack*))
                         ((symbolp exp)
                          (let ((match (regexp-match #/^([0-9]+):([0-9]+)$/
                                                     (symbol-name exp))))
                            ;; special-casing for hh:mm symbols
                            (if match
                                (let (((_ hours minutes) (map #' read match)))
-                                 (push (+ (* 60 hours) minutes) *lic-stack*))
-                             (lic-run-function exp))))
-                        (t (lic-push-result (eval exp)))))))))
+                                 (push (+ (* 60 hours) minutes) *lyc-stack*))
+                             (lyc-run-function exp))))
+                        (t (lyc-push-result (eval exp)))))))))
     result))
 
 ;; now the action: process command line arguments, if any, or go into repl
 (if *command-line-args*
     (progn
       (dolist (arg *command-line-args*)
-	(lic-do-string arg))
-      (format t *fstring-simple-nl* (car *lic-stack*))
+	(lyc-do-string arg))
+      (format t *fstring-simple-nl* (car *lyc-stack*))
       (exit))
   (while t                              ;repl
     (let ((line (read-line *tty* nil nil))
@@ -587,12 +587,12 @@ Helper for }, +}, and *}."
         (terpri)
         (exit))
       (handle-error
-          (setf presultp (or presultp (lic-do-string line)))
+          (setf presultp (or presultp (lyc-do-string line)))
         (format t *fstring-error* error-condition))
       ;; print the last result only after a line, not after each expression
-      (if *lic-print-stack*
-	  (lic-print-stack)
+      (if *lyc-print-stack*
+	  (lyc-print-stack)
 	(when presultp
-	    (format t *fstring-simple-nl* (car *lic-stack*)))))))
+	    (format t *fstring-simple-nl* (car *lyc-stack*)))))))
 
 ;;; EOF
