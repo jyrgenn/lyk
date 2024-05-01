@@ -1,6 +1,6 @@
-#!/usr/bin/env lingo
+#!/usr/bin/env lyk
 ;;; '-*- lisp -*-'
-;;; lic -- a Lisp RPN Calculator, adapted for lingo
+;;; lyc -- a Lisp RPN Calculator, adapted for lyk
 ;;; placed into the public domain by Juergen Nickelsen <ni@w21.org>
 
 ;;(trace 'mod t)
@@ -11,7 +11,7 @@
 (defvar *period-char* (elt "." 0))      ;due to different char literal syntaxes
 (defvar *lic-history-file* (string (getenv "HOME") "/.lic-history"))
 
-;; format strings for lingo
+;; format strings for lyk
 (defvar *fstring-prompt* "[%d]; ") ;input prompt with stack size argument
 (defvar *fstring-stack-format* "%s -> %s: %s")
 (defvar *fstring-describe* "%s: %s arg%s, %s result\n  %s\n")
@@ -20,7 +20,7 @@
 (defvar *fstring-simple* "%s")
 (defvar *fstring-simple-nl* "%s\n")
 (defvar *fstring-repl* "\n> ")
-(defvar *fstring-vars* "%10v: %s\n")
+(defvar *fstring-vars* "%10s: %s\n")
 (defvar *fstring-stackframe* "%2d:  %s%s\n")
 (defvar *fstring-error* "\nerror: %s\n")
 (defvar *fstring-error-nosymbol* "%s is not a function symbol\n")
@@ -31,19 +31,17 @@
   "Eval EVALFORM; on error, bind `error-condition' and eval HANDLERFORM."
   `(let* ((result (errset ,evalform nil)))
      (when (atom result)
-       (let ((error-condition |sys:last-error|))
+       (let ((error-condition |*last-error*|))
          ,handlerform))))
 (defmacro make-blanks-string (len)
   `(make-string ,len " "))
 (defmacro print-prompt ())
 (defmacro ldebug (msg obj)
   `(format t "DBG %s: %s\n" ,msg ,obj))
-(setf sys:stdin
-      (open-interactive-stream sys:stdin
-                               (lambda ()
-                                 (format nil *fstring-prompt*
-                                         (length *lic-stack*)))
-                               *lic-history-file*))
+(defparameter *tty*
+  (open-interactive-stream (lambda ()
+                             (format nil *fstring-prompt*
+                                     (length *lic-stack*)))))
 
 (defvar *lic-functions* nil)            ;list of function names
 (defvar *lic-max-padding* 24)		;max. padding for number justification
@@ -164,7 +162,7 @@ Example:
 (mapcar (lambda (sym)
           (deflic sym 1 t (symbol-function sym)
             (format nil "x -> y; as the corresponding Lisp function `%s':\n%s"
-                    sym (function-docstring sym))))
+                    sym (function-docstring (symbol-function sym)))))
 	'(float 1+ 1- fac sin cos tan abs asin acos atan sinh cosh tanh
 	  asinh acosh atanh random exp sqrt isqrt log signum floor ceiling
 	  truncate round numerator denominator rational rationalize cis
@@ -385,7 +383,7 @@ Example:
   "print all function descriptions matching `search'"
   (dolist (f (sort *lic-functions* #'string<))
     (let* ((doc (get f 'lic-help)))
-      (if (regex-match search doc)
+      (if (regexp-match search doc)
           (format t (string *fstring-describe-functions* "\n") f doc)))))
   
 
@@ -441,8 +439,8 @@ Helper for }, +}, and *}."
 
 (defl minutes (hh:mm) mm
   "Assume the TOS value as an hh:mm symbol and convert it to minutes."
-  (let ((match (regex-match #/^([0-9]+):([0-9]+)$/
-                            (symbol-name hh:mm))))
+  (let ((match (regexp-match #/^([0-9]+):([0-9]+)$/
+                             (symbol-name hh:mm))))
     (if match
         (let (((_ hours minutes) (map #'read match)))
           (+ (* hours 60) minutes))
@@ -483,7 +481,6 @@ Helper for }, +}, and *}."
 
 ;; run a function; return non-nil if we have a value worth showing
 (defun lic-run-function (sym)
-  ;;(ldebug "function-symbol" sym)
   (let ((fun (get sym 'lic-function)))
     ;;(ldebug "function-function" fun)
     (if fun
@@ -549,7 +546,7 @@ Helper for }, +}, and *}."
 ;; results in a number
 (defun maybe-number (e)
   (if (symbolp e)
-      (let ((new (read (regex-replace "," (symbol-name e) ".") nil)))
+      (let ((new (read (regexp-replace "," (symbol-name e) ".") nil)))
         (if (numberp new)
             new
           e))
@@ -561,29 +558,30 @@ Helper for }, +}, and *}."
     (with-input-from-string (s string)
       (let ((exp t))
         (while (setf exp (maybe-number (read s nil)))
-          (push exp *lic-history*)
-          (setf result
-                (cond ((numberp exp) (push exp *lic-stack*))
-                      ((symbolp exp)
-                       (let ((match (regex-match #/^([0-9]+):([0-9]+)$/
-                                                 (symbol-name exp))))
-                         ;; special-casing for hh:mm symbols
-                         (if match
-                             (let (((_ hours minutes) (map #' read match)))
-                               (push (+ (* 60 hours) minutes) *lic-stack*))
-                           (lic-run-function exp))))
-                      (t (lic-push-result (eval exp))))))))
+          (when exp
+            (push exp *lic-history*)
+            (setf result
+                  (cond ((numberp exp) (push exp *lic-stack*))
+                        ((symbolp exp)
+                         (let ((match (regexp-match #/^([0-9]+):([0-9]+)$/
+                                                    (symbol-name exp))))
+                           ;; special-casing for hh:mm symbols
+                           (if match
+                               (let (((_ hours minutes) (map #' read match)))
+                                 (push (+ (* 60 hours) minutes) *lic-stack*))
+                             (lic-run-function exp))))
+                        (t (lic-push-result (eval exp)))))))))
     result))
 
 ;; now the action: process command line arguments, if any, or go into repl
-(if sys:args
+(if *command-line-args*
     (progn
-      (dolist (arg sys:args)
+      (dolist (arg *command-line-args*)
 	(lic-do-string arg))
       (format t *fstring-simple-nl* (car *lic-stack*))
       (exit))
   (while t                              ;repl
-    (let ((line (read-line t nil nil))
+    (let ((line (read-line *tty* nil nil))
 	  (presultp nil))		;non-nil if there is a non-nil result
       (unless line
         (terpri)

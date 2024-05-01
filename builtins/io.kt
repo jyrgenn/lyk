@@ -688,3 +688,25 @@ fun bi_finish_output(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return Nil
 }
 
+/// builtin open-interactive-stream
+/// fun     bi_open_interactive_stream
+/// std     
+/// key     
+/// opt     prompt makeString("")
+/// rest    
+/// ret     interactive-stream
+/// special no
+/// doc {
+/// Return an interactive input stream.
+/// This is a stream from which can be read using the interactive line
+/// editor with `prompt`. If `prompt` is a function, it will be called
+/// with no arguments for every line, and its return value will be used
+/// as the line editor prompt.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_open_interactive_stream(args: LObject, kwArgs: Map<LSymbol, LObject>
+): LObject {
+    return ConsoleReaderStream(prompt = arg1(args))
+}
+

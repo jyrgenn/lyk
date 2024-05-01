@@ -78,8 +78,8 @@ fun bi_set_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// doc {
 /// Print a debug message, if `topic` (a symbol, not evaluated) is enabled.
 /// If the topic is enabled, evaluate all other arguments and print a debug
-/// message accordingly. If there are no other arguments, just return t if
-/// the topic is enabled; nil otherwise.
+/// message from all of the value.
+/// Return t if the topic is enabled; nil otherwise.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")

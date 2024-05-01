@@ -61,6 +61,10 @@ generated/init-builtins.kt: Makefile generated scripts/generate-builtin-init \
 	    ln -s ../scripts/Subdirmakefile generated/Makefile
 	scripts/generate-builtin-init $(BUILTINSRC) > generated/init-builtins.kt
 
+tags: */*.lisp */*.kt
+	etags */*.lisp
+	etags -a -r "/fun[ \t]+\([^ \t]+\)/\1/" */*.kt
+
 new: clean build
 
 test: lyk.jar

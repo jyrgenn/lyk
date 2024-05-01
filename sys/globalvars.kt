@@ -86,6 +86,7 @@ val debugLoadlineSym = intern("loadline")
 val debugReadCharSym = intern("readchar")
 val debugStartupSym = intern("startup")
 val debugReplSym = intern("repl")
+val debugSetqSym = intern("setq")
 
 val debugOffSym = intern("=off")
 val debugListSym = intern("=list")
@@ -105,7 +106,7 @@ val terminalWidth = LSymbol.makeGlobal("*terminal-width*")
 val terminalHeight = LSymbol.makeGlobal("*terminal-height*")
 val loadPrintSym = LSymbol.makeGlobal("*load-print*")
 val loadPathSym = LSymbol.makeGlobal("*load-path*")
-val loadPathnameSym = LSymbol.makeGlobal("*load-pathname*")
+val loadFilenameSym = LSymbol.makeGlobal("*load-filename*")
 
 // indicates the name of the load file that should be shown in error messages
 val loadFileNameInd = ";#file"

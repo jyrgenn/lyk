@@ -38,6 +38,7 @@ object Options {
         debugReplSym to false,
         debugReadSymSym to false,
         debugStopSym to false,
+        debugSetqSym to false,
     )
     var print_estack = false
     var maxrecurse = 0
@@ -176,7 +177,7 @@ fun main(args: Array<String>) {
         
         for (fname in load_files) {
             debug(debugStartupSym) { "load file \"$fname\"" }
-            load_file(fname)
+            load(fname)
         }
 
         val args_lc = ListCollector()

@@ -150,7 +150,7 @@ fun bi_doseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_subseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (sequence, start, end) = args3(args)
     val i_start = if (start === Nil) 0 else intArg(eval(start), "subseq start")
-    val i_end = if (start === Nil) null else intArg(eval(end), "subseq end")
+    val i_end = if (end === Nil) null else intArg(eval(end), "subseq end")
     val seq = seqArg(sequence, "subseq sequence")
 
     return seq.subseq(i_start, i_end)

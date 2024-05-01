@@ -10,7 +10,10 @@ org
 /lyk.jar
 
 # added by ni/gitignore 2024-03-03T15:36:40
-/generated/
+/generated
 
 # added by ni/gitignore 2024-03-22T10:05:00
-testrun.log
+/testrun.log
+
+# added by ni/gitignore 2024-05-01T20:06:55
+/TAGS

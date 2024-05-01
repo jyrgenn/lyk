@@ -51,21 +51,25 @@ class StringWriterStream(name: String? = null
 }
 
 
-class ConsoleReaderStream(): LStream(input = true, path = null,
-                                     name = consoleName) {
+class ConsoleReaderStream(var prompt: LObject = Nil
+): LStream(input = true, path = null, name = consoleName) {
     val cr = ConsoleReader()
     var linebuf = StringReaderStream("")
     var linenum = 0
-    var current_name = name
-    var promptString: String = ""
 
     override val type = "console-reader-stream"
 
-    override fun read_location() = "$current_name:$linenum"
+    override fun read_location() = "$name:$linenum"
 
     override fun read(): Char? {
         try {
             if (!linebuf.hasNext()) {
+                val currentPrompt = prompt
+                val promptString = when(currentPrompt) {
+                    Nil -> ""
+                    is LFunction -> currentPrompt.call(Nil).toString()
+                    else -> currentPrompt.toString()
+                }
                 val line = cr.readLine(promptString)
                 linenum++
                 if (line == null) {
@@ -79,36 +83,48 @@ class ConsoleReaderStream(): LStream(input = true, path = null,
         }
     }
 
-    override fun setPrompt(prompt: String) {
-        promptString = prompt
+    override fun setPrompt(newPrompt: String) {
+        prompt = makeString(newPrompt)
     }
 
     override fun close_specific() {}
 }
 
 class StringReaderStream(val content: String, name: String? = "",
-                         lineno: Int = 1):
+                         var lineno: Int = 1,
+                         val debugline: Boolean = false):
     LStream(input = true, path = null, name = name)
 {
     var nextpos = 0
     var current_name = name
-    var linenum = lineno
+    // var linenum = lineno
+    var linebegin = true
 
     override val type = "string-reader-stream"
 
-    override fun read_location() = "$current_name:$linenum"
+    override fun read_location() = "$current_name:$lineno"
 
     override fun read(): Char? {
         if (hasNext()) {
+            if (linebegin && debugline) {
+                debug(debugLoadlineSym) {
+                    val line = content.substring(nextpos,
+                                                 content.indexOf('\n', nextpos))
+                    "$name:$lineno \"$line\""
+                }
+            }
+            linebegin = false
             val char = content[nextpos]
             if (char == '\n') {
-                linenum++
+                lineno++
+                // ^;#file filename indicator in preload string
                 if (lookingAt(content, nextpos + 1, loadFileNameInd)) {
                     current_name =
                         restOfLine(content,
                                    nextpos + 1 + loadFileNameInd.length).trim()
-                    linenum = 0
+                    lineno = 0
                 }
+                linebegin = true
             }
             nextpos++
             return char
@@ -130,13 +146,9 @@ class FileReaderStream(file: File, name: String? = null,
                 debugline: Boolean = false):
         this(File(pathname), name = name ?: pathname, debugline = debugline)
 
-    constructor(dir: String, fname: String, name: String? = null,
-                debugline: Boolean = false):
-        this(File(dir, fname), name = name ?: fname, debugline = debugline)
-
     val fileReader = file.bufferedReader()
     var linebuf = StringReaderStream("", name = name)
-    val linenum = 0
+    var linenum = 0
 
     override val type = "file-reader-stream"
 
@@ -146,12 +158,13 @@ class FileReaderStream(file: File, name: String? = null,
         try {
             if (!linebuf.hasNext()) {
                 val line = fileReader.readLine()
+                linenum++
                 if (line == null) {
                     return null
                 }
                 if (debugline) {
                     debug(debugLoadlineSym) {
-                        "\"$line\""
+                        "$name:$linenum \"$line\""
                     }
                 }
                 linebuf = StringReaderStream(line + "\n", name = name)
@@ -316,7 +329,7 @@ abstract class LStream(
     
     abstract fun read_location(): String
 
-    open fun setPrompt(prompt: String) {}
+    open fun setPrompt(newPrompt: String) {}
     
     open fun read(): Char? {          // the actual reading
         throw ArgumentError("read on $this")

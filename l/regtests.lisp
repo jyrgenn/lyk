@@ -58,9 +58,9 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
   (let ((already-have-fname? (table-get test-name-table name)))
     (if already-have-fname?
         (progn (format t "WARN name %s:%s already seen in %s\n"
-                       *load-pathname* name already-have-fname?)
+                       *load-filename* name already-have-fname?)
                (incf warnings))
-      (table-put test-name-table name *load-pathname*)))
+      (table-put test-name-table name *load-filename*)))
   (let* ((result (errset (if (functionp expr)
                              (expr)     ;allow closures
                            (eval expr))
@@ -74,7 +74,7 @@ TYPE can be 'true, 'cmp, 'false, 'match, 'num, or 'error."
                           "FAIL: »%s«\n calculated: »%s«\n   expected: »%s«\n"
                           name (princs result) (princs expect))))
                  (apply #'presult args)
-                 (push (cons *load-pathname* name) fails))))
+                 (push (cons *load-filename* name) fails))))
     (incf ntests)
     (if (atom result)
         (progn (setf result *last-error*)
@@ -127,7 +127,7 @@ Traverse conses and vectors to find numbers."
 
 (defun done-testing ()
   "Mark a test file as done."
-  (presult "testing done in %s\n" *load-pathname*)
+  (presult "testing done in %s\n" *load-filename*)
   (setf testing-done t))
 
 ;;;;;;;;;;;;;;;;;;; now let the games begin

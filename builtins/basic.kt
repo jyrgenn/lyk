@@ -210,6 +210,9 @@ fun bi_setq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         val symbol = symbolArg(list.car, "setq symbol")
         list = list.cdr
         value = eval(list.car)
+        debug(debugSetqSym) {
+            "setq $symbol to ${list.car} => $value"
+        }
         symbol.setValue(value)
         list = list.cdr
     }
@@ -1257,10 +1260,10 @@ fun bi_loop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_while(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val (condition, _) = args
+    val (condition, bodyforms) = args
     
     while (eval(condition) !== Nil) {
-        evalProgn(args)
+        evalProgn(bodyforms)
     }
     return Nil
 }
