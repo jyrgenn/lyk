@@ -34,7 +34,7 @@ INSTALLBIN=/opt/w21/bin
 
 build: lyk.jar
 
-lyk.jar: $(ALLSRCS) generated/jline Makefile
+lyk.jar: $(ALLSRCS) generated/jline Makefile tags
 	$(COMP) -cp generated/jline $(ALLSRCS) -include-runtime -d lyk.jar
 	cd generated/jline; jar -f ../../lyk.jar -u [a-z]*
 	./scripts/lyk -J . -e '(build-info t)'
