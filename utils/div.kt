@@ -137,7 +137,7 @@ class StrBuf() {
     }
 
     val size: Int
-        get() = buf.size
+        get() = toString().length
 
     fun join(separator: String = " ",
              prefix: String = "",

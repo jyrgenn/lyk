@@ -48,6 +48,14 @@ class StringWriterStream(name: String? = null
         return s
     }
 
+    override fun toString(): String {
+        val x = if (is_open) "" else "x"
+        val i = if (input) "I" else ""
+        val o = if (output) "O" else ""
+        val e = if (error) "E" else ""
+        return "#<${this.type}[$i$o$e$x:${content.size}]$name>"
+    }    
+
     override fun close_specific() {}
 }
 
@@ -139,7 +147,15 @@ class StringReaderStream(val content: String, name: String? = "",
 
     fun hasNext() = is_open && nextpos < content.length
     
-    override fun close_specific() {}
+    override fun toString(): String {
+        val x = if (is_open) "" else "x"
+        val i = if (input) "I" else ""
+        val o = if (output) "O" else ""
+        val e = if (error) "E" else ""
+        val cl = content.length
+        val rem = cl - nextpos
+        return "#<${this.type}[$i$o$e$x:$rem/$cl]$name>"
+    }    override fun close_specific() {}
 }
 
 class FileReaderStream(file: File, name: String? = null,
