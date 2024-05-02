@@ -88,8 +88,9 @@ fun macroExpandFormRecurse(form: LObject): Pair<LObject, Boolean> {
             debug(debugMacroSym) {
                 "$head is maybeMacro? function $maybeMacro"
             }
+            val (exp_args, _) = macroExpandList(args)
             if (maybeMacro != null && maybeMacro is LMacro) {
-                val expanded = maybeMacro.expand(args)
+                val expanded = maybeMacro.expand(exp_args)
                 debug(debugMacroSym) {
                     "yes, $maybeMacro is! return $expanded, true"
                 }
