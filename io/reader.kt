@@ -18,7 +18,7 @@ val specialChar2escaped = mapOf(
 )
 
 // characters denoting the end of (most) tokens, besides whitespace
-val delimiter_chars = "(),'`\""
+val delimiter_chars = "(),'`\";"
 
 val QuoteSymbol = intern("quote", true)
 val UnquoteSymbol = intern("unquote", true)
