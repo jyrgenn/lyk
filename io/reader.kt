@@ -194,7 +194,19 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             when (ch) {
                 '(' -> return OparenToken(this)
                 ')' -> return CparenToken(this)
-                '.' -> return PeriodToken(this)
+                '.' -> {
+                    // This is only a period token if there is a
+                    // separator behind it; floats and symbols may
+                    // begin with a '.'
+                    val next = nextChar() ?: return PeriodToken(this)
+                    unreadChar(next)
+                    when (charclass(next)) {
+                        CC.Member, CC.Bar -> {
+                            return readAtomToken(ch)
+                        }
+                        else -> return PeriodToken(this)
+                    }
+                }
                 '\'' -> return QuoteToken(this)
                 '`' -> return QuasiquoteToken(this)
                 '\"' -> return readStringToken()
@@ -433,8 +445,21 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         finish                          // unread character and return result
     }
 
+    fun charclass(ch: Char?): CC {
+        // Return the class of a character.
+        if (ch != null) {
+            if (ch == '|') { return CC.Bar }
+            if (ch == '\\') { return CC.Backsl }
+            if (ch.isWhitespace() || ch in delimiter_chars) {
+                return CC.Delim
+            }
+            return CC.Member
+        }
+        return CC.Delim
+    }
 
-    fun readAtomToken(wantSymbol: Boolean = false): ReaderToken {
+    fun readAtomToken(start: Char? = null, wantSymbol: Boolean = false
+    ): ReaderToken {
         // Read an atom (symbol or number) and return it as a ReaderToken.
         // 
         // Barred can stop or begin anywhere! Also, backslash escapes. Holy
@@ -444,18 +469,6 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         // Maybe pulling the constant setup out to the top level could make this
         // faster. See later if it is worth the price.
         
-        fun charclass(ch: Char?): CC {
-            // Return the class of a character.
-            if (ch != null) {
-                if (ch == '|') { return CC.Bar }
-                if (ch == '\\') { return CC.Backsl }
-                if (ch.isWhitespace() || ch in delimiter_chars) {
-                    return CC.Delim
-                }
-                return CC.Member
-            }
-            return CC.Delim
-        }
 
         // 'Tis but a small table setup, luckily.
 
@@ -482,6 +495,9 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         var the_state = St.initial
         var new_state: St
 
+        if (start != null) {
+            collected.add(start)
+        }
         while (the_state != St.done) {
             val ch = nextChar()
             if (ch == null) {
