@@ -210,9 +210,6 @@ fun bi_setq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         val symbol = symbolArg(list.car, "setq symbol")
         list = list.cdr
         value = eval(list.car)
-        debug(debugSetqSym) {
-            "setq $symbol to ${list.car} => $value"
-        }
         symbol.setValue(value)
         list = list.cdr
     }
