@@ -3,6 +3,7 @@ package org.w21.lyk
 import java.io.File
 import java.lang.ref.WeakReference
 import jline.console.ConsoleReader
+import jline.console.completer.StringsCompleter
 
 
 val stdinName   = "*stdin*"
@@ -56,6 +57,7 @@ class ConsoleReaderStream(var prompt: LObject = Nil
     val cr = ConsoleReader()
     var linebuf = StringReaderStream("")
     var linenum = 0
+    var completer = StringsCompleter()
 
     override val type = "console-reader-stream"
 
@@ -70,6 +72,9 @@ class ConsoleReaderStream(var prompt: LObject = Nil
                     is LFunction -> currentPrompt.call(Nil).toString()
                     else -> currentPrompt.toString()
                 }
+                cr.removeCompleter(completer)
+                completer = StringsCompleter(symbolTable.keys)
+                cr.addCompleter(completer)
                 val line = cr.readLine(promptString)
                 linenum++
                 if (line == null) {
