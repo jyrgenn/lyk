@@ -39,6 +39,7 @@ class LMacro(
     }
 
     override fun call(arglist: LObject): LObject {
+        callCounter++
         throw InternalError("calling $this as a function!")        
     }
 

@@ -35,6 +35,7 @@ open class Lambda(                         // Macro will inherit this
 
 
     override fun call(arglist: LObject): LObject {
+        callCounter++
         return withNewEnvironment(environment) {
             bindPars(arglist, this)
             debug(debugLambdaParamsSym) {

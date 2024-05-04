@@ -97,6 +97,7 @@ class LBuiltin(
             newArglist.add(optPars[hadOptArgs++].second)
         }
         // finally, call the actual function
+        callCounter++
         return bfun(newArglist.list, kwArgs)
     }
 

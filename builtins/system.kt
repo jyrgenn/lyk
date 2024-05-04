@@ -723,14 +723,14 @@ fun bi_symbol_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_collect_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val bodyforms = args
-    val (conses, evals, seconds) = measurePerfdataDetail {
+    val (calls, conses, evals, seconds) = measurePerfdata {
         evalProgn(bodyforms)
     }
-    return LCons(LCons(intern("conses"), makeNumber(conses)),
-                 LCons(LCons(intern("evals"), makeNumber(evals)),
-                       LCons(LCons(intern("secs"),
-                                   makeNumber(seconds)),
-                             Nil)))
+    return LCons(LCons(intern("calls"), makeNumber(calls)),
+                 LCons(LCons(intern("conses"), makeNumber(conses)),
+                       LCons(LCons(intern("evals"), makeNumber(evals)),
+                             LCons(LCons(intern("secs"), makeNumber(seconds)),
+                                   Nil))))
 }
 
 /// builtin no-warnings

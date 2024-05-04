@@ -65,7 +65,7 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
             iprintln()
             if (interactive) {
                 lastValueSym.setValue(value, true)
-                info(perfdata)
+                info(perfdata.desc())
             }
         } catch (e: JavaError) {
             e.err.printStackTrace()

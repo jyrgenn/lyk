@@ -88,7 +88,7 @@ fun load_stream(load_stream: LStream, name: String,
             } else {
                 success = T
                 if (!quiet) {
-                    info("load $name: " + perfdata)
+                     info("load $name: " + perfdata.desc())
                 }
             }
         } catch (e: Exception) {

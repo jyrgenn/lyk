@@ -38,6 +38,7 @@ val errorSym = intern("error")
 
 var consCounter = 0L
 var evalCounter = 0L
+var callCounter = 0L
 
 // location of the last top level expression read in a repl
 var lastTopLevelLocation = ""

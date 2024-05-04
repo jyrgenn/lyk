@@ -208,11 +208,36 @@ fun pairsInternFirst(pairs: Array<Pair<String, LObject>>
     return result
 }
 
+val dense_float_format = "%.3g"
+
+fun dense_format(value: Long): String {
+    if (value > 999999) {
+        return dense_float_format.format(value.toDouble()).replace("e+0", "e")
+    }
+    return value.toString()
+}
+
+fun dense_format(value: Double): String {
+    return dense_float_format.format(value).replace("e+0", "e")
+}
+
+data class Perfdata(val calls: Long, val conses: Long, val evals: Long,
+                    val seconds: Double) {
+    fun desc(): String {
+        val ca_f = dense_format(calls)
+        val co_f = dense_format(conses)
+        val ev_f = dense_format(evals)
+        val eps  = dense_format(evals.toDouble() / seconds)
+        val se_f = dense_format(seconds)
+        return "%s call %s cons %s eval %s s %s eval/s".format(
+            ca_f, co_f, ev_f, se_f, eps).replace("e+0", "e")
+    }
+}
 
 // Measure performance data while executing the passed closure. The returned
 // value is a Pair of the string with the performance data and the returned
 // value.
-fun measurePerfdataValue(closure: () -> LObject): Pair<String, LObject> {
+fun measurePerfdataValue(closure: () -> LObject): Pair<Perfdata, LObject> {
     var result: LObject = Nil
 
     val perfdata = measurePerfdata {
@@ -222,29 +247,19 @@ fun measurePerfdataValue(closure: () -> LObject): Pair<String, LObject> {
 }
 
 // Measure performance data while executing the passed closure. The returned
-// value is a string with the performance data.
-fun measurePerfdata(closure: () -> Unit): String {
-    val (conses, evals, seconds) = measurePerfdataDetail(closure)
-
-    val millis = round(seconds * 1000)
-    val eval_s = (evals.toDouble() / seconds).toLong()
-
-    // 347 pairs 558 evals in 0 ms, 844974 evals/s
-    return "$conses conses $evals evals in $millis ms, $eval_s evals/s"
-}
-
-// Measure performance data while executing the passed closure. The returned
-// value is a string with the performance data.
-fun measurePerfdataDetail(closure: () -> Unit): Triple<Long,Long,Double> {
+// value is a Perfdata object with the performance data.
+fun measurePerfdata(closure: () -> Unit): Perfdata {
     val consCountBefore = consCounter
     val evalCountBefore = evalCounter
+    val callCountBefore = callCounter
 
-    val timeTaken = measureTime {
+    val time = measureTime {
         closure()
     }
     val conses = consCounter - consCountBefore
     val evals  = evalCounter - evalCountBefore
-    return Triple(conses, evals, timeTaken.toDouble(DurationUnit.SECONDS))
+    val calls  = callCounter - callCountBefore
+    return Perfdata(calls, conses, evals, time.toDouble(DurationUnit.SECONDS))
 }
 
 // Return the smaller of the two numbers.
