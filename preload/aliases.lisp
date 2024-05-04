@@ -2,6 +2,7 @@
 (fset 'string-concat #'string)
 (fset 'map #'mapcar)
 (fset 'λ #'lambda)
+(fset 'eql #'eq)
 
 ;; (fset 'namestring 'normalize-pathname)
 
