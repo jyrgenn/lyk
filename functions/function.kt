@@ -418,3 +418,13 @@ fun makeLambdaOrMacro(params: LObject,
                       bodyForms, docBody, env, locationLString)
     }
 }
+
+fun with_called_function_name(name: String, closure: () -> LObject): LObject {
+    val previousCalledFunctionName = calledFunctionName
+    try {
+        calledFunctionName = name
+        return closure()
+    } finally {
+        val calledFunctionName = previousCalledFunctionName
+    }
+}

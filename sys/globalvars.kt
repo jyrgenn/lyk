@@ -108,6 +108,8 @@ val terminalHeight = LSymbol.makeGlobal("*terminal-height*")
 val loadPrintSym = LSymbol.makeGlobal("*load-print*")
 val loadPathSym = LSymbol.makeGlobal("*load-path*")
 val loadFilenameSym = LSymbol.makeGlobal("*load-filename*")
+// name of the currently topmost called function
+var calledFunctionName: String = ""
 
 // indicates the name of the load file that should be shown in error messages
 val loadFileNameInd = ";#file"

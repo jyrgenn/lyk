@@ -86,7 +86,7 @@ fun bi_set_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (topic, data) = args
     var result = Nil
-    debug(symbolArg(topic, "debug topic")) {
+    debug(symbolArg(topic, " topic")) {
         result = T
         val items = ListCollector()
         for (item in data) {
@@ -424,7 +424,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_provide(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val feature = symbolArg(arg1(args), "provide feature")
+    val feature = symbolArg(arg1(args), " feature")
     featureSet.add(feature)
     return feature
 }
@@ -446,7 +446,7 @@ fun bi_provide(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_require(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (sym, fname) = args2(args)
-    val feature = symbolArg(sym, "require feature")
+    val feature = symbolArg(sym, " feature")
     if (feature in featureSet) {
         return T
     }
@@ -508,7 +508,7 @@ fun bi_barams(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_exit(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    exitLyk(longArg(arg1(args), "exit-status").toInt())
+    exitLyk(longArg(arg1(args)).toInt())
     @Suppress("UNREACHABLE_CODE")
     return Nil                          // yeah, right
 }
@@ -573,7 +573,7 @@ fun bi_env_table(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val environment = if (arg === Nil) {
         currentEnv
     } else{
-        envArg(arg, "env-table")
+        envArg(arg)
     }
 
     for ((key, value) in environment.the_env) {
@@ -601,7 +601,7 @@ fun bi_env_vars(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val environment = if (arg === Nil) {
         currentEnv
     } else{
-        envArg(arg, "env-vars")
+        envArg(arg)
     }
 
     return list2lisp(environment.the_env.keys)
@@ -625,7 +625,7 @@ fun bi_env_vars(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_function_definition(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return functionArg(arg1(args), "function-definition").definition()
+    return functionArg(arg1(args)).definition()
 }
 
 /// builtin function-docstring
@@ -643,7 +643,7 @@ fun bi_function_definition(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_function_docstring(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return makeString(functionArg(arg1(args), "function-docstring").docstring())
+    return makeString(functionArg(arg1(args)).docstring())
 }
 
 /// builtin function-parameters
@@ -663,7 +663,7 @@ fun bi_function_docstring(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_function_parameters(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    val function = functionArg(arg1(args), "function-parameters")
+    val function = functionArg(arg1(args))
     return function.parlist()
 }
 
@@ -683,7 +683,7 @@ fun bi_function_parameters(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_make_symbol(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val name = arg1(args)
-    return LSymbol(stringArg(name, "make-symbol"), false)
+    return LSymbol(stringArg(name), false)
 }
 
 /// builtin symbol-value
@@ -701,7 +701,7 @@ fun bi_make_symbol(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_symbol_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val sym = arg1(args)
-    return symbolArg(sym, "symbol-value").getValue()
+    return symbolArg(sym).getValue()
 }
 
 /// builtin collect-performance-data
@@ -817,7 +817,7 @@ fun has_shellmeta(s: String): Boolean {
 @Suppress("UNUSED_PARAMETER")
 fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (command, rest) = args
-    val command_s = stringArg(command, "run-program command")
+    val command_s = stringArg(command, " command")
     val key_in_shell = kwArgs[inShellKSym] ?: Nil
     var cmd_arg =
         if (rest == Nil) {
@@ -835,7 +835,7 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
                                         + "$key_in_shell")
             }
         } else {
-            stringlistArg(args, "run-program")
+            stringlistArg(args)
         }
 
     val pb = ProcessBuilder(cmd_arg)
@@ -960,7 +960,7 @@ fun bi_error_object_p(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_sleep(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val ms = (numberArg(arg1(args), "sleep") * 1000).toLong()
+    val ms = (numberArg(arg1(args)) * 1000).toLong()
     if (ms < 0) {
         throw ArgumentError("seconds argument must not be negative")
     }

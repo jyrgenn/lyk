@@ -36,12 +36,14 @@ open class Lambda(                         // Macro will inherit this
 
     override fun call(arglist: LObject): LObject {
         callCounter++
-        return withNewEnvironment(environment) {
-            bindPars(arglist, this)
-            debug(debugLambdaParamsSym) {
-                currentEnv.desc(null) + "\nin " + bodyForms.toString()
+        return with_called_function_name(name.name) {
+            withNewEnvironment(environment) {
+                bindPars(arglist, this)
+                debug(debugLambdaParamsSym) {
+                    currentEnv.desc(null) + "\nin " + bodyForms.toString()
+                }
+                evalProgn(bodyForms)
             }
-            evalProgn(bodyForms)
         }
     }
 

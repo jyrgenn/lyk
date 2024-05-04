@@ -4,25 +4,37 @@ package org.w21.lyk
 
 import kotlin.io.path.*
 
+// all these *Arg(arg: LObject, desc: String? = null) functions check the passed
+// argument for the correct type(s) and return the corresponding typed value.
+// 
+// The `desc` argument if meant for an error message if the type check fails;
+// the name of the function is taken from global calledFunctionName, and the
+// `desc` argument, if passed, may serve to specify the argument further.
+// Whereas with #'list, all argument have the same function and need not be
+// distiguished further, it will be helpful to distiguish "elt index argument"
+// and "elt sequence argument", for instance.
+//
+// If passed at all, it SHOULD begin with a blank, like in " index" so the error
+// message can be templated as "$calledFunctionName$desc is not an [...]"
 
-fun outputStreamArg(arg: LObject, what: String): LStream {
+fun outputStreamArg(arg: LObject, desc: String = ""): LStream {
     if (arg === Nil) {
         return stdout
     }
-    return streamArg(arg, what)
+    return streamArg(arg, desc)
 }
 
-fun streamArg(arg: LObject, what: String): LStream { 
+fun streamArg(arg: LObject, desc: String = ""): LStream { 
     return (arg as? LStream) ?:
-        throw ArgumentError("$what argument is not a stream: $arg")
+        throw ArgumentError("$calledFunctionName$desc argument is not a stream: $arg")
 }
 
-fun charArg(arg: LObject, what: String): LChar { 
+fun charArg(arg: LObject, desc: String = ""): LChar { 
     return (arg as? LChar) ?:
-        throw ArgumentError("$what argument is not a char: $arg")
+        throw ArgumentError("$calledFunctionName$desc argument is not a char: $arg")
 }
 
-fun charOrStringArg(arg: LObject, what: String): Char {
+fun charOrStringArg(arg: LObject, desc: String = ""): Char {
     if (arg is LChar) {
         return arg.the_char
     } else if (arg is LString) {
@@ -35,126 +47,116 @@ fun charOrStringArg(arg: LObject, what: String): Char {
             return s[0]
         }
     }
-    throw ArgumentError("$what argument is not a char or string of"
+    throw ArgumentError("$calledFunctionName$desc argument is not a char or string of"
                         +" length 1: $arg")
 }
 
-fun envArg(arg: LObject, what: String): LEnv {
+fun envArg(arg: LObject, desc: String = ""): LEnv {
     return (arg as? LEnv) ?:
-        throw ArgumentError("$what argument is not an environment: $arg")
+        throw ArgumentError("$calledFunctionName$desc argument is not an environment: $arg")
 }
 
-fun numberArg(arg: LObject, what: String): Double {
+fun numberArg(arg: LObject, desc: String = ""): Double {
     return (arg as? LNumber)?.the_number ?:
-        throw ArgumentError("$what argument is not a number: $arg (${arg.type})")
+        throw ArgumentError("$calledFunctionName$desc argument is not a number: $arg (${arg.type})")
 }
 
-fun intArg(arg: LObject, what: String) = numberArg(arg, what).toInt()
+fun intArg(arg: LObject, desc: String = "") = numberArg(arg, desc).toInt()
 
-// fun longArg(arg: LObject, what: String): Int {
-//     if let num = arg as? LNumber {
-//         let intval = Int(num.value)
-//         if num.value == Double(intval) {
-//             return intval
-//         }
-//     }
-//     throw ArgumentError("$what argument is not an integer: $arg")
-// }
-
-fun longArg(arg: LObject, what: String): Long {
+fun longArg(arg: LObject, desc: String = ""): Long {
     if (arg is LNumber && arg.isLong()) {
         return arg.the_number.toLong()
     }
-    throw ArgumentError("$what argument is not an integer: $arg")
+    throw ArgumentError("$calledFunctionName$desc argument is not an integer: $arg")
 }
 
-fun functionArg(arg: LObject, what: String): LFunction {
+fun functionArg(arg: LObject, desc: String = ""): LFunction {
     return arg as? LFunction ?:
-        throw ArgumentError("$what argument is not a function: $arg")
+        throw ArgumentError("$calledFunctionName$desc argument is not a function: $arg")
 }
 
-fun consArg(arg: LObject, what: String): LCons {
+fun consArg(arg: LObject, desc: String = ""): LCons {
     return arg as? LCons ?:
-        throw ArgumentError("$what argument is not a cons: $arg")
+        throw ArgumentError("$calledFunctionName$desc argument is not a cons: $arg")
 }
 
-fun listArg(arg: LObject, what: String): LObject {
+fun listArg(arg: LObject, desc: String = ""): LObject {
     if (arg.isList()) {
         return arg
     }
-    throw ArgumentError("$what argument is not a list: $arg")
+    throw ArgumentError("$calledFunctionName$desc argument is not a list: $arg")
 }
 
-fun seqArg(arg: LObject, what: String): LSeq {
+fun seqArg(arg: LObject, desc: String = ""): LSeq {
     if (arg is LSeq) {
         return arg
     }
-    throw ArgumentError("$what argument is not a sequence: $arg")
+    throw ArgumentError("$calledFunctionName$desc argument is not a sequence: $arg")
 }
 
-// fun sequenceArg(arg: LObject, what: String): ObjectSequence {
+// fun sequenceArg(arg: LObject, desc: String = ""): ObjectSequence {
 //     if (arg is any) ObjectSequence {
 //         return arg
 //     }
-//     throw ArgumentError("$what argument is not a sequence: $arg")
+//     throw ArgumentError("$calledFunctionName$desc argument is not a sequence: $arg")
 // }
 
-fun stringArg(arg: LObject, what: String): String {
+fun stringArg(arg: LObject, desc: String = ""): String {
     return (arg as? LString)?.the_string ?:
-        throw ArgumentError("$what argument is not a string: $arg")
+        throw ArgumentError("$calledFunctionName$desc argument is not a string: $arg")
 }
 
-fun stringlikeArg(arg: LObject, what: String): String {
+fun stringlikeArg(arg: LObject, desc: String = ""): String {
     if (arg is LString) {
         return arg.the_string
     }
     if (arg is LSymbol) {
         return arg.name
     }
-    throw ArgumentError("$what argument is not a string or symbol: $arg")
+    throw ArgumentError("$calledFunctionName$desc argument is not a string or symbol: $arg")
 }
 
-fun symbolArg(arg: LObject, what: String): LSymbol {
+fun symbolArg(arg: LObject, desc: String = ""): LSymbol {
     return arg as? LSymbol ?:
-        throw ArgumentError("$what argument is not a symbol: $arg")
+        throw ArgumentError("$calledFunctionName$desc argument is not a symbol: $arg")
 }
 
-fun tableArg(arg: LObject, what: String): LTable {
+fun tableArg(arg: LObject, desc: String = ""): LTable {
     if (arg is LTable) {
         return arg
     }
-    throw ArgumentError("$what argument is not a table: $arg")
+    throw ArgumentError("$calledFunctionName$desc argument is not a table: $arg")
 }
 
-fun regexpArg(arg: LObject, what: String): LRegexp {
+fun regexpArg(arg: LObject, desc: String = ""): LRegexp {
     if (arg is LRegexp) {
         return arg
     }
     try {
         return LRegexp(arg.toString())
     } catch (e: Exception) {
-        throw ArgumentError("$what argument is not a regexp: $arg ($e)")
+        throw ArgumentError("$calledFunctionName$desc argument is not a regexp: $arg ($e)")
     }
 }
 
-fun vectorArg(arg: LObject, what: String): LVector {
+fun vectorArg(arg: LObject, desc: String = ""): LVector {
     if (arg is LVector) {
         return arg
     }
-    throw ArgumentError("$what argument is not a vector: $arg")
+    throw ArgumentError("$calledFunctionName$desc argument is not a vector: $arg")
 }
 
-fun intOrDefault(arg: LObject, default: Int, what: String): Int {
+fun intOrDefault(arg: LObject, default: Int, desc: String = ""): Int {
     if (arg === Nil) {
         return default
     }
-    return intArg(arg, what)
+    return intArg(arg, desc)
 }
 
-fun stringlistArg(list: LObject, what: String): List<String> {
+fun stringlistArg(list: LObject, desc: String = ""): List<String> {
     val mlos = mutableListOf<String>()
     for (elem in list) {
-        mlos.add(stringArg(elem, what))
+        mlos.add(stringArg(elem, desc))
     }
     return mlos
 }
@@ -189,9 +191,9 @@ fun spreadArglist(args: LObject): LObject {
     return arglist
 }
 
-fun environmentArg(arg: LObject, what: String): LEnv {
+fun environmentArg(arg: LObject, desc: String = ""): LEnv {
     return arg as? LEnv ?:
-        throw ArgumentError("$what argument is not a environment: $arg")
+        throw ArgumentError("$calledFunctionName$desc argument is not a environment: $arg")
 }
 
 fun bool2ob(value: Boolean): LObject {
@@ -401,11 +403,11 @@ fun isqrt(n: Long): Long {
 }
 
 // Return the checked int value of form if it evals to non-nil, or default
-fun intValueOr(form: LObject, default: Int?, what: String): Int? {
+fun intValueOr(form: LObject, default: Int?, desc: String = ""): Int? {
     val value = eval(form)
     if (value === Nil) {
         return default
     } else {
-        return intArg(value, what)
+        return intArg(value, desc)
     }
 }

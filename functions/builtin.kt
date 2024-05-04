@@ -98,7 +98,9 @@ class LBuiltin(
         }
         // finally, call the actual function
         callCounter++
-        return bfun(newArglist.list, kwArgs)
+        return with_called_function_name(name.name) {
+            bfun(newArglist.list, kwArgs)
+        }
     }
 
 }

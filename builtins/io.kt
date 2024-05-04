@@ -55,7 +55,7 @@ fun bi_println(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_print(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (arg, stream) = args2(args)
-    outputStreamArg(stream, "print stream").write("\n$arg ")
+    outputStreamArg(stream, " stream").write("\n$arg ")
     return arg
 }
 
@@ -75,7 +75,7 @@ fun bi_print(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_prin1(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (arg, stream) = args2(args)
-    outputStreamArg(stream, "prin1 stream").write(arg.desc(null))
+    outputStreamArg(stream, " stream").write(arg.desc(null))
     return arg
 }
 
@@ -112,7 +112,7 @@ fun bi_prin1_to_string(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_princ(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (arg, stream) = args2(args)
-    outputStreamArg(stream, "princ stream").write(arg.toString())
+    outputStreamArg(stream, " stream").write(arg.toString())
     return arg
 }
 
@@ -165,7 +165,7 @@ fun bi_princs(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_terpri(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val stream = arg1(args)
-    outputStreamArg(stream, "terpri stream").println()
+    outputStreamArg(stream, " stream").println()
     return Nil
 }
 
@@ -246,7 +246,7 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_make_string_input_stream(args: LObject,
                                 kwArgs: Map<LSymbol, LObject>): LObject {
-    val string = stringArg(arg1(args), "make-string-input-stream")
+    val string = stringArg(arg1(args))
     return StringReaderStream(string)
 }
 
@@ -275,7 +275,7 @@ fun bi_stream(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 
 /// builtin format
 /// fun     bi_format
-/// std     format destination
+/// std     destination format-string
 /// key     
 /// opt     
 /// rest    args
@@ -293,7 +293,7 @@ fun bi_stream(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_format(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (dest, rest) = args
     val (f, f_args) = rest
-    val format = stringArg(f, "format string")
+    val format = stringArg(f, " format-string")
     val formatted: String
 
     formatted = format.format(*valueArray(f_args))
@@ -388,7 +388,7 @@ fun bi_open(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_close(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val stream = streamArg(arg1(args), "close")
+    val stream = streamArg(arg1(args))
     try {
         return bool2ob(stream.close())
     } catch (e: Exception) {
@@ -438,7 +438,7 @@ fun bi_read_line(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     var stream = if (input_stream === Nil) {
         stdin
     } else {
-        streamArg(input_stream, "read-line input-stream")
+        streamArg(input_stream, " input-stream")
     }
     val line = stream.readLine(ob2bool(trim_nl))
     if (line == null) {
@@ -464,7 +464,7 @@ fun bi_read_line(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_basename(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val fname = stringArg(arg1(args), "basename")
+    val fname = stringArg(arg1(args))
     return makeString(basename(fname))
 }
 
@@ -482,7 +482,7 @@ fun bi_basename(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_dirname(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val fname = stringArg(arg1(args), "dirname")
+    val fname = stringArg(arg1(args))
     return makeString(dirname(fname))
 }
 
@@ -682,7 +682,7 @@ fun bi_finish_output(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         if (output_stream === Nil) {
             stdout
         } else {
-            streamArg(output_stream, "finish_output")
+            streamArg(output_stream)
         }
     stream.flush()
     return Nil

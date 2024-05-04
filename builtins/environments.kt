@@ -36,7 +36,7 @@ fun bi_new_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
     
     val env = LEnv(parent_env)
     if (value_table !== Nil) {
-        val vtable = tableArg(value_table, "new-environment value-table")
+        val vtable = tableArg(value_table, " value-table")
 
         for ((sym, value) in vtable.items()) {
             if (sym is LSymbol) {
@@ -87,7 +87,7 @@ fun bi_with_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
 
     val savedEnv = currentEnv
     try {
-        currentEnv = environmentArg(eval(env_arg), "with-environment env")
+        currentEnv = environmentArg(eval(env_arg), " env")
         return evalProgn(bodyforms)
     } finally {
         currentEnv = savedEnv

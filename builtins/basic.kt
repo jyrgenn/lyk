@@ -17,7 +17,7 @@ package org.w21.lyk
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_car(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return listArg(arg1(args), "car").car
+    return listArg(arg1(args)).car
 }
 
 /// builtin cdr
@@ -35,7 +35,7 @@ fun bi_car(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_cdr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return listArg(arg1(args), "cdr").cdr
+    return listArg(arg1(args)).cdr
 }
 
 /// builtin rplaca
@@ -53,7 +53,7 @@ fun bi_cdr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_rplaca(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     var (cons, newcar) = args2(args)
-    consArg(cons, "rplaca").car = newcar
+    consArg(cons).car = newcar
     return cons
 }
 
@@ -72,7 +72,7 @@ fun bi_rplaca(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_rplacd(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     var (cons, newcar) = args2(args)
-    consArg(cons, "rplacd").cdr = newcar
+    consArg(cons).cdr = newcar
     return cons
 }
 
@@ -90,7 +90,7 @@ fun bi_rplacd(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_intern(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return intern(stringArg(arg1(args), "intern"))
+    return intern(stringArg(arg1(args)))
 }
 
 /// builtin list
@@ -163,7 +163,7 @@ fun bi_cons(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_set(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (sym, value) = args2(args)
-    symbolArg(sym, "set").setValue(value)
+    symbolArg(sym).setValue(value)
     return value
 }
 
@@ -207,7 +207,7 @@ fun bi_setq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     var list: LObject = args
     var value: LObject = Nil
     while (list is LCons) {
-        val symbol = symbolArg(list.car, "setq symbol")
+        val symbol = symbolArg(list.car, " symbol")
         list = list.cdr
         value = eval(list.car)
         symbol.setValue(value)
@@ -425,7 +425,7 @@ fun bi_or(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_cond(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     for (arg in args) {
-        val clause = consArg(arg, "cond clause")
+        val clause = consArg(arg, " clause")
         val condition = eval(clause.car)
         if (condition !== Nil) {
             val forms = clause.cdr
@@ -586,7 +586,7 @@ fun bi_lambda(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_defun(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (name, rest) = args
     val (params, bodyforms) = rest
-    val sym = symbolArg(name, "function name")
+    val sym = symbolArg(name, " function name")
     debug (debugDefunSym) {
         LCons(sym, params).toString()
     }
@@ -692,7 +692,7 @@ fun bi_function(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_symbol_function(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    val sym = symbolArg(arg1(args), "symbol")
+    val sym = symbolArg(arg1(args))
     val function = sym.function
     if (function != null) {
             return function
@@ -798,7 +798,7 @@ fun bi_throw(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_boundp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val sym = symbolArg(arg1(args), "boundp")
+    val sym = symbolArg(arg1(args))
     return bool2ob(sym.getValueOptional() != null)
 }
 
@@ -817,7 +817,7 @@ fun bi_boundp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_fboundp(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    val sym = symbolArg(arg1(args), "fboundp")
+    val sym = symbolArg(arg1(args))
     if (sym.function != null) {
         return T
     }
@@ -872,7 +872,7 @@ fun bi_errset(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_makunbound(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    val sym = symbolArg(arg1(args), "makunbound")
+    val sym = symbolArg(arg1(args))
     currentEnv.unbind(sym)
     return sym
 }
@@ -892,7 +892,7 @@ fun bi_makunbound(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_fmakunbound(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    val sym = symbolArg(arg1(args), "makunbound")
+    val sym = symbolArg(arg1(args))
     sym.setFunction(null)               // checked in the symbol object
     return sym
 }
@@ -913,7 +913,7 @@ fun bi_fmakunbound(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_funcall(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (function, rest) = args
-    return functionArg(function, "funcall").call(rest)
+    return functionArg(function).call(rest)
 }
 
 /// builtin apply
@@ -934,7 +934,7 @@ fun bi_funcall(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_apply(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (function, rest) = args
     val allargs = spreadArglist(rest)
-    return functionArg(function, "funcall").call(allargs)
+    return functionArg(function).call(allargs)
 }
 
 /// builtin environmentp
@@ -1400,7 +1400,7 @@ fun bi_nconc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         if (list === Nil) {
             continue
         }
-        val next = consArg(list, "nconc")
+        val next = consArg(list)
         if (acc == null) {
             acc = next
             lastcell = lastCons(acc)
@@ -1427,8 +1427,8 @@ fun bi_nconc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_fset(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (sym, func) = args2(args)
-    val symbol = symbolArg(sym, "fset symbol")
-    val function = functionArg(func, "fset function")
+    val symbol = symbolArg(sym, " symbol")
+    val function = functionArg(func, " function")
     symbol.setFunction(function)
     return function
 }
@@ -1449,12 +1449,12 @@ fun bi_fset(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_defvar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (sym, value, doc) = args3(args)
-    val symbol = symbolArg(sym, "defvar symbol")
+    val symbol = symbolArg(sym, " symbol")
     if (symbol.getValueOptional() == null) {
         symbol.setValue(eval(value), silent = true)
     }
     if (doc !== Nil) {
-        val docstring = stringArg(doc, "defvar docstring")
+        val docstring = stringArg(doc, " docstring")
         symbol.putprop(intern("docstring"),
                        makeString(docstring))
     }
@@ -1478,10 +1478,10 @@ fun bi_defvar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_defparameter(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (sym, value, doc) = args3(args)
-    val symbol = symbolArg(sym, "defvar symbol")
+    val symbol = symbolArg(sym, " symbol")
     symbol.setValue(eval(value), silent = true)
     if (doc !== Nil) {
-        val docstring = stringArg(doc, "defvar docstring")
+        val docstring = stringArg(doc, " docstring")
         symbol.putprop(intern("docstring"),
                        makeString(docstring))
     }
@@ -1508,7 +1508,7 @@ fun bi_last(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     if (list_arg === Nil) {
         return Nil
     }
-    return lastCons(consArg(list_arg, "last"))
+    return lastCons(consArg(list_arg))
 }
 
 /// builtin read
@@ -1570,12 +1570,12 @@ fun bi_flet(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     var previous_bindings = mutableListOf<Pair<LSymbol, LFunction?>>()
 
     try {
-        for (binding in listArg(bindings, "flet bindings")) {
-            val (sym, funcrest) = listArg(binding, "flet binding")
-            val symbol = symbolArg(sym, "flet function variable")
+        for (binding in listArg(bindings, " bindings")) {
+            val (sym, funcrest) = listArg(binding, " binding")
+            val symbol = symbolArg(sym, " function variable")
             previous_bindings.add(Pair(symbol, symbol.function))
             val (params, bodyforms) = listArg(funcrest,
-                                              "flet function $symbol")
+                                              " function $symbol")
             symbol.setFunction(makeLambdaOrMacro(
                                    params, bodyforms))
         }
@@ -1603,7 +1603,7 @@ fun bi_flet(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_symbol_name(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return makeString(symbolArg(arg1(args), "symbol-name").name)
+    return makeString(symbolArg(arg1(args)).name)
 }
 
 /// builtin atom
@@ -1661,7 +1661,7 @@ fun bi_eval(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     if (env === Nil) {
         return eval(expr)
     }
-    return withEnvironment(envArg(env, "eval environment")) {
+    return withEnvironment(envArg(env, " environment")) {
         eval(expr)
     }
 }
@@ -1681,8 +1681,8 @@ fun bi_eval(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_getprop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (symbol, property, default) = args3(args)
-    val sym = symbolArg(symbol, "get symbol")
-    val prop = symbolArg(property, "get property")
+    val sym = symbolArg(symbol, " symbol")
+    val prop = symbolArg(property, " property")
     return sym.getProp(prop, default)
 }
 
@@ -1701,8 +1701,8 @@ fun bi_getprop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_putprop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (symbol, property, value) = args3(args)
-    val sym = symbolArg(symbol, "put symbol")
-    val prop = symbolArg(property, "put property")
+    val sym = symbolArg(symbol, " symbol")
+    val prop = symbolArg(property, " property")
     sym.setProp(prop, value)
     return value
 }
@@ -1722,8 +1722,8 @@ fun bi_putprop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_remprop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (symbol, property) = args3(args)
-    val sym = symbolArg(symbol, "put symbol")
-    val prop = symbolArg(property, "put property")
+    val sym = symbolArg(symbol, " symbol")
+    val prop = symbolArg(property, " property")
     return sym.remProp(prop)
 }
 
@@ -1742,7 +1742,7 @@ fun bi_remprop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_reverse(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return seqArg(arg1(args), "reverse").reversed()
+    return seqArg(arg1(args)).reversed()
 }
 
 /// builtin nreverse
@@ -1795,7 +1795,7 @@ fun bi_nreverse(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_mapcar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (func, lists) = args
-    val function = functionArg(func, "mapcar function")
+    val function = functionArg(func, " function")
     var listArgs = lists
     val results = ListCollector()
 
@@ -1841,7 +1841,7 @@ fun bi_mapcar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_rplaca_ret_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (the_cons, new_value) = args2(args)
-    consArg(the_cons, "rplaca-ret-value cons").car = new_value
+    consArg(the_cons, " cons").car = new_value
     return new_value
 }
 
@@ -1861,7 +1861,7 @@ fun bi_rplaca_ret_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_rplacd_ret_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (the_cons, new_value) = args2(args)
-    consArg(the_cons, "rplacd-ret-value cons").cdr = new_value
+    consArg(the_cons, " cons").cdr = new_value
     return new_value
 }
 
@@ -1883,7 +1883,7 @@ fun bi_rplacd_ret_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_function_body(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return functionArg(arg1(args), "function-body").body()
+    return functionArg(arg1(args)).body()
 }
 
 /// builtin identity
@@ -1935,8 +1935,8 @@ fun bi_ignore(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_nth(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (n, list) = args2(args)
-    var l = listArg(list, "nth list")
-    val n_n = intArg(n, "nth n")
+    var l = listArg(list, " list")
+    val n_n = intArg(n, " n")
     if (n_n < 0) {
         throw ArgumentError("nth `n` argument must not be negative")
     }
@@ -1962,8 +1962,8 @@ fun bi_nth(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_nthcdr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (n, list) = args2(args)
-    var l = listArg(list, "nthcdr list")
-    val n_n = intArg(n, "nthcdr n")
+    var l = listArg(list, " list")
+    val n_n = intArg(n, " n")
     if (n_n < 0) {
         throw ArgumentError("nthcdr `n` argument must not be negative")
     }

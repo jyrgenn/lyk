@@ -18,7 +18,7 @@ package org.w21.lyk
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_code_char(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val code = intArg(arg1(args), "code-char")
+    val code = intArg(arg1(args))
     if (code.toChar().category == kotlin.text.CharCategory.UNASSIGNED) {
         throw ArgumentError("code $code is not an assigned Unicode character")
     }
@@ -40,7 +40,7 @@ fun bi_code_char(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_int(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    val char = charOrStringArg(arg1(args), "char-int")
+    val char = charOrStringArg(arg1(args))
     return makeNumber(char.code)
 }
 
@@ -63,18 +63,18 @@ fun bi_char_int(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 //   compare: the comparison function, working on Char codes, for order
 
 // compare for order
-fun char_compare_ordered(args: LObject, what: String, case_i: Boolean,
+fun char_compare_ordered(args: LObject, case_i: Boolean,
                          compare: (code1: Int, code2: Int) -> Boolean
 ): LObject {
     if (args === Nil) {
         return T
     }
     val (ch1, rest) = args
-    val char1 = charArg(ch1, what + " first").the_char
+    val char1 = charArg(ch1, " first").the_char
     var previous: Int = (if (case_i) char1.lowercase()[0] else char1).code
 
     for (arg in rest) {
-        val char = charArg(arg, what).the_char
+        val char = charArg(arg).the_char
         val code = (if (case_i) char.lowercase()[0] else char).code
         if (compare(previous, code)) {
             previous = code
@@ -86,12 +86,12 @@ fun char_compare_ordered(args: LObject, what: String, case_i: Boolean,
 }
 
 // core of the comparison functions that check for uniqueness
-fun char_compare_unique(args: LObject, what: String, case_i: Boolean): LObject
+fun char_compare_unique(args: LObject, case_i: Boolean): LObject
 {
     var things = mutableSetOf<Int>()
     
     for (arg in args) {
-        val char = charArg(arg, what).the_char
+        val char = charArg(arg).the_char
         val code = (if (case_i) char.lowercase()[0] else char).code
         
         if (code in things) {
@@ -104,17 +104,17 @@ fun char_compare_unique(args: LObject, what: String, case_i: Boolean): LObject
 }
                         
 // core of the comparison functions that check for equality
-fun char_compare_equal(args: LObject, what: String, case_i: Boolean): LObject
+fun char_compare_equal(args: LObject, case_i: Boolean): LObject
 {
     if (args === Nil) {
         return T
     }
     val (ch1, rest) = args
-    val char1 = charArg(ch1, what + " first").the_char
+    val char1 = charArg(ch1, " first").the_char
     val code1 = (if (case_i) char1.lowercase()[0] else char1).code
 
     for (arg in rest) {
-        val char = charArg(arg, what).the_char
+        val char = charArg(arg).the_char
         val code = (if (case_i) char.lowercase()[0] else char).code
         if (code != code1) {
             return Nil
@@ -139,7 +139,7 @@ fun char_compare_equal(args: LObject, what: String, case_i: Boolean): LObject
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_equal(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_equal(args, "char-equal", case_i = true)
+    return char_compare_equal(args, case_i = true)
 }
 
 /// builtin char-not-equal
@@ -156,7 +156,7 @@ fun bi_char_equal(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_not_equal(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_unique(args, "char-not-equal", case_i = true)
+    return char_compare_unique(args, case_i = true)
 }
 
 /// builtin char/=
@@ -173,7 +173,7 @@ fun bi_char_not_equal(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_not_equal2(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_unique(args, "char/=", case_i = false)
+    return char_compare_unique(args, case_i = false)
 }
 
 /// builtin char<
@@ -190,7 +190,7 @@ fun bi_char_not_equal2(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_lt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_ordered(args, "char<", case_i = false) {
+    return char_compare_ordered(args, case_i = false) {
         code1, code2 -> code1 < code2
     }
 }
@@ -209,7 +209,7 @@ fun bi_char_lt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_lessp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_ordered(args, "char-lessp", case_i = true) {
+    return char_compare_ordered(args, case_i = true) {
         code1, code2 -> code1 < code2
     }
 }
@@ -228,7 +228,7 @@ fun bi_char_lessp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_le(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_ordered(args, "char<=", case_i = false) {
+    return char_compare_ordered(args, case_i = false) {
         code1, code2 -> code1 <= code2
     }
 }
@@ -248,7 +248,7 @@ fun bi_char_le(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_not_greaterp(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return char_compare_ordered(args, "char-not-greaterp", case_i = true) {
+    return char_compare_ordered(args, case_i = true) {
         code1, code2 -> code1 <= code2
     }
 }
@@ -267,7 +267,7 @@ fun bi_char_not_greaterp(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_eql(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_equal(args, "char=", case_i = false)
+    return char_compare_equal(args, case_i = false)
 }
 
 /// builtin char>
@@ -284,7 +284,7 @@ fun bi_char_eql(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_gt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_ordered(args, "char>", case_i = false) {
+    return char_compare_ordered(args, case_i = false) {
         code1, code2 -> code1 > code2
     }
 }
@@ -303,7 +303,7 @@ fun bi_char_gt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_greaterp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_ordered(args, "char-greaterp", case_i = true) {
+    return char_compare_ordered(args, case_i = true) {
         code1, code2 -> code1 > code2
     }
 }
@@ -322,7 +322,7 @@ fun bi_char_greaterp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_ge(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_ordered(args, "char>=", case_i = false) {
+    return char_compare_ordered(args, case_i = false) {
         code1, code2 -> code1 >= code2
     }
 }
@@ -341,7 +341,7 @@ fun bi_char_ge(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_char_not_lessp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    return char_compare_ordered(args, "char-not-lessp", case_i = true) {
+    return char_compare_ordered(args, case_i = true) {
         code1, code2 -> code1 >= code2
     }
 }

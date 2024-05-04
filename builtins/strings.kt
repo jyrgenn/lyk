@@ -45,7 +45,7 @@ fun bi_string(args: LObject, kwArgs: Map<LSymbol , LObject>): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_make_string(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (length, initial) = args2(args)
-    val len = intArg(length, "make-string length")
+    val len = intArg(length, " length")
     val sb = StrBuf()
     
     // If we have a function argument as initial value, call it for every
@@ -144,7 +144,7 @@ fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_regexp_match(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (re, string, limit) = args3(args)
-    val regexp = regexpArg(re, "regexp-match regexp")
+    val regexp = regexpArg(re, " regexp")
     val s = string.toString()
 
     if (limit === Nil) {
@@ -186,8 +186,8 @@ fun regexp_split(regexp: LRegexp, s: String, limit: Int): LObject {
 fun bi_regexp_split(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (re, s, limit) = args3(args)
-    return regexp_split(regexpArg(re, "regexp-split regexp"), s.toString(),
-                        intArg(limit, "regexp-split limit"))
+    return regexp_split(regexpArg(re, " regexp"), s.toString(),
+                        intArg(limit, " limit"))
 }
 
 /// builtin regexp-replace
@@ -206,9 +206,9 @@ fun bi_regexp_split(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_regexp_replace(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (re, s, replacement, limit) = args4(args)
-    val regexp = regexpArg(re, "regexp-replace regexp")
+    val regexp = regexpArg(re, " regexp")
     return regexp.replace(s.toString(), replacement.toString(),
-                          intArg(limit, "regexp-replace limit"))
+                          intArg(limit, " limit"))
 }
 
 /// builtin string-split
@@ -249,7 +249,7 @@ fun bi_string_split(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     if (limit === Nil) {
         ilimit = 0
     } else {
-        ilimit = intArg(limit, "string-split limit")
+        ilimit = intArg(limit, " limit")
         if (ilimit < 0) {
             ilimit = 0
         }
@@ -257,16 +257,15 @@ fun bi_string_split(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return regexp_split(regexp, s, ilimit)
 }
 
-fun substring_limits(start: LObject, end: LObject, len: Int, what: String
-): Pair<Int, Int> {
+fun substring_limits(start: LObject, end: LObject, len: Int): Pair<Int, Int> {
     val pos1 = (if (start === Nil)
                     0
                 else
-                    min(len, max(0, intArg(start, what + " start"))))
+                    min(len, max(0, intArg(start, " start"))))
     val pos2 = (if (end === Nil)
                     len
                 else
-                    max(0, min(len, intArg(end, what + " start"))))
+                    max(0, min(len, intArg(end, " start"))))
     return Pair(pos1, pos2)
 }
 
@@ -291,7 +290,7 @@ fun bi_string_upcase(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val s = string.toString()
     val len = s.length
 
-    val (pos1, pos2) = substring_limits(start, end, len, "string-upcase")
+    val (pos1, pos2) = substring_limits(start, end, len)
 
     if (pos1 >= pos2) {
         return makeString(s)
@@ -328,7 +327,7 @@ fun bi_string_downcase(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val s = string.toString()
     val len = s.length
 
-    val (pos1, pos2) = substring_limits(start, end, len, "string-downcase")
+    val (pos1, pos2) = substring_limits(start, end, len)
 
     if (pos1 >= pos2) {
         return makeString(s)
@@ -389,7 +388,7 @@ fun bi_string_capitalize(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject 
     val s = string.toString()
     val len = s.length
 
-    val (pos1, pos2) = substring_limits(start, end, len, "string-capitalize")
+    val (pos1, pos2) = substring_limits(start, end, len)
 
     if (pos1 >= pos2) {
         return makeString(s)
@@ -547,11 +546,11 @@ fun bi_substring(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (string, start, end) = args3(args)
     val s = string.toString()
     val len = s.length
-    val n_start = min(len, intArg(start, "substring start"))
+    val n_start = min(len, intArg(start, " start"))
     val n_end = if (end === Nil)
         len
     else
-        min(len, intArg(end, "substring end"))
+        min(len, intArg(end, " end"))
 
     if (n_start < 0) {
         throw IndexError("substring start index is negative: $n_start")

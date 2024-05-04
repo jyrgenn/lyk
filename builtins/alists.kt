@@ -3,17 +3,17 @@
 package org.w21.lyk
 
 
-fun assoc_iter_elems(alist: LObject, what: String,
+fun assoc_iter_elems(alist: LObject,
                      closure: (elem_car: LObject) -> Boolean): LObject {
     if (alist === Nil) {
         return Nil
     }
     if (alist !is LCons) {
-        throw ArgumentError("alist argument to $what is not an alist: $alist")
+        throw ArgumentError("alist argument to $calledFunctionName is not an alist: $alist")
     }
     for (elem in alist) {
         if (elem !is LCons) {
-            throw ArgumentError("alist argument to $what is not a proper"
+            throw ArgumentError("alist argument to $calledFunctionName is not a proper"
                                 + " alist: $alist")
         }
         val result = closure(elem.car)
@@ -41,7 +41,7 @@ fun assoc_iter_elems(alist: LObject, what: String,
 fun bi_assoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (item, alist) = args2(args)
 
-    return assoc_iter_elems(alist, "assoc") {
+    return assoc_iter_elems(alist) {
         it.equal(item)
     }
 }
@@ -64,7 +64,7 @@ fun bi_assoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_sassoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (item, alist, default) = args3(args)
 
-    val result = assoc_iter_elems(alist, "sassoc") {
+    val result = assoc_iter_elems(alist) {
         it.equal(item)
     }
     if (result === Nil) {
@@ -93,7 +93,7 @@ fun bi_sassoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_assq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (item, alist) = args2(args)
 
-    return assoc_iter_elems(alist, "assq") {
+    return assoc_iter_elems(alist) {
         it === item
     }
 }
@@ -116,7 +116,7 @@ fun bi_assq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_sassq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (item, alist, default) = args3(args)
 
-    val result = assoc_iter_elems(alist, "sassq") {
+    val result = assoc_iter_elems(alist) {
         it === item
     }
     if (result === Nil) {
@@ -145,9 +145,9 @@ fun bi_sassq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 fun bi_assoc_if(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (pred, alist) = args2(args)
-    var predicate = functionArg(pred, "assoc-if")
+    var predicate = functionArg(pred)
 
-    return assoc_iter_elems(alist, "assoc-if") {
+    return assoc_iter_elems(alist) {
         ob2bool(predicate.call(LCons(it, Nil)))
     }
 }
@@ -169,9 +169,9 @@ fun bi_assoc_if(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_assoc_if_not(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (pred, alist) = args2(args)
-    var predicate = functionArg(pred, "assoc-if-not")
+    var predicate = functionArg(pred)
 
-    return assoc_iter_elems(alist, "assoc-if-not") {
+    return assoc_iter_elems(alist) {
         !ob2bool(predicate.call(LCons(it, Nil)))
     }
 }

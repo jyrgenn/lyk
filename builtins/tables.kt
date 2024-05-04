@@ -20,7 +20,7 @@ package org.w21.lyk
 fun bi_table_get(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (tbl, key, defaultvalue) = args3(args)
-    val table = tableArg(tbl, "table-get table")
+    val table = tableArg(tbl, " table")
     return table.get(key, defaultvalue)
 }
 
@@ -40,7 +40,7 @@ fun bi_table_get(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_table_put(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (tbl, key, value) = args3(args)
-    val table = tableArg(tbl, "table-get table")
+    val table = tableArg(tbl, " table")
     table.put(key, value)
     return value
 }
@@ -80,7 +80,7 @@ fun bi_make_table(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_table_count(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val table = arg1(args)
-    return makeNumber(tableArg(table, "table-count").the_table.size)
+    return makeNumber(tableArg(table).the_table.size)
 }
 
 /// builtin table-exists
@@ -99,7 +99,7 @@ fun bi_table_count(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_table_exists(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (table, key) = args2(args)
-    return tableArg(table, "table-exists").exists(key)
+    return tableArg(table).exists(key)
 }
 
 val initialKeySym = intern("initial")
@@ -124,8 +124,8 @@ val createKeySym = intern("create")
 fun bi_table_inc(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (tbl, key, inc) = args3(args)
-    val table = tableArg(tbl, "table-inc table")
-    val increment = numberArg(inc, "table-inc increment")
+    val table = tableArg(tbl, " table")
+    val increment = numberArg(inc, " increment")
 
     val value = table.the_table[key]
     if (value != null) {
@@ -136,8 +136,7 @@ fun bi_table_inc(args: LObject, kwArgs: Map<LSymbol, LObject>
         table.put(key, new_value)
         return new_value
     } else if (kwArgs[createKeySym] !== Nil) {
-        val initial = numberArg(kwArgs[initialKeySym] ?: Nil,
-                                "table-inc initial")
+        val initial = numberArg(kwArgs[initialKeySym] ?: Nil)
         val new_value = makeNumber(initial + increment)
         table.put(key, new_value)
         return new_value
@@ -161,7 +160,7 @@ fun bi_table_inc(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_table_keys(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return tableArg(arg1(args), "table-keys table").keys()
+    return tableArg(arg1(args), " table").keys()
     
 }
 
@@ -180,7 +179,7 @@ fun bi_table_keys(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_table_values(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return tableArg(arg1(args), "table-values table").values()
+    return tableArg(arg1(args), " table").values()
 }
 
 /// builtin table-pairs
@@ -198,7 +197,7 @@ fun bi_table_values(args: LObject, kwArgs: Map<LSymbol, LObject>
 @Suppress("UNUSED_PARAMETER")
 fun bi_table_pairs(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
-    return tableArg(arg1(args), "table-pairs table").items()
+    return tableArg(arg1(args), " table").items()
     
 }
 
@@ -218,7 +217,7 @@ fun bi_table_pairs(args: LObject, kwArgs: Map<LSymbol, LObject>
 fun bi_table_remove(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): LObject {
     val (tbl, key) = args2(args)
-    val table = tableArg(tbl, "table-remove table")
+    val table = tableArg(tbl, " table")
 
     table.remove(key)
     return table
