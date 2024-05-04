@@ -268,7 +268,7 @@ fun let_internal(args: LObject, is_letrec: Boolean): LObject {
         if (binding is LSymbol) {
             syms.add(binding)
             vals.add(Nil)
-	    debug(debugLetBindSym) {
+            debug(debugLetBindSym) {
                 "will bind lone $binding to nil"
             }
         } else if (binding is LCons) {
@@ -289,7 +289,7 @@ fun let_internal(args: LObject, is_letrec: Boolean): LObject {
             // big gun, but it turns out this optimisation does not bring a
             // preceptible speed advantage.
             destructuringBind(name, varlist, value, syms, vals)
-	    debug(debugLetBindSym) {
+            debug(debugLetBindSym) {
                 if (is_letrec) {
                     "will bind $varlist to eval($value)"
                 } else {
@@ -739,22 +739,22 @@ fun bi_catch(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val tag = eval(tagform)
     
     try {
-	debug(debugCatchThrowSym) {
+        debug(debugCatchThrowSym) {
             "catch ($tag) opened"
         }
         val result = evalProgn(bodyforms)
-	debug(debugCatchThrowSym) {
+        debug(debugCatchThrowSym) {
             "catch ($tag) closed"
         }
 	return result
     } catch (sig: ThrowSignal) {
         if (sig.tag === tag) {
-	    debug(debugCatchThrowSym) {
+            debug(debugCatchThrowSym) {
                 "catch ($tag) caught $sig, will return"
             }
             return sig.value
         } else {
-	    debug(debugCatchThrowSym) {
+            debug(debugCatchThrowSym) {
                 "catch ($tag) caught $sig, will rethrow"
             }
             throw sig

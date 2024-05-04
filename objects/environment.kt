@@ -13,7 +13,7 @@ class LEnv(val parent: LEnv? = null): LObject() {
 
     // must only be called by symbol.bind
     fun bind(symbol: LSymbol, value: LObject) {
-	debug(debugBindSymSym) {
+        debug(debugBindSymSym) {
              "$symbol <= $value in $this"
         }
         the_env[symbol] = value
@@ -25,7 +25,7 @@ class LEnv(val parent: LEnv? = null): LObject() {
         }
         var env: LEnv? = this
         while (env != null) {
-	    debug(debugBindSymSym) {
+            debug(debugBindSymSym) {
                  "unbind $symbol in $this"
             }
             env.the_env.remove(symbol)
@@ -96,12 +96,12 @@ fun withEnvironment(env: LEnv, closure: () -> LObject): LObject {
     val savedEnv = currentEnv
     currentEnv = env
     try {
-	debug(debugBindSymSym) {
+        debug(debugBindSymSym) {
              "enter $env from $savedEnv"
         }
         return closure()
     } finally {
-	debug(debugBindSymSym) {
+        debug(debugBindSymSym) {
              "leave $env, back to $savedEnv"
         }
         currentEnv = savedEnv
