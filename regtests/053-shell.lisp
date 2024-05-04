@@ -37,5 +37,15 @@ o5:gaga gibt sich
 e4:momo müht sich
 "))
 
+(defvar random-tag (string 'VT (random 1000000000 t)))
+(test-is "run-program env TERM" (let ((env (process-env))
+                                      (out (make-string-output-stream)))
+                                  (table-put env "TERM" random-tag)
+                                  (run-program "echo $TERM"
+                                               :env env
+                                               :output out)
+                                  (string-trim t
+                                               (get-output-stream-string out)))
+         random-tag)
 
 (done-testing)

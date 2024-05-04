@@ -779,7 +779,7 @@ fun has_shellmeta(s: String): Boolean {
 /// builtin run-program
 /// fun     bi_run_program
 /// std     command
-/// key     "in-shell" to Nil, "input" to Nil, "output" to T, "error-output" to T, "env" to T, "raise-error" to Nil
+/// key     "in-shell" to Nil, "input" to Nil, "output" to T, "error-output" to T, "env" to Nil, "raise-error" to Nil
 /// opt     
 /// rest    command-arguments
 /// ret     exit-status
@@ -808,7 +808,7 @@ fun has_shellmeta(s: String): Boolean {
 /// command's output to the null device. The same goes for `error-output`.
 ///
 /// If &key `env` (a table) is non-nil, use it as the process environment of
-/// the command.
+/// the command. Otherwise, use the default process environment.
 ///
 /// If &key `raise-error` is true, raise an error if the command returns a
 /// non-zero exit status.
@@ -819,6 +819,7 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     val (command, rest) = args
     val command_s = stringArg(command, " command")
     val key_in_shell = kwArgs[inShellKSym] ?: Nil
+    val env = kwArgs[envKSym] ?: Nil
     var cmd_arg =
         if (rest == Nil) {
             when (key_in_shell) {
@@ -839,6 +840,19 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
         }
 
     val pb = ProcessBuilder(cmd_arg)
+
+    when (env) {
+        Nil -> {}
+        is LTable -> {
+            val pb_table = pb.environment()
+            pb_table.clear()
+            for ((key, value) in env.items()) {
+                pb_table.put(key.toString(), value.toString())
+            }
+        }
+        else ->
+            throw TypeError(env, "table or nil", "run-process :env argument")
+    }
 
     val key_input = kwArgs[inputKSym] ?: Nil
     if (key_input is LString) {
