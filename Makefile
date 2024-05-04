@@ -70,6 +70,9 @@ tags: $(PRELOAD) $(ALLSRCS)
 	      -r "/^[ \t]+\([A-Za-z0-9_]+\)[ \t]+to[ \t]+/\1/" \
 	      $(PRELOAD) $(ALLSRCS)
 
+measure:
+	./scripts/lyk -J . -vl l/new-factor 
+
 new: clean build
 
 test: lyk.jar

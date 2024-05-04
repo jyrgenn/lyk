@@ -203,7 +203,7 @@ fun main(args: Array<String>) {
 
             try {
                 debug(debugStartupSym) { "run load file \"$file\"" }
-                load_file(file)
+                load(file)
             } catch (e: LispError) {
                 printEvalStack(e)
             } catch (e: Exception) {
