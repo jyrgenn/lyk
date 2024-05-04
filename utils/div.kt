@@ -209,16 +209,18 @@ fun pairsInternFirst(pairs: Array<Pair<String, LObject>>
 }
 
 val dense_float_format = "%.3g"
+val float_regexp = Regex("e+0?")
 
 fun dense_format(value: Long): String {
     if (value > 999999) {
-        return dense_float_format.format(value.toDouble()).replace("e+0", "e")
+        return dense_float_format.format(value.toDouble())
+            .replace(float_regexp, "e")
     }
     return value.toString()
 }
 
 fun dense_format(value: Double): String {
-    return dense_float_format.format(value).replace("e+0", "e")
+    return dense_float_format.format(value).replace(float_regexp, "e")
 }
 
 data class Perfdata(val calls: Long, val conses: Long, val evals: Long,

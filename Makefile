@@ -71,7 +71,7 @@ tags: $(PRELOAD) $(ALLSRCS)
 	      $(PRELOAD) $(ALLSRCS)
 
 measure:
-	./scripts/lyk -J . -vl l/new-factor 
+	./scripts/lyk -J . -vl l/new-factor.lisp -e '(factors 1000000000001)'
 
 new: clean build
 
