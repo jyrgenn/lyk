@@ -968,5 +968,24 @@ fun bi_sleep(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
     return Nil
 }
 
+/// builtin return
+/// fun     bi_return
+/// std     
+/// key     
+/// opt     value
+/// rest    
+/// ret     none
+/// special no
+/// doc {
+/// Return from the innermost function with `value` (defaults to nil).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_return(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+    throw ReturnSignal(arg1(args))
+}
+
+
+
 
 // EOF

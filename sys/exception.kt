@@ -131,6 +131,8 @@ class AbortEvalSignal(message: String): LispError(message)
 class ThrowSignal(val tag: LObject, val value: LObject):
     LispError("uncaught; tag $tag value $value")
 
+class ReturnSignal(val value: LObject): LispError("returns", value)
+
 class EOFError(message: String): LispError(message) {
     constructor(stream: LStream): this("on stream $stream")
 }

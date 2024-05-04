@@ -419,11 +419,25 @@ fun makeLambdaOrMacro(params: LObject,
     }
 }
 
-fun with_called_function_name(name: String, closure: () -> LObject): LObject {
+fun with_called_function_name(name: String, closure: () -> LObject
+): LObject {
     val previousCalledFunctionName = calledFunctionName
     try {
         calledFunctionName = name
         return closure()
+    } finally {
+        val calledFunctionName = previousCalledFunctionName
+    }
+}
+
+fun with_called_function_name_return(name: String, closure: () -> LObject
+): LObject {
+    val previousCalledFunctionName = calledFunctionName
+    try {
+        calledFunctionName = name
+        return closure()
+    } catch (return_sig: ReturnSignal) {
+        return return_sig.value
     } finally {
         val calledFunctionName = previousCalledFunctionName
     }
