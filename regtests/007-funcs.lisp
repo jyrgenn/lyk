@@ -4,7 +4,7 @@
                         (fooo 34))
          "68")
 (test-err "lambda 1" (lambda)
-          #/too few args for special form/)
+          #/too few normal args for special form/)
 (test-err "lambda 2" (lambda 3)
           #/is not a proper list/)
 (test-is "lambda 3" (lambda (n) (+ 3 n)) "#<function *anon-lambda*>")

@@ -757,14 +757,14 @@
 (test-is "> 91 33 13 4.002 4 4 3 1" (> 91 33 13 4.002 4 4 3 1) nil)
 (test-is "> 91 13 33 4.002 4 4 3 1" (> 91 13 33 4.002 4 4 3 1) nil)
 
-(test-err "% 5" (% 5) #/too few args/)
+(test-err "% 5" (% 5) #/too few normal args/)
 (test-is "% 5 6" (% 5 6) 5)
 (test-is "% 30 5" (% 30 5) 0)
 (test-is "% 30 7" (% 30 7) 2)
 (test-is "% 119 13" (% 119 13) 2)
 (test-err "% 119 0" (% 119 0) #/integer divide by zero/)
 (test-is "% 0 119" (% 0 119) 0)
-(test-err "% 119 13 12" (% 119 13 12) #/too many arguments/)
+(test-err "% 119 13 12" (% 119 13 12) #/too many normal arguments/)
 
 (test-num "/ 5" (/ 5) 0.2)
 (test-num "/ 5 6" (/ 5 6) 0.8333333)
@@ -785,7 +785,7 @@
 (test-is "* 0 119" (* 0 119) 0)
 (test-is "* 119 13 12" (* 119 13 12) 18564)
 
-(test-err "-" (-) #/too few args/)
+(test-err "-" (-) #/too few normal args/)
 (test-is "- 5" (- 5) -5)
 (test-is "- 5 6" (- 5 6) -1)
 (test-is "- 30 5" (- 30 5) 25)

@@ -1,7 +1,7 @@
 (require 'regtests)
 
 (test-is "quote" (quote lala) "lala")
-(test-err "while 0" (while) #/too few args for/)
+(test-err "while 0" (while) #/too few normal args for/)
 (test-not "while nil" (while nil))
 (test-is "while" (let (a
                        (b '(2 3 5 7 11 13 17 19 23 29)))
@@ -19,7 +19,7 @@
 
 (test-err "prog1 0" (let ((a 4) (b 5) (c 6) (d 7))
                       (list (prog1) a b c d))
-         #/too few args for /)
+         #/too few normal args for /)
 (test-is "prog1 1" (let ((a 4) (b 5) (c 6) (d 7))
                      (list (prog1 (incf a)) a b c d))
          '(5 5 5 6 7))
@@ -36,10 +36,10 @@
 ;; TODO cannot catch errors in macro expansion in errset, sadly
 ;; (test-err "prog2 0" (let ((a 4) (b 5) (c 6) (d 7))
 ;;                       (list (prog2) a b c d))
-;;          #/too few args for /)
+;;          #/too few normal args for /)
 ;; (test-err "prog2 1" (let ((a 4) (b 5) (c 6) (d 7))
 ;;                       (list (prog2 (incf a)) a b c d))
-;;           #/too few args for /)
+;;           #/too few normal args for /)
 (test-is "prog2 2" (let ((a 4) (b 5) (c 6) (d 7))
                      (list (prog2 (incf a) (incf b)) a b c d))
          '(6 5 6 6 7))
