@@ -364,7 +364,7 @@ fun makeLambdaOrMacro(params: LObject,
 
         when (action) {
             Ac.st_std -> {
-                stdPars.add(symbolArg(elem, "lambda parameter"))
+                stdPars.add(symbolArg(elem, " lambda parameter"))
             }
             Ac.st_key -> {
                 val (key, defval) = parse_2parlist(elem)
@@ -380,7 +380,7 @@ fun makeLambdaOrMacro(params: LObject,
                                          + "(already stored one), "
                                          + "$lambda_name")
                 }
-                rest_sym = symbolArg(elem, "&key parameter")
+                rest_sym = symbolArg(elem, " &key parameter")
             }
             Ac.none -> {}
             Ac.error -> {
