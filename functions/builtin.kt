@@ -84,11 +84,13 @@ class LBuiltin(
                 continue
             }
             throw ArgumentError(
-                "too many arguments for $typeDesc `$name`: $arglist")
+                "too many normal arguments for $typeDesc `$name`: $arglist")
         }
         // was it enough?
         if (hadStdArgs < wantStdArgs) {
-            throw ArgumentError("too few args for $typeDesc `$name`: $arglist")
+            val shownil = if (arglist === Nil) "()" else arglist.toString()
+            throw ArgumentError(
+                "too few normal args for $typeDesc `$name`: $shownil")
         }
         // a :keyword left dangling?
         if (wantKeywordParam != null) {

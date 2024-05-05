@@ -201,8 +201,9 @@ fun bindPars(arglist: LObject, func: LFunction) {
     }
     // was it enough?
     if (hadStdArgs < wantStdArgs) {
+        val shownil = if (arglist === Nil) "()" else arglist.toString()
         throw ArgumentError(
-            "too few normal args for ${func.typeDesc} `${func.name}`: $arglist")
+            "too few normal args for ${func.typeDesc} `${func.name}`: $shownil")
     }
     // a :keyword left dangling?
     if (wantKeyArg != null) {
