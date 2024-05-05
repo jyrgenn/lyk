@@ -17,7 +17,8 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_code_char(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_code_char(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     val code = intArg(arg1(args))
     if (code.toChar().category == kotlin.text.CharCategory.UNASSIGNED) {
         throw ArgumentError("code $code is not an assigned Unicode character")
@@ -39,7 +40,8 @@ fun bi_code_char(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_int(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_int(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     val char = charOrStringArg(arg1(args))
     return makeNumber(char.code)
 }
@@ -138,7 +140,8 @@ fun char_compare_equal(args: LObject, case_i: Boolean): LObject
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_equal(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_equal(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                  suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_equal(args, case_i = true)
 }
 
@@ -155,7 +158,8 @@ fun bi_char_equal(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_not_equal(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_not_equal(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                      suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_unique(args, case_i = true)
 }
 
@@ -172,7 +176,8 @@ fun bi_char_not_equal(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_not_equal2(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_not_equal2(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                       suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_unique(args, case_i = false)
 }
 
@@ -189,7 +194,8 @@ fun bi_char_not_equal2(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_lt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_lt(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_ordered(args, case_i = false) {
         code1, code2 -> code1 < code2
     }
@@ -208,7 +214,8 @@ fun bi_char_lt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_lessp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_lessp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                  suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_ordered(args, case_i = true) {
         code1, code2 -> code1 < code2
     }
@@ -227,7 +234,8 @@ fun bi_char_lessp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_le(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_le(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_ordered(args, case_i = false) {
         code1, code2 -> code1 <= code2
     }
@@ -246,8 +254,8 @@ fun bi_char_le(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_not_greaterp(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_char_not_greaterp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                         suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_ordered(args, case_i = true) {
         code1, code2 -> code1 <= code2
     }
@@ -266,7 +274,8 @@ fun bi_char_not_greaterp(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_eql(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_eql(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_equal(args, case_i = false)
 }
 
@@ -283,7 +292,8 @@ fun bi_char_eql(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_gt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_gt(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_ordered(args, case_i = false) {
         code1, code2 -> code1 > code2
     }
@@ -302,7 +312,8 @@ fun bi_char_gt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_greaterp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_greaterp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                     suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_ordered(args, case_i = true) {
         code1, code2 -> code1 > code2
     }
@@ -321,7 +332,8 @@ fun bi_char_greaterp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_ge(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_ge(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_ordered(args, case_i = false) {
         code1, code2 -> code1 >= code2
     }
@@ -340,7 +352,8 @@ fun bi_char_ge(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_char_not_lessp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_char_not_lessp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                      suppp: Map<LSymbol, Boolean>): LObject {
     return char_compare_ordered(args, case_i = true) {
         code1, code2 -> code1 >= code2
     }

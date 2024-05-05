@@ -28,7 +28,8 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_aref(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_aref(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     val (vector, index) = args2(args)
     return vectorArg(vector, " vector")
         .getAt(longArg(index, " index").toInt())
@@ -47,8 +48,8 @@ fun bi_aref(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_make_vector(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_make_vector(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     val (len, initial) = args2(args)
     val length = intArg(len, " length")
     if (length < 0) {
@@ -78,8 +79,8 @@ fun bi_make_vector(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_vector_set(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_vector_set(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                  suppp: Map<LSymbol, Boolean>): LObject {
     val (vector, index, value) = args3(args)
     vectorArg(vector, " vector")
         .setAt(intArg(index, " index"), value)
@@ -99,6 +100,7 @@ fun bi_vector_set(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_vector(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_vector(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return LVector(args)
 }

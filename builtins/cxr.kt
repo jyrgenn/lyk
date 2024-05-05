@@ -15,7 +15,8 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_caar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_caar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.car
 }
 
@@ -32,7 +33,8 @@ fun bi_caar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cadr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.car
 }
 
@@ -49,7 +51,8 @@ fun bi_cadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cdar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cdar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.cdr
 }
 
@@ -66,7 +69,8 @@ fun bi_cdar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cddr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.cdr
 }
 
@@ -83,7 +87,8 @@ fun bi_cddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_caaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_caaar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.car.car
 }
 
@@ -100,7 +105,8 @@ fun bi_caaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_caadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_caadr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.car.car
 }
 
@@ -117,7 +123,8 @@ fun bi_caadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cadar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cadar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.cdr.car
 }
 
@@ -134,7 +141,8 @@ fun bi_cadar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_caddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_caddr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.cdr.car
 }
 
@@ -151,7 +159,8 @@ fun bi_caddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cdaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cdaar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.car.cdr
 }
 
@@ -168,7 +177,8 @@ fun bi_cdaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cdadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cdadr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.car.cdr
 }
 
@@ -185,7 +195,8 @@ fun bi_cdadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cddar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cddar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.cdr.cdr
 }
 
@@ -202,7 +213,8 @@ fun bi_cddar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cdddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cdddr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.cdr.cdr
 }
 
@@ -220,7 +232,8 @@ fun bi_cdddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_caaaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_caaaar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.car.car.car
 }
 
@@ -237,7 +250,8 @@ fun bi_caaaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_caaadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_caaadr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.car.car.car
 }
 
@@ -254,7 +268,8 @@ fun bi_caaadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_caadar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_caadar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.cdr.car.car
 }
 
@@ -271,7 +286,8 @@ fun bi_caadar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_caaddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_caaddr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.cdr.car.car
 }
 
@@ -288,7 +304,8 @@ fun bi_caaddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cadaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cadaar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.car.cdr.car
 }
 
@@ -305,7 +322,8 @@ fun bi_cadaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cadadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cadadr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.car.cdr.car
 }
 
@@ -322,7 +340,8 @@ fun bi_cadadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_caddar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_caddar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.cdr.cdr.car
 }
 
@@ -339,7 +358,8 @@ fun bi_caddar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cadddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cadddr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.cdr.cdr.car
 }
 
@@ -356,7 +376,8 @@ fun bi_cadddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cdaaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cdaaar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.car.car.cdr
 }
 
@@ -373,7 +394,8 @@ fun bi_cdaaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cdaadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cdaadr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.car.car.cdr
 }
 
@@ -390,7 +412,8 @@ fun bi_cdaadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cdadar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cdadar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.cdr.car.cdr
 }
 
@@ -407,7 +430,8 @@ fun bi_cdadar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cdaddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cdaddr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.cdr.car.cdr
 }
 
@@ -424,7 +448,8 @@ fun bi_cdaddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cddaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cddaar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.car.cdr.cdr
 }
 
@@ -441,7 +466,8 @@ fun bi_cddaar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cddadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cddadr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.car.cdr.cdr
 }
 
@@ -458,7 +484,8 @@ fun bi_cddadr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cdddar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cdddar(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).car.cdr.cdr.cdr
 }
 
@@ -475,7 +502,8 @@ fun bi_cdddar(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cddddr(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cddddr(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return arg1(args).cdr.cdr.cdr.cdr
 }
 

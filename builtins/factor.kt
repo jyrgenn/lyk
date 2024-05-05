@@ -117,7 +117,8 @@ fun nextPrimeAfter(n: Long): Long {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_factor(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_factor(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val primes = factor(longArg(arg1(args)))
     return collectedList {
         for (prime in primes) {
@@ -139,7 +140,8 @@ fun bi_factor(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_prime_number_p(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_prime_number_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                      suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(isPrime(longArg(arg1(args))))
 }
 
@@ -156,7 +158,8 @@ fun bi_prime_number_p(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_next_prime(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_next_prime(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                  suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(nextPrimeAfter(longArg(arg1(args))))
 }
 
@@ -173,8 +176,8 @@ fun bi_next_prime(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_known_primes(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
-    
+fun bi_known_primes(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
     return collectedList{
         for (prime in primes) {
             it.add(makeNumber(prime))

@@ -13,7 +13,8 @@ fun maybeIntern(word: String?): LSymbol? {
 class LBuiltin(
     // marked with S as kotlin String, not LispString, for clarity
     nameS: String,
-    val bfun: (LObject, Map<LSymbol, LObject>) -> LObject,
+    val bfun: (LObject, Map<LSymbol, LObject>, Map<LSymbol, Boolean>)
+        -> LObject,
     stdParsS: Array<String>,
     keyParsS: Map<String, LObject>,
     optParsS: Array<Pair<String, LObject>>,
@@ -48,6 +49,7 @@ class LBuiltin(
         var hadArgs = 0                 // args seen at all
 
         var newArglist = ListCollector()
+        var supplied_p = mutableMapOf<LSymbol, Boolean>()
 
         if (arglist !is LCons && arglist !== Nil) {
             throw CallError("$this called with improper arglist: $arglist")
@@ -58,6 +60,7 @@ class LBuiltin(
             hadArgs++
             if (wantKeywordParam != null) {
                 kwArgs[wantKeywordParam] = arg
+                supplied_p[wantKeywordParam] = true
                 wantKeywordParam = null
                 continue
             }
@@ -72,6 +75,7 @@ class LBuiltin(
             }
             if (hadOptArgs < wantOptArgs) {
                 newArglist.add(arg)
+                supplied_p[optPars[hadOptArgs].first] = true
                 hadOptArgs++
                 continue
             }
@@ -99,7 +103,7 @@ class LBuiltin(
         // finally, call the actual function
         callCounter++
         return with_called_function_name(name.name) {
-            bfun(newArglist.list, kwArgs)
+            bfun(newArglist.list, kwArgs, supplied_p)
         }
     }
 

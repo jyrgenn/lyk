@@ -17,8 +17,8 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_get(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_table_get(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     val (tbl, key, defaultvalue) = args3(args)
     val table = tableArg(tbl, " table")
     return table.get(key, defaultvalue)
@@ -37,8 +37,8 @@ fun bi_table_get(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_put(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_table_put(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     val (tbl, key, value) = args3(args)
     val table = tableArg(tbl, " table")
     table.put(key, value)
@@ -59,8 +59,8 @@ fun bi_table_put(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_make_table(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_make_table(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                  suppp: Map<LSymbol, Boolean>): LObject {
     return LTable(args)
 }
 
@@ -77,8 +77,8 @@ fun bi_make_table(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_count(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_table_count(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     val table = arg1(args)
     return makeNumber(tableArg(table).the_table.size)
 }
@@ -96,8 +96,8 @@ fun bi_table_count(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_exists(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_table_exists(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
     val (table, key) = args2(args)
     return tableArg(table).exists(key)
 }
@@ -121,8 +121,8 @@ val createKeySym = intern("create")
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_inc(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_table_inc(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     val (tbl, key, inc) = args3(args)
     val table = tableArg(tbl, " table")
     val increment = numberArg(inc, " increment")
@@ -158,8 +158,8 @@ fun bi_table_inc(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_keys(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_table_keys(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                  suppp: Map<LSymbol, Boolean>): LObject {
     return tableArg(arg1(args), " table").keys()
     
 }
@@ -177,8 +177,8 @@ fun bi_table_keys(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_values(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_table_values(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
     return tableArg(arg1(args), " table").values()
 }
 
@@ -195,8 +195,8 @@ fun bi_table_values(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_pairs(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_table_pairs(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     return tableArg(arg1(args), " table").items()
     
 }
@@ -214,8 +214,8 @@ fun bi_table_pairs(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_table_remove(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_table_remove(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
     val (tbl, key) = args2(args)
     val table = tableArg(tbl, " table")
 

@@ -18,7 +18,8 @@ import kotlin.random.Random
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_plus(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_plus(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     var acc: Double = 0.0
 
     for (arg in args) {
@@ -41,7 +42,8 @@ fun bi_plus(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_minus(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_minus(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val (arg, rest) = args
     var acc = numberArg(arg)
 
@@ -68,7 +70,8 @@ fun bi_minus(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_mult(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_mult(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     var acc = 1.0
 
     for (arg in args) {
@@ -90,7 +93,8 @@ fun bi_mult(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_div(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_div(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     val (arg, rest) = args
     var acc = numberArg(arg)
 
@@ -116,7 +120,8 @@ fun bi_div(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_zerop(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_zerop(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(numberArg(arg1(args)) == 0.0)
 }
 
@@ -135,7 +140,8 @@ val numberZero = makeNumber(0)
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_abs(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_abs(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(abs(numberArg(arg1(args))))
 }
 
@@ -152,7 +158,8 @@ fun bi_abs(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_acos(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_acos(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(acos(numberArg(arg1(args))))
 }
 
@@ -169,7 +176,8 @@ fun bi_acos(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_acosh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_acosh(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(acosh(numberArg(arg1(args))))
 }
 
@@ -188,7 +196,8 @@ fun bi_acosh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_lt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cmp_lt(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (arg1, rest) = args
     var first = arg1
 
@@ -217,7 +226,8 @@ fun bi_cmp_lt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_gt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cmp_gt(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (arg1, rest) = args
     var first = arg1
 
@@ -245,8 +255,8 @@ fun bi_cmp_gt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_eqv(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_cmp_eqv(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     val (arg1, rest) = args
     var first = arg1
 
@@ -275,7 +285,8 @@ fun bi_cmp_eqv(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_ne(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cmp_ne(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     var things = mutableSetOf<LObject>()
     
     for (arg in args) {
@@ -303,7 +314,8 @@ fun bi_cmp_ne(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_ge(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cmp_ge(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (arg1, rest) = args
     var first = arg1
 
@@ -332,7 +344,8 @@ fun bi_cmp_ge(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp_le(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cmp_le(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (arg1, rest) = args
     var first = arg1
 
@@ -361,7 +374,8 @@ fun bi_cmp_le(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cmp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cmp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     val (v1, v2) = args2(args)
     return makeNumber(v1.compareTo(v2))
 }
@@ -380,7 +394,8 @@ fun bi_cmp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_modulo(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_modulo(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (value1, value2) = args2(args)
     val long1: Long = longArg(value1)
     val long2: Long = longArg(value2)
@@ -401,7 +416,8 @@ fun bi_modulo(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_power(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_power(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val (value1, value2) = args2(args)
     return makeNumber(
         numberArg(value1).pow(numberArg(value2)))
@@ -420,7 +436,8 @@ fun bi_power(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_1plus(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_1plus(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val value = numberArg(arg1(args))
     return makeNumber(value + 1)
 }
@@ -438,7 +455,8 @@ fun bi_1plus(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_1minus(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_1minus(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val value = numberArg(arg1(args))
     return makeNumber(value - 1)
 }
@@ -456,7 +474,8 @@ fun bi_1minus(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_isqrt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_isqrt(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val n = numberArg(arg1(args))
     return makeNumber(isqrt(n.toLong()))
 }
@@ -476,7 +495,8 @@ fun bi_isqrt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_ash(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_ash(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     val (int, n) = args2(args)
     val value = longArg(int, " integer")
     val count = longArg(n, " count")
@@ -500,7 +520,8 @@ fun bi_ash(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_asin(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_asin(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     val value = numberArg(arg1(args))
     return makeNumber(asin(value))
 }
@@ -518,7 +539,8 @@ fun bi_asin(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_asinh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_asinh(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val value = numberArg(arg1(args))
     return makeNumber(asinh(value))
 }
@@ -536,7 +558,8 @@ fun bi_asinh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_atan(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_atan(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     val value = numberArg(arg1(args))
     return makeNumber(atan(value))
 }
@@ -554,7 +577,8 @@ fun bi_atan(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_atanh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_atanh(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val value = numberArg(arg1(args))
     return makeNumber(atanh(value))
 }
@@ -576,7 +600,8 @@ fun bi_atanh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_easter(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_easter(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val X = longArg(arg1(args), " year")
     val K = X / 100
     val M = 15 + (3*K+3)/4 - (8*K+13)/25
@@ -626,7 +651,8 @@ fun bi_easter(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_round(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_round(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(round(numberArg(arg1(args))))
 }
 
@@ -643,8 +669,8 @@ fun bi_round(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_ceiling(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_ceiling(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(ceil(numberArg(arg1(args))))
 }
 
@@ -673,7 +699,8 @@ fun bi_ceiling(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_floor(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_floor(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(floor(numberArg(arg1(args))))
 }
 
@@ -690,7 +717,8 @@ fun bi_floor(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_sqrt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_sqrt(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(sqrt(numberArg(arg1(args))))
 }
 
@@ -707,7 +735,8 @@ fun bi_sqrt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_integerp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_integerp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     val arg = arg1(args)
     return bool2ob((arg is LNumber) && arg.isInt())
 }
@@ -725,7 +754,8 @@ fun bi_integerp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_signum(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_signum(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val number = numberArg(arg1(args))
     return makeNumber(if (number < 0) {
                           -1
@@ -749,7 +779,8 @@ fun bi_signum(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_evenp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_evenp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val arg = arg1(args)
 
     if (arg is LNumber) {
@@ -774,7 +805,8 @@ fun bi_evenp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_oddp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_oddp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     val arg = arg1(args)
     
     if (arg is LNumber) {
@@ -799,7 +831,8 @@ fun bi_oddp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_conjugate(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_conjugate(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     throw NotImplementedError("conjugate")
 }
 
@@ -816,7 +849,8 @@ fun bi_conjugate(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cis(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cis(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     throw NotImplementedError("cis")
 }
 
@@ -833,7 +867,8 @@ fun bi_cis(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_rational(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_rational(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     throw NotImplementedError("rational")
 }
 
@@ -850,7 +885,8 @@ fun bi_rational(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_rationalize(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_rationalize(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     throw NotImplementedError("rationalize")
 }
 
@@ -867,7 +903,8 @@ fun bi_rationalize(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_minusp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_minusp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(numberArg(arg1(args)) < 0)
 }
 
@@ -884,7 +921,8 @@ fun bi_minusp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_plusp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_plusp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(numberArg(arg1(args)) > 0)
 }
 
@@ -902,7 +940,8 @@ fun bi_plusp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_integer_length(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_integer_length(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                      suppp: Map<LSymbol, Boolean>): LObject {
     val num = numberArg(arg1(args))
     var integer = round(num).toLong()
     if (integer < 0) {
@@ -930,7 +969,8 @@ fun bi_integer_length(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_expt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_expt(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     val (base, power) = args2(args)
     return makeNumber(numberArg(base, " base")
                           .pow(numberArg(power, " power")))
@@ -951,7 +991,8 @@ fun bi_expt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_numerator(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_numerator(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     val num = arg1(args)
     numberArg(num)
     return num
@@ -972,7 +1013,8 @@ fun bi_numerator(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_denominator(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_denominator(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     val num = arg1(args)
     numberArg(num)
     return makeNumber(1)
@@ -993,7 +1035,8 @@ fun bi_denominator(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_realpart(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_realpart(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     val num = arg1(args)
     numberArg(num)
     return num
@@ -1014,7 +1057,8 @@ fun bi_realpart(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_imagpart(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_imagpart(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     val num = arg1(args)
     numberArg(num)
     return makeNumber(0)
@@ -1035,7 +1079,8 @@ fun bi_imagpart(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_phase(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_phase(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val num = numberArg(arg1(args))
 
     return makeNumber(if (num < 0) {
@@ -1060,7 +1105,8 @@ fun bi_phase(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_pi(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_pi(args: LObject, kwArgs: Map<LSymbol, LObject>,
+          suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(PI)
 }
 
@@ -1077,7 +1123,8 @@ fun bi_pi(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_e(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_e(args: LObject, kwArgs: Map<LSymbol, LObject>,
+         suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(E)
 }
 
@@ -1094,7 +1141,8 @@ fun bi_e(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_fceiling(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_fceiling(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(ceil(numberArg(arg1(args))))
 }
 
@@ -1111,7 +1159,8 @@ fun bi_fceiling(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_log(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_log(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     val (number, base) = args2(args)
     return makeNumber(log(numberArg(number, " number"),
                           numberArg(base, " base")))
@@ -1130,7 +1179,8 @@ fun bi_log(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_exp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_exp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(exp(numberArg(arg1(args))))
 }
 
@@ -1147,7 +1197,8 @@ fun bi_exp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_tanh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_tanh(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(tanh(numberArg(arg1(args))))
 }
 
@@ -1164,7 +1215,8 @@ fun bi_tanh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cosh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cosh(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(cosh(numberArg(arg1(args))))
 }
 
@@ -1181,7 +1233,8 @@ fun bi_cosh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_sinh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_sinh(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(sinh(numberArg(arg1(args))))
 }
 
@@ -1198,7 +1251,8 @@ fun bi_sinh(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_tan(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_tan(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(tan(numberArg(arg1(args))))
 }
 
@@ -1215,7 +1269,8 @@ fun bi_tan(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_cos(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_cos(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(cos(numberArg(arg1(args))))
 }
 
@@ -1232,7 +1287,8 @@ fun bi_cos(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_sin(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_sin(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(sin(numberArg(arg1(args))))
 }
 
@@ -1261,7 +1317,8 @@ fun bi_sin(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_truncate(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_truncate(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     return makeNumber(truncate(numberArg(arg1(args))))
 }
 
@@ -1279,7 +1336,8 @@ fun bi_truncate(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_random(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_random(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (limit, int) = args2(args)
     val rnd = Random.Default
 
@@ -1312,7 +1370,8 @@ fun bi_random(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_max(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_max(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     val (number, rest) = args
     var the_max = numberArg(number, " first")
 
@@ -1338,7 +1397,8 @@ fun bi_max(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_min(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_min(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     val (number, rest) = args
     var the_min = numberArg(number, " first")
 
@@ -1364,7 +1424,8 @@ fun bi_min(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_rem(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_rem(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     val (number, divisor) = args2(args)
     return makeNumber(numberArg(number, " first").IEEErem(
                           numberArg(divisor, " divisor")))
@@ -1383,7 +1444,8 @@ fun bi_rem(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_mod(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_mod(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     val (number, divisor) = args2(args)
     return makeNumber(numberArg(number, " first").mod(
                           numberArg(divisor, " divisor")))
@@ -1402,7 +1464,8 @@ fun bi_mod(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_div_int(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_div_int(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     val (number, divisor) = args2(args)
     return makeNumber(truncate(numberArg(number, " first")
                                    / numberArg(divisor, " divisor")))
@@ -1461,7 +1524,8 @@ val dig_weights = mapOf<Char, Int>(
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_digit_char_p(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_digit_char_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
     val (char, radix) = args2(args)
     val ch = charArg(char, " char").the_char.lowercase()[0]
     val rad = intArg(radix, " radix")
@@ -1497,7 +1561,8 @@ val junkAllowedKeyw = intern(":junk-allowed")
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_parse_integer(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_parse_integer(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                     suppp: Map<LSymbol, Boolean>): LObject {
     val string = arg1(args)
     val s = stringArg(string)
     val start = intOrDefault(kwArgs[startKeyw]!!, 0, "parse-integer start")
@@ -1559,7 +1624,8 @@ fun bi_parse_integer(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_float(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_float(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val number = arg1(args)
     numberArg(number)
     return number

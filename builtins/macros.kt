@@ -22,8 +22,8 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_defmacro(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject
+fun bi_defmacro(args: LObject, kwArgs: Map<LSymbol, LObject> ,
+                suppp: Map<LSymbol, Boolean>): LObject
 {
     var (name, rest1) = args
     var (params, bodyForms) = rest1
@@ -47,8 +47,8 @@ fun bi_defmacro(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_macroexpand(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_macroexpand(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     return macroExpandForm(arg1(args))
 }
 
@@ -65,8 +65,8 @@ fun bi_macroexpand(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_macroexpand_1(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_macroexpand_1(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                     suppp: Map<LSymbol, Boolean>): LObject {
     return macroExpandFormRecurse(arg1(args)).first
 }
 
@@ -124,8 +124,8 @@ fun qq_recurse(form: LObject): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_quasiquote(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_quasiquote(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                  suppp: Map<LSymbol, Boolean>): LObject {
     return qq_recurse(arg1(args))
 }
 
@@ -142,8 +142,8 @@ fun bi_quasiquote(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_unquote(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_unquote(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     throw FunctionError("unquote outside of a quasiquote context")
 }
 
@@ -160,8 +160,8 @@ fun bi_unquote(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_unquote_splicing(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_unquote_splicing(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                        suppp: Map<LSymbol, Boolean>): LObject {
     throw FunctionError("unquote-splicing outside of a quasiquote context")
 }
 

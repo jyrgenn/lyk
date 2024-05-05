@@ -38,7 +38,8 @@ fun assoc_iter_elems(alist: LObject,
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_assoc(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val (item, alist) = args2(args)
 
     return assoc_iter_elems(alist) {
@@ -61,7 +62,8 @@ fun bi_assoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_sassoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_sassoc(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (item, alist, default) = args3(args)
 
     val result = assoc_iter_elems(alist) {
@@ -90,7 +92,8 @@ fun bi_sassoc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_assq(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     val (item, alist) = args2(args)
 
     return assoc_iter_elems(alist) {
@@ -113,7 +116,8 @@ fun bi_assq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_sassq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_sassq(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val (item, alist, default) = args3(args)
 
     val result = assoc_iter_elems(alist) {
@@ -142,8 +146,8 @@ fun bi_sassq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assoc_if(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_assoc_if(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     val (pred, alist) = args2(args)
     var predicate = functionArg(pred)
 
@@ -166,8 +170,8 @@ fun bi_assoc_if(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assoc_if_not(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_assoc_if_not(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
     val (pred, alist) = args2(args)
     var predicate = functionArg(pred)
 

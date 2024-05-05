@@ -17,8 +17,8 @@ package org.w21.lyk
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     val (seq, index) = args2(args)
     val iindex = intArg(index, " index")
 
@@ -43,7 +43,8 @@ fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_setelt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_setelt(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (seq, index, value) = args3(args)
     val iindex = intArg(index, " index")
 
@@ -67,7 +68,8 @@ fun bi_setelt(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_elements(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_elements(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     return collectedList {
         for (elem in seqArg(arg1(args))) {
             it.add(elem)
@@ -90,7 +92,8 @@ fun bi_elements(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_copy_seq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_copy_seq(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     return seqArg(arg1(args)).copy()
 }
 
@@ -108,7 +111,8 @@ fun bi_copy_seq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_doseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_doseq(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val (cvars, bodyforms) = args
     val (symbol, sequence, resultform, start, end) = args5(cvars)
     val sym = symbolArg(symbol, " var")
@@ -147,7 +151,8 @@ fun bi_doseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_subseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_subseq(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (sequence, start, end) = args3(args)
     val i_start = if (start === Nil) 0 else intArg(eval(start), " start")
     val i_end = if (end === Nil) null else intArg(eval(end), " end")
@@ -170,7 +175,8 @@ fun bi_subseq(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_delete(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_delete(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (item, seq) = args2(args)
     return seqArg(seq, " sequence").delete(item)
 }

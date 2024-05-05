@@ -21,8 +21,8 @@ package org.w21.lyk
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 
-fun bi_new_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_new_environment(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                       suppp: Map<LSymbol, Boolean>): LObject {
     val (parent, value_table) = args2(args)
     
     val parent_env = when (parent) {
@@ -63,8 +63,8 @@ fun bi_new_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_the_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_the_environment(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                       suppp: Map<LSymbol, Boolean>): LObject {
     return currentEnv
 }
 
@@ -81,8 +81,8 @@ fun bi_the_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_with_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_with_environment(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                        suppp: Map<LSymbol, Boolean>): LObject {
     val (env_arg, bodyforms) = args
 
     val savedEnv = currentEnv
@@ -108,7 +108,8 @@ fun bi_with_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_root_environment(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+                       ,
+                        suppp: Map<LSymbol, Boolean>): LObject {
     return rootEnv
 }
 

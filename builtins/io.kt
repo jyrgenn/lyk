@@ -33,7 +33,8 @@ val printKeyw = intern(":print")
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_println(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_println(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     stdout.println(args.joinToString(kwArgs[sepKeyw].toString()))
     return theNonPrintingObject
 }
@@ -53,7 +54,8 @@ fun bi_println(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_print(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_print(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val (arg, stream) = args2(args)
     outputStreamArg(stream, " stream").write("\n$arg ")
     return arg
@@ -73,7 +75,8 @@ fun bi_print(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_prin1(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_prin1(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val (arg, stream) = args2(args)
     outputStreamArg(stream, " stream").write(arg.desc(null))
     return arg
@@ -92,8 +95,8 @@ fun bi_prin1(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_prin1_to_string(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_prin1_to_string(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                       suppp: Map<LSymbol, Boolean>): LObject {
     return makeString(arg1(args).desc(null))
 }
 
@@ -110,7 +113,8 @@ fun bi_prin1_to_string(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_princ(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_princ(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val (arg, stream) = args2(args)
     outputStreamArg(stream, " stream").write(arg.toString())
     return arg
@@ -144,8 +148,8 @@ fun bi_princ(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_princs(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_princs(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return makeString(arg1(args).toString())
 }
 
@@ -163,7 +167,8 @@ fun bi_princs(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_terpri(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_terpri(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val stream = arg1(args)
     outputStreamArg(stream, " stream").println()
     return Nil
@@ -185,8 +190,8 @@ fun bi_terpri(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_warning(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_warning(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     val (msg1, rest) = args
     val fields = mutableListOf(msg1.toString())
     for (arg in rest) {
@@ -220,7 +225,8 @@ fun bi_warning(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     val fname = arg1(args).toString()
     val verbose = kwArgs[verboseSym] !== Nil
     val throw_error = ob2bool(kwArgs[errorSym] ?: T)
@@ -244,8 +250,8 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_make_string_input_stream(args: LObject,
-                                kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_make_string_input_stream(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                                suppp: Map<LSymbol, Boolean>): LObject {
     val string = stringArg(arg1(args))
     return StringReaderStream(string)
 }
@@ -265,7 +271,8 @@ fun bi_make_string_input_stream(args: LObject,
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_stream(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_stream(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val arg = arg1(args)
     if (arg is LStream) {
         return arg
@@ -290,7 +297,8 @@ fun bi_stream(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_format(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_format(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (dest, rest) = args
     val (f, f_args) = rest
     val format = stringArg(f, " format-string")
@@ -326,7 +334,8 @@ fun bi_format(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_open(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_open(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     val fname = arg1(args).toString()    
     val direction = kwArgs[directionKeyw] ?: Nil
     val if_exists = kwArgs[if_existsKeyw] ?: Nil
@@ -387,7 +396,8 @@ fun bi_open(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_close(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_close(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val stream = streamArg(arg1(args))
     try {
         return bool2ob(stream.close())
@@ -410,8 +420,8 @@ fun bi_close(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_directory(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_directory(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     val pathspec = arg1(args)
     return dirlist(pathspec.toString())
 }
@@ -432,7 +442,8 @@ fun bi_directory(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_read_line(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_read_line(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     val (input_stream, eof_error_p, eof_value, trim_nl) = args4(args)
 
     var stream = if (input_stream === Nil) {
@@ -463,7 +474,8 @@ fun bi_read_line(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_basename(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_basename(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     val fname = stringArg(arg1(args))
     return makeString(basename(fname))
 }
@@ -481,7 +493,8 @@ fun bi_basename(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_dirname(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_dirname(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     val fname = stringArg(arg1(args))
     return makeString(dirname(fname))
 }
@@ -500,8 +513,8 @@ fun bi_dirname(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_make_string_output_stream(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_make_string_output_stream(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                                 suppp: Map<LSymbol, Boolean>): LObject {
     return StringWriterStream()
 }
 
@@ -522,8 +535,8 @@ fun bi_make_string_output_stream(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_get_output_stream_string(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_get_output_stream_string(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                                suppp: Map<LSymbol, Boolean>): LObject {
            val arg = arg1(args)
            if (arg !is StringWriterStream) {
                throw TypeError("get-output-stream-string argument is not a "
@@ -545,8 +558,8 @@ fun bi_get_output_stream_string(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_console_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_console_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                               suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(arg1(args) is ConsoleReaderStream)
 }
 
@@ -564,8 +577,8 @@ fun bi_console_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_file_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_file_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                            suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(arg1(args) is FileReaderStream)
 }
 
@@ -583,8 +596,8 @@ fun bi_file_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_string_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                              suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(arg1(args) is StringReaderStream)
 }
 
@@ -602,8 +615,8 @@ fun bi_string_reader_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_string_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                              suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(arg1(args) is StringWriterStream)
 }
 
@@ -621,8 +634,8 @@ fun bi_string_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_file_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_file_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                            suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(arg1(args) is FileWriterStream)
 }
 
@@ -639,8 +652,8 @@ fun bi_file_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_file_io_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_file_io_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                        suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(arg1(args) is FileIOStream)
 }
 
@@ -657,8 +670,8 @@ fun bi_file_io_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_streamp(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_streamp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(arg1(args) is LStream)
 }
 
@@ -676,7 +689,8 @@ fun bi_streamp(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_finish_output(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_finish_output(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                     suppp: Map<LSymbol, Boolean>): LObject {
     val output_stream = arg1(args)
     val stream =
         if (output_stream === Nil) {
@@ -705,8 +719,8 @@ fun bi_finish_output(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_open_interactive_stream(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_open_interactive_stream(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                               suppp: Map<LSymbol, Boolean>): LObject {
     return ConsoleReaderStream(prompt = arg1(args))
 }
 

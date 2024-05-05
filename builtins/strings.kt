@@ -26,7 +26,8 @@ fun string_from_list(items: LObject, sep: String = ""): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string(args: LObject, kwArgs: Map<LSymbol , LObject>): LObject {
+fun bi_string(args: LObject, kwArgs: Map<LSymbol , LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return string_from_list(args)
 }
 
@@ -43,7 +44,8 @@ fun bi_string(args: LObject, kwArgs: Map<LSymbol , LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_make_string(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_make_string(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     val (length, initial) = args2(args)
     val len = intArg(length, " length")
     val sb = StrBuf()
@@ -85,7 +87,8 @@ fun bi_make_string(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_join(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_join(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     val (items, sep) = args2(args)
     return string_from_list(items, sep.toString())
 }
@@ -103,7 +106,8 @@ fun bi_join(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val re = arg1(args)
     if (re is LRegexp) {
         return re
@@ -141,8 +145,8 @@ fun bi_regexp(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_regexp_match(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_regexp_match(args: LObject, kwArgs: Map<LSymbol, LObject> ,
+                    suppp: Map<LSymbol, Boolean>): LObject {
     val (re, string, limit) = args3(args)
     val regexp = regexpArg(re, " regexp")
     val s = string.toString()
@@ -183,8 +187,8 @@ fun regexp_split(regexp: LRegexp, s: String, limit: Int): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_regexp_split(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_regexp_split(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
     val (re, s, limit) = args3(args)
     return regexp_split(regexpArg(re, " regexp"), s.toString(),
                         intArg(limit, " limit"))
@@ -203,8 +207,8 @@ fun bi_regexp_split(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_regexp_replace(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_regexp_replace(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                      suppp: Map<LSymbol, Boolean>): LObject {
     val (re, s, replacement, limit) = args4(args)
     val regexp = regexpArg(re, " regexp")
     return regexp.replace(s.toString(), replacement.toString(),
@@ -230,7 +234,8 @@ fun bi_regexp_replace(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string_split(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_string_split(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
     val (string, separator, limit, keep_empty) = args4(args)
     var s = string.toString()
     var regexp: LRegexp
@@ -285,7 +290,8 @@ fun substring_limits(start: LObject, end: LObject, len: Int): Pair<Int, Int> {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string_upcase(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_string_upcase(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                     suppp: Map<LSymbol, Boolean>): LObject {
     val (string, start, end) = args3(args)
     val s = string.toString()
     val len = s.length
@@ -322,7 +328,8 @@ fun bi_string_upcase(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string_downcase(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_string_downcase(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                       suppp: Map<LSymbol, Boolean>): LObject {
     val (string, start, end) = args3(args)
     val s = string.toString()
     val len = s.length
@@ -383,7 +390,8 @@ fun capitalize(s: String, is_in_word: Boolean): String {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string_capitalize(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_string_capitalize(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                         suppp: Map<LSymbol, Boolean>): LObject {
     val (string, start, end) = args3(args)
     val s = string.toString()
     val len = s.length
@@ -455,7 +463,8 @@ fun string_trim(s: String, pred: (Char) -> Boolean,
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string_trim(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_string_trim(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     var (charbag, string) = args2(args)
     val pred: (it: Char) -> Boolean
 
@@ -486,7 +495,8 @@ fun bi_string_trim(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string_left_trim(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_string_left_trim(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                        suppp: Map<LSymbol, Boolean>): LObject {
     var (charbag, string) = args2(args)
     val pred: (it: Char) -> Boolean
 
@@ -514,7 +524,8 @@ fun bi_string_left_trim(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string_right_trim(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject
+fun bi_string_right_trim(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                         suppp: Map<LSymbol, Boolean>): LObject
 {
     var (charbag, string) = args2(args)
     val pred: (it: Char) -> Boolean
@@ -542,7 +553,8 @@ fun bi_string_right_trim(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_substring(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_substring(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     val (string, start, end) = args3(args)
     val s = string.toString()
     val len = s.length
@@ -574,8 +586,8 @@ fun bi_substring(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_string_contains_p(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_string_contains_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                         suppp: Map<LSymbol, Boolean>): LObject {
     val (haystack, needle) = args2(args)
     return bool2ob(needle.toString() in haystack.toString())
 }

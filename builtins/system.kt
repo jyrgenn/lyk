@@ -24,7 +24,8 @@ import kotlin.concurrent.thread
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_set_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_set_debug(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     val lc = ListCollector()
     for (arg in args) {
         debug(debugDebugSym) {
@@ -83,7 +84,8 @@ fun bi_set_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val (topic, data) = args
     var result = Nil
     debug(symbolArg(topic, " topic")) {
@@ -114,7 +116,8 @@ fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>,
+           suppp: Map<LSymbol, Boolean>): LObject {
     val (ob, as_string, synopsis_only) = args3(args)
     var func: LObject?
 
@@ -152,8 +155,8 @@ fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_numbers(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_numbers(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     return LNumber.numbers()
 }
 
@@ -171,8 +174,8 @@ fun bi_numbers(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_all_symbols(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_all_symbols(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     val lc = ListCollector()
     for (sym in symbolTable.values) {
         lc.add(sym)
@@ -193,8 +196,8 @@ fun bi_all_symbols(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_gc(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_gc(args: LObject, kwArgs: Map<LSymbol, LObject>,
+          suppp: Map<LSymbol, Boolean>): LObject {
     System.gc()
     return Nil
 }
@@ -214,7 +217,8 @@ fun bi_gc(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_assert(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject
+fun bi_assert(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject
 {
     val (form, message) = args2(args)
     if (eval(form) === Nil) {
@@ -237,8 +241,8 @@ fun bi_assert(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_apropos(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_apropos(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     val (pattern, as_list) = args2(args)
     var pattern_re = Regex("")
     var pattern_s = ""
@@ -312,8 +316,8 @@ fun bi_apropos(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_build_info(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_build_info(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                  suppp: Map<LSymbol, Boolean>): LObject {
     var as_string = ob2bool(arg1(args))
     var lc = ListCollector()
     for ((key, value) in build_info) {
@@ -338,7 +342,8 @@ fun bi_build_info(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     val obj = arg1(args)
     var map = LTable()
 
@@ -423,7 +428,8 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_provide(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_provide(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     val feature = symbolArg(arg1(args), " feature")
     featureSet.add(feature)
     return feature
@@ -444,7 +450,8 @@ fun bi_provide(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_require(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_require(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
     val (sym, fname) = args2(args)
     val feature = symbolArg(sym, " feature")
     if (feature in featureSet) {
@@ -474,7 +481,8 @@ val k2Sym = intern(":k2")
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_barams(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_barams(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     val (a, rest1) = args
     val (b, rest2) = rest1
     val (c, rest3) = rest2
@@ -507,7 +515,8 @@ fun bi_barams(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_exit(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_exit(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
     exitLyk(longArg(arg1(args)).toInt())
     @Suppress("UNREACHABLE_CODE")
     return Nil                          // yeah, right
@@ -527,7 +536,8 @@ fun bi_exit(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_getenv(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_getenv(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     return makeString(System.getenv(arg1(args).toString()) ?: "")
 }
 
@@ -544,7 +554,8 @@ fun bi_getenv(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_process_env(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_process_env(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     val table = LTable()
 
     for ((key, value) in System.getenv()) {
@@ -567,7 +578,8 @@ fun bi_process_env(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_env_table(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_env_table(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
     val table = LTable()
     val arg = arg1(args)
     val environment = if (arg === Nil) {
@@ -596,7 +608,8 @@ fun bi_env_table(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_env_vars(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_env_vars(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
     val arg = arg1(args)
     val environment = if (arg === Nil) {
         currentEnv
@@ -623,8 +636,8 @@ fun bi_env_vars(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_function_definition(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_function_definition(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                           suppp: Map<LSymbol, Boolean>): LObject {
     return functionArg(arg1(args)).definition()
 }
 
@@ -641,8 +654,8 @@ fun bi_function_definition(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_function_docstring(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_function_docstring(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                          suppp: Map<LSymbol, Boolean>): LObject {
     return makeString(functionArg(arg1(args)).docstring())
 }
 
@@ -661,8 +674,8 @@ fun bi_function_docstring(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_function_parameters(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_function_parameters(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                           suppp: Map<LSymbol, Boolean>): LObject {
     val function = functionArg(arg1(args))
     return function.parlist()
 }
@@ -681,7 +694,8 @@ fun bi_function_parameters(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_make_symbol(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_make_symbol(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     val name = arg1(args)
     return LSymbol(stringArg(name), false)
 }
@@ -699,7 +713,8 @@ fun bi_make_symbol(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_symbol_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_symbol_value(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
     val sym = arg1(args)
     return symbolArg(sym).getValue()
 }
@@ -721,7 +736,8 @@ fun bi_symbol_value(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_collect_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_collect_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                        suppp: Map<LSymbol, Boolean>): LObject {
     val bodyforms = args
     val (calls, conses, evals, seconds) = measurePerfdata {
         evalProgn(bodyforms)
@@ -748,7 +764,8 @@ fun bi_collect_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_no_warnings(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_no_warnings(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     val previous_verbosity = Options.verbosity
     try {
         Options.verbosity = 0
@@ -815,7 +832,8 @@ fun has_shellmeta(s: String): Boolean {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
     val (command, rest) = args
     val command_s = stringArg(command, " command")
     val key_in_shell = kwArgs[inShellKSym] ?: Nil
@@ -955,8 +973,8 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_error_object_p(args: LObject, kwArgs: Map<LSymbol, LObject>
-): LObject {
+fun bi_error_object_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                      suppp: Map<LSymbol, Boolean>): LObject {
     return bool2ob(arg1(args) is ErrorObject)
 }
 
@@ -973,7 +991,8 @@ fun bi_error_object_p(args: LObject, kwArgs: Map<LSymbol, LObject>
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_sleep(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_sleep(args: LObject, kwArgs: Map<LSymbol, LObject>,
+             suppp: Map<LSymbol, Boolean>): LObject {
     val ms = (numberArg(arg1(args)) * 1000).toLong()
     if (ms < 0) {
         throw ArgumentError("seconds argument must not be negative")
@@ -995,10 +1014,32 @@ fun bi_sleep(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_return(args: LObject, kwArgs: Map<LSymbol, LObject>): LObject {
+fun bi_return(args: LObject, kwArgs: Map<LSymbol, LObject>,
+              suppp: Map<LSymbol, Boolean>): LObject {
     throw ReturnSignal(arg1(args))
 }
 
+
+/// builtin warnings-as-errors
+/// fun     bi_warnings_as_errors
+/// std     
+/// key     
+/// opt     on
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if warnings as handled as errors, nil otherwise.
+/// With optional `on` argument, set warnings to be handled as errors iff
+/// `on` is . In this case, return the status from *before* setting it.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_warnings_as_errors(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                          suppp: Map<LSymbol, Boolean>): LObject {
+    val result = bool2ob(Options.warnIsError)
+    return result
+}
 
 
 
