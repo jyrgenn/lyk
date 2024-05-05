@@ -414,7 +414,7 @@ fun makeLambdaOrMacro(params: LObject,
         null
     if (isMacro) {
         return LMacro(name, stdPars, keyPars, optPars, rest_sym,
-                      bodyForms, docBody, locationLString)
+                      bodyForms, docBody, env, locationLString)
     } else {
         return Lambda(name, stdPars, keyPars, optPars, rest_sym,
                       bodyForms, docBody, env, locationLString)

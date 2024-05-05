@@ -10,6 +10,7 @@ class LMacro(
     restPar: LSymbol?,                     // &rest parameters
     val bodyForms: LObject,                //
     docBody: LString,                      // docstring sans signature
+    val env: LEnv,                             // the environment
     location: LString?,                    // where defined
 ): LFunction(macroName, stdPars, keyPars, optPars, restPar, null, true,
              docBody, location)
@@ -25,7 +26,7 @@ class LMacro(
     }
 
     fun expand(arglist: LObject): LObject {
-        return withNewEnvironment(currentEnv) {
+        return withNewEnvironment(env) {
             debug(debugMacroSym) {
                 "expand $this with args $arglist"
             }
