@@ -41,7 +41,7 @@ lyk.jar: $(ALLSRCS) generated/jline Makefile tags
 
 generated/jline:
 	mkdir generated/jline
-	cd generated/jline; jar -xf ../../jline/jline.jar
+	cd generated/jline; jar -xf ../../external/jline/jline.jar
 
 generated/10-types.lisp: Makefile scripts/list-types.sh $(SRCS)
 	./scripts/list-types.sh > generated/10-types.lisp

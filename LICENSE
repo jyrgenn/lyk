@@ -1,5 +1,5 @@
 [BSD 2-Clause License]
-[for the license of the integrated JLine editor see jline/LICENSE.txt]
+[for the license of the JLine editor see external/jline/LICENSE.txt]
 
 This is the "lyk" Lisp in Kotlin. Copyright (c) 2024, Juergen Nickelsen
 
