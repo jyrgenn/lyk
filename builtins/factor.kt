@@ -101,6 +101,7 @@ fun nextPrimeAfter(n: Long): Long {
         if (isPrime(next)) {
             return next
         }
+        next += 2
     }
 }
 
@@ -154,7 +155,7 @@ fun bi_prime_number_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// ret     prime
 /// special no
 /// doc {
-/// Return the next prime greater than `integer`.
+/// Return the next prime number greater than `integer`.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
