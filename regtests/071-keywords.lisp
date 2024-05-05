@@ -18,9 +18,9 @@
 (test-is "&key 0" (foo 12) 12)
 (test-is "&key 1" (foo 12 :multiplier 3) 36)
 (test-err "&key 2" (foo 12 2)
-          #/expected keyword argument for function foo, found 2/)
+          #/too many normal args for lambda function/)
 (test-err "&key 3" (foo 12 2 3)
-          #/expected keyword argument for function foo, found 2/)
+          #/too many normal args for lambda function/)
 
 (defun multer (n &key (multiplier 3)) (* n multiplier))
 
@@ -40,7 +40,7 @@
                    a7 (a8 2))
   (list 'a1 a1 'a2 a2 'a3 a3 'a4 a4 'a5 a5 'a6 a6 'a7 a7 'a8 a8))
 
-(test-err "arrrghs 1" (arrrghs 1) #/too few arguments for function/)
+(test-err "arrrghs 1" (arrrghs 1) #/too few normal args for lambda function/)
 (test-is "arrrghs 2" (arrrghs 1 2)
          '(a1 1 a2 2 a3 nil a4 x a5 nil a6 19 a7 nil a8 2))
 (test-is "arrrghs 3" (arrrghs 'd 'e 'f)
@@ -74,7 +74,8 @@
 (defun funfunfun (foon &key k1 (k2 (cons hoo hoo)))
   (list foon k2))
 
-(test-err "&key init 1" (funfunfun 'tagga 'tugga) #/keyword expected, found:/)
+(test-err "&key init 1" (funfunfun 'tagga 'tugga)
+          #/too many normal args for lambda function/)
 (test-is "&key init 2" (funfunfun 'tagga :k2 112) '(tagga 112))
 (test-is "&key init 3" (funfunfun 'tagga) '(tagga (shoo . shoo)))
 

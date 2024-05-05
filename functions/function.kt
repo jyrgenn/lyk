@@ -196,12 +196,13 @@ fun bindPars(arglist: LObject, func: LFunction) {
         }
         // don't want this any more
         throw ArgumentError(
-            "too many args for ${func.typeDesc} `${func.name}`: $arglist")
+            "too many normal args for ${func.typeDesc} "
+            + "`${func.name}`: $arglist")
     }
     // was it enough?
     if (hadStdArgs < wantStdArgs) {
         throw ArgumentError(
-            "too few args for ${func.typeDesc} `${func.name}`: $arglist")
+            "too few normal args for ${func.typeDesc} `${func.name}`: $arglist")
     }
     // a :keyword left dangling?
     if (wantKeyArg != null) {

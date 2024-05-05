@@ -2077,3 +2077,31 @@ fun bi_lambdap(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return bool2ob(arg1(args) is Lambda)
 }
 
+/// builtin keywordp
+/// fun     bi_keywordp
+/// std     expr
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if the argument is a keyword symbol, nil otherwise.
+/// A keyword is a symbol whose name starts with a colon, but is
+/// longer than just the colon.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_keywordp(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                suppp: Map<LSymbol, Boolean>): LObject {
+    val maybesym = arg1(args)
+    if (maybesym !is LSymbol) {
+        return Nil
+    }
+    val name = maybesym.name
+    if (name.startsWith(":") && name.length > 1) {
+        return T
+    }
+    return Nil
+}
+
