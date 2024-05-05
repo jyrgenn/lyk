@@ -22,7 +22,7 @@
 
 (test-err "dest let 4E!" (let (((a (b c) d) '(3 4 5 6 7)))
                            (list a b c d))
-          #/value structure error, not pair/)
+          #/value structure error, not a pair/)
 
 (test-is "dest let 5" (let (((a b c . d) '(3 (4 5) 6 7 8 9)))
                         (list a b c d))
@@ -37,7 +37,7 @@
 
 (test-err "dest let 6E!" (let (((a . 119) (return-a-list)))
                            (list a b))
-         #/non-symbol terminates varlist/)
+         #/variable not a symbol/)
 
 (test-is "dest let 7" (let (((a b) (return-a-list)))
                         (list a b))
@@ -47,7 +47,7 @@
                         (list a b c d))
          '(3 4 5 nil))
 
-(test-is "dest let 9" (let ((a (sys:symbols))
+(test-is "dest let 9" (let ((a (all-symbols))
                             (b (table-keys *setf-update-table*))
                             (c 1337))
                         (let (((a b c) '(3 4 5 6))
@@ -78,7 +78,7 @@
 
 (test-err "dest let* 4E!" (let* (((a (b c) d) '(3 4 5 6 7)))
                             (list a b c d))
-          #/value structure error, not pair/)
+          #/value structure error, not a pair/)
 
 (test-is "dest let* 5" (let* (((a b c . d) '(3 (4 5) 6 7 8 9)))
                          (list a b c d))
@@ -93,7 +93,7 @@
 
 (test-err "dest let* 6E!" (let* (((a . 119) (return-a-list)))
                             (list a b))
-          #/non-symbol terminates varlist/)
+          #/variable not a symbol/)
 
 (test-is "dest let* 7" (let* (((a b) (return-a-list)))
                          (list a b))
@@ -103,7 +103,7 @@
                          (list a b c d))
          '(3 4 5 nil))
 
-(test-is "dest let* 9" (let* ((a (sys:symbols))
+(test-is "dest let* 9" (let* ((a (all-symbols))
                               (b (table-keys *setf-update-table*))
                               (c 1337))
                          (let* (((a b c) '(3 4 5 6))
@@ -124,9 +124,10 @@
 ;; don't assign if symbol is nil
 
 (test-is "dest nil" 
-         (let ((line "/// name set-car!\n"))
+         (let ((line "/// name set-car!\n")
+               (regexp #r{^/// (name|impl|mina|spec|args|retv|docs) ?(.*)}))
            (let (((nil word rest)
-                  (#r{^/// (name|impl|mina|spec|args|retv|docs) ?(.*)} line)))
+                  (regexp-match regexp line)))
              (list word rest)))
          '("name" "set-car!"))
 

@@ -2,6 +2,8 @@
 
 package org.w21.lyk
 
+import kotlin.collections.zip
+
 /// builtin car
 /// fun     bi_car
 /// std     list
@@ -238,6 +240,11 @@ fun destructuringBind(name: String, vars: LObject, values: LObject,
                           +"a pair: ${lfvalues.rest}")
         }
         val curvar = lfvars.next()
+        if (!lfvalues.hasNext() && lfvalues.rest != Nil) {
+            val value = lfvalues.rest
+            throw ValueError("value structure error, not a pair: "
+                             + "${value.type} $value")
+        }
         val curvalue = lfvalues.next()
         when (curvar) {
             is LSymbol -> if (curvar !== Nil) {
@@ -247,7 +254,8 @@ fun destructuringBind(name: String, vars: LObject, values: LObject,
                               vals.add(curvalue)
                           }
             is LCons -> destructuringBind(name, curvar, curvalue, syms, vals)
-            else -> throw TypeError(curvar, "symbol", "$name varlist")
+            else ->
+                throw TypeError(curvar, "symbol", "$name varlist, variable")
         }
     }
     // if the variable list is ended by a non-nil symbol, bind remaining
@@ -260,7 +268,7 @@ fun destructuringBind(name: String, vars: LObject, values: LObject,
             vals.add(lfvalues.rest)
         }
         else ->
-            throw TypeError(the_end, "symbol", "$name binding")
+            throw TypeError(the_end, "symbol", "$name binding, variable")
     }
 }
 
@@ -275,58 +283,51 @@ fun let_internal(args: LObject, is_letrec: Boolean): LObject {
     var syms = mutableListOf<LSymbol>()     // variable symbols to bind
     var vals = mutableListOf<LObject>() // values to bind to them
     
-    for (binding in bindings) {
-        if (binding is LSymbol) {
-            syms.add(binding)
-            vals.add(Nil)
-            debug(debugLetBindSym) {
-                "will bind lone $binding to nil"
-            }
-        } else if (binding is LCons) {
-	    val (varlist, rest) = binding
-	    if (rest != Nil && rest !is LCons) {
-		throw ArgumentError(
-                    "$name: malformed variable clause for `$varlist`")
-	    }
-	    if (rest.cdr != Nil) {
-		throw ArgumentError(
-                    "$name: malformed binding clause for `$varlist`") 
-	    }
-	    var value = rest.car
-            if (!is_letrec) {
-	        value = eval(value)
-            }
-            // I could check for a single symbol to bind before pulling out the
-            // big gun, but it turns out this optimisation does not bring a
-            // preceptible speed advantage.
-            destructuringBind(name, varlist, value, syms, vals)
-            debug(debugLetBindSym) {
-                if (is_letrec) {
-                    "will bind $varlist to eval($value)"
-                } else {
-                    "will bind $varlist to $value"
-                }
-            }
-        } else {
-            throw ArgumentError("$name: malformed variables list")
-        }
-    }
-    // do the bindings
     return withNewEnvironment() {
-        val sym_i = syms.iterator()
-        val val_i = vals.iterator()
-
-        while (sym_i.hasNext()) {
-            val sym = sym_i.next()
-            var value = val_i.next()
-            if (is_letrec) {
-                value = eval(value)
+        for (binding in bindings) {
+            if (binding is LSymbol) {
+                syms.add(binding)
+                vals.add(Nil)
+                debug(debugLetBindSym) {
+                    "will bind lone $binding to nil"
+                }
+            } else if (binding is LCons) {
+	        val (varlist, rest) = binding
+	        if (rest != Nil && rest !is LCons) {
+		    throw ArgumentError(
+                        "$name: malformed variable clause for `$varlist`")
+	        }
+	        if (rest.cdr != Nil) {
+		    throw ArgumentError(
+                        "$name: malformed binding clause for `$varlist`") 
+	        }
+                // I could check for a single symbol to bind before pulling out
+                // the big gun, but it turns out this optimisation does not
+                // bring a preceptible speed advantage.
+                destructuringBind(name, varlist, eval(rest.car), syms, vals)
+                // in let*, bind early
+                if (is_letrec) {
+                    for ((symbol, value) in syms.zip(vals)) {
+                        symbol.bind(value)
+                    }
+                    syms.clear()
+                    vals.clear()
+                }
+            } else {
+                throw ArgumentError("$name: malformed variables list")
             }
-            sym.bind(value)
         }
+        // in let, bind late
+        if (!is_letrec) {
+            for ((symbol, value) in syms.zip(vals)) {
+                symbol.bind(value)
+            }
+        }
+        // now, finally, run the body in the new environment
         evalProgn(bodyforms)
     }
 }
+
 
 /// builtin let
 /// fun     bi_let

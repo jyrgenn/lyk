@@ -539,7 +539,7 @@ fun bi_get_output_stream_string(args: LObject, kwArgs: Map<LSymbol, LObject>,
                                 suppp: Map<LSymbol, Boolean>): LObject {
            val arg = arg1(args)
            if (arg !is StringWriterStream) {
-               throw TypeError("get-output-stream-string argument is not a "
+               throw TypeError("get-output-stream-string argument is not an "
                                + "output stream string")
            }
            return makeString(arg.value_and_reset())

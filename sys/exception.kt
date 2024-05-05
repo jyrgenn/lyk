@@ -138,7 +138,7 @@ fun indef_a(noun: String): String {
 class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
     constructor(message: String) : this(message, null)
     constructor(obj: LObject, whatnot: String, where: String): 
-        this("$where, not ${indef_a(whatnot)} $whatnot: ${obj.type} $obj")
+        this("$where not ${indef_a(whatnot)} $whatnot: ${obj.type} $obj")
 }
 
 class CallError(message: String): LispError(message)
