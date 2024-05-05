@@ -2,6 +2,29 @@ package org.w21.lyk
 
 import java.io.IOException
 
+// These first ones, *Signal, are not Lisp errors and must not be cought by
+// errset!
+
+// Excpetions that are neither LispErrors (so not to be caught by errset) nor
+// unexpected Java errors; must be passed through until explicitly caught.
+abstract class LykSignal(message: String): Exception(message) {
+    override fun toString() =
+        "${this::class.simpleName.toString()} $message"
+}
+
+class AbortEvalSignal(reason: String): LykSignal(reason) {
+    override fun toString() =
+        "abort eval due to $message"
+}
+
+class ThrowSignal(val tag: LObject, val value: LObject):
+    LykSignal("uncaught, tag $tag value ${value.type} $value")
+
+class ReturnSignal(val value: LObject):
+    LykSignal("outside of function! returns ${value.type} $value")
+
+// real Lisp Errors below
+
 class ErrorObject(val error: LispError): LObject() {
     override fun toString() = error.toString()
 
@@ -125,13 +148,6 @@ class ArgumentError(message: String): LispError(message)
 class LambdaDefError(message: String): LispError(message)
 
 class FunctionError(message: String): LispError(message)
-
-class AbortEvalSignal(message: String): LispError(message)
-
-class ThrowSignal(val tag: LObject, val value: LObject):
-    LispError("uncaught; tag $tag value $value")
-
-class ReturnSignal(val value: LObject): LispError("returns", value)
 
 class EOFError(message: String): LispError(message) {
     constructor(stream: LStream): this("on stream $stream")

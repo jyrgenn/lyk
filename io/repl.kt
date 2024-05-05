@@ -86,6 +86,8 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
             if (!interactive) {
                 return e
             }
+        } catch (sig: LykSignal) {
+            printErr(sig)
         } catch (e: Exception) {
             printErr("unexpected exception:", e)
             e.printStackTrace()

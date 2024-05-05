@@ -98,7 +98,7 @@ fun eval(form: LObject): LObject {
                                   + "($maxRecursionDepth)")
         }
         if (abortEval) {
-            throw AbortEvalSignal("eval aborted")
+            throw AbortEvalSignal("external signal")
         }
 
         var value: LObject
@@ -140,6 +140,8 @@ fun eval(form: LObject): LObject {
     } catch (err: LispError) {
         err.pushFrame(evalLevel, form, currentEnv, lastTopLevelLocation)
         throw err
+    } catch (sig: LykSignal) {
+        throw sig
     } catch (e: ArithmeticException) {
         throw LispError("integer divide by zero")
     } catch (e: StringIndexOutOfBoundsException) {

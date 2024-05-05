@@ -26,7 +26,7 @@
 
 ;; Contrast behavior of this example with corresponding example of BLOCK.
 (test-is "catch CLHS catch 4" (catch 'c
-                                (flet ((c1 (lambda () (throw 'c 1))))
+                                (flet ((c1 () (throw 'c 1)))
                                   (+ 3 (catch 'c
                                          (c1)
                                          (print 'unreachable)
@@ -75,7 +75,7 @@
                              (errset (let ((n 12))
                                        (incf n)
                                        (throw 'foo n)))
-                             sys:last-error)
+                             *last-error*)
          13)                             
 
 (done-testing)
