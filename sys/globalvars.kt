@@ -117,7 +117,7 @@ val loadFileNameInd = ";#file"
 val evalStackAbbrLines = LSymbol.makeGlobal("*eval-stack-abbr-lines*", T)
 
 // set of features provided
-val featureSet = mutableSetOf<LSymbol>()
+val modulesSym = LSymbol.makeGlobal("*modules*")
 
 // eval stuff
 var evalLevel: Int = 0

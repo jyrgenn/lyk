@@ -1543,8 +1543,6 @@ fun bi_digit_char_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return makeNumber(weight)
 }
 
-val startKeyw = intern(":start")
-val endKeyw = intern(":end")
 val radixKeyw = intern(":radix")
 val junkAllowedKeyw = intern(":junk-allowed")
 

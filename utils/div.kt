@@ -349,3 +349,6 @@ fun printThingWrapped(thing: Any, linewidth: Int = 79,
     return position + s.length
 }
 
+fun identity(item: Any): Any {
+    return item
+}

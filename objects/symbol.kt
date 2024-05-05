@@ -152,7 +152,7 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
 
     fun getValue() = currentEnv.getValue(this)
 
-    fun getValueOptional() = currentEnv.getValueMaybe(this)
+    fun getValueOptional() = currentEnv.getValueMaybe(this) 
 
     fun setProp(name: LSymbol, value: LObject) {
         props[name] = value
@@ -195,6 +195,14 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
         if (this === Nil) {
             throw IndexError(
                 "invalid indexes [$start, ${end ?: "nil"}) for empty list")
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
+    override fun find(start: Int, end: Int?, last: Boolean,
+                      predicate: (LObject) -> Boolean): LObject {
+        if (this === Nil) {
+            return Nil
         }
         throw TypeError("not a sequence: $this")
     }

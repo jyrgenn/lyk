@@ -81,6 +81,29 @@ class LString(val the_string: String): LObject(), LSeq {
         throw TypeError("string object is immutable: " + desc(null))
     }
 
+    override fun find(start: Int, end: Int?, last: Boolean,
+                      predicate: (LObject) -> Boolean): LObject {
+        var result: LObject = Nil
+        var index = -1
+        for (elem in this) {
+            index++
+            if (index < start) {
+                continue
+            }
+            if (end != null && index >= end) {
+                break
+            }
+            if (predicate(elem)) {
+                if (last) {
+                    result = elem
+                } else {
+                    return elem
+                }
+            }
+        }
+        return result
+    }
+
     override fun elements(): LObject {
         return collectedList {
             for (ch in the_string) {

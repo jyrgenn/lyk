@@ -216,21 +216,23 @@
 
 ;; find with custom test
 (test-is "find 2" (find '(3 . 4) '((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
-                        nil
-                        (lambda (a b) (eq (car a) (car b))))
+                        :test (lambda (a b) (eq (car a) (car b))))
          '(3 . d))
 ;; find with custom test from-end
 (test-is "find 3" (find '(3 . 4) '((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
-                        t
-                        (lambda (a b) (eq (car a) (car b))))
+                        :from-end t
+                        :test (lambda (a b) (eq (car a) (car b))))
          '(3 . 5))
-;; find with custom test from-end, end, start
+;; find with custom test from-end, end
 (test-is "find 4" (find '(3 . 4) '((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
-                        t (lambda (a b) (eq (car a) (car b))) 0 2)
+                        :from-end t
+                        :test (lambda (a b) (eq (car a) (car b)))
+                        :end 2)
          '(3 . d))
-;; find with custom test, star
+;; find with custom test, start
 (test-is "find 5" (find '(3 . 4) '((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
-                        nil (lambda (a b) (eq (car a) (car b))) 2)
+                        :test (lambda (a b) (eq (car a) (car b)))
+                        :start 2)
          '(3 . 5))
 
 ;; don't find
@@ -241,21 +243,23 @@
 
 ;; find with custom test
 (test-is "find 2v" (find '(3 . 4) #((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
-                        nil
-                        (lambda (a b) (eq (car a) (car b))))
+                         :test (lambda (a b) (eq (car a) (car b))))
          '(3 . d))
 ;; find with custom test from-end
 (test-is "find 3v" (find '(3 . 4) #((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
-                        t
-                        (lambda (a b) (eq (car a) (car b))))
+                         :from-end t
+                         :test (lambda (a b) (eq (car a) (car b))))
          '(3 . 5))
 ;; find with custom test from-end, end, start
 (test-is "find 4v" (find '(3 . 4) #((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
-                        t (lambda (a b) (eq (car a) (car b))) 0 2)
+                         :from-end t
+                         :test (lambda (a b) (eq (car a) (car b)))
+                         :end 2)
          '(3 . d))
 ;; find with custom test, start
 (test-is "find 5v" (find '(3 . 4) #((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
-                        nil (lambda (a b) (eq (car a) (car b))) 2)
+                        :test (lambda (a b) (eq (car a) (car b)))
+                        :start 2)
          '(3 . 5))
 
 ;; don't find

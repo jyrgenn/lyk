@@ -63,6 +63,14 @@ fun numberArg(arg: LObject, desc: String = ""): Double {
 
 fun intArg(arg: LObject, desc: String = "") = numberArg(arg, desc).toInt()
 
+fun indexArg(arg: LObject, desc: String = ""): Int {
+    val index = intArg(arg, desc)
+    if (index >= 0) {
+        return index
+    }
+    throw ArgumentError("$calledFunctionName$desc argument is negative: $arg")
+}
+
 fun longArg(arg: LObject, desc: String = ""): Long {
     if (arg is LNumber && arg.isLong()) {
         return arg.the_number.toLong()

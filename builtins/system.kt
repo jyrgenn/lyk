@@ -431,7 +431,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>,
 fun bi_provide(args: LObject, kwArgs: Map<LSymbol, LObject>,
                suppp: Map<LSymbol, Boolean>): LObject {
     val feature = symbolArg(arg1(args), " feature")
-    featureSet.add(feature)
+    push(modulesSym, feature)
     return feature
 }
 
@@ -454,12 +454,12 @@ fun bi_require(args: LObject, kwArgs: Map<LSymbol, LObject>,
                suppp: Map<LSymbol, Boolean>): LObject {
     val (sym, fname) = args2(args)
     val feature = symbolArg(sym, " feature")
-    if (feature in featureSet) {
+    if (feature in modulesSym.getValueOptional() ?: Nil) {
         return T
     }
     val filename = (if (fname !== Nil) fname else sym).toString()
     load(filename, true, false, true)
-    if (feature in featureSet) {
+    if (feature in modulesSym.getValueOptional() ?: Nil) {
         return T
     }
     throw NotProvidedError(feature) 

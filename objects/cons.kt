@@ -137,6 +137,29 @@ class LCons(override var car: LObject,
         return lc.list
     }
 
+    override fun find(start: Int, end: Int?, last: Boolean,
+                      predicate: (LObject) -> Boolean): LObject {
+        var result: LObject = Nil
+        var index = -1
+        for (elem in this) {
+            index++
+            if (index < start) {
+                continue
+            }
+            if (end != null && index >= end) {
+                break
+            }
+            if (predicate(elem)) {
+                if (last) {
+                    result = elem
+                } else {
+                    return elem
+                }
+            }
+        }
+        return result
+    }
+
     override fun reversed(): LObject {
         var l: LObject = Nil
         for (elem in this) {

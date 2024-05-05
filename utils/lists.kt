@@ -1,6 +1,21 @@
 
 package org.w21.lyk
 
+// Push an item on the list stored in `variable`. If the value of `variable` is
+// undefined, make it a list containing `item`.
+fun push(variable: LSymbol, item: LObject) {
+    val value = variable.getValueOptional()
+    variable.setValue(LCons(item, value ?: Nil), silent = true)
+}
+
+fun list(vararg elems: LObject): LObject {
+    val lc = ListCollector()
+    for (elem in elems) {
+        lc.add(elem)
+    }
+    return lc.list
+}
+
 
 // return a list with the first n elements of list; all for 0
 fun firstN(list: LObject, n: Int): LObject {

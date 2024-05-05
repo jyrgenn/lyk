@@ -20,12 +20,7 @@ package org.w21.lyk
 fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>,
            suppp: Map<LSymbol, Boolean>): LObject {
     val (seq, index) = args2(args)
-    val iindex = intArg(index, " index")
-
-    if (iindex < 0) {
-        throw IndexError("index $index for ${seq.type} is negative")
-    }
-    return seqArg(seq).getAt(iindex)
+    return seqArg(seq).getAt(indexArg(index, " index"))
 }
 
 /// builtin setelt
@@ -46,12 +41,7 @@ fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>,
 fun bi_setelt(args: LObject, kwArgs: Map<LSymbol, LObject>,
               suppp: Map<LSymbol, Boolean>): LObject {
     val (seq, index, value) = args3(args)
-    val iindex = intArg(index, " index")
-
-    if (iindex < 0) {
-        throw IndexError("index $index for ${seq.type} is negative")
-    }
-    seqArg(seq).setAt(iindex, value)
+    seqArg(seq).setAt(intArg(index, " index"), value)
     return value
 }
 
@@ -180,3 +170,159 @@ fun bi_delete(args: LObject, kwArgs: Map<LSymbol, LObject>,
     val (item, seq) = args2(args)
     return seqArg(seq, " sequence").delete(item)
 }
+
+val from_endKeyw = intern(":from-end")
+val testKeyw = intern(":test")
+val test_notKeyw = intern(":test-not")
+val startKeyw = intern(":start")
+val endKeyw = intern(":end")
+val keyKeyw = intern(":key")
+val equalSym = intern("equal")
+val identitySym = intern("identity")
+
+/// builtin find
+/// fun     bi_find
+/// std     item sequence
+/// key     "from-end" to Nil, "test" to Nil, "test-not" to Nil, "start" to numberZero, "end" to Nil, "key" to Nil
+/// opt     
+/// rest    
+/// ret     element
+/// special no
+/// doc {
+/// Return first `item` from `sequence` if it is in `sequence`, or nil.
+/// If `from-end` is true, return the last `item` found instead.
+/// If `test` is not nil, it is used as a function to check the equality
+/// of the elements of the sequence with `item`. Per default, use `equal`.
+/// If `test-not` is not nil, it is used as a function to check the
+/// non-equality of the elements of the sequence with `item`.
+/// Use `start` as the start index of the subsequence to search.
+/// Use `end`, if non-nil, as the end index of the subsequence to search.
+/// Use `key`, if non-nil, as a function applied to the elements of the
+/// sequence before testing against the result.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_find(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
+    val (item, seq) = args2(args)
+    val sequence = seqArg(seq, " sequence")
+    val last = kwArgs[from_endKeyw]?.toBoolean() ?: false
+    val test_k = kwArgs[testKeyw] ?: Nil
+    val test = if (test_k === Nil) {
+        equalSym.function ?:
+            throw FunctionError("symbol `$equalSym` has no function")
+    } else {
+        functionArg(test_k, " :test")
+    }
+    val test_not = if (test_k === Nil) {
+        null
+    } else {
+        functionArg(test_k, " :test-not")
+    }
+    val start = indexArg(kwArgs[startKeyw] ?: numberZero, " :start")
+    val end_k = kwArgs[endKeyw] ?: Nil
+    val end = if (end_k === Nil) null else indexArg(end_k, ":end")
+    val key_k = kwArgs[keyKeyw] ?: Nil
+    val key = if (key_k === Nil) {
+        identitySym.function ?:
+            throw FunctionError("symbol `$identitySym` has no function")
+    } else {
+        functionArg(key_k, " :key")
+    }
+
+    return sequence.find(start, end, last) {
+        val elem = key.call(list(it))
+        val testargs = list(elem, item)
+        val b1 = test.call(testargs).toBoolean()
+        if (test_not == null) {
+            b1
+        } else {
+            b1 && test_not.call(testargs).toBoolean()
+        }
+    }
+}
+
+/// builtin find-if
+/// fun     bi_find_if
+/// std     predicate sequence
+/// key     "from-end" to Nil, "start" to numberZero, "end" to Nil, "key" to Nil
+/// opt     
+/// rest    
+/// ret     element
+/// special no
+/// doc {
+/// Return first element from `sequence` where `predicate` is true, or nil.
+/// If `from-end` is true, return the last `item` found instead.
+/// Use `start` as the start index of the subsequence to search.
+/// Use `end`, if non-nil, as the end index of the subsequence to search.
+/// Use `key`, if non-nil, as a function applied to the elements of the
+/// sequence before testing against the result.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_find_if(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
+    val (pred, seq) = args2(args)
+    val predicate = functionArg(pred, " predicate")
+    val sequence = seqArg(seq, " sequence")
+    val last = kwArgs[from_endKeyw]?.toBoolean() ?: false
+
+    val start = indexArg(kwArgs[startKeyw] ?: numberZero, " :start")
+    val end_k = kwArgs[endKeyw] ?: Nil
+    val end = if (end_k === Nil) null else indexArg(end_k, ":end")
+    val key_k = kwArgs[keyKeyw] ?: Nil
+    val key = if (key_k === Nil) {
+        identitySym.function ?:
+            throw FunctionError("symbol `$identitySym` has no function")
+    } else {
+        functionArg(key_k, " :key")
+    }
+
+    return sequence.find(start, end, last) {
+        val elem = key.call(list(it))
+        predicate.call(list(elem)).toBoolean()
+    }
+}
+
+/// builtin find-if-not
+/// fun     bi_find_if_not
+/// std     predicate sequence
+/// key     "from-end" to Nil, "start" to numberZero, "end" to Nil, "key" to Nil
+/// opt     
+/// rest    
+/// ret     element
+/// special no
+/// doc {
+/// Return first element from `sequence` where `predicate` is false, or nil.
+/// If `from-end` is true, return the last `item` found instead.
+/// Use `start` as the start index of the subsequence to search.
+/// Use `end`, if non-nil, as the end index of the subsequence to search.
+/// Use `key`, if non-nil, as a function applied to the elements of the
+/// sequence before testing against the result.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_find_if_not(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
+    val (pred, seq) = args2(args)
+    val predicate = functionArg(pred, " predicate")
+    val sequence = seqArg(seq, " sequence")
+    val last = kwArgs[from_endKeyw]?.toBoolean() ?: false
+
+    val start = indexArg(kwArgs[startKeyw] ?: numberZero, " :start")
+    val end_k = kwArgs[endKeyw] ?: Nil
+    val end = if (end_k === Nil) null else indexArg(end_k, ":end")
+    val key_k = kwArgs[keyKeyw] ?: Nil
+    val key = if (key_k === Nil) {
+        identitySym.function ?:
+            throw FunctionError("symbol `$identitySym` has no function")
+    } else {
+        functionArg(key_k, " :key")
+    }
+
+    return sequence.find(start, end, last) {
+        val elem = key.call(list(it))
+        !(predicate.call(list(elem)).toBoolean())
+    }
+}
+
