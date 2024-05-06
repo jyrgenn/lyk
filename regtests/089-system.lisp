@@ -1,9 +1,11 @@
 (require 'regtests)
 
+
 (test-is "performance data" (let ((pdata (collect-performance-data t)))
-                              (and (equal (elt pdata 0) '(conses . 0))
-                                   (equal (elt pdata 1) '(evals . 1))
-                                   (eq (car (elt pdata 2)) 'secs)
+                              (and (equal (elt pdata 0) '(calls . 0))
+                                   (equal (elt pdata 1) '(conses . 0))
+                                   (equal (elt pdata 2) '(evals . 1))
+                                   (eq (car (elt pdata 3)) 'secs)
                                    (numberp (cdr (elt pdata 2)))))
          t)
 
