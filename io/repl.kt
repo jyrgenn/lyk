@@ -43,9 +43,9 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
             
             // Expand macros (just not macro definitions (or do I?)),
             // expr = macroExpandForm(expr)
-            if (expr is LCons && expr.car !== defmacroSym) {
-                expr = macroExpandForm(expr)
-            }
+            // if (expr is LCons && expr.car !== defmacroSym) {
+            //     expr = macroExpandForm(expr)
+            // }
             debug(debugReplSym) {
                 expr
             }

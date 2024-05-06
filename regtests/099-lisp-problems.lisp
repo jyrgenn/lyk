@@ -272,12 +272,12 @@
 ;; (A B D E G H K)
 
 (defun drop (l n)
-  (flet ((helper (lambda (l i)
-                   (if (null l)
-                       nil
-                     (if (= i 1)
-                         (helper (cdr l) n)
-                       (cons (car l) (helper (cdr l) (1- i))))))))
+  (flet ((helper (l i)
+           (if (null l)
+               nil
+               (if (= i 1)
+                   (helper (cdr l) n)
+                   (cons (car l) (helper (cdr l) (1- i)))))))
     (helper l n)))
 
 (test-is "lisp problem 16/99" (drop '(a b c d e f g h i k) 3)
@@ -291,10 +291,10 @@
 ;; ( (A B C) (D E F G H I K))
 
 (defun split (l n)
-  (flet ((helper (lambda (l n acc)
+  (flet ((helper (l n acc)
                    (if (zerop n)
                        (list (reverse acc) l)
-                     (helper (cdr l) (1- n) (cons (car l) acc))))))
+                     (helper (cdr l) (1- n) (cons (car l) acc)))))
     (helper l n nil)))
 
 (test-is "lisp problem 17/99" (split '(a b c d e f g h i k) 3)
@@ -397,7 +397,7 @@
 
 (test-is "lisp problem 23/99" (let ((result (rnd-select '(2 3 4 5 6 7 8 9) 3)))
                                 (and (= 3 (length result))
-                                     (apply '/= result)))
+                                     (apply #'/= result)))
          t)
 
 ;; P24 (*) Lotto: Draw N different random numbers from the set 1..M.
@@ -413,7 +413,7 @@
 
 (test-is "lisp problem 24/99" (let ((result (lotto-select 6 49)))
                                 (and (= 6 (length result))
-                                     (apply '/= result)))
+                                     (apply #'/= result)))
          t)
 
 ;; P25 (*) Generate a random permutation of the elements of a list.
@@ -428,7 +428,7 @@
 
 (test-is "lisp problem 25/99" (let ((result (rnd-permu '(a b c d e f))))
                                 (and (= 6 (length result))
-                                     (apply '/= result)))
+                                     (apply #'/= result)))
          t)
 
 ;; P26 (**) Generate the combinations of K distinct objects chosen

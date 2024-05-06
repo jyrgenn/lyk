@@ -108,6 +108,10 @@ fun eval(form: LObject): LObject {
             var (func, args) = form
             val function = evalFun(func)
 
+            if (function is LMacro) {
+                return eval(function.expand(args))
+            }
+
             if (!function.isSpecial) {
                 args = evalArgs(args)
             }

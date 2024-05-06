@@ -8,8 +8,9 @@
 (defun append-prime (new-prime)
   "Append a new prime to the prime number list."
   (let ((new-pair (list new-prime)))
-    (rplacd last-pair new-pair)
-    (setq last-pair new-pair)))
+    ;; (rplacd last-pair new-pair)
+    (setf (cdr last-pair) new-pair)
+    (setf last-pair new-pair)))
 
 (defun return-existing-primes-func ()
   "Return a function that returns the existing primes (and nil when done)."
@@ -18,7 +19,7 @@
       (if pos
           (prog1
               (car pos)
-            (setq pos (cdr pos)))))))
+            (setf pos (cdr pos)))))))
 
 (defun try-candidate (candidate)
   "Try a prime number candidate. Return t if it is prime, nil else."
@@ -27,10 +28,10 @@
         (prime-gen (return-existing-primes-func))
         (still-good t))
     (while (and still-good
-                (setq divisor (prime-gen))
+                (setf divisor (prime-gen))
                 (<= divisor limit))
       (when (zerop (% candidate divisor))
-        (setq still-good nil)))
+        (setf still-good nil)))
     still-good))
 
 
@@ -39,8 +40,8 @@
   (let ((candidate (car last-pair))
         found-one)
     (while (not found-one)
-      (setq candidate (+ candidate 2))
-      (setq found-one (try-candidate candidate)))
+      (setf candidate (+ candidate 2))
+      (setf found-one (try-candidate candidate)))
     (append-prime candidate)
     candidate))
 
@@ -50,7 +51,7 @@
     (while args
       (princ (car args))
       (princ " ")
-      (setq args (cdr args)))
+      (setf args (cdr args)))
     (terpri)))
 
 (defun next-prime-func ()
@@ -61,7 +62,7 @@ Well, in theory."
       (if pos
           (prog1
               (car pos)
-            (setq pos (cdr pos))))
+            (setf pos (cdr pos))))
       (expand-primes))))
 
 (defun factors (n)
@@ -72,10 +73,10 @@ Well, in theory."
     (while (> n 1)
       (let ((divisor (next-p)))
         (when (> divisor limit)
-          (setq divisor n))
+          (setf divisor n))
         (when (zerop (% n divisor))
-          (setq factors (cons divisor factors))
-          (setq n (/ n divisor)))))
+          (setf factors (cons divisor factors))
+          (setf n (/ n divisor)))))
     (nreverse factors)))
 
       

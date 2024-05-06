@@ -614,7 +614,10 @@ fun bi_defun(args: LObject, kwArgs: Map<LSymbol, LObject>,
     debug (debugDefunSym) {
         LCons(sym, params).toString()
     }
-    sym.setFunction(makeLambdaOrMacro(params, bodyforms, currentEnv, sym,
+    // sym.setFunction(makeLambdaOrMacro(params, bodyforms, currentEnv, sym,
+    //                                   false, lastTopLevelLocation))
+    val expanded_body = macroExpandForm(bodyforms)
+    sym.setFunction(makeLambdaOrMacro(params, expanded_body, currentEnv, sym,
                                       false, lastTopLevelLocation))
     return sym
 }
