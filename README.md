@@ -1,6 +1,6 @@
 
-Lyk — Lysp yn Kotlin
-====================
+Lyk -- Lysp yn Kotlin
+=====================
 
 This is going to be a Lisp in Kotlin. While I am not the biggest fan
 of JVM-based things because you'll always have to schlep that huge
