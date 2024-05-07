@@ -79,7 +79,7 @@ test: lyk.jar
 	./run-tests.lisp
 
 clean:
-	-rm -rf *~ */*~ org *.dSYM *.kexe *.class *.jar *.log generated
+	-rm -rf *~ */*~ org TAGS *.class *.jar *.log generated
 
 install: test
 	mkdir -p $(INSTALLDIR)
