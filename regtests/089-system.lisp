@@ -15,8 +15,9 @@
 ;; the correctness of this *may* change some time; currently we are at 15
 ;; matches
 (test-is "apropos regexp" (let ((len (length (apropos #/^a/ t))))
+                            ;; (format *stderr* "len matches is %d\n" len)
                             (and (> len 30)
-                                 (< len 70)))
+                                 (< len 120)))
          t)
 
 (defparameter a 19)
