@@ -109,11 +109,11 @@
 
 (defun get-homedir (user)
   "Get home directory of USER; not for production use, calls a shell."
-  (chomp (car (run-process "sh" "-c" (format nil "echo ~%s" user)))))
+  (chomp (car (run-program "sh" "-c" (format nil "echo ~%s" user)))))
 
 (defun get-username ()
   "Get name of current user; not for production use, calls `whoami`."
-  (chomp (car (run-process "whoami"))))
+  (chomp (car (run-program "whoami"))))
 
 (test-is "exp-f-n noexp 1" (expand-file-name ".~root/hullala/bala/bumbibum")
          ".~root/hullala/bala/bumbibum")
@@ -287,23 +287,23 @@
          "/hummeln/.im/arsch/.und/bienen")
 
 
-;; run-process
+;; run-program
 
-(test-is "run-process 0" (run-process "echo") '("\n" ""))
-(test-is "run-process 1" (run-process "tr" "hxs" "rs!" :input "haxors")
+(test-is "run-program 0" (run-program "echo") '("\n" ""))
+(test-is "run-program 1" (run-program "tr" "hxs" "rs!" :input "haxors")
          '("rasor!" ""))
 
 (terpri)
-(test-is "run-process 2" (run-process "ls" "-l" "lingo" :output nil :error nil)
+(test-is "run-program 2" (run-program "ls" "-l" "lingo" :output nil :error nil)
          '(nil nil))
-(test-err "run-process 3" (run-process "false") #/run-process: exit status \d/)
+(test-err "run-program 3" (run-program "false") #/run-program: exit status \d/)
 
-(test-is "run-process 4" 
+(test-is "run-program 4" 
          (let ((tmpf "gen/rp4"))
            (with-open-file (out tmpf :direction :output)
-             (run-process "tr" "s" "l" :input "sosososo" :output out))
+             (run-program "tr" "s" "l" :input "sosososo" :output out))
            (with-open-file (in tmpf)
-             (car (run-process "tr" "l" "x" :input in))))
+             (car (run-program "tr" "l" "x" :input in))))
          "xoxoxoxo")
 
 ;; check if the conditional expansion of the bodyforms of
