@@ -25,7 +25,7 @@
 (test-match "real time 0.2 s" (check-sleep-seconds 0.2) #/ ok,/)
 (test-match "real time 0.5 s" (check-sleep-seconds 0.5) #/ ok,/)
 
-(test-err "delete-file" (let ((fname "test-del-out")
+(test-err "delete-file" (let ((fname "generated/test-del-out")
                               (content "this is the content\n"))
                           ;; create file
                           (with-open-file (out fname :direction :output)
