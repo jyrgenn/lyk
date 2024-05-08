@@ -4,6 +4,9 @@
 (fset 'λ #'lambda)
 (fset 'eql #'eq)
 
+(fset 'file-namestring #'basename)
+(fset 'directory-namestring #'dirname)
+
 ;; (fset 'namestring 'normalize-pathname)
 
 ;; (fset 'char-code #'char-int)

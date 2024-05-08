@@ -11,10 +11,10 @@
 
 (defun fact (n)
   "Return the faculty of N."
-  (flet ((helper (lambda (n acc)
-                   (if (<= n 1)
-                       acc
-                     (helper (1- n) (* acc n))))))
+  (flet ((helper (n acc)
+           (if (<= n 1)
+               acc
+               (helper (1- n) (* acc n)))))
     (helper n 1)))
 ;; 717 pairs 1002 evals in 0 ms, 2002286 evals/s
 

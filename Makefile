@@ -9,7 +9,7 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	builtins/environments.kt builtins/io.kt builtins/strings.kt \
 	builtins/tables.kt builtins/utils.kt builtins/vectors.kt \
 	builtins/sequences.kt builtins/macros.kt builtins/factor.kt \
-	builtins/chars.kt \
+	builtins/chars.kt builtins/files.kt \
 	utils/lists.kt utils/div.kt utils/interfaces.kt \
 	sys/exception.kt sys/eval.kt sys/messages.kt sys/main.kt \
 	sys/globalvars.kt sys/exit.kt

@@ -26,5 +26,15 @@ If ARG is a sequence, do the same according to the number of it elements."
 
 (defun function-symbols ()
   "Return a list of all function symbols."
-  (filter (λ (sym) (get sym 'func-defined-in)) (all-symbols)))
+  (filter #'fboundp (all-symbols)))
 
+(defun get-program-output (command &key (raise-error t) (in-shell t))
+  "Run program `command` and return its standard output as a string.
+Raise an error if the program returned a non-zero exit status and the
+keyword argument :raise-error is true."
+  (let* ((out (make-string-output-stream)))
+    (run-program command
+                 :output out :raise-error raise-error :in-shell in-shell)
+    (get-output-stream-string out)))
+         
+    

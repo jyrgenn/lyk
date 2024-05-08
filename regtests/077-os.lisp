@@ -1,25 +1,20 @@
 (require 'regtests)
 
-(test-is "internal time units" internal-time-units-per-second
-         1e9)
+;; time is represented as seconds in a number (i.e. aKotlin Double).
 
 (defun check-sleep-seconds (time)
-  (let* ((first (get-internal-real-time))
-         (blah (sleep time))
-         (second (get-internal-real-time))
+  (let* ((duration (measure-time (sleep time)))
          ;; the deviation is usually at about 5 ms, so this tolerance
          ;; should steer clear of that
-         (tolerance (* 0.05 internal-time-units-per-second))
-         (deviation (- second first (* time internal-time-units-per-second)))
-         (printdev (lambda (dev cmnt)
-                     (format nil "time %s, deviation: %.4f s"
-                             cmnt
-                             (/ deviation internal-time-units-per-second)))))
-    (cond ((< deviation (- tolerance))
-           (printdev deviation "too short"))
-          ((> deviation tolerance)
-           (printdev deviation "too long"))
-           (t (printdev deviation "ok")))))
+         (tolerance 0.05)
+         (deviation (abs (- duration time))))
+    (flet ((printdev (dev comment)
+             (format nil "time %s, deviation: %.4f s" comment deviation)))
+      (cond ((< deviation (- tolerance))
+             (printdev deviation "too short"))
+            ((> deviation tolerance)
+             (printdev deviation "too long"))
+            (t (printdev deviation "ok"))))))
 
 (test-match "real time 0.1 s" (check-sleep-seconds 0.1) #/ ok,/)
 (test-match "real time 0.2 s" (check-sleep-seconds 0.2) #/ ok,/)
@@ -39,22 +34,22 @@
                           (delete-file fname)
                           ;; check again
                           (open fname))
-          #/no such file or directory/)
+          #/FileNotFoundException/)
 
-(test-is "file-author 1" (file-author "lingo")
+(test-is "file-author 1" (file-author "lyk.jar")
          (let ((user (getenv "USER")))
            (if (equal user "")
                (getenv "LOGNAME")
              user)))
 (test-is "file-author 2" (file-author "/etc/passwd") "root")
 (test-err "file-author 3" (file-author "sowathamwanich")
-          #/no such file or directory/)
+          #/NoSuchFileException/)
 
 (defun write-bytes (fname n)
   (with-open-file (out fname :direction :output)
     (princ (make-string n "@") out)))
 
-(defparameter fname-test-ouput "gen/testcase.out")
+(defparameter fname-test-ouput "generated/testcase.out")
 
 (test-is "file-length 0" (let ((fname fname-test-ouput))
                            (write-bytes fname 0)
@@ -69,51 +64,53 @@
                                 (file-length fname))
          123456)
 (test-err "file-length none" (file-length "sowathamwanich")
-          #/no such file or directory/)
+          #/NoSuchFileException/)
 
-;; name pathspec result-of-file-namestring result-of-directory-namestring
+;; name pathspec result-of: file-namestring directory-namestring
 (defparameter pathspecs
   #:(("abs-some-file" "/home/shnuggi/lib/boook" "boook" "/home/shnuggi/lib")
-     ("abs-some-dir" "/home/shnuggi/lib/" "" "/home/shnuggi/lib")
+     ("abs-some-dir" "/home/shnuggi/lib/" "lib" "/home/shnuggi"
+                     "/home/shnuggi/lib")
 
      ("rel-some-file" "home/shnuggi/lib/boook" "boook" "home/shnuggi/lib")
-     ("rel-some-dir" "home/shnuggi/lib/" "" "home/shnuggi/lib")
+     ("rel-some-dir" "home/shnuggi/lib/" "lib" "home/shnuggi"
+                     "home/shnuggi/lib")
 
      ("abs-two-file" "/home/shnuggi" "shnuggi" "/home")
-     ("abs-two-dir" "/home/shnuggi/" "" "/home/shnuggi")
+     ("abs-two-dir" "/home/shnuggi/" "shnuggi" "/home" "/home/shnuggi")
 
      ("rel-two-file" "home/shnuggi" "shnuggi" "home")
-     ("rel-two-dir" "home/shnuggi/" "" "home/shnuggi")
+     ("rel-two-dir" "home/shnuggi/" "shnuggi" "home" "home/shnuggi")
 
      ("abs-one-file" "/home" "home" "/")
-     ("abs-one-dir" "/home/" "" "/home")
+     ("abs-one-dir" "/home/" "home" "/" "/home")
 
      ("rel-one-file" "home" "home" "")
-     ("rel-one-dir" "home/" "" "home")
+     ("rel-one-dir" "home/" "home" "" "home")
 
-     ("abs-zero" "/" "" "/")
+     ("abs-zero" "/" "/" "/")
 
      ("rel-zero" "" "" "")))
 
 (dolist (test (table-pairs pathspecs))
-  (let (((name pathspec result-file result-dir) test))
+  (let (((name pathspec result-file result-dir result-name) test))
     (test-internal (string "file-namestring " name)
                    `(file-namestring ,pathspec) result-file 'cmp)
     (test-internal (string "directory-namestring " name)
                    `(directory-namestring ,pathspec) result-dir 'cmp)
     (test-internal (string "namestring " name)
-                   `(namestring ,pathspec) pathspec 'cmp)))
+                   `(namestring ,pathspec) (or result-name pathspec) 'cmp)))
 
 (defun chomp (s)
-  (regex-replace "\n$" s ""))
+  (regexp-replace "\n$" s ""))
 
 (defun get-homedir (user)
   "Get home directory of USER; not for production use, calls a shell."
-  (chomp (car (run-program "sh" "-c" (format nil "echo ~%s" user)))))
+  (chomp (get-program-output (format nil "echo ~%s" user))))
 
 (defun get-username ()
   "Get name of current user; not for production use, calls `whoami`."
-  (chomp (car (run-program "whoami"))))
+  (chomp (get-program-output "whoami")))
 
 (test-is "exp-f-n noexp 1" (expand-file-name ".~root/hullala/bala/bumbibum")
          ".~root/hullala/bala/bumbibum")
@@ -199,30 +196,30 @@
          (expand-file-name "//hummeln//././.im///arsch/././.und/bienen")
          "/hummeln/.im/arsch/.und/bienen")
 
-;; normalize-pathname
+;; namestring
 
-(test-is "normpath noexp 1" (normalize-pathname ".~root/hullala/bala/bumbibum")
+(test-is "normpath noexp 1" (namestring ".~root/hullala/bala/bumbibum")
          ".~root/hullala/bala/bumbibum")
-(test-is "normpath noexp 2" (normalize-pathname "/~root/hullala/bala/bumbibum")
+(test-is "normpath noexp 2" (namestring "/~root/hullala/bala/bumbibum")
          "/~root/hullala/bala/bumbibum")
-(test-is "normpath noexp 3" (normalize-pathname "hullala/bala/bumbibum")
+(test-is "normpath noexp 3" (namestring "hullala/bala/bumbibum")
          "hullala/bala/bumbibum")
-(test-is "normpath noexp 4" (normalize-pathname '(a c f r))
+(test-is "normpath noexp 4" (namestring '(a c f r))
          "(a c f r)")
-(test-is "normpath noexp 4a" (stringp (normalize-pathname '(a c f r)))
+(test-is "normpath noexp 4a" (stringp (namestring '(a c f r)))
          t)
-(test-is "normpath noexp 5" (normalize-pathname "~hebbtwinich/bala/bumbibum")
+(test-is "normpath noexp 5" (namestring "~hebbtwinich/bala/bumbibum")
          "~hebbtwinich/bala/bumbibum")
 
-(test-is "normpath exp me" (normalize-pathname "~/hullala/bala/bumbibum")
+(test-is "normpath exp me" (namestring "~/hullala/bala/bumbibum")
          "~/hullala/bala/bumbibum")
-(test-is "normpath exp usr" (normalize-pathname
+(test-is "normpath exp usr" (namestring
                              (format nil "~%s/bala/bumbibum" (get-username)))
          (format nil "~%s/bala/bumbibum" (get-username)))
            
-(test-is "normpath exp root" (normalize-pathname "~root/hullala/bala/bumbibum")
+(test-is "normpath exp root" (namestring "~root/hullala/bala/bumbibum")
          "~root/hullala/bala/bumbibum")
-(test-is "normpath .../../..." (normalize-pathname "/hullala/bala/../bumbibum")
+(test-is "normpath .../../..." (namestring "/hullala/bala/../bumbibum")
          "/hullala/bumbibum")
 
 (dolist (case '(("/" "/")
@@ -270,20 +267,20 @@
                 ("abc/def" "abc/def")
                 ))
   (let (((in out) case))
-    (eval `(test-is ,(string "normpath " in) (normalize-pathname ,in) ,out))))
+    (eval `(test-is ,(string "normpath " in) (namestring ,in) ,out))))
 
 (test-is "normpath long"
-         (normalize-pathname "/../etc//systemd/system/../posix/./numbers/")
+         (namestring "/../etc//systemd/system/../posix/./numbers/")
          "/etc/systemd/posix/numbers/")
 
 (test-is "normpath 4/"
-         (normalize-pathname "//hummeln//im///arsch////und/bienen")
+         (namestring "//hummeln//im///arsch////und/bienen")
          "/hummeln/im/arsch/und/bienen")
 (test-is "normpath /././."
-         (normalize-pathname "//hummeln//im///arsch/././.und/bienen")
+         (namestring "//hummeln//im///arsch/././.und/bienen")
          "/hummeln/im/arsch/.und/bienen")
 (test-is "normpath /././. * 2"
-         (normalize-pathname "//hummeln//././.im///arsch/././.und/bienen")
+         (namestring "//hummeln//././.im///arsch/././.und/bienen")
          "/hummeln/.im/arsch/.und/bienen")
 
 

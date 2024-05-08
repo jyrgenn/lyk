@@ -406,26 +406,6 @@ fun bi_close(args: LObject, kwArgs: Map<LSymbol, LObject>,
     }
 }
 
-/// builtin directory
-/// fun     bi_directory
-/// std     pathspec
-/// key     
-/// opt     
-/// rest    
-/// ret     pathnames
-/// special no
-/// doc {
-/// Return a list of pathnames matching `pathspec`.
-/// The last path component may contain wildcard characters.
-/// }
-/// end builtin
-@Suppress("UNUSED_PARAMETER")
-fun bi_directory(args: LObject, kwArgs: Map<LSymbol, LObject>,
-                 suppp: Map<LSymbol, Boolean>): LObject {
-    val pathspec = arg1(args)
-    return dirlist(pathspec.toString())
-}
-
 /// builtin read-line
 /// fun     bi_read_line
 /// std     
@@ -459,44 +439,6 @@ fun bi_read_line(args: LObject, kwArgs: Map<LSymbol, LObject>,
         return eof_value
     }
     return makeString(line)
-}
-
-/// builtin basename
-/// fun     bi_basename
-/// std     pathname
-/// key     
-/// opt     
-/// rest    
-/// ret     file-basename
-/// special no
-/// doc {
-/// Return the basename of a pathname, meaning without the directory part(s).
-/// }
-/// end builtin
-@Suppress("UNUSED_PARAMETER")
-fun bi_basename(args: LObject, kwArgs: Map<LSymbol, LObject>,
-                suppp: Map<LSymbol, Boolean>): LObject {
-    val fname = stringArg(arg1(args))
-    return makeString(basename(fname))
-}
-
-/// builtin dirname
-/// fun     bi_dirname
-/// std     pathname
-/// key     
-/// opt     
-/// rest    
-/// ret     file-dirname
-/// special no
-/// doc {
-/// Return the dirname of a pathname, meaning only the directory part(s).
-/// }
-/// end builtin
-@Suppress("UNUSED_PARAMETER")
-fun bi_dirname(args: LObject, kwArgs: Map<LSymbol, LObject>,
-               suppp: Map<LSymbol, Boolean>): LObject {
-    val fname = stringArg(arg1(args))
-    return makeString(dirname(fname))
 }
 
 /// builtin make-string-output-stream
