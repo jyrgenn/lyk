@@ -6,6 +6,10 @@ import java.io.File
 import java.io.InputStream
 import kotlin.concurrent.thread
 
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.measureTime
+
 
 /// builtin set-debug
 /// fun     bi_set_debug
@@ -749,6 +753,28 @@ fun bi_collect_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>,
                                    Nil))))
 }
 
+/// builtin measure-time
+/// fun     bi_measure_time
+/// std     
+/// key     
+/// opt     
+/// rest    bodyforms
+/// ret     duration
+/// special yes
+/// doc {
+/// Run bodyforms and return the elapsed time in seconds.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_measure_time(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
+    return makeNumber(measureTime {
+                          evalProgn(args)
+                      }.toDouble(DurationUnit.SECONDS))
+}
+
+
+
 /// builtin no-warnings
 /// fun     bi_no_warnings
 /// std     
@@ -782,7 +808,7 @@ val errorOutputKSym = intern(":error-output")
 val envKSym = intern(":env")
 val raiseErrorKSym = intern(":raise-error")
 
-val shell_meta_characters = "\"'`|&,;[{(<>)}]*?$".toSet()
+val shell_meta_characters = "~\"'`|&,;[{(<>)}]*?$".toSet()
 
 fun has_shellmeta(s: String): Boolean {
     for (ch in s) {
@@ -802,15 +828,15 @@ fun has_shellmeta(s: String): Boolean {
 /// ret     exit-status
 /// special no
 /// doc {
-/// Run an external command and return its exit status. If the command is
-/// more than one string, run it directly. Otherwise, if it is a single
-/// string:
+/// Run an external command and return its exit status. If command plus
+/// command-arguments is a list of strings, run it directly. Otherwise,
+/// if it is a single string:
 ///   - if &key `in-shell` is t, run command as a shell command line with
 ///     `/bin/sh`.
 ///   - if &key `in-shell` is a string, use it as the shell and run the
-///     command in it.
+///     command in it, using the "-c" option like for `/bin/sh`.
 ///   - if &key `in-shell` is nil (the default), run command with `/bin/sh`
-///     if it contains shell meta characters ("'`|&,;[{(<>)}]*?$).
+///     if it contains shell meta characters (~"'`|&,;[{(<>)}]*?$).
 ///     Otherwise, split the string on whitespace and run it directly.
 ///
 /// If &key `input` is a string or a stream, use it as the standard input
@@ -835,6 +861,7 @@ fun has_shellmeta(s: String): Boolean {
 fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
                    suppp: Map<LSymbol, Boolean>): LObject {
     val (command, rest) = args
+    // TODO accept command as list of strings
     val command_s = stringArg(command, " command")
     val key_in_shell = kwArgs[inShellKSym] ?: Nil
     val env = kwArgs[envKSym] ?: Nil

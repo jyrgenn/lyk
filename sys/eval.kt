@@ -18,11 +18,11 @@ fun markFrame(level: Int, ob1: LObject, ob2: LObject? = null): String {
 
 
 fun evalProgn(forms: LObject): LObject {
-    var result: LObject = Nil
     debug(debugEvalPrognSym) {
          "evalProgn $forms"
     }
 
+    var result: LObject = Nil
     for (form in forms) {
         result = eval(form)
     }

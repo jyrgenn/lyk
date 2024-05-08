@@ -141,6 +141,9 @@ class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
         this("$where not ${indef_a(whatnot)} $whatnot: ${obj.type} $obj")
 }
 
+class FileError(filename: String, message: String):
+    LispError("$filename: $message")
+
 class CallError(message: String): LispError(message)
 
 class ArgumentError(message: String): LispError(message)

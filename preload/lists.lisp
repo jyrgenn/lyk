@@ -11,12 +11,12 @@
 
 (defun filter (predicate l)
   "Return a list of elements from list L for which PREDICATE is true."
-  (if l
-      (let ((el (car l)))
-        (if (predicate el)
-            (cons el (filter predicate (cdr l)))
-          (filter predicate (cdr l))))
-    nil))
+  (let ((lc (list-collector)))
+    (dolist (elem l)
+      (when (funcall predicate elem)
+        (lc elem)))
+    (lc)))
+
 
 (defun reduce (func l)
   "Reduce a list L to a single value using FUNC and return the value.
