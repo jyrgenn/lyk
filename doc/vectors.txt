@@ -1,4 +1,4 @@
-;;; lingo doc
+;;; lyk doc
 
 Vector Literals
 ---------------

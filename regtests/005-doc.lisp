@@ -21,8 +21,9 @@ Return t if `object` is a symbol, else nil./)
          "(if condition then-clause &rest else-clauses)")
 
 ;; as tables, vectors, and regexps are no longer callables (as they
-;; were in lingo), doesn't make much sense to scrutinise the doc of
-;; the equivalent functions more than those of all other functions.
+;; were in an earlier implementation), doesn't make much sense to
+;; scrutinise the doc of the equivalent functions more than those of
+;; all other functions.
 
 (test-is "docstring table brief" (doc 'table-get t t)
          "(table-get table key &optional default)")

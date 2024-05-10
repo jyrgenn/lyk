@@ -17,11 +17,13 @@ it isn't worth the effort.) This worked even with bigger and more
 complex parts like the reader and eval, so I had a working REPL
 fast.
 
-Work in progress as of April 2024, currently working on getting the
-regression test suite of lingo to work, an earlier implementation of
-Lisp in Go. Bigger things ahead are fixing the macros (there is still
-something wrong with them), some debugging help in eval, and many more
-builtin functions.
+Work in progress as of Mai 2024, finally got through the regression
+test suite of an earlier implementation. Macros seems to work mostly
+well now that I have followed Steele's advice about how they should
+be dealt with.
+
+Bigger things ahead some debugging help in eval, and a non-recursive
+eval with an explicit call stack, and more builtin functions.
 
 Lyk uses the JLine line editor Version 2 for the interactive input
 line; see the subdirectory `jline/`. This works fine and was

@@ -1,4 +1,4 @@
-#!./lingo
+;; the regression test driver
 
 (provide 'regtests)
 

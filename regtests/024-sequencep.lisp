@@ -76,8 +76,8 @@
                                     nil)
          nil)
 
-;;; These made actually sense with lingo, which has mutable strings.
-;;; Now, with lyk, no longer.
+;;; These made actually no sense any more, as lyk doesn't have
+;;; mutable strings.
 (test-err "setelt string !0" (setelt "" 0 #\x)
           #/string object is immutable/) 
 (test-err "setelt string !1" (setelt "a" 1 #\x)
