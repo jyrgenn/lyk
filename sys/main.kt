@@ -46,6 +46,7 @@ object Options {
     var warnIsError = false     // let warnings be errors
     var noPreload = false       // don't load perload code
 }
+val debugOptions = Options.debug.keys.sorted()
 
 
 fun usage() {
@@ -66,8 +67,7 @@ fun usage() {
     // -R maxrecurse    : maximum eval recursion depth 
 
     println("Available debug options:")
-    printThingsWrapped(Options.debug.keys.sorted()
-                           .joinToString(", ").split(" "),
+    printThingsWrapped(debugOptions.joinToString(", ").split(" "),
                        prefix = "   ")
     println()
     exitLyk(0)
