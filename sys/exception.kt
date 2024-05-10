@@ -106,8 +106,11 @@ class InternalReaderError(message: String,
     override fun toString() = "${lh.location()}: $message"
 }
 
-class ImmutableError(val symbol: LSymbol, val function: Boolean): 
+class ImmutableError(val symbol: LSymbol): 
     LispError("symbol $symbol is immutable")
+
+class ReadOnlyError(val symbol: LSymbol): 
+    LispError("symbol $symbol is a read-only system variable")
 
 open class ValueError(message: String,
                       lh: LocationHolder?): LispError(message) {

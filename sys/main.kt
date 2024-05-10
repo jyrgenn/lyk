@@ -189,7 +189,7 @@ fun main(args: Array<String>) {
         
         if (lispExpression != null) {
             // in this case, all command line args are in *command-line-args*
-            commandLineArgs.setValue(args_lc.list)
+            commandLineArgs.setROValue(args_lc.list)
             debug(debugStartupSym) { "eval -e argument \"$lispExpression\"" }
             val result = load_string(lispExpression, "*cmd-expr*",
                                      true, false, true)
@@ -199,7 +199,7 @@ fun main(args: Array<String>) {
             // first argument is the file to run, rest goes to
             // *command-line-args*"
             val file = (args_lc.list.car as LString).the_string
-            commandLineArgs.setValue(args_lc.list.cdr)
+            commandLineArgs.setROValue(args_lc.list.cdr)
 
             try {
                 debug(debugStartupSym) { "run load file \"$file\"" }

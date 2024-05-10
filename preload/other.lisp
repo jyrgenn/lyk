@@ -29,6 +29,17 @@ If ARG is a sequence, do the same according to the number of it elements."
   (filter #'fboundp (all-symbols)))
 
 
+(defmacro no-warnings-as-errors (&rest bodyforms)
+  "Evaluate `bodyforms` with *warnings-as-errors* set to nil.
+After that, restore the original value."
+  `(let ((*previous-warnings-as-errors* (warnings-as-errors)))
+     (unwind-protect
+          (progn
+            (warnings-as-errors nil)
+            ,@bodyforms)
+       (warnings-as-errors *previous-warnings-as-errors*))))
+
+
 (defun get-program-output (command &key capture-all input error-output
                                      (raise-error t)
                                      (in-shell t))

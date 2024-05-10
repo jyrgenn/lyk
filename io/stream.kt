@@ -6,10 +6,10 @@ import jline.console.ConsoleReader
 import jline.console.completer.StringsCompleter
 
 
-val stdinName   = "*stdin*"
-val stdoutName  = "*stdout*"
-val stderrName  = "*stderr*"
-val consoleName = "*console*"
+val stdinName   = "*standard-input*"
+val stdoutName  = "*standard-outout*"
+val stderrName  = "*error-output*"
+val consoleName = "*terminal-io*"
 val stdinPath   = "/dev/stdin"
 val stdoutPath  = "/dev/stdout"
 val stderrPath  = "/dev/stderr"

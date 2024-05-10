@@ -701,7 +701,7 @@ fun bi_function_parameters(args: LObject, kwArgs: Map<LSymbol, LObject>,
 fun bi_make_symbol(args: LObject, kwArgs: Map<LSymbol, LObject>,
                    suppp: Map<LSymbol, Boolean>): LObject {
     val name = arg1(args)
-    return LSymbol(stringArg(name), false)
+    return LSymbol(stringArg(name), false, false)
 }
 
 /// builtin symbol-value
@@ -800,6 +800,33 @@ fun bi_no_warnings(args: LObject, kwArgs: Map<LSymbol, LObject>,
         Options.verbosity = previous_verbosity
     }
 }
+
+
+/// builtin warnings-as-errors
+/// fun     bi_warnings_as_errors
+/// std     
+/// key     
+/// opt     on
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if warnings as handled as errors, nil otherwise.
+/// With optional `on` argument, set warnings to be handled as errors iff
+/// `on` is . In this case, return the status from *before* setting it.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_warnings_as_errors(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                          suppp: Map<LSymbol, Boolean>): LObject {
+    val result = bool2ob(Options.warnIsError)
+    if (suppp[onSym] ?: false) {
+        Options.warnIsError = ob2bool(arg1(args))
+        warningsAsErrors.setROValue(bool2ob(Options.warnIsError))
+    }
+    return result
+}
+
 
 val inShellKSym = intern(":in-shell")
 val inputKSym = intern(":input")
@@ -1068,30 +1095,7 @@ fun bi_return(args: LObject, kwArgs: Map<LSymbol, LObject>,
     throw ReturnSignal(arg1(args))
 }
 
-
-/// builtin warnings-as-errors
-/// fun     bi_warnings_as_errors
-/// std     
-/// key     
-/// opt     on
-/// rest    
-/// ret     t/nil
-/// special no
-/// doc {
-/// Return t if warnings as handled as errors, nil otherwise.
-/// With optional `on` argument, set warnings to be handled as errors iff
-/// `on` is . In this case, return the status from *before* setting it.
-/// }
-/// end builtin
-@Suppress("UNUSED_PARAMETER")
-fun bi_warnings_as_errors(args: LObject, kwArgs: Map<LSymbol, LObject>,
-                          suppp: Map<LSymbol, Boolean>): LObject {
-    if (suppp[onSym] ?: false) {
-        Options.warnIsError = ob2bool(arg1(args))
-    }
-    val result = bool2ob(Options.warnIsError)
-    return result
-}
+val onSym = intern("on")
 
 /// builtin user-name
 /// fun     bi_user_name

@@ -10,7 +10,8 @@ val T = intern("t", true)
 val LambdaSym = intern("lambda", true)
 val greekLambdaSym = intern("λ", true)
 
-val warningsAsErrors = LSymbol.makeGlobal("*warnings-as-errors*")
+val warningsAsErrors = systemROSymbol("*warnings-as-errors*",
+                                      bool2ob(Options.warnIsError))
 val last_error = LSymbol.makeGlobal("*last-error*")
 
 var inErrset = false            // are we in an (errset ...) context?
@@ -101,7 +102,7 @@ val defmacroSym = intern("defmacro")
 
 var debugOn = false             // set iff any debug topic is "on"
 
-val commandLineArgs = LSymbol.makeGlobal("*command-line-args*")
+val commandLineArgs = systemROSymbol("*command-line-args*")
 val lastError = LSymbol.makeGlobal("*last-error*")
 val terminalWidth = LSymbol.makeGlobal("*terminal-width*")
 val terminalHeight = LSymbol.makeGlobal("*terminal-height*")

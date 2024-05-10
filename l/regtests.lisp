@@ -138,57 +138,57 @@ Traverse conses and vectors to find numbers."
     (run-tests-with-out)))
 
 (defun run-tests-with-out ()
-  (unless *warnings-as-errors*
-    (error "-W option not set; tests needs *warnings-as-errors*!"))
+  (warnings-as-errors t)
   (setf fails nil)
   (setf warnings 0)
-  (when (eq (car *command-line-args*) "-v")
-    (pop *command-line-args*)
-    (setf verbose t))
+  (let ((command-arguments *command-line-args*))
+    (when (eq (car command-arguments) "-v")
+      (pop command-arguments)
+      (setf verbose t))
 
-  (let* ((allfiles (directory (string testdir "/" "[0-9]*.lisp")))
-         (files (or *command-line-args* allfiles)))
-    (when verbose
-      (format t "load files: %s\n" files))
-    (dolist (f files)
-      (let ((number (car (regexp-match #/^[0-9]*$/ f))))
-        ;; if we have just a number (as a command-line arg), we still
-        ;; find and load the file from the regtests directory
-        (when number
-          (let ((fname (car (directory (string testdir "/"
-                                                  number "*.lisp")))))
-            (when fname
-              (setf f fname)))))
-      (presult "\nloading %s\n" f)
-      (setf testing-done nil)
-      (unless verbose
-        (let ((number (cadr (regexp-match #r{/([0-9]+)} f))))
-          (format *stderr* " %s " number)))
-      (let ((result (errset (load f))))
-       (if (atom result)
-            (progn (presult "load FAIL: %s %s\n" f *last-error*)
-                   (push (cons f "load") fails))
-          (unless testing-done
-            (let ((message " not completed, done-testing not called\n"))
-              (presult "file FAIL: %s%s" f message)
-              (push (cons f message) fails)))))))
+    (let* ((allfiles (directory (string testdir "/" "[0-9]*.lisp")))
+           (files (or command-arguments allfiles)))
+      (when verbose
+        (format t "load files: %s\n" files))
+      (dolist (f files)
+        (let ((number (car (regexp-match #/^[0-9]*$/ f))))
+          ;; if we have just a number (as a command-line arg), we still
+          ;; find and load the file from the regtests directory
+          (when number
+            (let ((fname (car (directory (string testdir "/"
+                                                 number "*.lisp")))))
+              (when fname
+                (setf f fname)))))
+        (presult "\nloading %s\n" f)
+        (setf testing-done nil)
+        (unless verbose
+          (let ((number (cadr (regexp-match #r{/([0-9]+)} f))))
+            (format *error-output* " %s " number)))
+        (let ((result (errset (load f))))
+          (if (atom result)
+              (progn (presult "load FAIL: %s %s\n" f *last-error*)
+                     (push (cons f "load") fails))
+              (unless testing-done
+                (let ((message " not completed, done-testing not called\n"))
+                  (presult "file FAIL: %s%s" f message)
+                  (push (cons f message) fails)))))))
 
-  (let ((nfails (length fails)))
-    (format t "\n%d tests, %d FAILS, %d warning%s\n"
-            ntests nfails warnings (plural-s warnings))
-    (if (zerop nfails)
-        (progn (print "tests ALL PASSED")
-               (when (not (zerop warnings))
-                 (print "(but non-zero warnings)"))
-               (terpri))
-      (dolist (err (reverse fails))
-        (let ((file (car err))
-              (name (cdr err)))
-          (format t "   %s: %s\n" file name)))))
-  (terpri)
-  (format t "test output written to %s\n" protocol-file-name)
+    (let ((nfails (length fails)))
+      (format t "\n%d tests, %d FAILS, %d warning%s\n"
+              ntests nfails warnings (plural-s warnings))
+      (if (zerop nfails)
+          (progn (print "tests ALL PASSED")
+                 (when (not (zerop warnings))
+                   (print "(but non-zero warnings)"))
+                 (terpri))
+          (dolist (err (reverse fails))
+            (let ((file (car err))
+                  (name (cdr err)))
+              (format t "   %s: %s\n" file name)))))
+    (terpri)
+    (format t "test output written to %s\n" protocol-file-name)
   
-  ;; return non-zero if there were test fails or warnings
-  (+ (length fails) warnings))
+    ;; return non-zero if there were test fails or warnings
+    (+ (length fails) warnings)))
 
 ;; EOF

@@ -16,7 +16,8 @@ fun isNumberString(s: String): Boolean {
     }
 }
 
-class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
+class LSymbol(val name: String, val immutable: Boolean,
+              val read_only: Boolean): LObject(), LSeq
 {
     val props = mutableMapOf<LSymbol, LObject>()
     val descName = makeDescName()
@@ -25,30 +26,35 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
     override val type = "symbol"
 
     companion object {
-        fun interned(name: String, immutable_and_selfvalued: Boolean = false
-        ): LSymbol {
+        fun interned(name: String,
+                     immutable: Boolean = false,
+                     selfvalued: Boolean = false,
+                     read_only: Boolean = false): LSymbol {
             if (name in symbolTable.keys) {
                 return symbolTable[name] ?:
                     throw Exception(
                         "symbol $name in symbolTable is not in symbolTable"
                     )
             }
-            val i_and_sv = immutable_and_selfvalued || name.startsWith(":")
-            val sym = LSymbol(name, i_and_sv)
+            val is_keyword = name.startsWith(":")
+            val sym = LSymbol(name,
+                              immutable || is_keyword || read_only,
+                              read_only)
             symbolTable[name] = sym
-            if (i_and_sv) {
+            if (selfvalued || is_keyword) {
                 rootEnv.setValue(sym, sym)
             }
             return sym
         }
 
         fun uninterned(name: String): LSymbol {
-            val sym = LSymbol(name, name.startsWith(":"))
+            val sym = LSymbol(name, name.startsWith(":"), false)
             return sym
         }
 
-        fun makeGlobal(name: String, value: LObject = Nil): LSymbol {
-            val symbol = intern(name)
+        fun makeGlobal(name: String, value: LObject = Nil,
+                       read_only: Boolean = false): LSymbol {
+            val symbol = interned(name, false, false, read_only)
             rootEnv.the_env[symbol] = value
             return symbol
         }
@@ -134,7 +140,11 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
 
     fun setValue(newvalue: LObject, silent: Boolean = false) {
         if (immutable) {
-            throw ImmutableError(this, false)
+            if (read_only) {
+                throw ReadOnlyError(this)
+            } else {
+                throw ImmutableError(this)
+            }
         } else {
             if (!silent && getValueOptional() == null) {
                 warn("setting unbound variable $this to $newvalue")
@@ -143,8 +153,13 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
         }
     }
 
+    // This is to set the value of a read-only system symbol.
+    fun setROValue(newvalue: LObject) {
+        rootEnv.setValue(this, newvalue)
+    }
+
     fun bind(newValue: LObject) {
-        if (this.immutable) {
+        if (immutable) {
             throw Exception("symbol $this is immutable")
         }
         currentEnv.bind(this, newValue)
@@ -278,4 +293,8 @@ class LSymbol(val name: String, val immutable: Boolean): LObject(), LSeq
 }
 
 fun intern(name: String, immutable_and_selfvalued: Boolean = false) =
-    LSymbol.interned(name, immutable_and_selfvalued)
+    LSymbol.interned(name, immutable_and_selfvalued, immutable_and_selfvalued)
+
+// A system r/o symbol is a variable that cannot be changed from Lisp.
+fun systemROSymbol(name: String, value: LObject = Nil) =
+    LSymbol.makeGlobal(name, value, true)

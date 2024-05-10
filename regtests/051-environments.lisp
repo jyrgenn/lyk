@@ -25,9 +25,9 @@
 
 
 (test-is "env setq 1c" (no-warnings
-                         (let ((*warnings-as-errors* nil))
-                           (progn (setq a 110)
-                                  a)))
+                         (no-warnings-as-errors
+                           (setq a 110)
+                           a))
          110)
 
 (defparameter a 119)
