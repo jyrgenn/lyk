@@ -56,7 +56,6 @@ fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
         val elem = elems.car
         val (newelem, expanded) = macroExpandFormRecurse(elem)
         lc.add(newelem)
-        // haveExpanded = haveExpanded || expanded
         if (expanded) {
             haveExpanded = true
         }
@@ -65,7 +64,6 @@ fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
     if (elems !== Nil) {                // last cdr of improper list
         val (newrest, expanded) = macroExpandFormRecurse(elems)
         lc.lastcdr(newrest)
-        // haveExpanded = haveExpanded || expanded
         if (expanded) {
             haveExpanded = true
         }

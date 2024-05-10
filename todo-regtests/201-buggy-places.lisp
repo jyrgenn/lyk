@@ -323,8 +323,11 @@
          '((x 1 x 3) . (1 x 3)))
 
 (defparameter b '((3) (4) ((5 6))))
-;;; TODO macroexpand is stackexplode, not helped by the recent change
-;;; in macro resolution
+;; ;;; TODO macroexpand is stackexplode, not helped by the recent change
+;; ;;; in macro resolution
+;; Well, that's what I thought, but it seems to be more complicated
+;; that that. At least it doesn't explode when I call macroexpand
+;; with the incf form by hand.
 (test-is "incf" (progn (incf (car (cdr (caaddr b))) 2)
                        b)
          '((3) (4) ((5 8))))

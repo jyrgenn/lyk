@@ -4,7 +4,7 @@
   "Increment number-valued PLACE by DELTA (or 1); return new value."
   (if delta
       `(setf ,place (+ ,place ,delta))
-    `(setf ,place (1+ ,place))))
+      `(setf ,place (1+ ,place))))
 
 (defmacro decf (place &optional delta)
   "Decrement number-valued PLACE by DELTA (or 1); return new value."
