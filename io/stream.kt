@@ -21,44 +21,6 @@ val newLine = 10
 val openStreams = mutableSetOf<WeakReference<LStream>>()
 
 
-class StringWriterStream(name: String? = null
-): LStream(output = true, name = name) {
-    var content = StrBuf()
-    
-    override val type = "string-writer-stream"
-
-    override fun read_location() = ""
-
-    override fun write(code: Int) {
-        content.add(code.toChar())
-    }
-
-    override fun write(s: String) {
-        content.add(s)
-    }
-
-    fun value_and_reset(): String {
-        // This operation clears any characters on string-output-stream, so the
-        // string contains only those characters which have been output since
-        // the last call to get-output-stream-string or since the creation of
-        // the string-output-stream, whichever occurred most recently.
-        // [CLHS, Function GET-OUTPUT-STREAM-STRING]
-        val s = content.toString()
-        content = StrBuf()
-        return s
-    }
-
-    override fun toString(): String {
-        val x = if (is_open) "" else "x"
-        val i = if (input) "I" else ""
-        val o = if (output) "O" else ""
-        val e = if (error) "E" else ""
-        return "#<${this.type}[$i$o$e$x:${content.size}]$name>"
-    }    
-
-    override fun close_specific() {}
-}
-
 
 class ConsoleReaderStream(var prompt: LObject = Nil
 ): LStream(input = true, path = null, name = consoleName) {
@@ -66,6 +28,10 @@ class ConsoleReaderStream(var prompt: LObject = Nil
     var linebuf = StringReaderStream("")
     var linenum = 0
     var completer = StringsCompleter()
+
+    init {
+        cr.setExpandEvents(false)
+    }
 
     override val type = "console-reader-stream"
 
@@ -102,6 +68,49 @@ class ConsoleReaderStream(var prompt: LObject = Nil
 
     override fun close_specific() {}
 }
+
+
+class StringWriterStream(name: String? = null
+): LStream(output = true, name = name) {
+    var content = StrBuf()
+    
+    override val type = "string-writer-stream"
+
+    override fun read_location() = ""
+
+    override fun write(code: Int) {
+        // stderr.println("added $code")
+        content.add(code.toChar())
+    }
+
+    override fun write(s: String) {
+        // stderr.println("added $s")
+        content.add(s)
+    }
+
+    fun value_and_reset(): String {
+        // This operation clears any characters on string-output-stream, so the
+        // string contains only those characters which have been output since
+        // the last call to get-output-stream-string or since the creation of
+        // the string-output-stream, whichever occurred most recently.
+        // [CLHS, Function GET-OUTPUT-STREAM-STRING]
+        val s = content.toString()
+        content = StrBuf()
+        // stderr.println("value and reset: $s")
+        return s
+    }
+
+    override fun toString(): String {
+        val x = if (is_open) "" else "x"
+        val i = if (input) "I" else ""
+        val o = if (output) "O" else ""
+        val e = if (error) "E" else ""
+        return "#<${this.type}[$i$o$e$x:${content.size}]$name>"
+    }    
+
+    override fun close_specific() {}
+}
+
 
 class StringReaderStream(val content: String, name: String? = "",
                          var lineno: Int = 1,

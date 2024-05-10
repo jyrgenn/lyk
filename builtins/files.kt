@@ -142,6 +142,126 @@ fun bi_file_length(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return makeNumber(Files.size(Paths.get(pathname)))
 }
 
+val reTildePathname = Regex("^~([^/]*)(/.*)?$")
+
+fun tildeExpand(part: String): String {
+    val sws = StringWriterStream()
+    bi_run_program(LCons(makeString("echo " + part), Nil),
+                   mapOf(outputKSym to sws, inShellKSym to T),
+                   mapOf<LSymbol, Boolean>(
+                       outputKSym to true,
+                       inShellKSym to true))
+    val result = sws.value_and_reset()
+    return result.trimEnd('\n')
+}
+
+/// builtin expand-file-name
+/// fun     bi_expand_file_name
+/// std     filename
+/// key     
+/// opt     default-directory
+/// rest    
+/// ret     pathname
+/// special no
+/// doc {
+/// Convert `filename` to absolute, and canonicalize it.
+/// Second arg `default-directory` is the directory to start with if
+/// NAME is relative (does not start with slash or tilde).
+/// If DEFAULT-DIRECTORY is nil or missing, the process's current working
+/// directory is used.
+/// `filename` should be a string that is a valid file name for the
+/// underlying filesystem.
+/// 
+/// File name components that are ‘.’ are removed, and so are file name
+/// components followed by ‘..’, along with the ‘..’ itself; note that
+/// these simplifications are done without checking the resulting file
+/// names in the file system.
+/// 
+/// Multiple consecutive slashes are collapsed into a single slash.
+/// 
+/// An initial "~" in `filename` expands to your home directory. 
+/// An initial "~USER" in `filename` expands to USER’s home directory.
+/// If USER doesn’t exist, "~USER" is not expanded.
+/// [This function documentation is copied from GNU Emacs, with a few
+/// changes.]
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_expand_file_name(args: LObject, kwArgs: Map<LSymbol, LObject>,
+            suppp: Map<LSymbol, Boolean>): LObject {
+    val (fname, defdir) = args2(args)
+    val filename = stringArg(fname, " filename")
+    val defaultdir = if (defdir === Nil) {
+        System.getProperty("user.dir")
+    } else {
+        stringArg(defdir, " default-directory")
+    }
+
+    val tildematch = reTildePathname.find(filename)
+    if (tildematch != null) {
+        var user = tildematch.groups[1]?.value ?: ""
+        var path = tildematch.groups[2]?.value ?: ""
+        val home = tildeExpand("~" + user)
+        if (!home.startsWith("~")) {
+            return normalize_path(home + path)
+        }
+    }
+    if (filename.startsWith("/")) {
+        return normalize_path(filename)
+    }
+    return normalize_path(defaultdir + "/" + filename)
+}
+
+/// builtin get-working-directory
+/// fun     bi_get_working_directory
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     pathname
+/// special no
+/// doc {
+/// Return the current working directory as a string.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_get_working_directory(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                             suppp: Map<LSymbol, Boolean>): LObject {
+           return makeString(System.getProperty("user.dir"))
+}
+
+/// builtin user-homedir-pathname
+/// fun     bi_user_homedir_pathname
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     pathname
+/// special no
+/// doc {
+/// Return the pathname of the user's home directory.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_user_homedir_pathname(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                             suppp: Map<LSymbol, Boolean>): LObject {
+    return makeString(System.getProperty("user.home"))
+}
+
+
+fun normalize_path(path: String): LString {
+    var norm = File(path).normalize().toString()
+
+    // for some reason, normalize() doesn't fully normalize
+    if (norm.startsWith("/../")) {
+        norm = norm.substring(3)
+    }
+    if (norm == "/..") {
+        norm = "/"
+    }
+    return makeString(norm)
+}
+
 /// builtin namestring
 /// fun     bi_namestring
 /// std     pathname
@@ -161,6 +281,6 @@ fun bi_file_length(args: LObject, kwArgs: Map<LSymbol, LObject>,
 @Suppress("UNUSED_PARAMETER")
 fun bi_namestring(args: LObject, kwArgs: Map<LSymbol, LObject>,
             suppp: Map<LSymbol, Boolean>): LObject {
-    return makeString(File(stringArg(arg1(args))).normalize().toString())
+    return normalize_path(stringArg(arg1(args)))
 }
 

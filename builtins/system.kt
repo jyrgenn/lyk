@@ -824,13 +824,12 @@ fun has_shellmeta(s: String): Boolean {
 /// std     command
 /// key     "in-shell" to Nil, "input" to Nil, "output" to T, "error-output" to T, "env" to Nil, "raise-error" to Nil
 /// opt     
-/// rest    command-arguments
+/// rest    
 /// ret     exit-status
 /// special no
 /// doc {
-/// Run an external command and return its exit status. If command plus
-/// command-arguments is a list of strings, run it directly. Otherwise,
-/// if it is a single string:
+/// Run an external command and return its exit status. If command  is a
+/// list of strings, run it directly. Otherwise, if it is a single string:
 ///   - if &key `in-shell` is t, run command as a shell command line with
 ///     `/bin/sh`.
 ///   - if &key `in-shell` is a string, use it as the shell and run the
@@ -847,7 +846,7 @@ fun has_shellmeta(s: String): Boolean {
 /// of the command. You can use `make-string-output-stream` (with
 /// `get-output-stream-string`) to capture the output of the command in the
 /// program. The same goes for `error-output` and the standard error output.
-/// If `output` is t, use the standard output; if it is nil,  redirect the
+/// If `output` is t, use the standard output; if it is nil, redirect the
 /// command's output to the null device. The same goes for `error-output`.
 ///
 /// If &key `env` (a table) is non-nil, use it as the process environment of
@@ -860,28 +859,33 @@ fun has_shellmeta(s: String): Boolean {
 @Suppress("UNUSED_PARAMETER")
 fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
                    suppp: Map<LSymbol, Boolean>): LObject {
-    val (command, rest) = args
-    // TODO accept command as list of strings
-    val command_s = stringArg(command, " command")
+    val command = arg1(args)
     val key_in_shell = kwArgs[inShellKSym] ?: Nil
     val env = kwArgs[envKSym] ?: Nil
+    
     var cmd_arg =
-        if (rest == Nil) {
-            when (key_in_shell) {
-                T -> listOf("/bin/sh", "-c", command_s)
-                Nil -> if (has_shellmeta(command_s)) {
-                           listOf("/bin/sh", "-c", command_s)
-                       } else {
-                           command_s.split(' ', '\t')
-                       }
-                is LString -> listOf(key_in_shell.the_string, "-c", command_s)
-                else ->
-                    throw ArgumentError("&key in-shell is not t or nil or a "
-                                        + "string: ${key_in_shell.type} "
-                                        + "$key_in_shell")
+        when (command) {
+            is LString -> {
+                val command_s = command.the_string
+                when (key_in_shell) {
+                    T -> listOf("/bin/sh", "-c", command_s)
+                    Nil -> if (has_shellmeta(command_s)) {
+                               listOf("/bin/sh", "-c", command_s)
+                           } else {
+                               command_s.split(' ', '\t')
+                           }
+                    is LString -> listOf(key_in_shell.the_string, "-c",
+                                         command_s)
+                    else ->
+                        throw ArgumentError("&key in-shell is not t or nil or "
+                                            + "a string: ${key_in_shell.type}"
+                                            + " $key_in_shell")
+                }
             }
-        } else {
-            stringlistArg(args)
+            is LCons -> stringlistArg(command)
+            else ->
+                throw TypeError(command, "list or string",
+                                "run-program command")
         }
 
     val pb = ProcessBuilder(cmd_arg)
@@ -900,37 +904,41 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
     }
 
     val key_input = kwArgs[inputKSym] ?: Nil
-    if (key_input is LString) {
-        pb.redirectInput(ProcessBuilder.Redirect.PIPE)
-    } else if (key_input === T) {
-        pb.redirectInput(ProcessBuilder.Redirect.INHERIT)
-    } else if (key_input === Nil) {
-        pb.redirectInput(ProcessBuilder.Redirect.from(File(devNullPath)))
-    } else {
-        throw ArgumentError("&key input is not a string or t or nil:"
-                            +" ${key_input.type} $key_input")
+    when (key_input) {
+        is LStream, is LString ->
+            pb.redirectInput(ProcessBuilder.Redirect.PIPE)
+        T ->
+            pb.redirectInput(ProcessBuilder.Redirect.INHERIT)
+        Nil ->
+            pb.redirectInput(ProcessBuilder.Redirect.from(File(devNullPath)))
+        else ->
+            throw ArgumentError("&key input is not a stream or string or t or "
+                                + " nil: ${key_input.type} $key_input")
     }
     val key_output = kwArgs[outputKSym] ?: Nil
-    if (key_output is LStream) {
-        pb.redirectOutput(ProcessBuilder.Redirect.PIPE)
-    } else if (key_output === T) {
-        pb.redirectOutput(ProcessBuilder.Redirect.INHERIT)
-    } else if (key_output === Nil) {
-        pb.redirectOutput(ProcessBuilder.Redirect.to(File(devNullPath)))
-    } else {
-        throw ArgumentError("&key output is not a stream or t or nil:"
-                            +" ${key_output.type} $key_output")
+    when (key_output) {
+        is LStream ->
+            pb.redirectOutput(ProcessBuilder.Redirect.PIPE)
+        T ->
+            pb.redirectOutput(ProcessBuilder.Redirect.INHERIT)
+        Nil ->
+            pb.redirectOutput(ProcessBuilder.Redirect.to(File(devNullPath)))
+        else ->
+            throw ArgumentError("&key output is not a stream or t or nil:"
+                                +" ${key_output.type} $key_output")
     }
     val key_error_output = kwArgs[errorOutputKSym] ?: Nil
-    if (key_error_output is LStream) {
-        pb.redirectError(ProcessBuilder.Redirect.PIPE)
-    } else if (key_error_output === T) {
-        pb.redirectError(ProcessBuilder.Redirect.INHERIT)
-    } else if (key_error_output === Nil) {
-        pb.redirectError(ProcessBuilder.Redirect.to(File(devNullPath)))
-    } else {
-        throw ArgumentError("&key error-stream is not a stream or t or nil:"
-                            +" ${key_error_output.type} $key_error_output")
+    when (key_error_output) {
+        is LStream ->
+            pb.redirectError(ProcessBuilder.Redirect.PIPE)
+        T ->
+            pb.redirectError(ProcessBuilder.Redirect.INHERIT)
+        Nil -> {
+            pb.redirectError(ProcessBuilder.Redirect.to(File(devNullPath)))
+        }
+        else ->
+            throw ArgumentError("&key error-stream is not a stream or t or nil:"
+                                +" ${key_error_output.type} $key_error_output")
     }
     // TODO prepare process environment
 
@@ -941,12 +949,11 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
     // with the subprocess, by way of callback functions or the like. That would
     // be *nice*.
     //
-    // I wanted to do this with coroutines, which seems to be the modern
-    // lightweight way to go, but the parallel executrion that I hoped for
+    // I wanted to do this with coroutines, which seems to be the more modern
+    // lightweight way to go, but the parallel execution that I hoped for
     // wasn't there. With threads, it worked instantly. In the end, I don't
-    // really mind. The three threads I create here are probably still cheap
-    // comparted to the effort to create a separate process start an external
-    // program.
+    // really mind. The three threads I create here still cheap compared to the
+    // effort of creating a separate process and starting an external program.
 
     fun handleProcessOutput(in_stream: InputStream, writer: LStream) {
         val reader = in_stream.bufferedReader()
@@ -960,11 +967,26 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
         }
         reader.close()
     }
-    
+
     thread {
-        if (key_input is LString) {
+        if (key_input is LString || key_input is LStream) {
+            val reader: LStream =
+                when (key_input) {
+                    is LString -> StringReaderStream(key_input.the_string)
+                    is LStream -> key_input
+                    else -> throw InternalError(
+                                "unpossible! key_input = key_input "
+                                + "(${key_input.type})")
+                }
             val writer = proc.getOutputStream().bufferedWriter()
-            writer.write(key_input.the_string)
+            while (true) {
+                val ch = reader.read()
+                if (ch == null) {
+                    break
+                }
+                writer.write(ch.code)
+            }
+            reader.close()
             writer.close()
         }
     }
@@ -982,7 +1004,7 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
 
 
     if (exit_status != 0 && kwArgs[raiseErrorKSym] !== Nil) {
-        throw ProcessError(exit_status, "run-program", command_s)
+        throw ProcessError(exit_status, "run-program", command.toString())
     }
     return makeNumber(exit_status)
 }
@@ -1064,8 +1086,29 @@ fun bi_return(args: LObject, kwArgs: Map<LSymbol, LObject>,
 @Suppress("UNUSED_PARAMETER")
 fun bi_warnings_as_errors(args: LObject, kwArgs: Map<LSymbol, LObject>,
                           suppp: Map<LSymbol, Boolean>): LObject {
+    if (suppp[onSym] ?: false) {
+        Options.warnIsError = ob2bool(arg1(args))
+    }
     val result = bool2ob(Options.warnIsError)
     return result
+}
+
+/// builtin user-name
+/// fun     bi_user_name
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Return the username of the current user.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_user_name(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
+    return makeString(System.getProperty("user.name"))
 }
 
 

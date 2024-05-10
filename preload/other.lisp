@@ -28,13 +28,37 @@ If ARG is a sequence, do the same according to the number of it elements."
   "Return a list of all function symbols."
   (filter #'fboundp (all-symbols)))
 
-(defun get-program-output (command &key (raise-error t) (in-shell t))
+
+(defun get-program-output (command &key capture-all input error-output
+                                     (raise-error t)
+                                     (in-shell t))
   "Run program `command` and return its standard output as a string.
 Raise an error if the program returned a non-zero exit status and the
-keyword argument :raise-error is true."
-  (let* ((out (make-string-output-stream)))
-    (run-program command
-                 :output out :raise-error raise-error :in-shell in-shell)
-    (get-output-stream-string out)))
+keyword argument :raise-error is true.
+
+If &key argument :capture-all is true, capture the error output,
+too, and return a list of exit status, standard output and error output
+of the program run as strings."
+  (let ((out (make-string-output-stream)))
+    (if capture-all
+        (let* ((err (make-string-output-stream))
+               (status (run-program command
+                                    :input input
+                                    :output out
+                                    :error-output err
+                                    :raise-error raise-error
+                                    :in-shell in-shell)))
+          (list status
+                (get-output-stream-string out)
+                (get-output-stream-string err)))
+        (run-program command
+                     :input input
+                     :output out
+                     :error-output error-output
+                     :raise-error raise-error
+                     :in-shell in-shell)
+        (let ((result (get-output-stream-string out)))
+          result))))
+          
          
     
