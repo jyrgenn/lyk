@@ -83,9 +83,7 @@ clean:
 
 # collection of all function+macro doc strings
 DOCSTRINGS.txt: lyk.jar Makefile
-	./scripts/lyk -J . -e '(format nil ";; %s\n" (build-info t))' \
-		> DOCSTRINGS.txt
-	./scripts/lyk -J . l/alldocs.lisp >> DOCSTRINGS.txt
+	./scripts/lyk -J . l/alldocs.lisp > DOCSTRINGS.txt
 
 
 install: test
