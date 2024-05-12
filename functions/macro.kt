@@ -72,46 +72,19 @@ fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
 }
 
 fun macroExpandFormRecurse(form: LObject): Pair<LObject, Boolean> {
-    debug(debugMacroSym) {
-        "macroExpandFormRecurse $form"
-    }
     if (form is LCons) {
-        debug(debugMacroSym) {
-            "is a cons"
-        }
-        val (head, args) = form
+        var head = form.car
         if (head is LSymbol) {
-            debug(debugMacroSym) {
-                "head of form is symbol $head"
-            }
-            val maybeMacro = head.function
-            debug(debugMacroSym) {
-                "$head is maybeMacro? function $maybeMacro"
-            }
-            val (exp_args, _) = macroExpandList(args)
-            if (maybeMacro != null && maybeMacro is LMacro) {
-                val expanded = maybeMacro.expand(exp_args)
-                debug(debugMacroSym) {
-                    "yes, $maybeMacro is! return $expanded, true"
-                }
-                return Pair(expanded, true)
+            var maybeMacro = head.function
+            if (maybeMacro is LMacro) {
+                return Pair(maybeMacro.expand(form.cdr), true)
             }
         }
-        debug(debugMacroSym) {
-            "list form to expand: $form"
-        }
-        val result = macroExpandList(form)
-        debug(debugMacroSym) {
-            "not a call form, so expand list and return $result"
-        }
-        return result
-    } else {
-        debug(debugMacroSym) {
-            "not a cons, nothing to expand"
-        }
-        return Pair(form, false)
+        return macroExpandList(form)
     }
+    return Pair(form, false)
 }
+
 
 fun macroExpandForm(form: LObject): LObject {
     var needExpansion = true
@@ -120,7 +93,6 @@ fun macroExpandForm(form: LObject): LObject {
         debug(debugMacroSym) {
             "need expand $formvar"
         }
-        // println("expanding $formvar")
         val (newForm, stillNeedExpansion) = macroExpandFormRecurse(formvar)
         formvar = newForm
         needExpansion = stillNeedExpansion
