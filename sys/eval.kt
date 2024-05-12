@@ -109,7 +109,11 @@ fun eval(form: LObject): LObject {
             val function = evalFun(func)
 
             if (function is LMacro) {
-                return eval(function.expand(args))
+                val newform = function.expand(args)
+                debug (debugMacroSym) {
+                    "eval expanded $form => $newform"
+                }
+                return eval(newform)
             }
 
             if (!function.isSpecial) {
@@ -117,7 +121,6 @@ fun eval(form: LObject): LObject {
             }
             debug(debugCallSym) {
                 val indent = mulString("| ", evalLevel)
-                // println("==== ${evalLevel-1}: $indent;;;; $function;;;; $args")
                 "${"%3d".format(evalLevel - 1)}: $indent$function $args"
             }
             value = function.call(args)
