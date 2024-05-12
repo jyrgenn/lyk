@@ -1115,6 +1115,26 @@ fun bi_user_name(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return makeString(System.getProperty("user.name"))
 }
 
+/// builtin load-preload-code
+/// fun     bi_load_preload_code
+/// std     
+/// key     
+/// opt     verbose
+/// rest    
+/// ret     object
+/// special no
+/// doc {
+/// Load the preload code.
+/// This makes only sense if it hasn't been loaded before.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_load_preload_code(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                         suppp: Map<LSymbol, Boolean>): LObject {
+    return load_string(preload_code, "*preload-code*",
+                       print = ob2bool(arg1(args)))
+}
+
 
 
 // EOF
