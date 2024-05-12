@@ -17,3 +17,6 @@ org
 
 # added by ni/gitignore 2024-05-01T20:06:55
 /TAGS
+
+# added by ni/gitignore 2024-05-12T23:00:36
+/DOCSTRINGS.txt

@@ -1,8 +1,7 @@
 ;;; return a string containing all function doc strings
 
-(print (join "\n" (map (lambda (f)
-                         (string-concat f ":\n" (doc f nil t) "\n"))
-                       (filter #'fboundp (sys:symbols)))))
-(terpri)
+(let ((funsyms (filter #'fboundp (sort (all-symbols) #'<))))
+  (println (join (map (lambda (f) (string f ":\n" (doc f t)))
+                      funsyms) "\n")))
 
 
