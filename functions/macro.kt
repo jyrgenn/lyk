@@ -47,28 +47,29 @@ class LMacro(
     override fun body() = bodyForms
 }
 
-fun macroExpandList(form: LObject): Pair<LObject, Boolean> {
+fun macroExpandList(form: LCons): Pair<LObject, Boolean> {
     var haveExpanded = false
-    val lc = ListCollector()
+    var lastcons = form                 // dummy, because it mmust be
+                                        // initialised
+    var elems: LObject = form
 
-    var elems = form
     while (elems is LCons) {
-        val elem = elems.car
-        val (newelem, expanded) = macroExpandFormRecurse(elem)
-        lc.add(newelem)
+        val (newelem, expanded) = macroExpandFormRecurse(elems.car)
+        elems.car = newelem
         if (expanded) {
             haveExpanded = true
         }
+        lastcons = elems
         elems = elems.cdr
     }
     if (elems !== Nil) {                // last cdr of improper list
         val (newrest, expanded) = macroExpandFormRecurse(elems)
-        lc.lastcdr(newrest)
+        lastcons.cdr = newrest
         if (expanded) {
             haveExpanded = true
         }
     }
-    return Pair(lc.list, haveExpanded)
+    return Pair(form, haveExpanded)
 }
 
 fun macroExpandFormRecurse(form: LObject): Pair<LObject, Boolean> {
