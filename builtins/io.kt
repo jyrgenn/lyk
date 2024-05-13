@@ -666,3 +666,91 @@ fun bi_open_interactive_stream(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return ConsoleReaderStream(prompt = arg1(args))
 }
 
+/// builtin input-stream-p
+/// fun     bi_input_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if `object` is an input stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_input_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                      suppp: Map<LSymbol, Boolean>): LObject {
+    val obj = arg1(args)
+    if (obj is LStream && obj.input) {
+        return T
+    }
+    return Nil
+}
+
+/// builtin output-stream-p
+/// fun     bi_output_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if `object` is an output stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_output_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                      suppp: Map<LSymbol, Boolean>): LObject {
+    val obj = arg1(args)
+    if (obj is LStream && obj.output) {
+        return T
+    }
+    return Nil
+}
+
+/// builtin interactive-stream-p
+/// fun     bi_interactive_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if `object` is an interactive stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_interactive_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                      suppp: Map<LSymbol, Boolean>): LObject {
+    val obj = arg1(args)
+    if (obj is ConsoleReaderStream) {
+        return T
+    }
+    return Nil
+}
+
+/// builtin open-stream-p
+/// fun     bi_open_stream_p
+/// std     object
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if `object` is an open stream, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_open_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                     suppp: Map<LSymbol, Boolean>): LObject {
+    val obj = arg1(args)
+    if (obj is LStream && obj.is_open) {
+        return T
+    }
+    return Nil
+}
+

@@ -7,7 +7,7 @@ import jline.console.completer.StringsCompleter
 
 
 val stdinName   = "*standard-input*"
-val stdoutName  = "*standard-outout*"
+val stdoutName  = "*standard-output*"
 val stderrName  = "*error-output*"
 val consoleName = "*terminal-io*"
 val stdinPath   = "/dev/stdin"

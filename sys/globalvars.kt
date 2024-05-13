@@ -30,7 +30,7 @@ val stdout = FileWriterStream(stdoutPath, name = stdoutName, flushln = true)
 val stderr = FileWriterStream(stderrPath, name = stderrName, flushch = true,
                               error = true)
 
-var console = FileIOStream(consolePath, name = consoleName, flushch = true)
+var console = ConsoleReaderStream()
 
 var debug_out = console
 
