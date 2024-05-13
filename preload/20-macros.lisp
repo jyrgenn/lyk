@@ -56,9 +56,9 @@ was executed."
            (incf ,var))
          ,resultform))))
 
-(defmacro aref (vector index)
-  "Return the element of VECTOR at INDEX."
-  `(vector-get ,vector ,index))
+;; (defmacro aref (vector index)
+;;   "Return the element of VECTOR at INDEX."
+;;   `(vector-get ,vector ,index))
 
 (defmacro with-open-file (file-declaration &rest bodyforms)
   "(with-open-file (stream-symbol pathname &rest options) BODY...)
