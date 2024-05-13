@@ -65,7 +65,7 @@ abstract class LFunction(
         return lc.list
     }
 
-    override open fun toString() = "#<function $name>"
+    override open fun toString() = "#<$typeDesc $name>"
 
     override open fun desc(seen: Set<Int>?) =
         "#<${typeDesc} (${parlist()})=$retval>"

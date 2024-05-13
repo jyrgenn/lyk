@@ -66,8 +66,8 @@
 (test-is "lambda sym" lambda "lambda")
 
 ;; lambda definitions
-(test-is "lambda fun" (lambda (n) (* n n)) "#<function *anon-lambda*>")
-(test-is "λ fun" (λ (n) (* n n)) "#<function *anon-lambda*>")
+(test-is "lambda fun" (lambda (n) (* n n)) "#<lambda function *anon-lambda*>")
+(test-is "λ fun" (λ (n) (* n n)) "#<lambda function *anon-lambda*>")
 
 ;; ... quoted
 (test-is "function lambda" (eval (read "#'(lambda (n) (+ n n))"))
