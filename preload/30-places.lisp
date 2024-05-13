@@ -107,7 +107,7 @@ function plus the value argument."
          `(setq ,place ,value))
         ((consp place)
          (let* ((access-fn (car place))
-                (args (cdr place))
+                (args (deep-copy-cons (cdr place)))
                 (update-fn (table-get *setf-update-table* access-fn)))
            (if update-fn
                `(,update-fn ,@args ,value)
