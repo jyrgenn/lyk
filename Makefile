@@ -79,7 +79,7 @@ test: lyk.jar
 	./run-tests.lisp
 
 clean:
-	-rm -rf *~ */*~ TAGS *.log generated DOCSTRINGS.txt
+	-rm -rf *.jar *~ */*~ TAGS *.log generated DOCSTRINGS.txt
 
 # collection of all function+macro doc strings
 DOCSTRINGS.txt: lyk.jar Makefile
