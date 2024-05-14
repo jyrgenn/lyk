@@ -284,3 +284,82 @@ fun bi_namestring(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return normalize_path(stringArg(arg1(args)))
 }
 
+/// builtin probe-file
+/// fun     bi_probe_file
+/// std     pathspec
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// If the file `pathspec` exists, return its truename, else nil.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_probe_file(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                  suppp: Map<LSymbol, Boolean>): LObject {
+    val f = File(stringArg(arg1(args)))
+    if (f.exists()) {
+        return normalize_path(f.getAbsolutePath())
+    }
+    return Nil
+}
+
+/// builtin directory-p
+/// fun     bi_directory_p
+/// std     pathspec
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if the file denoted by `pathspec` is a directory, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_directory_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
+    val f = File(stringArg(arg1(args)))
+    return bool2ob(f.isDirectory())
+}
+
+/// builtin plain-file-p
+/// fun     bi_plain_file_p
+/// std     pathspec
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if the file denoted by `pathspec` is a plain file, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_plain_file_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
+    val f = File(stringArg(arg1(args)))
+    return bool2ob(f.isFile())
+}
+
+/// builtin symlink-p
+/// fun     bi_symlink_p
+/// std     pathspec
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return t if the file denoted by `pathspec` is a plain file, nil else.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_symlink_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
+    val path = Paths.get(stringArg(arg1(args)))
+    return bool2ob(Files.isSymbolicLink(path))
+}
+
