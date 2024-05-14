@@ -91,3 +91,5 @@ install: test
 	-rm -rf $(INSTALLDIR)/*
 	install -c lyk.jar $(INSTALLDIR)
 	install -c scripts/lyk $(INSTALLBIN)
+	install -c l/lyc $(INSTALLBIN)
+	rsync -a l $(INSTALLDIR)/
