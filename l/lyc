@@ -433,9 +433,13 @@ Helper for }, +}, and *}."
   "multiply all values on the stack since {"
   ({-accumulate '*))
 
-(defl hours (m) hh:mm
-  "Assume the TOS value as minutes and convert it to an hh:mm symbol."
-  (intern (string (div m 60) ":" (mod m 60))))
+(defl hours () nil
+  "Assume the TOS value as minutes and print it as hh:mm."
+  (let* ((m (car *lyc-stack*))
+         (sign (if (< m 0) "-" ""))
+         (m-abs (abs m)))
+    (format t "%s%s:%02d\n" sign (div m-abs 60) (mod m-abs 60))
+    nil))
 
 (defl minutes (hh:mm) mm
   "Assume the TOS value as an hh:mm symbol and convert it to minutes."
