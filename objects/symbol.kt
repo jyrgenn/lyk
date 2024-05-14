@@ -222,6 +222,14 @@ class LSymbol(val name: String, val immutable: Boolean,
         throw TypeError("not a sequence: $this")
     }
 
+    override fun position(start: Int, end: Int?, last: Boolean,
+                          predicate: (LObject) -> Boolean): Int {
+        if (this === Nil) {
+            return -1
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
     override fun reversed(): LObject {
         if (this === Nil) {
             return Nil

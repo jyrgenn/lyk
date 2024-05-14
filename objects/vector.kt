@@ -155,6 +155,29 @@ class LVector(elems: LObject): LObject(), LSeq {
         return result
     }
 
+    override fun position(start: Int, end: Int?, last: Boolean,
+                          predicate: (LObject) -> Boolean): Int {
+        var result = -1
+        var index = -1
+        for (elem in the_vector) {
+            index++
+            if (index < start) {
+                continue
+            }
+            if (end != null && index >= end) {
+                break
+            }
+            if (predicate(elem)) {
+                if (last) {
+                    result = index
+                } else {
+                    return index
+                }
+            }
+        }
+        return result
+    }
+
     override fun reversed(): LObject {
         return LVector(the_vector.reversed())
     }

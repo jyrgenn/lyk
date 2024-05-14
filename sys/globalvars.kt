@@ -26,7 +26,7 @@ var gensymCounter = 4711
 val theNonPrintingObject = intern("*the-non-printing-object*", true)
 
 val stdin = FileReaderStream(stdinPath, name = stdinName)
-val stdout = FileWriterStream(stdoutPath, name = stdoutName, flushln = true)
+val stdout = FileWriterStream(stdoutPath, name = stdoutName, flushch = true)
 val stderr = FileWriterStream(stderrPath, name = stderrName, flushch = true,
                               error = true)
 

@@ -23,7 +23,7 @@
 (defvar *fstring-vars* "%10s: %s\n")
 (defvar *fstring-stackframe* "%2d:  %s%s\n")
 (defvar *fstring-error* "\nerror: %s\n")
-(defvar *fstring-error-nosymbol* "%s is not a function symbol\n")
+(defvar *fstring-error-nosymbol* "is not a function symbol\n")
 (defvar *fstring-too-few-args*
   "too few arguments on stack for %s (needs %d)\n")
 
@@ -137,7 +137,7 @@ Example:
                     "has"
                   "no")
 		(get symbol 'lyc-help)))
-    (error *fstring-error-nosymbol* symbol)))
+    (error symbol *fstring-error-nosymbol*)))
   
 
 ;; plain old faculty function, iteratively in a loop
@@ -492,7 +492,7 @@ Helper for }, +}, and *}."
 		  (when (get sym 'lyc-resultsp)
 		    (lyc-push-result result))))
 	    (error *fstring-too-few-args* sym arity)))
-      (error *fstring-error-nosymbol* sym))))
+      (error sym *fstring-error-nosymbol*))))
 
 ;; return non-nil for a non-nil result
 (defun lyc-push-result (result)

@@ -104,6 +104,29 @@ class LString(val the_string: String): LObject(), LSeq {
         return result
     }
 
+    override fun position(start: Int, end: Int?, last: Boolean,
+                      predicate: (LObject) -> Boolean): Int {
+        var result = -1
+        var index = -1
+        for (elem in this) {
+            index++
+            if (index < start) {
+                continue
+            }
+            if (end != null && index >= end) {
+                break
+            }
+            if (predicate(elem)) {
+                if (last) {
+                    result = index
+                } else {
+                    return index
+                }
+            }
+        }
+        return result
+    }
+
     override fun elements(): LObject {
         return collectedList {
             for (ch in the_string) {

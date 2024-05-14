@@ -18,5 +18,7 @@ interface LSeq {
     fun delete(item: LObject): LObject
     fun find(start: Int, end: Int?, last: Boolean,
              predicate: (LObject) -> Boolean): LObject
+    fun position(start: Int, end: Int?, last: Boolean,
+                 predicate: (LObject) -> Boolean): Int
     val length: Int
 }
