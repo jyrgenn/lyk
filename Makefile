@@ -86,10 +86,11 @@ DOCSTRINGS.txt: lyk.jar Makefile
 	./scripts/lyk -J . l/alldocs.lisp > DOCSTRINGS.txt
 
 
-install: test
+install: DOCSTRINGS.txt
 	mkdir -p $(INSTALLDIR)
 	-rm -rf $(INSTALLDIR)/*
 	install -c lyk.jar $(INSTALLDIR)
+	install -c DOCSTRINGS.txt $(INSTALLDIR)
 	install -c scripts/lyk $(INSTALLBIN)
 	install -c l/lyc $(INSTALLBIN)
 	rsync -a l $(INSTALLDIR)/
