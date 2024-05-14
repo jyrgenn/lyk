@@ -37,7 +37,7 @@ build: lyk.jar DOCSTRINGS.txt
 lyk.jar: $(ALLSRCS) generated/jline Makefile tags
 	$(COMP) -cp generated/jline $(ALLSRCS) -include-runtime -d lyk.jar
 	cd generated/jline; jar -f ../../lyk.jar -u [a-z]*
-	./scripts/lyk -J . -e '(build-info t)'
+	./scripts/lyk -J . -V
 
 generated/jline:
 	mkdir generated/jline

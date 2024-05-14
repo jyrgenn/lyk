@@ -68,7 +68,6 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     fun setPrompt(inExpr: Boolean) {
         if (input.interactive) {
             val promptOb = consolePrompt.getValueOptional()
-            println("promptOb: ${promptOb?.desc(null)}")
             var promptString: String = when (promptOb) {
                 null, Nil -> if (inExpr) "" else "> "
                 is LString -> {
@@ -718,6 +717,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     fun read(): Pair<LObject?, String> {
         // Read an expression from the input and return it together with the
         // location of its first token.
+        setPrompt(false)
         val token = nextToken()
         val location = token.location()
         var macroSymbol: LSymbol?

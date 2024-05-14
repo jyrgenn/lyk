@@ -221,7 +221,7 @@ fun main(args: Array<String>) {
             }
         } else {
             debug(debugStartupSym) { "start REPL" }
-            repl(Reader(ConsoleReaderStream()), "> ")
+            repl(Reader(ConsoleReaderStream()), true)
         }
         exitLyk()
     } catch (e: LispError) {

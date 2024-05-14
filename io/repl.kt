@@ -3,15 +3,11 @@
 package org.w21.lyk
 
 
-fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
+fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
 ): LispError? {
     // If we have a prompt, we assume this repl is interactive and print eval
     // results to stdout.
 
-    val interactive = prompt != null
-    val promptString = prompt ?: ""     // just so we don't have to check all
-                                        // the time; we rely on interactive
-                                        // anyway
     fun iprint(s: String, flush: Boolean = false) {
         if (interactive) {
             stdout.write(s)
@@ -30,9 +26,6 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
     }
 
     while (true) {
-        if (interactive) {
-            reader.setPrompt(false)
-        }
         try {
             // Read, 
             var (expr, loc) = reader.read()
