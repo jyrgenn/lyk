@@ -31,6 +31,7 @@ val stderr = FileWriterStream(stderrPath, name = stderrName, flushch = true,
                               error = true)
 
 var console = ConsoleReaderStream()
+var consolePrompt = LSymbol.makeGlobal("*console-prompt*", makeString("%s> "))
 
 var debug_out = console
 

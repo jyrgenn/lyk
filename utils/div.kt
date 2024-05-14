@@ -352,3 +352,26 @@ fun printThingWrapped(thing: Any, linewidth: Int = 79,
 fun identity(item: Any): Any {
     return item
 }
+
+
+class LOStack(private var top: LObject = Nil) {
+    var size = 0
+    
+    fun push(obj: LObject) {
+        size++
+        top = LCons(obj, top)
+    }
+
+    fun pop(): LObject {
+        val result = top.car
+        if (top !== Nil) {
+            size--
+            top = top.cdr
+        } else {
+            size = 0
+        }
+        return result
+    }
+
+    operator fun iterator() = top.iterator()
+}

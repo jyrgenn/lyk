@@ -98,6 +98,20 @@ open class ParseError(message: String,
     override fun toString() = "${lh.location()}: $message"
 }
 
+open class EOFListError(lh: LocationHolder): ParseError("EOF in List", lh) {
+    override fun toString(): String {
+        val sb = StrBuf()
+        sb.add(super.toString())
+        if (lh is Reader) {
+            for (frame in lh.parenStack) {
+                sb.add("\n")
+                sb.add(frame.toString())
+            }
+        }
+        return sb.toString()
+    }
+}
+
 class SyntaxError(message: String,
                   lh: LocationHolder): ParseError(message, lh)
 

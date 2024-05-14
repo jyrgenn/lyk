@@ -23,7 +23,7 @@ val openStreams = mutableSetOf<WeakReference<LStream>>()
 
 
 class ConsoleReaderStream(var prompt: LObject = Nil
-): LStream(input = true, path = null, name = consoleName) {
+): LStream(input = true, path = null, name = consoleName, interactive = true) {
     val cr = ConsoleReader()
     var linebuf = StringReaderStream("")
     var linenum = 0
@@ -347,6 +347,7 @@ abstract class LStream(
                                         // network something
     val path: String? = null,           // file pathname
     val append: Boolean = false,        // "a"
+    val interactive: Boolean = false,
 ): LObject()
 {
     var charUnread: Char? = null

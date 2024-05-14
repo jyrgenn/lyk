@@ -44,7 +44,8 @@ object Options {
     var maxrecurse = 0
     var verbosity = 2           // 0: errors-only, 1: notice, 2: info
     var warnIsError = false     // let warnings be errors
-    var noPreload = false       // don't load perload code
+    var noPreload = false       // don't load preload code
+    var showVersion = false
 }
 val debugOptions = Options.debug.keys.sorted()
 
@@ -62,6 +63,7 @@ fun usage() {
   -v               : increase verbosity
   -E               : print exception stack
   -N               : don't load preload Lisp code
+  -V               : show version information and exit
   -W               : let warnings be errors
 """)
     // -R maxrecurse    : maximum eval recursion depth 
@@ -118,6 +120,7 @@ fun main(args: Array<String>) {
                     'E' -> { Options.print_estack = true }
                     'q' -> { Options.verbosity -= 1 }
                     'v' -> { Options.verbosity += 1 }
+                    'V' -> { Options.showVersion = true }
                     'd' -> { setDebug(getOptVal("debug options")) }
                     'e' -> { lispExpression = getOptVal("Lisp expression") }
                     'l' -> {
@@ -146,6 +149,9 @@ fun main(args: Array<String>) {
         }
         debug(debugStartupSym) { "have options: $Options" }
 
+        if (Options.showVersion) {
+            lispExpression = "(build-info t)"
+        }
         if (lispExpression != null || argl.size > 0) {
             // i.e. running non-interactively, so no buildtag printing etc.
             Options.verbosity -= 1
@@ -174,7 +180,7 @@ fun main(args: Array<String>) {
             debug(debugStartupSym) { "load preload code" }
             load_string(preload_code, "*preload-code*")
         }
-        
+
         for (fname in load_files) {
             debug(debugStartupSym) { "load file \"$fname\"" }
             load(fname)

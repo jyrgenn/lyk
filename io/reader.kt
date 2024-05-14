@@ -63,7 +63,32 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
     var column = 0                      // current column read
     var pushbackToken: ReaderToken? = null
     val readerName = sourceName ?: input.name
-    
+    var parenStack = LOStack()
+
+    fun setPrompt(inExpr: Boolean) {
+        if (input.interactive) {
+            val promptOb = consolePrompt.getValueOptional()
+            println("promptOb: ${promptOb?.desc(null)}")
+            var promptString: String = when (promptOb) {
+                null, Nil -> if (inExpr) "" else "> "
+                is LString -> {
+                    val promptS = promptOb.the_string
+                    if (promptS.contains('%')) {
+                        promptS.format(mulString("(", parenStack.size))
+                    } else {
+                        promptS
+                    }
+                }
+                is LCons ->
+                    (if (inExpr) promptOb.cdr else promptOb.car).toString()
+                is LFunction -> {
+                    promptOb.call(list(if (inExpr) T else Nil)).toString()
+                }
+                else -> promptOb.toString()
+            }
+            input.setPrompt(promptString)
+        }
+    }
 
     override fun toString(): String {
         return "#<Reader:$readerName>"
@@ -170,7 +195,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
             debug(debugReaderSym) {
                  "nextNonSpaceChar() returns '$ch'"
             }
-            input.setPrompt("")
+            setPrompt(true)
             return ch
         }
     }
@@ -192,8 +217,16 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                 return EOFToken(this)
             }
             when (ch) {
-                '(' -> return OparenToken(this)
-                ')' -> return CparenToken(this)
+                '(' -> {
+                    parenStack.push(makeString(location()))
+                    setPrompt(true)
+                    return OparenToken(this)
+                }
+                ')' -> {
+                    parenStack.pop()
+                    setPrompt(parenStack.size > 0)
+                    return CparenToken(this)
+                }
                 '.' -> {
                     // This is only a period token if there is a
                     // separator behind it; floats and symbols may
@@ -806,7 +839,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                 is CparenToken ->
                     return lc.list
                 is EOFToken ->
-                    throw ParseError("EOF in list", this)
+                    throw EOFListError(this)
                 else -> {
                     unreadToken(token)
                     val elem = read().first ?:

@@ -31,7 +31,7 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
 
     while (true) {
         if (interactive) {
-            reader.input.setPrompt(promptString)
+            reader.setPrompt(false)
         }
         try {
             // Read, 
@@ -95,7 +95,7 @@ fun repl(reader: Reader, prompt: String? = null, print: Boolean = false
         }
     }                           // end Loop
     if (interactive) {
-        console.println()
+        stderr.println()
     }
     return null
 }
