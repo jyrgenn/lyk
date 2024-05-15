@@ -272,6 +272,73 @@
 (test-is "find-if 2" (find-if #'evenp '(3 5 7 8 9 11)) 8)
 (test-is "find-if-not 2" (find-if-not #'oddp '(3 5 7 8 9 11)) 8)
 
+;;; position
+;; don't find
+(test-is "position 0" (position 'a '(3 4 5 6)) nil)
+
+;; position
+(test-is "position 1" (position 4 '(3 4 5 6)) 1)
+
+;; position with custom test
+(test-is "position 2" (position '(3 . 4) '((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
+                        :test (lambda (a b) (eq (car a) (car b))))
+         1)
+;; position with custom test from-end
+(test-is "position 3" (position '(3 . 4) '((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
+                        :from-end t
+                        :test (lambda (a b) (eq (car a) (car b))))
+         3)
+;; position with custom test from-end, end
+(test-is "position 4" (position '(3 . 4) '((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
+                        :from-end t
+                        :test (lambda (a b) (eq (car a) (car b)))
+                        :end 2)
+         1)
+;; position with custom test, start
+(test-is "position 5" (position '(3 . 4) '((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
+                        :test (lambda (a b) (eq (car a) (car b)))
+                        :start 2)
+         3)
+
+;; don't position
+(test-is "position 0v" (position 'a #(3 4 5 6)) nil)
+
+;; position
+(test-is "position 1v" (position 4 #(3 4 5 6)) 1)
+
+;; position with custom test
+(test-is "position 2v" (position '(3 . 4) #((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
+                         :test (lambda (a b) (eq (car a) (car b))))
+         1)
+;; position with custom test from-end
+(test-is "position 3v" (position '(3 . 4) #((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
+                         :from-end t
+                         :test (lambda (a b) (eq (car a) (car b))))
+         3)
+;; position with custom test from-end, end, start
+(test-is "position 4v" (position '(3 . 4) #((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
+                         :from-end t
+                         :test (lambda (a b) (eq (car a) (car b)))
+                         :end 2)
+         1)
+;; position with custom test, start
+(test-is "position 5v" (position '(3 . 4) #((4 . a) (3 . d) (7 . c) (3 . 5) (5 . 9))
+                        :test (lambda (a b) (eq (car a) (car b)))
+                        :start 2)
+         3)
+
+;; don't position
+(test-is "position-if 0" (position-if #'oddp '(2 4 6 8 10)) nil)
+(test-is "position-if-not 1" (position-if-not #'evenp '(2 4 6 8 10)) nil)
+
+;; position
+(test-is "position-if 1" (position-if #'evenp '(2 4 6 8 10)) 0)
+(test-is "position-if-not 0" (position-if-not #'oddp '(2 4 6 8 10)) 0)
+(test-is "position-if 2" (position-if #'evenp '(3 5 7 8 9 11)) 3)
+(test-is "position-if-not 2" (position-if-not #'oddp '(3 5 7 8 9 11)) 3)
+
+;;; member
+
 (test-is "member 0" (member 'c nil) nil)
 (test-is "member 1" (member 'c '(c)) '(c))
 (test-is "member 2" (member 'c '(a b c d)) '(c d))
