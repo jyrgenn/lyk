@@ -62,11 +62,14 @@ class LVector(elems: LObject): LObject(), LSeq {
     }
 
 
-    override fun getAt(index: Int): LObject {
+    override fun getAt(index: Int, default: LObject?): LObject {
         if (index >= 0 && index < the_vector.size) {
             return the_vector[index]
         }
-        throw IndexError(this, index)
+        if (default == null) {
+            throw IndexError(this, index)
+        }
+        return default
     }
 
     fun getAtOptional(index: Int): LObject? {

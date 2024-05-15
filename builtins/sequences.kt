@@ -3,24 +3,28 @@
 package org.w21.lyk
 
 
+val defaultSym = intern("default")
+
 /// builtin elt
 /// fun     bi_elt
 /// std     sequence index
 /// key     
-/// opt     
+/// opt     default
 /// rest    
 /// ret     element
 /// special no
 /// doc {
 /// Return the value of `sequence` (list, vector) element at `index`.
-//// Throw an error if the (zero-based) `index` is not in the sequence.
+/// Throw an error if the (zero-based) `index` is not in the sequence.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_elt(args: LObject, kwArgs: Map<LSymbol, LObject>,
            suppp: Map<LSymbol, Boolean>): LObject {
-    val (seq, index) = args2(args)
-    return seqArg(seq).getAt(indexArg(index, " index"))
+    val (seq, index, default) = args3(args)
+    val default_specified = suppp.get(defaultSym) ?: false
+    return seqArg(seq).getAt(indexArg(index, " index"),
+                             if (default_specified) default else null)
 }
 
 /// builtin setelt
@@ -180,6 +184,7 @@ val keyKeyw = intern(":key")
 val equalSym = intern("equal")
 val identitySym = intern("identity")
 
+// the core of the very similar functions find and position
 fun find_pos_core(args: LObject, kwArgs: Map<LSymbol, LObject>
 ): Pair<LObject, Int> {
     val (item, seq) = args2(args)
@@ -275,7 +280,7 @@ fun bi_position(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return indexOrNil(find_pos_core(args, kwArgs).second)
 }
 
-
+// the core of the very similar functions find/position-if/-if-not
 fun find_if_pos_core(args: LObject, kwArgs: Map<LSymbol, LObject>,
                      negate: Boolean): Pair<LObject, Int> {
     val (pred, seq) = args2(args)

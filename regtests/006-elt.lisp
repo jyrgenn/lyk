@@ -13,9 +13,9 @@
 (test-err "elt 4b" (elt '(a b c d) 4)
           #/invalid index/)
 (test-is "elt 5" (elt #(3 4 5 6) 2) 5)
-;; TODO (test-is "elt 6" (elt #(3 4 5 6) 4 7) 7)
-;; TODO (test-is "elt 7" (elt #(3 4 5 6) 19 nil) nil)
-;; TODO (test-is "elt 8" (elt "eine alte dicke Gans" 29 'Q) 'Q)
+(test-is "elt 6" (elt #(3 4 5 6) 4 7) 7)
+(test-is "elt 7" (elt #(3 4 5 6) 19 nil) nil)
+(test-is "elt 8" (elt "eine alte dicke Gans" 29 'Q) 'Q)
 
 (test-err "elt err" (elt #(3 4 5 6) 4) #/invalid index/)
 

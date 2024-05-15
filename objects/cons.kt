@@ -156,7 +156,7 @@ class LCons(override var car: LObject,
         return lc.list
     }
 
-    override fun getAt(index: Int): LObject {
+    override fun getAt(index: Int, default: LObject?): LObject {
         var l: LObject = this
         var i = 0
         while (l is LCons) {
@@ -165,7 +165,10 @@ class LCons(override var car: LObject,
             }
             l = l.cdr
         }
-        throw IndexError(this, index)
+        if (default == null) {
+            throw IndexError(this, index)
+        }
+        return default
     }
     override fun setAt(index: Int, value: LObject) {
         var l: LObject = this

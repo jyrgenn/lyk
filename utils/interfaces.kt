@@ -8,7 +8,7 @@ fun interface LocationHolder {
 }
 
 interface LSeq {
-    fun getAt(index: Int): LObject
+    fun getAt(index: Int, default: LObject? = null): LObject
     fun setAt(index: Int, value: LObject)
     operator fun iterator(): Iterator<LObject>
     fun copy(): LObject

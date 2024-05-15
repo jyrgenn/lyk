@@ -69,11 +69,14 @@ class LString(val the_string: String): LObject(), LSeq {
         return result.toString()
     }
 
-    override fun getAt(index: Int): LObject {
+    override fun getAt(index: Int, default: LObject?): LObject {
         if (index >= 0 && index < the_string.length) {
             return makeChar(the_string[index])
         }
-        throw IndexError(this, index)
+        if (default == null) {
+            throw IndexError(this, index)
+        }
+        return default
     }
 
     @Suppress("UNUSED_PARAMETER")
