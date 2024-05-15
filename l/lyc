@@ -3,7 +3,8 @@
 ;;; lyc -- a Lisp RPN Calculator, adapted for lyk
 ;;; placed into the public domain by Juergen Nickelsen <ni@w21.org>
 
-;;(trace 'mod t)
+(defvar Release
+  "part of :UNRELEASED:")
 
 (defvar *lyc-stack* nil)		;the whole stack
 (defvar *lyc-values* nil)		;all computed values
@@ -111,6 +112,8 @@ Example:
 
 (defl lisp-functions () nil "print Lisp function symbols"
   (format t "%s\n" (join " " (function-symbols))))
+
+(defl lyc-release () nil "print lyk/lyc release identifier" (println Release))
 
 (defun lyc-pop ()
   "Remove the value on top of the stack and return it."

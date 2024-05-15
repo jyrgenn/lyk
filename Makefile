@@ -24,8 +24,9 @@ BUILTINSRC = $(shell ls builtins/*.kt | egrep -v '(helpers)\.kt')
 
 COMP = kotlinc
 
-INSTALLDIR=/opt/w21/lyk
-INSTALLBIN=/opt/w21/bin
+INSTALLBASE = /opt/w21
+INSTALLDIR =  $(INSTALLBASE)/lib/lyk
+INSTALLBIN =  $(INSTALLBASE)/bin
 
 # JAR=$(basename $1 .kt).jar
 # kotlinc $1 -include-runtime -d $JAR && java -jar $JAR
@@ -91,6 +92,8 @@ install: DOCSTRINGS.txt
 	-rm -rf $(INSTALLDIR)/*
 	install -c lyk.jar $(INSTALLDIR)
 	install -c DOCSTRINGS.txt $(INSTALLDIR)
-	install -c scripts/lyk $(INSTALLBIN)
-	install -c l/lyc $(INSTALLBIN)
+	sed 's|:INSTALLDIR:|:$(INSTALLDIR):|' scripts/lyk > $(INSTALLBIN)/lyk
+	chmod +x $(INSTALLBIN)/lyk
+	sed "s|:UNRELEASED:|$$(scripts/lyk -V)|" l/lyc > $(INSTALLBIN)/lyc
+	chmod +x $(INSTALLBIN)/lyc
 	rsync -a l $(INSTALLDIR)/

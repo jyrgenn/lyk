@@ -1,4 +1,3 @@
-
 Lyk -- Lysp yn Kotlin
 =====================
 
@@ -18,18 +17,19 @@ complex parts like the reader and eval, so I had a working REPL
 fast.
 
 Work in progress as of Mai 2024, finally got through the regression
-test suite of an earlier implementation. Macros seems to work mostly
-well now that I have followed Steele's advice about how they should
-be dealt with.
+test suite that I originally made for an earlier implementation.
+Macros seems to work mostly well now that I have followed Steele's
+advice about how they should be dealt with. The RPN calculator
+`l/lyc` seems to work now to some degree -- it is, admittedly, the
+only application that I really use a lot, so that *is* significant.
 
-Bigger things ahead some debugging help in eval, and a non-recursive
-eval with an explicit call stack, and more builtin functions.
+Bigger things are ahead some debugging help in eval, a non-recursive
+eval with an explicit call stack, and of course many more builtin
+functions.
 
 Lyk uses the JLine line editor Version 2 for the interactive input
-line; see the subdirectory `jline/`. This works fine and was
-surprisingly easy to integrate, in particular as I failed to do that
-with JLine version 3, which required much more code to set up and
-still failed to work for me in the end. With JLine 2 it was a
-breeze. The version 2.14.6 I have incorporated here is the last of
-the JLine 2 development, which has been laid to rest in favour of
-working on JLine 3, as I understand it.
+line; see the subdirectory `external/jline/`. This is not the
+current release version, but it was rather easy to integrate, which
+the current one wasn't.
+
+-- ni@w21.org 2024-05

@@ -2,7 +2,7 @@
 # start the lyk Lisp interpreter
 
 # this is also a base for the load path
-export LYKPATH=${LYKPATH-.:/opt/w21/lyk:$HOME/devel/lyk}
+export LYKPATH=${LYKPATH-.:INSTALLDIR:$HOME/devel/lyk}
 
 if [ -t 0 ]; then
     stty size | read LINES COLUMNS
@@ -28,4 +28,4 @@ if [ -z "$JARPATH" ]; then
     exit 2
 fi
 
-java -jar $JARPATH/lyk.jar "$@"
+exec java -jar $JARPATH/lyk.jar "$@"
