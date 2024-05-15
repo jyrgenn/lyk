@@ -21,34 +21,6 @@ class LCons(override var car: LObject,
 
     override fun isList() = true
 
-    // override fun desc0(seen: Set<Int>?): String {
-    //     if (seen != null && this.id in seen) {
-    //         return "..."
-    //     }
-    //     val seen1 = (seen ?: setOf<Int>()) + this.id
-
-    //     val result = StrBuf("(")
-    //     val car_s = car.desc(seen1)
-    //     result.add(car_s)
-    //     when (cdr) {
-    //         Nil -> result.add(")")
-    //         is LCons -> {
-    //             if (cdr.id in seen1) {
-    //                 result.add(" . ...)")
-    //             } else {
-    //                 result.add(" ")
-    //                 result.add(cdr.desc(seen1).substring(1))
-    //             }
-    //         }
-    //         else -> {
-    //             result.add(" . ")
-    //             result.add(cdr.desc(seen1))
-    //             result.add(")")
-    //         }
-    //     }
-    //     return result.toString()
-    // }
-
     fun incHitcount() {
         if (hitcount >= 2) {
             hitcount = 0
@@ -57,6 +29,13 @@ class LCons(override var car: LObject,
         }
     }
 
+    // This function is modeled after the algorithm in
+    // https://git.w21.org/lisp/mnlisp/-/blob/master/pp/mod/sexprio.mod#L666
+    // from a programming assignment I completed together with Bernd
+    // Machenschalk in the early 90s -- the first Lisp interpreter
+    // we made. I never really understood this algorithm called
+    // "Wirbeltraversierung", but here it worked, apparently
+    // flawlessly, nearly instantly after correcting a few typos.
     override fun desc(seen: Set<Int>?): String {
         if (seen != null && this.id in seen) {
             return "..."
