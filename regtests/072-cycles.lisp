@@ -8,7 +8,7 @@
 (test-is "cycles pair" (let ((a '(3 4 5 6)))
                          (setf (cadr a) a)
                          a)
-         "(3 ... 5 6)")
+         "(3 ( ... ) 5 6)")
 
 ;;; TODO do I want structs again at some point?
 ;; (defstruct self-holder "can hold its liquor and itself" this that)
@@ -43,16 +43,16 @@
 
 (test-is "linear cycle 1" (progn (setf (car a) a)
                                  a)
-         "(... . 4)")
+         "(( ... ) . 4)")
 
 (test-is "linear cycle 2" (progn (setf (cdr a) a)
                                  a)
-         "(... . ...)")
+         "(( ... ) ... )")
 
 (test-is "linear cycle 3" (let* ((a '(1 2 3 4 5 6 7 8 9 10))
                                  (9th (nthcdr 9 a)))
                             (setf (cdr 9th) a))
-         "(1 2 3 4 5 6 7 8 9 10 . ...)")
+         "(1 2 3 4 5 6 7 8 9 10 ... )")
 
 (test-is "no cycle, but twice" (let ((a '(3 4 5)))
                                  (cons a a))

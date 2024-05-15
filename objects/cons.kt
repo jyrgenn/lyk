@@ -5,6 +5,8 @@ package org.w21.lyk
 
 class LCons(override var car: LObject,
             override var cdr: LObject): LObject(), LSeq {
+    var mark: Boolean = false
+    var hitcount: Byte = 0
 
     init {
         debug(debugConsSym) {
@@ -19,32 +21,117 @@ class LCons(override var car: LObject,
 
     override fun isList() = true
 
+    // override fun desc0(seen: Set<Int>?): String {
+    //     if (seen != null && this.id in seen) {
+    //         return "..."
+    //     }
+    //     val seen1 = (seen ?: setOf<Int>()) + this.id
+
+    //     val result = StrBuf("(")
+    //     val car_s = car.desc(seen1)
+    //     result.add(car_s)
+    //     when (cdr) {
+    //         Nil -> result.add(")")
+    //         is LCons -> {
+    //             if (cdr.id in seen1) {
+    //                 result.add(" . ...)")
+    //             } else {
+    //                 result.add(" ")
+    //                 result.add(cdr.desc(seen1).substring(1))
+    //             }
+    //         }
+    //         else -> {
+    //             result.add(" . ")
+    //             result.add(cdr.desc(seen1))
+    //             result.add(")")
+    //         }
+    //     }
+    //     return result.toString()
+    // }
+
+    fun incHitcount() {
+        if (hitcount >= 2) {
+            hitcount = 0
+        } else {
+            hitcount++
+        }
+    }
+
     override fun desc(seen: Set<Int>?): String {
         if (seen != null && this.id in seen) {
             return "..."
         }
         val seen1 = (seen ?: setOf<Int>()) + this.id
+        
+        var sb = StrBuf()
+        var current: LObject = this
+        var prev: LObject = Nil
+        var next: LObject //= this
+        var lastWasNoLparen = false
 
-        val result = StrBuf("(")
-        val car_s = car.desc(seen1)
-        result.add(car_s)
-        when (cdr) {
-            Nil -> result.add(")")
-            is LCons -> {
-                if (cdr.id in seen1) {
-                    result.add(" . ...)")
-                } else {
-                    result.add(" ")
-                    result.add(cdr.desc(seen1).substring(1))
+        sb.add("(")
+        do {
+            if (current is LCons && current.mark) {
+                sb.add(" ... )")
+                lastWasNoLparen = true
+                next = prev
+                prev = current
+                current = next
+                if (current is LCons) {
+                    current.mark = false
+                }
+            } else {
+                if (current is LCons) {
+                    current.incHitcount()
+                    next = current.car
+                    current.car = current.cdr
+                    current.cdr = prev
+                    if (current.hitcount == 1.toByte()) {
+                        if (next !is LCons) {
+                            if (lastWasNoLparen) {
+                                sb.add(" ")
+                            }
+                            sb.add(next.desc(seen1))
+                            lastWasNoLparen = true
+                            prev = next
+                        } else {
+                            if (lastWasNoLparen) {
+                                sb.add(" ")
+                            }
+                            sb.add("(")
+                            lastWasNoLparen = false
+                            current.mark = true
+                            prev = current
+                            current = next
+                        }
+                    } else if (current.hitcount == 2.toByte()) {
+                        if (next === Nil) {
+                            sb.add(")")
+                            lastWasNoLparen = true
+                            prev = next
+                        } else if (next !is LCons) {
+                            sb.add(" . ")
+                            sb.add(next.desc(seen1))
+                            sb.add(")")
+                            lastWasNoLparen = true
+                            prev = next
+                        } else {
+                            current.mark = true
+                            prev = current
+                            current = next
+                        }
+                    } else {
+                        prev = current
+                        current = next
+                        if (current is LCons) {
+                            current.mark = false
+                        }
+                    }
                 }
             }
-            else -> {
-                result.add(" . ")
-                result.add(cdr.desc(seen1))
-                result.add(")")
-            }
-        }
-        return result.toString()
+        } while (current !== Nil)
+        
+        return sb.toString()
     }
 
     override val length: Int
