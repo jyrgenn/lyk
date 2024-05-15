@@ -91,7 +91,7 @@ install: DOCSTRINGS.txt
 	mkdir -p $(INSTALLDIR)
 	-rm -rf $(INSTALLDIR)/*
 	install -c lyk.jar $(INSTALLDIR)
-	install -c DOCSTRINGS.txt $(INSTALLDIR)
+	install -c DOCSTRINGS.txt README.md $(INSTALLDIR)
 	sed 's|:INSTALLDIR:|:$(INSTALLDIR):|' scripts/lyk > $(INSTALLBIN)/lyk
 	chmod +x $(INSTALLBIN)/lyk
 	sed "s|:UNRELEASED:|$$(scripts/lyk -V)|" l/lyc > $(INSTALLBIN)/lyc
