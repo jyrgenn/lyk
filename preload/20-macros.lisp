@@ -1,16 +1,16 @@
 
-(defmacro unless (condition &rest bodyforms)
+(defmacro unless (condition &rest else-clauses)
   "If `condition` evaluates to nil, eval all `else-clauses` and return
 the value of the last. Otherwise, return nil."
-  (cond ((not bodyforms) (setq bodyforms '(nil))))      
+  (cond ((not else-clauses) (setq else-clauses '(nil))))      
   `(cond (,condition nil)
-         (t ,@bodyforms)))
+         (t ,@else-clauses)))
 
-(defmacro when (condition &rest bodyforms)
+(defmacro when (condition &rest then-clauses)
   "If `condition` evaluates to non-nil, eval all `then-clauses` and return
 the value of the last. Otherwise return nil."
-  (cond ((not bodyforms) (setq bodyforms '(nil))))      
-  `(cond (,condition ,@bodyforms)))
+  (cond ((not then-clauses) (setq then-clauses '(nil))))      
+  `(cond (,condition ,@then-clauses)))
 
 (defmacro if (condition then-clause &rest else-clauses)
   "If `condition` evals to non-nil, eval `then-clause` and return the value.
