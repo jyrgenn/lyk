@@ -239,7 +239,7 @@ fun bi_find(args: LObject, kwArgs: Map<LSymbol, LObject>,
         } else {
             b1 && test_not.call(testargs).toBoolean()
         }
-    }
+    }.first
 }
 
 /// builtin find-if
@@ -281,7 +281,7 @@ fun bi_find_if(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return sequence.find(start, end, last) {
         val elem = key.call(list(it))
         predicate.call(list(elem)).toBoolean()
-    }
+    }.first
 }
 
 /// builtin find-if-not
@@ -323,7 +323,7 @@ fun bi_find_if_not(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return sequence.find(start, end, last) {
         val elem = key.call(list(it))
         !(predicate.call(list(elem)).toBoolean())
-    }
+    }.first
 }
 
 fun indexOrNil(result: Int): LObject {
@@ -383,7 +383,7 @@ fun bi_position(args: LObject, kwArgs: Map<LSymbol, LObject>,
         functionArg(key_k, " :key")
     }
 
-    return indexOrNil(sequence.position(start, end, last) {
+    return indexOrNil(sequence.find(start, end, last) {
                           val elem = key.call(list(it))
                           val testargs = list(elem, item)
                           val b1 = test.call(testargs).toBoolean()
@@ -392,7 +392,7 @@ fun bi_position(args: LObject, kwArgs: Map<LSymbol, LObject>,
                           } else {
                               b1 && test_not.call(testargs).toBoolean()
                           }
-                      })
+                      }.second)
 }
 
 /// builtin position-if
@@ -431,10 +431,10 @@ fun bi_position_if(args: LObject, kwArgs: Map<LSymbol, LObject>,
         functionArg(key_k, " :key")
     }
 
-    return indexOrNil(sequence.position(start, end, last) {
+    return indexOrNil(sequence.find(start, end, last) {
                           val elem = key.call(list(it))
                           predicate.call(list(elem)).toBoolean()
-                      })
+                      }.second)
 }
 
 /// builtin position-if-not
@@ -473,9 +473,9 @@ fun bi_position_if_not(args: LObject, kwArgs: Map<LSymbol, LObject>,
         functionArg(key_k, " :key")
     }
 
-    return indexOrNil(sequence.position(start, end, last) {
+    return indexOrNil(sequence.find(start, end, last) {
                           val elem = key.call(list(it))
                           !(predicate.call(list(elem)).toBoolean())
-                      })
+                      }.second)
 }
 

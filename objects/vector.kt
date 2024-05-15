@@ -133,8 +133,8 @@ class LVector(elems: LObject): LObject(), LSeq {
     }
 
     override fun find(start: Int, end: Int?, last: Boolean,
-                      predicate: (LObject) -> Boolean): LObject {
-        var result: LObject = Nil
+                      predicate: (LObject) -> Boolean): Pair<LObject, Int> {
+        var result: Pair<LObject, Int> = Pair(Nil, -1)
         var index = -1
         for (elem in the_vector) {
             index++
@@ -146,37 +146,15 @@ class LVector(elems: LObject): LObject(), LSeq {
             }
             if (predicate(elem)) {
                 if (last) {
-                    result = elem
+                    result = Pair(elem, index)
                 } else {
-                    return elem
+                    return Pair(elem, index)
                 }
             }
         }
         return result
     }
 
-    override fun position(start: Int, end: Int?, last: Boolean,
-                          predicate: (LObject) -> Boolean): Int {
-        var result = -1
-        var index = -1
-        for (elem in the_vector) {
-            index++
-            if (index < start) {
-                continue
-            }
-            if (end != null && index >= end) {
-                break
-            }
-            if (predicate(elem)) {
-                if (last) {
-                    result = index
-                } else {
-                    return index
-                }
-            }
-        }
-        return result
-    }
 
     override fun reversed(): LObject {
         return LVector(the_vector.reversed())

@@ -138,8 +138,8 @@ class LCons(override var car: LObject,
     }
 
     override fun find(start: Int, end: Int?, last: Boolean,
-                      predicate: (LObject) -> Boolean): LObject {
-        var result: LObject = Nil
+                      predicate: (LObject) -> Boolean): Pair<LObject, Int> {
+        var result: Pair<LObject, Int> = Pair(Nil, -1)
         var index = -1
         for (elem in this) {
             index++
@@ -151,32 +151,9 @@ class LCons(override var car: LObject,
             }
             if (predicate(elem)) {
                 if (last) {
-                    result = elem
+                    result = Pair(elem, index)
                 } else {
-                    return elem
-                }
-            }
-        }
-        return result
-    }
-
-    override fun position(start: Int, end: Int?, last: Boolean,
-                          predicate: (LObject) -> Boolean): Int {
-        var result = -1
-        var index = -1
-        for (elem in this) {
-            index++
-            if (index < start) {
-                continue
-            }
-            if (end != null && index >= end) {
-                break
-            }
-            if (predicate(elem)) {
-                if (last) {
-                    result = index
-                } else {
-                    return index
+                    return Pair(elem, index)
                 }
             }
         }

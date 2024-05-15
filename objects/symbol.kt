@@ -215,17 +215,9 @@ class LSymbol(val name: String, val immutable: Boolean,
     }
 
     override fun find(start: Int, end: Int?, last: Boolean,
-                      predicate: (LObject) -> Boolean): LObject {
+                      predicate: (LObject) -> Boolean): Pair<LObject, Int> {
         if (this === Nil) {
-            return Nil
-        }
-        throw TypeError("not a sequence: $this")
-    }
-
-    override fun position(start: Int, end: Int?, last: Boolean,
-                          predicate: (LObject) -> Boolean): Int {
-        if (this === Nil) {
-            return -1
+            return Pair(Nil, -1)
         }
         throw TypeError("not a sequence: $this")
     }
