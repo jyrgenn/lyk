@@ -45,7 +45,7 @@
 (test-err "fmakunbound b" (flet ((b (n) (* n n)))
                             (fmakunbound 'b)
                             (b 13))
-         #/not a function/)
+         #/not bound to function/)
 (test-is "fset dfdf" (progn (fset 'dfdf (lambda (n) (+ n 13)))
                             (dfdf 22))
          35)

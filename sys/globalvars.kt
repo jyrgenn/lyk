@@ -33,7 +33,7 @@ val stderr = FileWriterStream(stderrPath, name = stderrName, flushch = true,
 var console = ConsoleReaderStream()
 var consolePrompt = LSymbol.makeGlobal("*console-prompt*", makeString("%s> "))
 
-var debug_out = console
+var debug_out = stderr
 
 val verboseSym = intern("verbose")
 val errorSym = intern("error")

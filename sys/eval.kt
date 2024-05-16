@@ -14,7 +14,6 @@ fun markFrame(level: Int, ob1: LObject, ob2: LObject? = null): String {
     }
     return s.format(level, ob1.toString(), separator, ob2Str)
 }
-    
 
 
 fun evalProgn(forms: LObject): LObject {
@@ -32,30 +31,30 @@ fun evalProgn(forms: LObject): LObject {
 
 // to allow for a variable with a function *value* (not function!) in the
 // function position, we recurse *once* at maximum
-fun evalFun(obj: LObject?,
-            reclevel: Int = 0,
-            original: LObject? = null): LFunction
+fun evalFun(obj: LObject): LFunction
 {
     debug(debugEvalFunSym) {
-        "evalFun(${obj?.dump() ?: "nil"}, $reclevel)"
+        "evalFun(${obj.dump()})"
     }
-    if (obj != null && reclevel <= 1) {
-        if (obj is LFunction) {
-            return obj
+    if (obj is LSymbol) {
+        val func = obj.function
+        if (func is LFunction) {
+            return func
         }
-        if (obj is LSymbol) {
-            debug(debugEvalFunSym) {
-                  "$obj is symbol, function ${obj.function}"
-            }
-            // recurse to 
-            return evalFun(obj.function ?: obj.getValueOptional(),
-                           reclevel + 1, obj)
+        val value = obj.getValueOptional()
+        if (value is LFunction) {
+            return value
         }
-        return evalFun(eval(obj), reclevel+1, obj)
+        throw FunctionError("${obj.type} `$obj` not bound to function")
     }
-    val present = original ?: obj ?: LSymbol.uninterned("WOT?:")
-    throw FunctionError("object `$present` is not a function: "
-                        + present.dump())
+    if (obj is LFunction) {
+        return obj
+    }
+    val last_hope = eval(obj)
+    if (last_hope is LFunction) {
+        return last_hope
+    }
+    throw FunctionError("${obj.type} `$obj` is not a function")
 }
 
 
