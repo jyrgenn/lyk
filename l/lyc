@@ -32,8 +32,9 @@
   "Eval EVALFORM; on error, bind `error-condition' and eval HANDLERFORM."
   `(let* ((result (errset ,evalform nil)))
      (when (atom result)
-       (let ((error-condition |*last-error*|))
+       (let ((error-condition *last-error*))
          ,handlerform))))
+
 (defmacro make-blanks-string (len)
   `(make-string ,len " "))
 (defmacro print-prompt ())
@@ -580,26 +581,26 @@ Helper for }, +}, and *}."
                         (t (lyc-push-result (eval exp)))))))))
     result))
 
-;; now the action: process command line arguments, if any, or go into repl
-(if *command-line-args*
-    (progn
-      (dolist (arg *command-line-args*)
-	(lyc-do-string arg))
-      (format t *fstring-simple-nl* (car *lyc-stack*))
-      (exit))
-  (while t                              ;repl
-    (let ((line (read-line *tty* nil nil))
-	  (presultp nil))		;non-nil if there is a non-nil result
-      (unless line
-        (terpri)
+(defun run-lyc (args)
+  (if args
+      (progn
+        (dolist (arg args)
+	  (lyc-do-string arg))
+        (format t *fstring-simple-nl* (car *lyc-stack*))
         (exit))
-      (handle-error
-          (setf presultp (or presultp (lyc-do-string line)))
-        (format t *fstring-error* error-condition))
-      ;; print the last result only after a line, not after each expression
-      (if *lyc-print-stack*
-	  (lyc-print-stack)
-	(when presultp
-	    (format t *fstring-simple-nl* (car *lyc-stack*)))))))
+      (while t                          ;repl
+        (let ((line (read-line *tty* nil nil))
+	      (presultp nil))    ;non-nil if there is a non-nil result
+          (unless line
+            (terpri)
+            (exit))
+          (handle-error (setf presultp (or presultp (lyc-do-string line)))
+                        (format t *fstring-error* error-condition))
+          ;; print the last result only after a line, not after each expression
+          (if *lyc-print-stack*
+	      (lyc-print-stack)
+	      (when presultp
+	        (format t *fstring-simple-nl* (car *lyc-stack*))))))))
 
+(run-lyc *command-line-args*)
 ;;; EOF
