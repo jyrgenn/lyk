@@ -184,6 +184,9 @@ class LCons(override var car: LObject,
         if (end != null && end < 0) {
             IndexError(this, end)
         }
+        if (start == end) {
+            return Nil
+        }
         var l: LObject = this
         var lc = ListCollector()
         var i = 0

@@ -211,6 +211,9 @@ class LSymbol(val name: String, val immutable: Boolean,
 
     override fun subseq(start: Int, end: Int?): LObject {
         if (this === Nil) {
+            if (start == 0 && (end == 0 || end == null)) {
+                return Nil
+            }
             throw IndexError(
                 "invalid indexes [$start, ${end ?: "nil"}) for empty list")
         }

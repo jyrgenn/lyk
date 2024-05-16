@@ -32,6 +32,16 @@
 (test-is "subseq start end str" (subseq "3456789" 3 5)
          "67")
 
+;; Bug: lyc threw an error with an empty stack and a command that
+;; wanted 0 items from the stack
+(test-is "subseq 0 of nil" (subseq nil 0) nil)
+(test-is "subseq 0 0 of nil" (subseq nil 0 0) nil)
+(test-is "subseq 0 of \"\"" (subseq "" 0) "")
+(test-is "subseq 0 0 of \"\"" (subseq "" 0 0) "")
+(test-is "subseq 0 of #()" (subseq #() 0) #())
+(test-is "subseq 0 0 of #()" (subseq #() 0 0) #())
+
+
 ;; Bug: while evaluates the condition twice due to a botched variable
 ;; assignment inside bi_while(). In many cases this might not even be
 ;; detected, but when the condition e.g. includes reading from a

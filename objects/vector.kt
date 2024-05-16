@@ -132,6 +132,9 @@ class LVector(elems: LObject): LObject(), LSeq {
         if (real_end < 0 || real_end > the_vector.size) {
             throw IndexError(this, real_end)
         }
+        if (start == end) {
+            return LVector(Nil)
+        }
         return LVector(the_vector.subList(start, real_end))
     }
 
