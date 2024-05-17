@@ -67,99 +67,163 @@ fun evalArgs(arglist: LObject): LObject {
     return lc.list
 }
 
+// Idea: 
+data class EvalStackFrame(var form: LObject,
+                          var function: LObject? = null,
+                          var args2eval: LObject? = null,
+                          var args2pass: ListCollector? = null,
+                          val prev: EvalStackFrame? = null)
+
+enum class Next {
+    args,                               // eval args
+    form,                               // eval a form
+    call,                               // call a function
+}
 
 fun eval(form: LObject): LObject {
-    evalCounter += 1
-    abortEval = false
-    
-    val savedLevel: Int = evalLevel
-    val deferList = listOf({ evalLevel = savedLevel })
-    evalLevel += 1
-    if (evalLevel > maxEvalLevel) {
-        maxEvalLevel = evalLevel
-    }
-    
-    debug(debugEvalSym) {
-        markFrame(evalLevel, form)
-    }
-    debug(debugStepEval) {
-        stderr.print("enter\n")
-        stderr.print("${markFrame(evalLevel, form)}\n: ")
-        val line = readLine()
-        if (line == null) {
-            exitLyk()
-        }
-        null
-    }
-    try {
-        if (evalLevel > maxRecursionDepth) {
-            throw AbortEvalSignal("max recursion depth reached "
-                                  + "($maxRecursionDepth)")
-        }
-        if (abortEval) {
-            throw AbortEvalSignal("external signal")
-        }
+    var curFrame: EvalStackFrame? =
+        EvalStackFrame(form, null, null, null, null)
+    var retval: LObject = Nil
+    var next = Next.form
+    var toEval = form
 
-        var value: LObject
-        if (form is LSymbol) {
-            value = form.getValue()
-        } else if (form is LCons) {
-            var (func, args) = form
-            val function = evalFun(func)
-
-            if (function is LMacro) {
-                val newform = function.expand(args)
-                debug (debugMacroSym) {
-                    "eval expanded $form => $newform"
+    do {
+        if (curFrame == null) {
+            return retval
+        }
+        when (next) {
+            Next.form -> {
+                when (toEval) {
+                    is LSymbol -> {
+                        retval = form.getValue()
+                        curFrame = curFrame.prev
+                    }
+                    is LCons -> {
+                        curFrame = EvalStackFrame(
+                            form = toEval,
+                            function = evalFun(form.car),
+                            args2eval = form.cdr,
+                            args2pass = ListCollector(),
+                            prev = curFrame
+                        )
+                        while (curFrame.args2eval !== Nil) {
+                            val arg = curFrame.args2eval.car
+                            curFrame.args2eval = curFrame.args2eval.cdr
+                        }
+                        next = Next.args
+                    }
+                    else -> retval = toEval // all except symbol and list
                 }
-                return eval(newform)
+            }
+            Next.args -> {
+                if (curFrame.function.isSpecial) {
+                    curFrame.args2pass = curFrame.args2eval
+                    curFrame.args2eval = Nil
+                    next = call
+                }
+                
+            }
+            Next.call -> {
+                
             }
 
-            if (!function.isSpecial) {
-                args = evalArgs(args)
-            }
-            debug(debugCallSym) {
-                val indent = mulString("| ", evalLevel)
-                "${"%3d".format(evalLevel - 1)}: $indent$function $args"
-            }
-            value = function.call(args)
-            // debug(debugCallSym) {
-            //     val indent = mulString("| ", evalLevel)
-            //     "%3d: $indent$function $args => $value".format(
-            //         evalLevel - 1)
-        } else {
-            value = form
-        }
-        debug(debugEvalSym) {
-            markFrame(evalLevel, form, value)
-        }
-        debug(debugStepEval) {
-            stderr.print("return\n")
-            stderr.print(markFrame(evalLevel, form, value) + "\n: ")
-            val line = readLine()
-            if (line == null) {
-                exitLyk()
-            }
-            null
-        }
-        return value
-    } catch (err: LispError) {
-        err.pushFrame(evalLevel, form, currentEnv, lastTopLevelLocation)
-        throw err
-    } catch (sig: LykSignal) {
-        throw sig
-    } catch (e: ArithmeticException) {
-        throw LispError("integer divide by zero")
-    } catch (e: StringIndexOutOfBoundsException) {
-        throw IndexError("substring " + e.message)
-    } catch (exc: Exception) {
-        val err = makeLispError(exc)
-        err.pushFrame(evalLevel, form, currentEnv, lastTopLevelLocation)
-        throw err
-    } finally {
-        for (defer in deferList) {
-            defer()
-        }
-    }
+    } while (curFrame !== Nil)
+    return retval
 }
+
+
+// fun eval(form: LObject): LObject {
+//     evalCounter += 1
+//     abortEval = false
+    
+//     val savedLevel: Int = evalLevel
+//     val deferList = listOf({ evalLevel = savedLevel })
+//     evalLevel += 1
+//     if (evalLevel > maxEvalLevel) {
+//         maxEvalLevel = evalLevel
+//     }
+    
+//     debug(debugEvalSym) {
+//         markFrame(evalLevel, form)
+//     }
+//     debug(debugStepEval) {
+//         stderr.print("enter\n")
+//         stderr.print("${markFrame(evalLevel, form)}\n: ")
+//         val line = readLine()
+//         if (line == null) {
+//             exitLyk()
+//         }
+//         null
+//     }
+//     try {
+//         if (evalLevel > maxRecursionDepth) {
+//             throw AbortEvalSignal("max recursion depth reached "
+//                                   + "($maxRecursionDepth)")
+//         }
+//         if (abortEval) {
+//             throw AbortEvalSignal("external signal")
+//         }
+
+//         var value: LObject
+//         if (form is LSymbol) {
+//             value = form.getValue()
+//         } else if (form is LCons) {
+//             var (func, args) = form
+//             val function = evalFun(func)
+
+//             if (function is LMacro) {
+//                 val newform = function.expand(args)
+//                 debug (debugMacroSym) {
+//                     "eval expanded $form => $newform"
+//                 }
+//                 return eval(newform)
+//             }
+
+//             if (!function.isSpecial) {
+//                 args = evalArgs(args)
+//             }
+//             debug(debugCallSym) {
+//                 val indent = mulString("| ", evalLevel)
+//                 "${"%3d".format(evalLevel - 1)}: $indent$function $args"
+//             }
+//             value = function.call(args)
+//             // debug(debugCallSym) {
+//             //     val indent = mulString("| ", evalLevel)
+//             //     "%3d: $indent$function $args => $value".format(
+//             //         evalLevel - 1)
+//         } else {
+//             value = form
+//         }
+//         debug(debugEvalSym) {
+//             markFrame(evalLevel, form, value)
+//         }
+//         debug(debugStepEval) {
+//             stderr.print("return\n")
+//             stderr.print(markFrame(evalLevel, form, value) + "\n: ")
+//             val line = readLine()
+//             if (line == null) {
+//                 exitLyk()
+//             }
+//             null
+//         }
+//         return value
+//     } catch (err: LispError) {
+//         err.pushFrame(evalLevel, form, currentEnv, lastTopLevelLocation)
+//         throw err
+//     } catch (sig: LykSignal) {
+//         throw sig
+//     } catch (e: ArithmeticException) {
+//         throw LispError("integer divide by zero")
+//     } catch (e: StringIndexOutOfBoundsException) {
+//         throw IndexError("substring " + e.message)
+//     } catch (exc: Exception) {
+//         val err = makeLispError(exc)
+//         err.pushFrame(evalLevel, form, currentEnv, lastTopLevelLocation)
+//         throw err
+//     } finally {
+//         for (defer in deferList) {
+//             defer()
+//         }
+//     }
+// }
       
