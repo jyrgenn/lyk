@@ -2,6 +2,7 @@ SRCS = objects/cons.kt objects/object.kt objects/symbol.kt \
 	objects/environment.kt objects/number.kt objects/string.kt \
 	objects/table.kt objects/vector.kt objects/regexp.kt objects/char.kt \
 	io/reader.kt io/token.kt io/repl.kt io/stream.kt io/load.kt \
+	io/format.kt \
 	functions/function.kt functions/builtin.kt functions/lambda.kt \
 	functions/macro.kt \
 	builtins/helpers.kt builtins/numbers.kt builtins/cxr.kt \
