@@ -1,3 +1,27 @@
+;;; compatibility functions for CL and other Lisps that don't have %,
+;;; while, and/or println
+
+(unless (fboundp '%)
+  (setf (symbol-function '%) #'rem))
+
+(unless (fboundp 'while)
+  (defmacro while (cond &rest bodyforms)
+    `(loop while ,cond do ,@bodyforms)))
+
+(unless (fboundp 'println)
+  (defun println (&rest args)
+    (while args
+      (princ (car args))
+      (princ " ")
+      (setf args (cdr args)))
+    (terpri)))
+
+;;; That doesn't mean this code is fully CL compatible. While it works
+;;; fine with lyk, it works with SBCL only for the first time when
+;;; factors is called. All subsequence calls only yield a list with
+;;; the number itself as a result, even for the same number.
+
+;;;;
 
 (defvar *the-primes* '(2 3)
   "The ever-growing consecutive list of prime numbers.")
@@ -28,7 +52,7 @@
         (prime-gen (return-existing-primes-func))
         (still-good t))
     (while (and still-good
-                (setf divisor (prime-gen))
+                (setf divisor (funcall prime-gen))
                 (<= divisor limit))
       (when (zerop (% candidate divisor))
         (setf still-good nil)))
@@ -45,14 +69,6 @@
     (append-prime candidate)
     candidate))
 
-;; defun a prinln function in case we don't have one
-(when (not (fboundp 'println))
-  (defun println (&rest args)
-    (while args
-      (princ (car args))
-      (princ " ")
-      (setf args (cdr args)))
-    (terpri)))
 
 (defun next-prime-func ()
   "Return a function that, when called, returns all prime numbers, in order.
@@ -65,13 +81,14 @@ Well, in theory."
             (setf pos (cdr pos))))
       (expand-primes))))
 
+
 (defun factors (n)
   "Return a list of the prime factors of `n`."
   (let ((factors ())
         (limit (isqrt n))
         (next-p (next-prime-func)))
     (while (> n 1)
-      (let ((divisor (next-p)))
+      (let ((divisor (funcall next-p)))
         (when (> divisor limit)
           (setf divisor n))
         (when (zerop (% n divisor))
@@ -79,5 +96,4 @@ Well, in theory."
           (setf n (/ n divisor)))))
     (nreverse factors)))
 
-      
-        
+;;; EOF
