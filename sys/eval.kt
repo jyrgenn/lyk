@@ -29,8 +29,13 @@ fun evalProgn(forms: LObject): LObject {
 }
 
 
-// to allow for a variable with a function *value* (not function!) in the
-// function position, we recurse *once* at maximum
+// The thing in the function position of a form may be a symbol with a
+// function either in the function slot or as the bound value, a function
+// itself (but how does it get there??), or something that evaluates to a
+// function. (The latter would include the function bound as a value to the
+// symbol, but I'd rather special-case that as the -- I guess -- more common
+// case.) If it is neither, we don't have a function, and that is an error.
+//
 fun evalFun(obj: LObject): LFunction
 {
     debug(debugEvalFunSym) {
