@@ -9,7 +9,8 @@
          (tolerance 0.05)
          (deviation (abs (- duration time))))
     (flet ((printdev (dev comment)
-             (format nil "time %s, deviation: %.4f s" comment deviation)))
+             ;; TODO floating point format
+             (format nil "time ~A, deviation: %.4f s" comment deviation)))
       (cond ((< deviation (- tolerance))
              (printdev deviation "too short"))
             ((> deviation tolerance)
@@ -106,7 +107,7 @@
 
 (defun get-homedir (user)
   "Get home directory of USER; not for production use, calls a shell."
-  (chomp (get-program-output (format nil "echo ~%s" user))))
+  (chomp (get-program-output (format nil "echo ~~~A" user))))
 
 
 (defvar curdir (get-working-directory))
@@ -127,7 +128,7 @@
 (test-is "exp-f-n exp me" (expand-file-name "~/hullala/bala/bumbibum")
          (string (get-homedir "") "/hullala/bala/bumbibum"))
 (test-is "exp-f-n exp usr" (expand-file-name
-                            (format nil "~%s/bala/bumbibum" (user-name)))
+                            (format nil "~~~A/bala/bumbibum" (user-name)))
          (string (get-homedir (user-name)) "/bala/bumbibum"))
            
 (test-is "exp-f-n exp root" (expand-file-name "~root/hullala/bala/bumbibum")
@@ -209,8 +210,8 @@
 (test-is "normpath exp me" (namestring "~/hullala/bala/bumbibum")
          "~/hullala/bala/bumbibum")
 (test-is "normpath exp usr" (namestring
-                             (format nil "~%s/bala/bumbibum" (user-name)))
-         (format nil "~%s/bala/bumbibum" (user-name)))
+                             (format nil "~~~A/bala/bumbibum" (user-name)))
+         (format nil "~~~A/bala/bumbibum" (user-name)))
            
 (test-is "normpath exp root" (namestring "~root/hullala/bala/bumbibum")
          "~root/hullala/bala/bumbibum")

@@ -6,7 +6,7 @@
     (defparameter next-prime-base (car check))     ; must be global, sadly
     (let ((goal (cadr check)))
       ;; (println "next check:" check)
-      (test-is (format nil "next-prime %d" next-prime-base)
+      (test-is (format nil "next-prime ~A" next-prime-base)
                (next-prime next-prime-base)
                goal))))
 

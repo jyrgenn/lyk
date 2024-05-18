@@ -3,7 +3,8 @@
 (test-is "with-output-to-string"
          (with-output-to-string (s)
                                 (print "lalala" s)
-                                (format s "%08.3f\n" 13.4))
+                                ;; TODO floating point format
+                                (format s "TODO %08.3f\n" 13.4))
          "\nlalala 0013.400\n")
 (test-is "with-input-from-string"
          (with-input-from-string (s "13.4 a #/^.*$/ 129")

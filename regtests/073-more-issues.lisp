@@ -9,14 +9,14 @@
 (defun kw-only (&key alarm)
   "A function with only a keyword argument."
   (if alarm
-      (format nil "Alarm: %s!" alarm)
+      (format nil "Alarm: ~A!" alarm)
     (format nil "Ok")))
 
 (defun kw-plus (huhu &key remark)
   "A function with a normal and a keyword argument."
   (if remark
-      (format nil "huhu: %s, Remark: %s" huhu remark)
-    (format nil "huhu: %s, no remark" huhu)))
+      (format nil "huhu: ~A, Remark: ~A" huhu remark)
+    (format nil "huhu: ~A, no remark" huhu)))
 
 (test-is "kw-only function sans" (kw-only) "Ok")
 (test-is "kw-only function with" (kw-only :alarm "hey") "Alarm: hey!")

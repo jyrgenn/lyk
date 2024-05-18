@@ -119,7 +119,7 @@ the lines."
 (defmacro debug-vars (&rest vars)
   (let ((format-string "DBG"))
     (dolist (var vars)
-      (setf format-string (string format-string (format nil " %s: %%s;" var))))
+      (setf format-string (string format-string (format nil " ~A: ~~A;" var))))
     (setf format-string (string format-string "\n"))
     `(format t ,format-string ,@vars)))
 
@@ -137,7 +137,7 @@ the variable *object-types*."
         (let ((pred (intern (string type "p"))))
           (dolist (var vars)
             (push `(assert (,pred ,var)
-                           (format nil "declared %s as %s, but has %s value"
+                           (format nil "declared ~A as ~A, but has ~A value"
                                    ',var ',type (type-of ,var)))
                   assertions)))))
     (if (> (length assertions) 1)

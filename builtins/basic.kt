@@ -661,22 +661,25 @@ fun bi_symbol_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
 
 /// builtin error
 /// fun     bi_error
-/// std     message
+/// std     message-format
 /// key     
-/// opt     data
-/// rest    
+/// opt     
+/// rest    args
 /// ret     no-return
 /// special no
 /// doc {
 /// Raise error with the message `message` and optional additional data.
 /// The error exits all active calls immediately, except for errset.
+/// For an error message, the args will be formatted using `message-format`
+/// as a format string.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_error(args: LObject, kwArgs: Map<LSymbol, LObject>,
              suppp: Map<LSymbol, Boolean>): LObject {
-    val (message, data) = args2(args)
-    throw LispError(message.toString(), data)
+    val (message_format, arguments) = args
+    throw LispError(formatArgs(stderr, stringArg(message_format, " message"),
+                               arguments))
 }
 
 /// builtin catch

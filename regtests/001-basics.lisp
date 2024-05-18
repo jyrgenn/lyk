@@ -52,7 +52,7 @@
 (test-is "symbol-function" (progn (fset 'mal (symbol-function '*))
                                   (mal 1 2 3 4 5 6 7))
          5040)
-(test-err "error" (error "lala" (+ 3 4)) #/^Error: lala: 7$/)
+(test-err "error" (error "lala: ~A" (+ 3 4)) #/^Error: lala: 7$/)
 
 (test "integerp 1" (integerp 1))
 (test "integerp 2" (integerp 2))

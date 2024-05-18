@@ -315,13 +315,13 @@ fun bi_format(args: LObject, kwArgs: Map<LSymbol, LObject>,
 
     val stream = when (dest) {
         T -> stdout
-        Nil -> StringWriterStream()
+        Nil -> StringWriterStream()     // just a dummy
         is LStream -> dest
         else ->
             throw ArgumentError("format `dest` not nil or t or stream: $dest")
     }
     formatted = formatArgs(stream, format, f_args)
-    if (stream is StringWriterStream) {
+    if (dest === Nil) {
         return makeString(formatted)
     }
     stream.write(formatted)

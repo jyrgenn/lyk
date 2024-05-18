@@ -353,7 +353,6 @@ fun identity(item: Any): Any {
     return item
 }
 
-
 class LOStack(private var top: LObject = Nil) {
     var size = 0
     

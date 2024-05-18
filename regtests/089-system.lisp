@@ -15,7 +15,7 @@
 ;; the correctness of this *may* change some time; currently we are at 15
 ;; matches
 (test-is "apropos regexp" (let ((len (length (apropos #/^a/ t))))
-                            ;; (format *stderr* "len matches is %d\n" len)
+                            ;; (format *stderr* "len matches is ~A\n" len)
                             (and (> len 30)
                                  (< len 120)))
          t)
@@ -29,9 +29,9 @@
           #/AssertionFail: \(< a b\), Apfel < Birne/)
 (test-err "assertion fail 2" (assert (< a b))
           #/AssertionFail: \(< a b\)/)
-(test-err "assertion fail 3" (assert (< a b) (format nil "%s < %s" 'a 'b))
+(test-err "assertion fail 3" (assert (< a b) (format nil "~A < ~A" 'a 'b))
           #/AssertionFail: \(< a b\), a < b/)
-(test-err "assertion fail 4" (assert (< a b) (format nil "%s < %s" a b))
+(test-err "assertion fail 4" (assert (< a b) (format nil "~A < ~A" a b))
           #/AssertionFail: \(< a b\), 21 < 21/)
 
 (test-is "declare good" (declare (number a b)) nil)

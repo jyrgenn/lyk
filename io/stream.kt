@@ -86,8 +86,10 @@ class StringWriterStream(name: String? = null
 
     override fun write(s: String) {
         // stderr.println("added $s")
-        lastChar = s[s.length-1]
-        content.add(s)
+        if (s.length > 0) {
+            lastChar = s[s.length-1]
+            content.add(s)
+        }
     }
 
     fun value_and_reset(): String {
@@ -260,10 +262,12 @@ class FileIOStream(path: String,
     }
     override fun write(s: String) {
         try {
-            fileWriter.write(s)
-            lastChar = s[s.length-1]
-            if (flushch || (flushln && lastChar == '\n')) {
-                fileWriter.flush()
+            if (s.length > 0) {
+                fileWriter.write(s)
+                lastChar = s[s.length-1]
+                if (flushch || (flushln && lastChar == '\n')) {
+                    fileWriter.flush()
+                }
             }
         } catch (e: Exception) {
             throw IOError(e)
@@ -318,10 +322,12 @@ class FileWriterStream(path: String,
     }
     override fun write(s: String) {
         try {
-            fileWriter.write(s)
-            lastChar = s[s.length-1]
-            if (flushch || (flushln && lastChar == '\n')) {
-                fileWriter.flush()
+            if (s.length > 0) {
+                fileWriter.write(s)
+                lastChar = s[s.length-1]
+                if (flushch || (flushln && lastChar == '\n')) {
+                    fileWriter.flush()
+                }
             }
         } catch (e: Exception) {
             throw IOError(e)
