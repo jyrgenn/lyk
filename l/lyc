@@ -24,7 +24,7 @@
 (defvar *fstring-vars* "%10s: ~A~%")
 (defvar *fstring-stackframe* "~2A:  ~A~A~%")
 (defvar *fstring-error* "~%error: ~A~%")
-(defvar *fstring-error-nosymbol* "is not a function symbol~%")
+(defvar *fstring-error-nosymbol* "~A is not a function symbol~%")
 (defvar *fstring-too-few-args*
   "too few arguments on stack for ~A (needs ~A)~%")
 
@@ -114,7 +114,7 @@ Example:
 (defl lisp-functions () nil "print Lisp function symbols"
   (format t "~A~%" (join " " (function-symbols))))
 
-(defl lyc-release () nil "print lyk/lyc release identifier" (println Release))
+(defl lyc-version () nil "print lyk/lyc release identifier" (println Release))
 
 (defun lyc-pop ()
   "Remove the value on top of the stack and return it."
@@ -141,7 +141,7 @@ Example:
                     "has"
                   "no")
 		(get symbol 'lyc-help)))
-    (error symbol *fstring-error-nosymbol*)))
+    (error *fstring-error-nosymbol* symbol)))
   
 
 ;; plain old faculty function, iteratively in a loop
@@ -500,7 +500,7 @@ Helper for }, +}, and *}."
 		  (when (get sym 'lyc-resultsp)
 		    (lyc-push-result result))))
 	    (error *fstring-too-few-args* sym arity)))
-      (error sym *fstring-error-nosymbol*))))
+      (error *fstring-error-nosymbol* sym))))
 
 ;; return non-nil for a non-nil result
 (defun lyc-push-result (result)
