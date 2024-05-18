@@ -292,27 +292,39 @@ fun bi_stream(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// Format `args` according to `format-string` and write to `dest` (stream,
 /// t, or nil). Nil means return the result as a string, t means write to
 /// standard output.
-/// The format string is interpreted by the Kotlin library, meaning it is
-/// mostly like the format string in the related C functions.
+///
+/// The format string is modeled after Common Lisp's, but lacks many of its
+/// properties. Currently the following format directives are implemented:
+///   ~A : Aesthetic
+///   ~S : Standard
+///   ~C : Character
+///   ~% : Newline
+///   ~& : Fresh line
+///   ~| : Page separator
+///   ~~ : Tilde
+///   ~#\Newline : Ignored newline
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_format(args: LObject, kwArgs: Map<LSymbol, LObject>,
               suppp: Map<LSymbol, Boolean>): LObject {
     val (dest, rest) = args
-    val (f, f_args) = rest
-    val format = stringArg(f, " format-string")
+    val (fstring, f_args) = rest
+    val format = stringArg(fstring, " format-string")
     val formatted: String
 
-    formatted = format.format(*valueArray(f_args))
-    when (dest) {
-        T -> stdout.write(formatted)
-        Nil -> return makeString(formatted)
-        is LStream ->
-            dest.write(formatted)
+    val stream = when (dest) {
+        T -> stdout
+        Nil -> StringWriterStream()
+        is LStream -> dest
         else ->
             throw ArgumentError("format `dest` not nil or t or stream: $dest")
     }
+    formatted = formatArgs(stream, format, f_args)
+    if (stream is StringWriterStream) {
+        return makeString(formatted)
+    }
+    stream.write(formatted)
     return Nil
 }
 

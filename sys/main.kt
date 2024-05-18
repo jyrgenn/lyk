@@ -39,6 +39,7 @@ object Options {
         debugReadSymSym to false,
         debugStopSym to false,
         debugSetqSym to false,
+        debugFormatstringSym to false,
     )
     var print_estack = false
     var maxrecurse = 0

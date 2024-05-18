@@ -80,11 +80,13 @@ class StringWriterStream(name: String? = null
 
     override fun write(code: Int) {
         // stderr.println("added $code")
-        content.add(code.toChar())
+        lastChar = code.toChar()
+        content.add(lastChar!!.toString())
     }
 
     override fun write(s: String) {
         // stderr.println("added $s")
+        lastChar = s[s.length-1]
         content.add(s)
     }
 
@@ -248,6 +250,7 @@ class FileIOStream(path: String,
     override fun write(code: Int) {
         try {
             fileWriter.write(code)
+            lastChar = code.toChar()
             if (flushch || (flushln && code == newLine)) {
                 fileWriter.flush()
             }
@@ -258,7 +261,8 @@ class FileIOStream(path: String,
     override fun write(s: String) {
         try {
             fileWriter.write(s)
-            if (flushch) {
+            lastChar = s[s.length-1]
+            if (flushch || (flushln && lastChar == '\n')) {
                 fileWriter.flush()
             }
         } catch (e: Exception) {
@@ -304,6 +308,7 @@ class FileWriterStream(path: String,
     override fun write(code: Int) {
         try {
             fileWriter.write(code)
+            lastChar = code.toChar()
             if (flushch || (flushln && code == newLine)) {
                 fileWriter.flush()
             }
@@ -314,7 +319,8 @@ class FileWriterStream(path: String,
     override fun write(s: String) {
         try {
             fileWriter.write(s)
-            if (flushch) {
+            lastChar = s[s.length-1]
+            if (flushch || (flushln && lastChar == '\n')) {
                 fileWriter.flush()
             }
         } catch (e: Exception) {
@@ -352,6 +358,7 @@ abstract class LStream(
 {
     var charUnread: Char? = null
     var is_open = true
+    var lastChar: Char? = null
     
     init {
         openStreams.add(WeakReference(this))
@@ -361,6 +368,11 @@ abstract class LStream(
     abstract fun read_location(): String
 
     open fun setPrompt(newPrompt: String) {}
+
+    // return true if the last character written was a newline
+    fun newlineLast(): Boolean {
+        return lastChar != null && lastChar == '\n'
+    }
     
     open fun read(): Char? {          // the actual reading
         throw ArgumentError("read on $this")

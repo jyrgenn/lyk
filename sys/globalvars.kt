@@ -90,6 +90,7 @@ val debugReadCharSym = intern("readchar")
 val debugStartupSym = intern("startup")
 val debugReplSym = intern("repl")
 val debugSetqSym = intern("setq")
+val debugFormatstringSym = intern("formatstring")
 
 val debugOffSym = intern("=off")
 val debugListSym = intern("=list")

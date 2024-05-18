@@ -12,7 +12,7 @@ class LChar(val the_char: Char): LObject() {
     companion object {
         val charTable = WeakHashMap(mutableMapOf<Char, LChar>())
 
-        val charName = mapOf(
+        val charName: Map<Char, String> = mapOf(
             ' '      to "Space",
             '\n'     to "Newline",
             '\t'     to "Tab",
@@ -21,7 +21,8 @@ class LChar(val the_char: Char): LObject() {
             '\r'     to "Return",
             '\u0008' to "Backspace",
             '\u0007' to "Bell",
-        )            
+        )
+        fun getCharName(ch: Char) = charName[ch]
         val nameChar = mapOf(
             "space"     to ' ',
             "newline"   to '\n',

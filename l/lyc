@@ -13,20 +13,20 @@
 (defvar *lyc-history-file* (string (getenv "HOME") "/.lyc-history"))
 
 ;; format strings for lyk
-(defvar *fstring-prompt* "[%d]; ") ;input prompt with stack size argument
-(defvar *fstring-stack-format* "%s -> %s: %s")
-(defvar *fstring-describe* "%s: %s arg%s, %s result\n  %s\n")
-(defvar *fstring-functions* "%s\n")
-(defvar *fstring-describe-functions* "%s: %s")
-(defvar *fstring-simple* "%s")
-(defvar *fstring-simple-nl* "%s\n")
-(defvar *fstring-repl* "\n> ")
-(defvar *fstring-vars* "%10s: %s\n")
-(defvar *fstring-stackframe* "%2d:  %s%s\n")
-(defvar *fstring-error* "\nerror: %s\n")
-(defvar *fstring-error-nosymbol* "is not a function symbol\n")
+(defvar *fstring-prompt* "[~A]; ") ;input prompt with stack size argument
+(defvar *fstring-stack-format* "~A -> ~A: ~A")
+(defvar *fstring-describe* "~A: ~A arg~A, ~A result~%  ~A~%")
+(defvar *fstring-functions* "~A~%")
+(defvar *fstring-describe-functions* "~A: ~A")
+(defvar *fstring-simple* "~A")
+(defvar *fstring-simple-nl* "~A~%")
+(defvar *fstring-repl* "~%> ")
+(defvar *fstring-vars* "%10s: ~A~%")
+(defvar *fstring-stackframe* "~2A:  ~A~A~%")
+(defvar *fstring-error* "~%error: ~A~%")
+(defvar *fstring-error-nosymbol* "is not a function symbol~%")
 (defvar *fstring-too-few-args*
-  "too few arguments on stack for %s (needs %d)\n")
+  "too few arguments on stack for ~A (needs ~A)~%")
 
 (defmacro handle-error (evalform handlerform)
   "Eval EVALFORM; on error, bind `error-condition' and eval HANDLERFORM."
@@ -39,7 +39,7 @@
   `(make-string ,len " "))
 (defmacro print-prompt ())
 (defmacro ldebug (msg obj)
-  `(format t "DBG %s: %s\n" ,msg ,obj))
+  `(format t "DBG ~A: ~A~%" ,msg ,obj))
 (defparameter *tty*
   (open-interactive-stream (lambda ()
                              (format nil *fstring-prompt*
@@ -112,7 +112,7 @@ Example:
 "))
 
 (defl lisp-functions () nil "print Lisp function symbols"
-  (format t "%s\n" (join " " (function-symbols))))
+  (format t "~A~%" (join " " (function-symbols))))
 
 (defl lyc-release () nil "print lyk/lyc release identifier" (println Release))
 
@@ -165,7 +165,7 @@ Example:
 ;; define lots of unary Lisp functions in one go
 (mapcar (lambda (sym)
           (deflyc sym 1 t (symbol-function sym)
-            (format nil "x -> y; as the corresponding Lisp function `%s':\n%s"
+            (format nil "x -> y; as the corresponding Lisp function `~A':~%~A"
                     sym (function-docstring (symbol-function sym)))))
 	'(float 1+ 1- fac sin cos tan abs asin acos atan sinh cosh tanh
 	  asinh acosh atanh random exp sqrt isqrt log signum floor ceiling
@@ -206,7 +206,7 @@ Example:
 
 (defun to-time (minutes)
   "Convert minutes to a timesym of the form hh:mm."
-  (intern (format nil "%02d:%02d"
+  (intern (format nil "~2,,,'0@A:~2,,,'0@A"
 		  (truncate (/ minutes 60))
                   (% minutes 60))))
 
@@ -388,7 +388,7 @@ Example:
   (dolist (f (sort *lyc-functions* #'string<))
     (let* ((doc (get f 'lyc-help)))
       (if (regexp-match search doc)
-          (format t (string *fstring-describe-functions* "\n") f doc)))))
+          (format t (string *fstring-describe-functions* "~%") f doc)))))
   
 
 (defl ? () nil "print some help" (lyc-help))
@@ -442,7 +442,7 @@ Helper for }, +}, and *}."
   (let* ((m (car *lyc-stack*))
          (sign (if (< m 0) "-" ""))
          (m-abs (abs m)))
-    (format t "%s%s:%02d\n" sign (div m-abs 60) (mod m-abs 60))
+    (format t "~A~A:~2,,,'0@A~%" sign (div m-abs 60) (mod m-abs 60))
     nil))
 
 (defl minutes (hh:mm) mm
