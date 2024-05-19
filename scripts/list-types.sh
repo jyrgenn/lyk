@@ -6,7 +6,7 @@ echo "
 
 (defvar *object-types*
   '("
-sed -n 's/.*override val type = "\(.*\)".*/    \1/p' */*.kt | sort
+sed -n 's/.*override val obtype = "\(.*\)".*/    \1/p' */*.kt | sort
 cat <<'EOT'
    )
   "List of types known to the system.

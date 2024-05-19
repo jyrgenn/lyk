@@ -7,7 +7,7 @@ import java.util.WeakHashMap
 
 class LChar(val the_char: Char): LObject() {
 
-    override val type = "char"
+    override val obtype = "char"
 
     companion object {
         val charTable = WeakHashMap(mutableMapOf<Char, LChar>())

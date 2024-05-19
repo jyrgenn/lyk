@@ -18,10 +18,10 @@ class AbortEvalSignal(reason: String): LykSignal(reason) {
 }
 
 class ThrowSignal(val tag: LObject, val value: LObject):
-    LykSignal("uncaught, tag $tag value ${value.type} $value")
+    LykSignal("uncaught, tag $tag value ${value.obtype} $value")
 
 class ReturnSignal(val value: LObject):
-    LykSignal("outside of function! returns ${value.type} $value")
+    LykSignal("outside of function! returns ${value.obtype} $value")
 
 // real Lisp Errors below
 
@@ -29,9 +29,9 @@ class ErrorObject(val error: LispError): LObject() {
     override fun toString() = error.toString()
 
     override fun desc(seen: Set<Int>?) =
-        "#<${this.type}: ${error.toString()}>"
+        "#<${this.obtype}: ${error.toString()}>"
 
-    override val type = "error-object"
+    override val obtype = "error-object"
 }
 
 open class LispError(message: String, val data: LObject = Nil
@@ -65,7 +65,7 @@ open class LispError(message: String, val data: LObject = Nil
 
 class FormatError(message: String): LispError(message) {
     constructor(message: String, directive: FormatDirective):
-        this("$message ${directive.type} directive `${directive.directive}` "
+        this("$message ${directive.fd_type} directive `${directive.directive}` "
              + "in format string `${directive.formatString}`")
     constructor(message: String, fstring: String):
         this("$message in format string `$fstring`")
@@ -80,7 +80,7 @@ class NotImplementedError(what: String):
 
 class IndexError(message: String): LispError(message) {
     constructor(what: LObject, index: Int):
-        this("invalid index $index for ${what.type} $what")
+        this("invalid index $index for ${what.obtype} $what")
 }
 
 class WarningError(message: String): LispError(message)
@@ -163,7 +163,7 @@ fun indef_a(noun: String): String {
 class TypeError(message: String, lh: LocationHolder?): ValueError(message, lh) {
     constructor(message: String) : this(message, null)
     constructor(obj: LObject, whatnot: String, where: String): 
-        this("$where not ${indef_a(whatnot)} $whatnot: ${obj.type} $obj")
+        this("$where not ${indef_a(whatnot)} $whatnot: ${obj.obtype} $obj")
 }
 
 class FileError(filename: String, message: String):

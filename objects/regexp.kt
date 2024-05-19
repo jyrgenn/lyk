@@ -14,7 +14,7 @@ class LRegexp(pattern: String): LObject() {
         }
     }
 
-    override val type = "regexp"
+    override val obtype = "regexp"
 
     override fun desc(seen: Set<Int>?) =
         "#/${the_regexp.pattern.replace("/", "\\/")}/"

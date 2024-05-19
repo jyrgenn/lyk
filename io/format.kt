@@ -351,7 +351,7 @@ fun makeDirective(fstring: String,      // the format string with the dir.
 abstract class FormatDirective(val formatString: String,
                                val directive: String)
 {
-    abstract val type: String
+    abstract val fd_type: String
     
     // return the number of arguments needed for this directive
     abstract fun argsNeeded(): Int
@@ -360,7 +360,7 @@ abstract class FormatDirective(val formatString: String,
     // String; output may depend on the stream
     abstract fun format(stream: LStream, args: MutableList<LObject>): String
 
-    override fun toString() = "#<$type format \"$directive\">"
+    override fun toString() = "#<$fd_type format \"$directive\">"
 }
 
 open class RadixDirective(formatString: String,
@@ -369,7 +369,7 @@ open class RadixDirective(formatString: String,
                           val colonFlag: Boolean,
                           val atsignFlag: Boolean,
 ): FormatDirective(formatString, directive) {
-    override val type = "radix"
+    override val fd_type = "radix"
     var radix: Int? = 10
     var mincol: Int? = 0
     var padchar: Char? = ' '
@@ -487,7 +487,7 @@ open class AestheticDirective(formatString: String,
                               val colonFlag: Boolean,
                               val atsignFlag: Boolean,
 ): FormatDirective(formatString, directive) {
-    override val type = "aesthetic"
+    override val fd_type = "aesthetic"
     var mincol: Int? = 0
     var colinc: Int? = 1
     var minpad: Int? = 0
@@ -580,7 +580,7 @@ class CharDirective(formatString: String,
                     val colonFlag: Boolean,
                     val atsignFlag: Boolean
 ): FormatDirective(formatString, directive) {
-    override val type = "char"
+    override val fd_type = "char"
     
     override fun argsNeeded() = 1
 
@@ -612,7 +612,7 @@ class NewlineDirective(formatString: String,
                        val colonFlag: Boolean,
                        val atsignFlag: Boolean,
 ): FormatDirective(formatString, directive) {
-    override val type = "ig.newline"
+    override val fd_type = "ig.newline"
     override fun argsNeeded() = 0
     override fun format(stream: LStream, args: MutableList<LObject>) =
         if (atsignFlag) "\n" else ""
@@ -626,7 +626,7 @@ class PercentDirective(formatString: String,
                        val colonFlag: Boolean,
                        val atsignFlag: Boolean,
 ): FormatDirective(formatString, directive) {
-    override val type = "newline"
+    override val fd_type = "newline"
     var count: Int? = 1
     var needArgs = 0
 
@@ -652,7 +652,7 @@ class AmpDirective(formatString: String,
                    val colonFlag: Boolean,
                    val atsignFlag: Boolean,
 ): FormatDirective(formatString, directive) {
-    override val type = "freshline"
+    override val fd_type = "freshline"
     init {
         if (params.size > 0) {
             throw FormatError("too many parameters in", this)
@@ -675,7 +675,7 @@ class PageDirective(formatString: String,
                     val colonFlag: Boolean,
                     val atsignFlag: Boolean,
 ): FormatDirective(formatString, directive) {
-    override val type = "page"
+    override val fd_type = "page"
     var count: Int? = 1
     var needArgs = 0
 
@@ -704,7 +704,7 @@ class TildeDirective(formatString: String,
                        val colonFlag: Boolean,
                        val atsignFlag: Boolean,
 ): FormatDirective(formatString, directive) {
-    override val type = "tilde"
+    override val fd_type = "tilde"
     var count: Int? = 1
     var needArgs = 0
 
@@ -730,7 +730,7 @@ class TildeDirective(formatString: String,
 class TextDirective(formatString: String,
                     directive: String,
 ): FormatDirective(formatString, directive) {
-    override val type = "text"
+    override val fd_type = "text"
     init {
         debug(debugFormatstringSym) {
             "TextDirective(`$formatString`, `$directive`)"

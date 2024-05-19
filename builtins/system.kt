@@ -33,7 +33,7 @@ fun bi_set_debug(args: LObject, kwArgs: Map<LSymbol, LObject>,
     val lc = ListCollector()
     for (arg in args) {
         debug(debugDebugSym) {
-            "debug sym is $arg, ${arg.type}"
+            "debug sym is $arg, ${arg.obtype}"
         }
         when (arg) {
             debugOffSym -> {
@@ -368,7 +368,7 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>,
         map.put(intern(name), makeNumber(value))
     }
     
-    entry("type", obj.type, true)
+    entry("type", obj.obtype, true)
     when (obj) {
         is LSymbol -> {
             entry("name", obj.name, false)
@@ -905,7 +905,7 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
                                          command_s)
                     else ->
                         throw ArgumentError("&key in-shell is not t or nil or "
-                                            + "a string: ${key_in_shell.type}"
+                                            + "a string: ${key_in_shell.obtype}"
                                             + " $key_in_shell")
                 }
             }
@@ -940,7 +940,7 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
             pb.redirectInput(ProcessBuilder.Redirect.from(File(devNullPath)))
         else ->
             throw ArgumentError("&key input is not a stream or string or t or "
-                                + " nil: ${key_input.type} $key_input")
+                                + " nil: ${key_input.obtype} $key_input")
     }
     val key_output = kwArgs[outputKSym] ?: Nil
     when (key_output) {
@@ -952,7 +952,7 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
             pb.redirectOutput(ProcessBuilder.Redirect.to(File(devNullPath)))
         else ->
             throw ArgumentError("&key output is not a stream or t or nil:"
-                                +" ${key_output.type} $key_output")
+                                +" ${key_output.obtype} $key_output")
     }
     val key_error_output = kwArgs[errorOutputKSym] ?: Nil
     when (key_error_output) {
@@ -965,7 +965,8 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
         }
         else ->
             throw ArgumentError("&key error-stream is not a stream or t or nil:"
-                                +" ${key_error_output.type} $key_error_output")
+                                +" ${key_error_output.obtype} "
+                                + "$key_error_output")
     }
     // TODO prepare process environment
 
@@ -1003,7 +1004,7 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
                     is LStream -> key_input
                     else -> throw InternalError(
                                 "unpossible! key_input = key_input "
-                                + "(${key_input.type})")
+                                + "(${key_input.obtype})")
                 }
             val writer = proc.getOutputStream().bufferedWriter()
             while (true) {

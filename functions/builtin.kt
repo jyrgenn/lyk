@@ -34,7 +34,7 @@ class LBuiltin(
        makeString(docBodyS.trim()),
        makeString(location),
    ) {
-    override val type = "builtin"
+    override val obtype = "builtin"
 
     override val typeDesc =
         if (isSpecial) "special form" else "builtin function"

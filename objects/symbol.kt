@@ -23,7 +23,7 @@ class LSymbol(val name: String, val immutable: Boolean,
     val descName = makeDescName()
     var function: LFunction? = null
 
-    override val type = "symbol"
+    override val obtype = "symbol"
 
     companion object {
         fun interned(name: String,

@@ -17,7 +17,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
         id = objectCounter
     }
 
-    abstract val type: String
+    abstract val obtype: String
 
     open fun bool() = true
 
@@ -27,7 +27,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
 
     open val length: Int
         get () {
-            throw ValueError("${this.type} $this has no length")
+            throw ValueError("${this.obtype} $this has no length")
         }
 
     open fun isKeyword() = false
@@ -51,7 +51,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
 
         val padsize = width - s.length
         debug(debugFormatSym) {
-            ("$this[${this.type}].format(fmtr = '$fmtr', flags = $flags,"
+            ("$this[${this.obtype}].format(fmtr = '$fmtr', flags = $flags,"
              + " width = $width, prec = $prec)")
         }
         if (padsize > 0) {
@@ -71,7 +71,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     }
 
     // Print as much information about the object as can be helpful debugging.
-    open fun dump() = "#<${this.type}[$id]>"
+    open fun dump() = "#<${this.obtype}[$id]>"
 
     // The output of this shall, if at all possible, be sufficent to
     // be read by the reader to re-create the object.
@@ -104,8 +104,8 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
     }
 
     fun compareError(other: LObject): Throwable {
-        return TypeError("cannot compare ${this.type} `$this`"
-                         +" to ${other.type} `$other`")
+        return TypeError("cannot compare ${this.obtype} `$this`"
+                         +" to ${other.obtype} `$other`")
     }
 
     override fun iterator(): Iterator<LObject>

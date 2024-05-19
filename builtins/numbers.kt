@@ -789,7 +789,7 @@ fun bi_evenp(args: LObject, kwArgs: Map<LSymbol, LObject>,
         }
         return Nil
     }
-    throw ArgumentError("evenp argument is not a number: $arg (${arg.type})")
+    throw ArgumentError("evenp argument is not a number: $arg (${arg.obtype})")
 }
 
 /// builtin oddp
@@ -815,7 +815,7 @@ fun bi_oddp(args: LObject, kwArgs: Map<LSymbol, LObject>,
         }
         return Nil
     }
-    throw ArgumentError("oddp argument is not a number: $arg (${arg.type})")
+    throw ArgumentError("oddp argument is not a number: $arg (${arg.obtype})")
 }
 
 /// builtin conjugate

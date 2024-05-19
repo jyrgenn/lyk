@@ -97,7 +97,7 @@ fun pathname_from(pathspec: LObject): String {
         }
         is LString -> return pathspec.the_string
         else -> throw TypeError("pathspec is not a stream or a pathname:"
-                                + " ${pathspec.type} ${pathspec.desc(null)}")
+                                + " ${pathspec.obtype} ${pathspec.desc(null)}")
     }
 }
 

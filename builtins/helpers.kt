@@ -58,7 +58,7 @@ fun envArg(arg: LObject, desc: String = ""): LEnv {
 
 fun numberArg(arg: LObject, desc: String = ""): Double {
     return (arg as? LNumber)?.the_number ?:
-        throw ArgumentError("$calledFunctionName$desc argument is not a number: $arg (${arg.type})")
+        throw ArgumentError("$calledFunctionName$desc argument is not a number: $arg (${arg.obtype})")
 }
 
 fun intArg(arg: LObject, desc: String = "") = numberArg(arg, desc).toInt()

@@ -11,7 +11,7 @@ class LString(val the_string: String): LObject(), LSeq {
     //     stringTable[the_string] = nil
     // }
 
-    override val type = "string"
+    override val obtype = "string"
 
     companion object {
         // val stringTable = mutableMapOf<String, LString>()

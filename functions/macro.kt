@@ -15,7 +15,7 @@ class LMacro(
 ): LFunction(macroName, stdPars, keyPars, optPars, restPar, null, true,
              docBody, location)
 {
-    override val type = "macro"
+    override val obtype = "macro"
 
     override val typeDesc = "macro"
     

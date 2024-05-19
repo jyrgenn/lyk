@@ -33,7 +33,7 @@ class ConsoleReaderStream(var prompt: LObject = Nil
         cr.setExpandEvents(false)
     }
 
-    override val type = "console-reader-stream"
+    override val obtype = "console-reader-stream"
 
     override fun read_location() = "$name:$linenum"
 
@@ -74,7 +74,7 @@ class StringWriterStream(name: String? = null
 ): LStream(output = true, name = name) {
     var content = StrBuf()
     
-    override val type = "string-writer-stream"
+    override val obtype = "string-writer-stream"
 
     override fun read_location() = ""
 
@@ -109,7 +109,7 @@ class StringWriterStream(name: String? = null
         val i = if (input) "I" else ""
         val o = if (output) "O" else ""
         val e = if (error) "E" else ""
-        return "#<${this.type}[$i$o$e$x:${content.size}]$name>"
+        return "#<${this.obtype}[$i$o$e$x:${content.size}]$name>"
     }    
 
     override fun close_specific() {}
@@ -126,7 +126,7 @@ class StringReaderStream(val content: String, name: String? = "",
     // var linenum = lineno
     var linebegin = true
 
-    override val type = "string-reader-stream"
+    override val obtype = "string-reader-stream"
 
     override fun read_location() = "$current_name:$lineno"
 
@@ -167,7 +167,7 @@ class StringReaderStream(val content: String, name: String? = "",
         val e = if (error) "E" else ""
         val cl = content.length
         val rem = cl - nextpos
-        return "#<${this.type}[$i$o$e$x:$rem/$cl]$name>"
+        return "#<${this.obtype}[$i$o$e$x:$rem/$cl]$name>"
     }    override fun close_specific() {}
 }
 
@@ -184,7 +184,7 @@ class FileReaderStream(file: File, name: String? = null,
     var linebuf = StringReaderStream("", name = name)
     var linenum = 0
 
-    override val type = "file-reader-stream"
+    override val obtype = "file-reader-stream"
 
     override fun read_location() = linebuf.read_location()
 
@@ -230,7 +230,7 @@ class FileIOStream(path: String,
     val fileReader = file.bufferedReader()
     var linebuf = StringReaderStream("", name = name)
 
-    override val type = "file-io-stream"
+    override val obtype = "file-io-stream"
 
     override fun read_location() = linebuf.read_location()
 
@@ -305,7 +305,7 @@ class FileWriterStream(path: String,
 {
     val fileWriter = File(path).bufferedWriter()
 
-    override val type = "file-writer-stream"
+    override val obtype = "file-writer-stream"
 
     override fun read_location() = ""
 
@@ -468,7 +468,7 @@ abstract class LStream(
         val i = if (input) "I" else ""
         val o = if (output) "O" else ""
         val e = if (error) "E" else ""
-        return "#<${this.type}[$i$o$e$x]$name>"
+        return "#<${this.obtype}[$i$o$e$x]$name>"
     }
     override fun desc(seen: Set<Int>?) = toString()
 

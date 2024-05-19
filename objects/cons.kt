@@ -15,7 +15,7 @@ class LCons(override var car: LObject,
         consCounter++
     }
 
-    override val type = "cons"
+    override val obtype = "cons"
 
     override fun toString() = desc(null)
 

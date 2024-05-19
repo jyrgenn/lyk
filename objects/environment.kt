@@ -9,7 +9,7 @@ class LEnv(val parent: LEnv? = null): LObject() {
     val levelstring = if (level > 0) "$level" else "root"
     val the_env: MutableMap<LSymbol, LObject> = mutableMapOf()
 
-    override val type = "environment"
+    override val obtype = "environment"
 
     // must only be called by symbol.bind
     fun bind(symbol: LSymbol, value: LObject) {
@@ -63,7 +63,7 @@ class LEnv(val parent: LEnv? = null): LObject() {
         return false
     }
 
-    val descFormat = "#<${this.type}$id[$levelstring:%d]%s>"
+    val descFormat = "#<${this.obtype}$id[$levelstring:%d]%s>"
 
     override fun toString() = desc(null) //descFormat.format(the_env.size, "")
 

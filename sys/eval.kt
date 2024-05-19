@@ -50,7 +50,7 @@ fun evalFun(obj: LObject): LFunction
         if (value is LFunction) {
             return value
         }
-        throw FunctionError("${obj.type} `$obj` not bound to function")
+        throw FunctionError("${obj.obtype} `$obj` not bound to function")
     }
     if (obj is LFunction) {
         return obj
@@ -59,7 +59,7 @@ fun evalFun(obj: LObject): LFunction
     if (last_hope is LFunction) {
         return last_hope
     }
-    throw FunctionError("${obj.type} `$obj` is not a function")
+    throw FunctionError("${obj.obtype} `$obj` is not a function")
 }
 
 

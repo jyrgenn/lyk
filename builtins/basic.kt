@@ -243,7 +243,7 @@ fun destructuringBind(name: String, vars: LObject, values: LObject,
         if (!lfvalues.hasNext() && lfvalues.rest != Nil) {
             val value = lfvalues.rest
             throw ValueError("value structure error, not a pair: "
-                             + "${value.type} $value")
+                             + "${value.obtype} $value")
         }
         val curvalue = lfvalues.next()
         when (curvar) {
@@ -1198,7 +1198,7 @@ fun bi_length(args: LObject, kwArgs: Map<LSymbol, LObject>,
 @Suppress("UNUSED_PARAMETER")
 fun bi_typeof(args: LObject, kwArgs: Map<LSymbol, LObject>,
               suppp: Map<LSymbol, Boolean>): LObject {
-    return intern(arg1(args).type)
+    return intern(arg1(args).obtype)
 }
 
 /// builtin loop

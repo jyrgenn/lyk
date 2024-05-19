@@ -16,7 +16,7 @@ open class Lambda(                         // Macro will inherit this
 ): LFunction(functionName, stdPars, keyPars, optPars, restPar,
              intern("value"), false, docBody, location)
 {
-    override val type = "lambda"
+    override val obtype = "lambda"
 
     override val typeDesc = "lambda function"
     

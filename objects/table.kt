@@ -5,7 +5,7 @@ class LTable(): LObject() {
     // key: value pairs, backed by a dictionary [LObject: LObject]
     val the_table = mutableMapOf<LObject, LObject>()
     
-    override val type = "table"
+    override val obtype = "table"
 
     constructor(elems: LObject): this() {
         if (!elems.isList()) {
