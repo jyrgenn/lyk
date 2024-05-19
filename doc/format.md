@@ -118,7 +118,7 @@ Miscellaneous Operations
 Miscellaneous Pseudo-Operations
 -------------------------------
 
-[;] Tilde ;: Clause Separator
+[-] Tilde ;: Clause Separator
 
 [-] Tilde ^: Escape Upward
 

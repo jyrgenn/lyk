@@ -213,6 +213,7 @@ val dirClassType = mapOf(
     '&' to ::AmpDirective,
     '|' to ::PageDirective,
     '~' to ::TildeDirective,
+    '\n' to ::NewlineDirective,
 )
     
 

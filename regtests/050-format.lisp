@@ -133,5 +133,13 @@
                                       "heididei")
          "dudidu |\"heididei\".............| dadada")
 
+(test-is "format ign.newline"
+         (format nil "dudidu ~
+                      ~13,,,'_S ~:
+                      shoobeedoobeedooah ,~@
+                      ," 'schlumbada)
+         "dudidu schlumbada___                       shoobeedoobeedooah ,\n,")
+
+
 
 (done-testing)
