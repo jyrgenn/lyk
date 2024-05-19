@@ -63,7 +63,7 @@ generated/init-builtins.kt: Makefile generated scripts/generate-builtin-init \
 	    ln -s ../scripts/Subdirmakefile generated/Makefile
 	scripts/generate-builtin-init $(BUILTINSRC) > generated/init-builtins.kt
 
-tags: $(PRELOAD) $(ALLSRCS)
+tags: generated $(PRELOAD) $(ALLSRCS)
 	etags \
 	      -r "/^[ \t]*fun[ \t]+\([A-Za-z0-9_]+\)/\1/"      \
 	      -r "/^\(var\|val\)[ \t]+\([A-Za-z0-9_]+\)/\2/"   \

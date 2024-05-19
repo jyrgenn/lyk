@@ -678,8 +678,9 @@ fun bi_symbol_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
 fun bi_error(args: LObject, kwArgs: Map<LSymbol, LObject>,
              suppp: Map<LSymbol, Boolean>): LObject {
     val (message_format, arguments) = args
-    throw LispError(formatArgs(stderr, stringArg(message_format, " message"),
-                               arguments))
+    val stream = StringWriterStream()
+    formatArgs(stream, stringArg(message_format, " message"), arguments)
+    throw LispError(stream.value_and_reset())
 }
 
 /// builtin catch

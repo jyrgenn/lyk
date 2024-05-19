@@ -10,14 +10,13 @@ package org.w21.lyk
 val formatMapping = mutableMapOf<String, List<FormatDirective>>()
 
 // format args according to the format string
-fun formatArgs(stream: LStream, fstring: String, args: LObject): String {
+fun formatArgs(stream: LStream, fstring: String, args: LObject) {
     if (!formatMapping.containsKey(fstring)) {
         formatMapping[fstring] = parseFormatString(fstring)
     }
     debug(debugFormatstringSym) {
         "fdirs ${formatMapping[fstring]}, args $args"
     }
-    val sb = StrBuf()
     var argptr = args
     for (directive in (formatMapping[fstring] ?:
                            throw InternalError("`$fstring` not in "
@@ -32,9 +31,8 @@ fun formatArgs(stream: LStream, fstring: String, args: LObject): String {
             d_args.add(argptr.car)
             argptr = argptr.cdr
         }
-        sb.add(directive.format(stream, d_args))
+        stream.write(directive.format(stream, d_args))
     }
-    return sb.toString()
 }
 
 enum class Await {
@@ -380,7 +378,6 @@ class CharDirective(formatString: String,
                     val colonFlag: Boolean,
                     val atsignFlag: Boolean
 ): FormatDirective(formatString, directive) {
-
     override val type = "char"
     
     override fun argsNeeded() = 1
@@ -427,6 +424,7 @@ class PercentDirective(formatString: String,
                        val colonFlag: Boolean,
                        val atsignFlag: Boolean,
 ): FormatDirective(formatString, directive) {
+    override val type = "newline"
     val count: Int?
 
     init {
@@ -444,7 +442,6 @@ class PercentDirective(formatString: String,
         }
     }
 
-    override val type = "newline"
     override fun argsNeeded() = if (count == null) 1 else 0
     override fun format(stream: LStream, args: MutableList<LObject>) =
         mulString("\n", count ?: intArg(args[0], " directive " + directive))
@@ -456,18 +453,18 @@ class AmpDirective(formatString: String,
                    val colonFlag: Boolean,
                    val atsignFlag: Boolean,
 ): FormatDirective(formatString, directive) {
+    override val type = "freshline"
     init {
         if (params.size > 0) {
             throw FormatError("too many parameters in", this)
         }
     }
-    override val type = "freshline"
     override fun argsNeeded() = 0
     override fun format(stream: LStream, args: MutableList<LObject>): String {
         if (stream.newlineLast()) {
-            return "\n"
+            return ""
         }
-        return ""
+        return "\n"
     }
 }
 
@@ -479,6 +476,7 @@ class PageDirective(formatString: String,
                     val colonFlag: Boolean,
                     val atsignFlag: Boolean,
 ): FormatDirective(formatString, directive) {
+    override val type = "page"
     val count: Int?
 
     init {
@@ -496,7 +494,6 @@ class PageDirective(formatString: String,
         }
     }
 
-    override val type = "page"
     override fun argsNeeded() = if (count == null) 1 else 0
     override fun format(stream: LStream, args: MutableList<LObject>)
         = mulString("\u000c",
@@ -538,12 +535,12 @@ class TildeDirective(formatString: String,
 class TextDirective(formatString: String,
                     directive: String,
 ): FormatDirective(formatString, directive) {
+    override val type = "text"
     init {
         debug(debugFormatstringSym) {
             "TextDirective(`$formatString`, `$directive`)"
         }
     }
-    override val type = "text"
     override fun argsNeeded() = 0
     override fun format(stream: LStream, args: MutableList<LObject>)
         = directive
