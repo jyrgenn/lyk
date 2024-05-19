@@ -67,6 +67,71 @@
 (test-is "format 5~" (format nil "dudidu ~3@c ~5~/dadada" #\@)
          "dudidu #\\@ ~~~~~/dadada")
 
+(test-is "format ~A plain" (format nil "dudidu ~A dadada" "heididei")
+         "dudidu heididei dadada")
+
+(test-is "format ~3A" (format nil "dudidu ~3A dadada" "heididei")
+         "dudidu heididei dadada")
+
+(test-is "format ~13A" (format nil "dudidu ~13A dadada" "heididei")
+         "dudidu heididei      dadada")
+
+(test-is "format ~13@A" (format nil "dudidu ~13@A dadada" "heididei")
+         "dudidu      heididei dadada")
+
+(test-is "format ~13,2@A" (format nil "dudidu ~13,2@A dadada" "heididei")
+         "dudidu       heididei dadada")
+
+(test-is "format ~9,,7,'.@A" (format nil "dudidu |~9,,7,'.@A| dadada"
+                                     "heididei")
+         "dudidu |.......heididei| dadada")
+
+(test-is "format ~13:A" (format nil "dudidu ~13:A dadada" "heididei")
+         "dudidu heididei      dadada")
+
+(test-is "format ~13,2:A" (format nil "dudidu ~13,2:A dadada" "heididei")
+         "dudidu heididei       dadada")
+
+(test-is "format ~9,,7,'.:A" (format nil "dudidu |~9,,7,'.:A| dadada"
+                                     "heididei")
+         "dudidu |heididei.......| dadada")
+
+(test-is "format ~23,,7,'.:A" (format nil "dudidu |~23,,7,'.:A| dadada"
+                                      "heididei")
+         "dudidu |heididei...............| dadada")
+
+(test-is "format ~S plain" (format nil "dudidu ~S dadada" "heididei")
+         "dudidu \"heididei\" dadada")
+
+(test-is "format ~3S" (format nil "dudidu ~3S dadada" "heididei")
+         "dudidu \"heididei\" dadada")
+
+(test-is "format ~13S" (format nil "dudidu ~13S dadada" "heididei")
+         "dudidu \"heididei\"    dadada")
+
+(test-is "format ~13@S" (format nil "dudidu ~13@S dadada" "heididei")
+         "dudidu    \"heididei\" dadada")
+
+(test-is "format ~13,2@S" (format nil "dudidu ~13,2@S dadada" "heididei")
+         "dudidu     \"heididei\" dadada")
+
+(test-is "format ~9,,7,'.@S" (format nil "dudidu |~9,,7,'.@S| dadada"
+                                     "heididei")
+         "dudidu |.......\"heididei\"| dadada")
+
+(test-is "format ~13:S" (format nil "dudidu ~13:S dadada" "heididei")
+         "dudidu \"heididei\"    dadada")
+
+(test-is "format ~13,2:S" (format nil "dudidu ~13,2:S dadada" "heididei")
+         "dudidu \"heididei\"     dadada")
+
+(test-is "format ~9,,7,'.:S" (format nil "dudidu |~9,,7,'.:S| dadada"
+                                     "heididei")
+         "dudidu |\"heididei\".......| dadada")
+
+(test-is "format ~23,,7,'.:S" (format nil "dudidu |~23,,7,'.:S| dadada"
+                                      "heididei")
+         "dudidu |\"heididei\".............| dadada")
 
 
 (done-testing)
