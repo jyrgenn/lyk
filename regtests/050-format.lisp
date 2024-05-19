@@ -140,6 +140,21 @@
                       ," 'schlumbada)
          "dudidu schlumbada___                       shoobeedoobeedooah ,\n,")
 
+;; I converted the examples from that page to all using ~R
+(test-is "CLHS 22.3.2.1 R a" (format nil "~2,,,' ,4:R" 13)
+         "1101")
+
+(test-is "CLHS 22.3.2.1 R b" (format nil "~2,,,' ,4:R" 17)
+         "1 0001")
+
+(test-is "CLHS 22.3.2.1 R c" (format nil "~2,19,'0,' ,4:R" 3333)
+         "0000 1101 0000 0101")
+
+(test-is "CLHS 22.3.2.1 R d" (format nil "~3,,,' ,2:R" 17)
+         "1 22")
+
+(test-is "CLHS 22.3.2.1 R e" (format nil "~10,,,'|,2:R" #xFFFF)
+         "6|55|35")
 
 
 (done-testing)

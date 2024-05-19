@@ -34,7 +34,12 @@ type ::= "C" | "%"| "&" | "|" | "~"
 Radix Control
 -------------
 
-[ ] Tilde R: Radix
+[·] Tilde R: Radix
+    ~radix,mincol,padchar,commachar,comma-intervalR
+    ~R   : cardinal English number: four
+    ~:R  : ordinal English number: fourth
+    ~@R  : Roman numeral: IV
+    ~:@R : old Roman numeral: IIII
 
 [ ] Tilde D: Decimal
 
