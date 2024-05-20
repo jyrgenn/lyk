@@ -27,15 +27,18 @@ result of applying FUNC to both, until there is only one element left."
                          (cddr l)))
     (car l)))
 
+
 (defun make-list (n el)
-  "Return a list of length N with elements EL (which may be a function)."
+  "Return a list of length `n` with elements `el`.
+`el` may be a parameter-less function; in that case it is called for
+ each place on the list, and its return value is filled in as the
+element of the list."
   (let ((lc (list-collector)))
-    (if (functionp el)
-        (while (>= (decf n) 0)
-          (lc (funcall el)))
-      (while (>= (decf n) 0)
-        (lc el)))
-    (lc)))
+    (dotimes (i n (lc))
+      (if (functionp el)
+          (lc (funcall el))
+          (lc el)))))
+
 
 (defun iota (count &optional (start 0) (step 1))
   "Return a list of numbers of length COUNT.
