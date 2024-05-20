@@ -248,7 +248,7 @@ val romanNumberCodes = arrayOf(
 )
 
 // convert to Roman numeral
-fun doRoman(arg: Long, old_roman: Boolean, where: FormatDirective): String {
+fun formatRoman(arg: Long, oldRoman: Boolean, where: FormatDirective): String {
     if (arg < 1) {
         throw FormatError("value $arg too small for Roman numeral", where)
     }
@@ -262,7 +262,7 @@ fun doRoman(arg: Long, old_roman: Boolean, where: FormatDirective): String {
         remain -= 1000
     }
     for ((size, code, new) in romanNumberCodes) {
-        if (new && old_roman) {
+        if (new && oldRoman) {
             continue
         }
         while (remain >= size) {
@@ -287,7 +287,7 @@ val EnglishOrdinals = arrayOf(
 
 // This may be replaced by a more sophisticated implementation in the future.
 // For now, this proof of concept is fully sufficient for my needs.
-fun doEnglish(arg: Long, ordinal: Boolean, where: FormatDirective): String {
+fun formatEnglish(arg: Long, ordinal: Boolean, where: FormatDirective): String {
     val array = if (ordinal) EnglishOrdinals else EnglishCardinals
     val what = if (ordinal) "ordinals" else "cardinals"
     if (arg < 0L) {
@@ -311,11 +311,145 @@ fun val_sign(n: Long, forced: Boolean): String {
 }
 
 
+fun format_radix(directive: FormatDirective, radix: Int, mincol_: Int?,
+                 padchar_: Char?, commachar_: Char?, comma_int_: Int?,
+                 colonFlag: Boolean, atsignFlag: Boolean,
+                 stream: LStream, args: MutableList<LObject>): String {
+    var mincol = mincol_
+    var padchar = padchar_
+    var commachar = commachar_
+    var comma_int = comma_int_
+    if (radix < 2 || radix > 36) {
+        FormatError("invalid radix $radix, must be in 2..36", directive)
+    }
+    if (mincol == null) {
+        mincol = intArg(popO(args),
+                        " directive `${directive.directive}`: mincol")
+    }
+    if (padchar == null) {
+        padchar = charArg(popO(args),
+                          " directive `${directive.directive}`: padchar")
+            .the_char
+    }
+    if (commachar == null) {
+        commachar = charArg(popO(args),
+                            " directive `${directive.directive}`: commachar")
+            .the_char
+    }
+    if (comma_int == null) {
+        comma_int = intArg(popO(args),
+                           " directive `${directive.directive}`: comma_int")
+    }
+    
+    val arg_val = args[0]
+    if (arg_val !is LNumber || !arg_val.isLong()) {
+        return format_aesthetic(directive, mincol, 1, 0, padchar,
+                                colonFlag, atsignFlag, stream, args)
+    }
+
+    val arg = arg_val.toLong()
+    var sign = val_sign(arg, atsignFlag)
+    var the_string = sign + abs(arg).toString(radix)
+    var slen = the_string.length
+
+    if (colonFlag) {                // --> print commachars
+        val rev_string = the_string.reversed()
+        val sb = StrBuf()
+        var index = 0
+        var length = 0
+        while (index < slen || length < mincol) {
+            if (index > 0 && index % comma_int == 0) {
+                sb.add(commachar)
+                length++
+            }
+            if (index < slen) {
+                sb.add(rev_string[index])
+            } else if (length < mincol) {
+                sb.add(padchar)
+            }
+            index++
+            length++
+        }
+        the_string = sb.toString().reversed()
+    } else {
+        the_string =
+            mulString(padchar.toString(), mincol - slen) + the_string
+    }
+    return the_string
+}
+
+
+@Suppress("UNUSED_PARAMETER")
+fun format_aesthetic(directive: FormatDirective, mincol_: Int?, colinc_: Int?,
+                     minpad_: Int?, padchar_: Char?, colonFlag: Boolean,
+                     atsignFlag: Boolean,
+                     stream: LStream, args: MutableList<LObject>): String {
+    var mincol = mincol_
+    var colinc = colinc_
+    var minpad = minpad_
+    var padchar = padchar_
+    if (mincol == null) {
+        mincol = intArg(popO(args),
+                        " directive `${directive.directive}`: mincol")
+    }
+    if (colinc == null) {
+        colinc = intArg(popO(args),
+                        " directive `${directive.directive}`: colinc")
+    }
+    if (minpad == null) {
+        minpad = intArg(popO(args),
+                        " directive `${directive.directive}`: minpad")
+    }
+    if (padchar == null) {
+        padchar = charArg(popO(args),
+                          " directive `${directive.directive}`: padchar")
+            .the_char
+    }
+    val arg = args[0]
+    var the_string =
+        if (arg === Nil) {
+            if (colonFlag) {
+                "()"
+            } else {
+                "nil"
+            }
+        } else {
+            directive.present(arg)
+        }
+    if (minpad > 0) {
+        if (atsignFlag) {
+            the_string =
+                mulString(padchar.toString(), minpad) + the_string
+        } else {
+            the_string =
+                the_string + mulString(padchar.toString(), minpad)
+        }
+    }
+    if (mincol > 0) {
+        val pad = mulString(padchar.toString(), colinc)
+        val missing = mincol - the_string.length
+        var need = missing / colinc
+        need += if (need * colinc < missing) 1 else 0
+
+        if (atsignFlag) {
+            the_string = mulString(pad, need) + the_string
+        } else {
+            the_string = the_string + mulString(pad, need)
+        }
+    }
+    return the_string
+}
+
+
 val dirClassType = mapOf(
-    'c' to ::CharDirective,
-    '%' to ::PercentDirective,
     'a' to ::AestheticDirective,
+    'b' to ::BinaryDirective,
+    'c' to ::CharDirective,
+    'd' to ::DecimalDirective,
+    'o' to ::OctalDirective,
+    'x' to ::HexadecimalDirective,
     's' to ::StandardDirective,
+    '%' to ::PercentDirective,
     '&' to ::AmpDirective,
     '|' to ::PageDirective,
     '~' to ::TildeDirective,
@@ -323,7 +457,6 @@ val dirClassType = mapOf(
     'r' to ::RadixDirective,
 )
     
-
 
 // Return a Format directive of the appropriate type according to `ch` with the
 // specified parameters and flags. The format string and the directive string
@@ -360,7 +493,90 @@ abstract class FormatDirective(val formatString: String,
     // String; output may depend on the stream
     abstract fun format(stream: LStream, args: MutableList<LObject>): String
 
+    // present the argument like this
+    open fun present(arg: LObject) = arg.toString()
+
     override fun toString() = "#<$fd_type format \"$directive\">"
+    init {
+        // println("create $this")
+    }
+}
+
+class BinaryDirective(formatString: String,
+                       directive: String,
+                       params: List<String>,
+                       colonFlag: Boolean,
+                       atsignFlag: Boolean,
+): DecimalDirective(formatString, directive, params, colonFlag, atsignFlag) {
+    override val fd_type = "decimal"
+    override val radix = 0b10
+}
+
+class OctalDirective(formatString: String,
+                       directive: String,
+                       params: List<String>,
+                       colonFlag: Boolean,
+                       atsignFlag: Boolean,
+): DecimalDirective(formatString, directive, params, colonFlag, atsignFlag) {
+    override val fd_type = "Octal"
+    override val radix = 8  // "Octal literals are not supported in Kotlin." :-(
+}
+
+class HexadecimalDirective(formatString: String,
+                       directive: String,
+                       params: List<String>,
+                       colonFlag: Boolean,
+                       atsignFlag: Boolean,
+): DecimalDirective(formatString, directive, params, colonFlag, atsignFlag) {
+    override val fd_type = "Hexadecimal"
+    override val radix = 0x10
+}
+
+open class DecimalDirective(formatString: String,
+                            directive: String,
+                            params: List<String>,
+                            val colonFlag: Boolean,
+                            val atsignFlag: Boolean,
+): FormatDirective(formatString, directive) {
+    override val fd_type = "decimal"
+    open val radix = 10
+    var mincol: Int? = 0
+    var padchar: Char? = ' '
+    var commachar: Char? = ','
+    var comma_int: Int? = 3
+    var needArgs = 1
+
+    init {
+        val nparams = params.size
+        if (nparams >= 1) {
+            mincol = paramInt(params[0], mincol!!, this)
+            if (mincol == null) {
+                needArgs++
+            }
+            if (nparams >= 2) {
+                padchar = paramChar(params[1], padchar!!, this)
+                if (padchar == null) {
+                    needArgs++
+                }
+                if (nparams >= 3) {
+                    commachar = paramChar(params[2], commachar!!, this)
+                    if (commachar == null) {
+                        needArgs++
+                    }
+                    if (nparams >= 4) {
+                        comma_int = paramInt(params[3], comma_int!!, this)
+                        if (comma_int == null) {
+                            needArgs++
+                        }
+                    }
+                }
+            }
+        }
+    }
+    override fun argsNeeded() = needArgs
+    override fun format(stream: LStream, args: MutableList<LObject>) =
+        format_radix(this, radix, mincol, padchar, commachar, comma_int,
+                     colonFlag, atsignFlag, stream, args)
 }
 
 open class RadixDirective(formatString: String,
@@ -384,8 +600,7 @@ open class RadixDirective(formatString: String,
         if (nparams == 0) {
             doRoman = atsignFlag
             doEnglish = !atsignFlag
-        }
-        if (nparams >= 1) {
+        } else if (nparams >= 1) {
             radix = paramInt(params[0], radix!!, this)
             if (radix == null) {
                 needArgs++
@@ -419,64 +634,22 @@ open class RadixDirective(formatString: String,
     override fun argsNeeded() = needArgs
 
     override fun format(stream: LStream, args: MutableList<LObject>): String {
+        if (doRoman) {
+            return formatRoman(longArg(args[0], " directive `$directive`"),
+                                       colonFlag, this)
+        }
+        if (doEnglish) {
+            return formatEnglish(longArg(args[0], " directive `$directive`"),
+                                 colonFlag, this)
+        }
         if (radix == null) {
             radix = intArg(popO(args), " directive `$directive`: radix")
             if (radix!! < 2 || radix!! > 36) {
                 FormatError("invalid radix $radix, must be in 2..36", this)
             }
         }
-        if (mincol == null) {
-            mincol = intArg(popO(args), " directive `$directive`: mincol")
-        }
-        if (padchar == null) {
-            padchar = charArg(popO(args), " directive `$directive`: padchar")
-                .the_char
-        }
-        if (commachar == null) {
-            commachar = charArg(popO(args),
-                                " directive `$directive`: commachar").the_char
-        }
-        if (comma_int == null) {
-            comma_int = intArg(popO(args), " directive `$directive`: comma_int")
-        }
-        val arg = longArg(args[0], ", argument of directive `$directive`")
-        if (doRoman) {
-            return doRoman(arg, colonFlag, this)
-        }
-        if (doEnglish) {
-            return doEnglish(arg, colonFlag, this)
-        }
-        var arg_sign = val_sign(arg, atsignFlag)
-        var the_string = abs(arg).toString(radix!!)
-        var slen = the_string.length
-
-        val target_length = (mincol!! - arg_sign.length)
-        if (colonFlag) {                // --> print commachars
-            val rev_string = the_string.reversed()
-            val sb = StrBuf()
-            var index = 0
-            var length = 0
-            while (index < slen || length < target_length) {
-                if (index > 0 && index % comma_int!! == 0) {
-                    sb.add(commachar!!)
-                    length++
-                }
-                if (index < slen) {
-                    sb.add(rev_string[index])
-                } else {
-                    sb.add(padchar!!)
-                }
-                index++
-                length++
-            }
-            the_string = arg_sign + sb.toString().reversed()
-        } else {
-            the_string = (arg_sign
-                          + mulString(padchar!!.toString(),
-                                      mincol!! - slen - arg_sign.length)
-                          + the_string)
-        }
-        return the_string
+        return format_radix(this, radix!!, mincol, padchar, commachar,
+                            comma_int, colonFlag, atsignFlag, stream, args)
     }
 }
 
@@ -487,7 +660,7 @@ class StandardDirective(formatString: String,
                         colonFlag: Boolean,
                         atsignFlag: Boolean,
 ): AestheticDirective(formatString, directive, params, colonFlag, atsignFlag) {
-    override fun show(arg: LObject) = arg.desc(null)
+    override fun present(arg: LObject) = arg.desc(null)
 }
 
 open class AestheticDirective(formatString: String,
@@ -530,56 +703,13 @@ open class AestheticDirective(formatString: String,
             }
         }
     }
-    open fun show(arg: LObject) = arg.toString()
-    override fun argsNeeded() = needArgs
-    override fun format(stream: LStream, args: MutableList<LObject>): String {
-        if (mincol == null) {
-            mincol = intArg(popO(args), " directive `$directive`: mincol")
-        }
-        if (colinc == null) {
-            colinc = intArg(popO(args), " directive `$directive`: colinc")
-        }
-        if (minpad == null) {
-            minpad = intArg(popO(args), " directive `$directive`: minpad")
-        }
-        if (padchar == null) {
-            padchar = charArg(popO(args), " directive `$directive`: padchar")
-                .the_char
-        }
-        val arg = args[0]
-        var the_string =
-            if (arg === Nil) {
-                if (colonFlag) {
-                    "()"
-                } else {
-                    "nil"
-                }
-            } else {
-                show(arg)
-            }
-        if (minpad!! > 0) {
-            if (atsignFlag) {
-                the_string =
-                    mulString(padchar.toString(), minpad!!) + the_string
-            } else {
-                the_string =
-                    the_string + mulString(padchar.toString(), minpad!!)
-            }
-        }
-        if (mincol!! > 0) {
-            val pad = mulString(padchar.toString(), colinc!!)
-            val missing = mincol!! - the_string.length
-            var need = missing / colinc!!
-            need += if (need * colinc!! < missing) 1 else 0
-
-            if (atsignFlag) {
-                the_string = mulString(pad, need) + the_string
-            } else {
-                the_string = the_string + mulString(pad, need)
-            }
-        }
-        return the_string
+    override open fun present(arg: LObject) = arg.toString()
+    override fun argsNeeded(): Int {
+        return needArgs
     }
+    override fun format(stream: LStream, args: MutableList<LObject>) =
+        format_aesthetic(this, mincol, colinc, minpad, padchar, colonFlag,
+                         atsignFlag, stream, args)
 }
 
 @Suppress("UNUSED_PARAMETER")
@@ -594,10 +724,9 @@ class CharDirective(formatString: String,
     override fun argsNeeded() = 1
 
     override fun format(stream: LStream, args: MutableList<LObject>): String {
-        val lchar = args[0]
-        val ch = charArg(lchar, " directive " + directive)
+        val ch = charArg(args[0], " directive " + directive)
         if (colonFlag) {
-            // we skip the ": + @": (like ~:C with unusual shift keys mentioned)
+            // we skip the ":@": (like ~:C with unusual shift keys mentioned)
             // and do it just like ~:C
             val name = LChar.charName[ch.the_char]
             if (name != null) {
@@ -729,7 +858,7 @@ class TildeDirective(formatString: String,
         }
     }
 
-    override fun argsNeeded() = needArgs++
+    override fun argsNeeded() = needArgs
     override fun format(stream: LStream, args: MutableList<LObject>)
         = mulString("~",
                     count ?: intArg(args[0], " directive " + directive))

@@ -162,6 +162,111 @@
 (test-is "format mellum_addr" (format nil "~2,35,'0,'.,8:R" #x0A15D521)
          "00001010.00010101.11010101.00100001")
 
+
+;; I converted the examples from that page to all using ~B
+(test-is "CLHS 22.3.2.1 B a" (format nil "~,,' ,4:B" 13)
+         "1101")
+
+(test-is "CLHS 22.3.2.1 B b" (format nil "~,,' ,4:B" 17)
+         "1 0001")
+
+(test-is "CLHS 22.3.2.1 B c" (format nil "~19,'0,' ,4:B" 3333)
+         "0000 1101 0000 0101")
+
+(test-is "CLHS 22.3.2.1 B c2" (format nil "~16,'0B" 3333)
+         "0000110100000101")
+
+(test-is "CLHS 22.3.2.1 B d" (format nil "~,,' ,2:B" 17)
+         "1 00 01")
+
+(test-is "CLHS 22.3.2.1 B e" (format nil "~,,'|,2:B" #xFFFF)
+         "11|11|11|11|11|11|11|11")
+
+(test-is "format mellum_addr B" (format nil "~35,'0,'.,8:B" #x0A15D521)
+         "00001010.00010101.11010101.00100001")
+
+
+;; I converted the examples from that page to all using ~D
+(test-is "CLHS 22.3.2.1 D a" (format nil "~,,' ,4:D" 3463)
+         "3463")
+
+(test-is "CLHS 22.3.2.1 D b" (format nil "~,,' ,4:D" 130463)
+         "13 0463")
+
+(test-is "CLHS 22.3.2.1 D c" (format nil "~19,'0,' ,4:D" 33333)
+         "0000 0000 0003 3333")
+
+(test-is "CLHS 22.3.2.1 D c2" (format nil "~16,'0D" 3333)
+         "0000000000003333")
+
+(test-is "CLHS 22.3.2.1 D d" (format nil "~,,' ,2:D" 17924)
+         "1 79 24")
+
+(test-is "CLHS 22.3.2.1 D e" (format nil "~,,'|,2:D" #xFFFF)
+         "6|55|35")
+
+(test-is "format mellum_addr D" (format nil "~35,'0,'.,8:D" #x0A15D521)
+         "00000000.00000000.00000001.69202977")
+
+
+;; I converted the examples from that page to all using ~O
+(test-is "CLHS 22.3.2.1 O a" (format nil "~,,' ,4:O" 3463)
+         "6607")
+
+(test-is "CLHS 22.3.2.1 O b" (format nil "~,,' ,4:O" 130463)
+         "37 6637")
+
+(test-is "CLHS 22.3.2.1 O c" (format nil "~19,'0,' ,4:O" 33333)
+         "0000 0000 0010 1065")
+
+(test-is "CLHS 22.3.2.1 O c2" (format nil "~16,'0o" 33333)
+         "0000000000101065")
+
+(test-is "CLHS 22.3.2.1 O d" (format nil "~,,' ,2:O" 17924)
+         "4 30 04")
+
+(test-is "CLHS 22.3.2.1 O e" (format nil "~,,'|,2:O" #xFFFF)
+         "17|77|77")
+
+(test-is "format mellum_addr O" (format nil "~35,'0,'.,8:O" #x0A15D521)
+         "00000000.00000000.00000012.05352441")
+
+(test-is "format octal 1" (format nil "~12,'0,' ,3:O" 34359738367)
+         "377 777 777 777")
+
+(test-is "format octal 2" (format nil "~15,'0,' ,3:O" 2147483646)
+         "017 777 777 776")
+
+
+;; I converted the examples from that page to all using ~X
+(test-is "CLHS 22.3.2.1 X a" (format nil "~,,' ,4:X" 3463)
+         "d87")
+
+(test-is "CLHS 22.3.2.1 X b" (format nil "~,,' ,4:X" 130463)
+         "1 fd9f")
+
+(test-is "CLHS 22.3.2.1 X c" (format nil "~19,'0,' ,4:X" 3333333)
+         "0000 0000 0032 dcd5")
+
+(test-is "CLHS 22.3.2.1 X c2" (format nil "~16,'0x" 3333333)
+         "000000000032dcd5")
+
+(test-is "CLHS 22.3.2.1 X d" (format nil "~,,' ,2:X" 17924)
+         "46 04")
+
+(test-is "CLHS 22.3.2.1 X e" (format nil "~,,'|,2:X" #xFFFF)
+         "ff|ff")
+
+(test-is "format mellum_addr X" (format nil "~35,'0,'.,8:X" #x0A15D521)
+         "00000000.00000000.00000000.0a15d521")
+
+(test-is "format hex 1" (format nil "~12,'0,' ,4:X" 34359738367)
+         "07 ffff ffff")
+
+(test-is "format hex 2" (format nil "~15,'0,' ,4:X" 2147483646)
+         " 0000 7fff fffe")
+
+
 (test-is "Roman 1" (format nil "~@R" 1963)
          "MCMLXIII")
 
