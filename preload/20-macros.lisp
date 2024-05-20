@@ -26,9 +26,7 @@ Otherwise, evaluate `else-clauses` and return the last value."
 
 (defmacro dolist (cvars &rest bodyforms)
   "(dolist (var listform &optional resultform) &rest bodyforms)"
-  (let ((var (car cvars))
-        (listform (cadr cvars))
-        (resultform (caddr cvars))
+  (let (((var listform resultform) cvars)
         (listsym (gensym)))
     `(let ((,listsym ,listform))
        (while ,listsym
