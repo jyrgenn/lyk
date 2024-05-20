@@ -4,6 +4,7 @@
 package org.w21.lyk
 
 import kotlin.math.abs
+import kotlin.math.pow
 
 // Mapping between a format string and the chain of format directives (including
 // for literal pieces of text in the format string). A format string parsed into
@@ -215,6 +216,21 @@ fun paramChar(s: String, default: Char, where: FormatDirective): Char? {
         throw FormatError("invalid padchar parameter", where)
     }
     return s[1]
+}
+
+// return a character from a "'." parameter as a string; return empty if it is
+// empty, null if it is "v"
+fun paramString(s: String, where: FormatDirective): String? {
+    if (s == "") {
+        return ""
+    }
+    if (s == "v") {
+        return null
+    }
+    if (s.length != 2 || s[0] != '\'') {
+        throw FormatError("invalid padchar parameter", where)
+    }
+    return s.substring(1)
 }
 
 // pop the first string value off the list
@@ -446,6 +462,7 @@ val dirClassType = mapOf(
     'b' to ::BinaryDirective,
     'c' to ::CharDirective,
     'd' to ::DecimalDirective,
+    'f' to ::FixedFPDirective,
     'o' to ::OctalDirective,
     'x' to ::HexadecimalDirective,
     's' to ::StandardDirective,
@@ -501,6 +518,92 @@ abstract class FormatDirective(val formatString: String,
         // println("create $this")
     }
 }
+
+open class FixedFPDirective(formatString: String,
+                            directive: String,
+                            params: List<String>,
+                            val colonFlag: Boolean,
+                            val atsignFlag: Boolean,
+): FormatDirective(formatString, directive) {
+    override val fd_type = "decimal"
+    var width: Int? = -1
+    var d_frac: Int? = -1
+    var skale: Int? = 0
+    var overflowchar: String? = ""
+    var padchar: Char? = ' '
+    var needArgs = 1
+
+    init {
+        val nparams = params.size
+        if (nparams >= 1) {
+            width = paramInt(params[0], width!!, this)
+            if (width == null) {
+                needArgs++
+            }
+            if (nparams >= 2) {
+                d_frac = paramInt(params[1], d_frac!!, this)
+                if (d_frac == null) {
+                    needArgs++
+                }
+                if (nparams >= 3) {
+                    skale = paramInt(params[2], skale!!, this)
+                    if (skale == null) {
+                        needArgs++
+                    }
+                    if (nparams >= 4) {
+                        overflowchar = paramString(params[3], this)
+                        if (overflowchar == null) {
+                            needArgs++
+                        }
+                        if (nparams >= 5) {
+                            padchar = paramChar(params[4], padchar!!, this)
+                            if (padchar == null) {
+                                needArgs++
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun argsNeeded() = needArgs
+    
+    override fun format(stream: LStream, args: MutableList<LObject>): String {
+        if (width == null) {
+            width = intArg(popO(args), " directive `$directive` width")
+        }
+        if (d_frac == null) {
+            d_frac = intArg(popO(args), " directive `$directive` d_frac")
+        }
+        if (skale == null) {
+            skale = intArg(popO(args), " directive `$directive` skale")
+        }
+        if (overflowchar == null) {
+            overflowchar = charArg(popO(args),
+                                   " directive `$directive` overflowchar")
+                .toString()
+        }
+        if (padchar == null) {
+            padchar = charArg(popO(args), " directive `$directive` padchar")
+                .the_char
+        }
+
+        val arg = args[0]
+        if (arg !is LNumber) {
+            return format_aesthetic(
+                this, (if (width == -1) 0 else width!!), 1, 0, padchar!!,
+                colonFlag, atsignFlag, stream, args)
+        }
+        val the_string =
+            "%.20f".format(arg.the_number * 10.0.pow(skale!!.toDouble()))
+            .trim('0')
+            // (arg.the_number * 10.0.pow(skale!!.toDouble())).toString()
+        return the_string
+    }
+
+}
+
 
 class BinaryDirective(formatString: String,
                        directive: String,
