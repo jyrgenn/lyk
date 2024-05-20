@@ -249,11 +249,11 @@ val romanNumberCodes = arrayOf(
 
 // convert to Roman numeral
 fun doRoman(arg: Long, old_roman: Boolean, where: FormatDirective): String {
-    if (arg < 1L) {
-        FormatError("value $arg too small for Roman numeral", where)
+    if (arg < 1) {
+        throw FormatError("value $arg too small for Roman numeral", where)
     }
-    if (arg >= 4000L) {
-        FormatError("value $arg too large for Roman numeral", where)
+    if (arg >= 4000) {
+        throw FormatError("value $arg too large for Roman numeral", where)
     }
     val sb = StrBuf()
     var remain = arg.toInt()
@@ -291,10 +291,10 @@ fun doEnglish(arg: Long, ordinal: Boolean, where: FormatDirective): String {
     val array = if (ordinal) EnglishOrdinals else EnglishCardinals
     val what = if (ordinal) "ordinals" else "cardinals"
     if (arg < 0L) {
-        FormatError("value $arg too small for English $what", where)
+        throw FormatError("value $arg too small for English $what", where)
     }
     if (arg >= array.size) {
-        FormatError("value $arg too large for English $what", where)
+        throw FormatError("value $arg too large for English $what", where)
     }
     return array[arg.toInt()]
 }

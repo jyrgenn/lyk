@@ -162,4 +162,91 @@
 (test-is "format mellum_addr" (format nil "~2,35,'0,'.,8:R" #x0A15D521)
          "00001010.00010101.11010101.00100001")
 
+(test-is "Roman 1" (format nil "~@R" 1963)
+         "MCMLXIII")
+
+(test-is "Roman 2" (format nil "~@R" 963)
+         "CMLXIII")
+
+(test-is "Roman 3" (format nil "~@R" 1944)
+         "MCMXLIV")
+
+(test-is "Roman 4" (format nil "~@R" 1437)
+         "MCDXXXVII")
+
+(test-is "Roman 6" (format nil "~@R" 1999)
+         "MCMXCIX")
+
+(test-err "Roman 7" (format nil "~@R" 4999) #/too large/)
+
+(test-err "Roman 8" (format nil "~@R" 0) #/too small/)
+
+(test-is "Old Roman 1" (format nil "~:@R" 1963)
+         "MDCCCCLXIII")
+
+(test-is "Old Roman 2" (format nil "~:@R" 963)
+         "DCCCCLXIII")
+
+(test-is "Old Roman 3" (format nil "~@:R" 1944)
+         "MDCCCCXXXXIIII")
+
+(test-is "Old Roman 4" (format nil "~@:R" 1437)
+         "MCCCCXXXVII")
+
+(test-is "Old Roman 6" (format nil "~:@R" 1999)
+         "MDCCCCLXXXXVIIII")
+
+(test-err "Old Roman 7" (format nil "~:@R" 4999) #/too large/)
+
+(test-err "Old Roman 8" (format nil "~:@R" 0) #/too small/)
+
+(test-is "English Cardinal 0" (format nil "~R" 0)
+         "zero")
+
+(test-is "English Cardinal 1" (format nil "~R" 1)
+         "one")
+
+(test-is "English Cardinal 2" (format nil "~R" 2)
+         "two")
+
+(test-is "English Cardinal 3" (format nil "~R" 3)
+         "three")
+
+(test-is "English Cardinal 4" (format nil "~R" 4)
+         "four")
+
+(test-is "English Cardinal 13" (format nil "~R" 13)
+         "thirteen")
+
+(test-err "English Cardinal -1" (format nil "~R" -1)
+          #/too small/)
+
+(test-err "English Cardinal 14" (format nil "~R" 14)
+          #/too large/)
+
+(test-is "English Ordinal 0" (format nil "~:R" 0)
+         "zeroth")
+
+(test-is "English Ordinal 1" (format nil "~:R" 1)
+         "first")
+
+(test-is "English Ordinal 2" (format nil "~:R" 2)
+         "second")
+
+(test-is "English Ordinal 3" (format nil "~:R" 3)
+         "third")
+
+(test-is "English Ordinal 4" (format nil "~:R" 4)
+         "fourth")
+
+(test-is "English Ordinal 13" (format nil "~:R" 13)
+         "thirteenth")
+
+(test-err "English Ordinal -1" (format nil "~:R" -1)
+          #/too small/)
+
+(test-err "English Ordinal 14" (format nil "~R" 14)
+          #/too large/)
+
+
 (done-testing)
