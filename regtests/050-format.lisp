@@ -354,4 +354,110 @@
           #/too large/)
 
 
+;;; 22.3.11 Examples of FORMAT
+
+(test-is "CLHS 22.3.11 1" (format nil "foo")
+         "foo")
+
+(defvar x 5)
+(test-is "CLHS 22.3.11 2" (format nil "The answer is ~D." x)
+         "The answer is 5.")
+(test-is "CLHS 22.3.11 3" (format nil "The answer is ~3D." x)
+         "The answer is   5.")
+(test-is "CLHS 22.3.11 4" (format nil "The answer is ~3,'0D." x)
+         "The answer is 005.")
+(test-is "CLHS 22.3.11 5" (format nil "The answer is ~:D." (expt 47 x))
+         "The answer is 229,345,007.")
+
+(defvar y "elephant")
+(test-is "CLHS 22.3.11 6" (format nil "Look at the ~A!" y)
+         "Look at the elephant!")
+
+(defun foo (x)
+  (format nil "~6,2F|~6,2,1,'*F|~6,2,,'?F|~6F|~,2F|~F"
+          x x x x x x))
+(test-is "CLHS 22.3.11 7" (foo 3.14159)
+         "  3.14| 31.42|  3.14|3.1416|3.14|3.14159")
+(test-is "CLHS 22.3.11 8" (foo -3.14159)
+         " -3.14|-31.42| -3.14|-3.142|-3.14|-3.14159")
+(test-is "CLHS 22.3.11 9" (foo 100.0)
+         "100.00|******|100.00| 100.0|100.00|100.0")
+(test-is "CLHS 22.3.11 10" (foo 1234.0)
+         "1234.00|******|??????|1234.0|1234.00|1234.0")
+(test-is "CLHS 22.3.11 11" (foo 0.006)
+         "  0.01|  0.06|  0.01| 0.006|0.01|0.006")
+
+;;; ~E format is NYI
+
+;; (defun foo (x)  
+;;   (format nil
+;;           "~9,2,1,,'*E|~10,3,2,2,'?,,'$E|~
+;;             ~9,3,2,-2,'%@E|~9,2E"
+;;           x x x x))
+;; (test-is "CLHS 22.3.11 12" (foo 3.14159)
+;;          "  3.14E+0| 31.42$-01|+.003E+03|  3.14E+0")
+;; (test-is "CLHS 22.3.11 13" (foo -3.14159)
+;;          " -3.14E+0|-31.42$-01|-.003E+03| -3.14E+0")
+;; (test-is "CLHS 22.3.11 14" (foo 1100.0)
+;;          "  1.10E+3| 11.00$+02|+.001E+06|  1.10E+3")
+;; (test-is "CLHS 22.3.11 15" (foo 1100.0L0)
+;;          "  1.10L+3| 11.00$+02|+.001L+06|  1.10L+3")
+;; (test-is "CLHS 22.3.11 16" (foo 1.1E13)
+;;          "*********| 11.00$+12|+.001E+16| 1.10E+13")
+;; (test-is "CLHS 22.3.11 17" (foo 1.1L120)
+;;          "*********|??????????|%%%%%%%%%|1.10L+120")
+;; (test-is "CLHS 22.3.11 18" (foo 1.1L1200)
+;;          "*********|??????????|%%%%%%%%%|1.10L+1200")
+
+;; ;;; As an example of the effects of varying the scale factor, the code
+
+;; (test-is "CLHS 22.3.11 19" (dotimes (k 13)
+;;                             (format nil "~%Scale factor ~2D: |~13,6,2,VE|"
+;;                                     (- k 5) (- k 5) 3.14159))
+;;          "
+;; Scale factor -5: | 0.000003E+06|
+;; Scale factor -4: | 0.000031E+05|
+;; Scale factor -3: | 0.000314E+04|
+;; Scale factor -2: | 0.003142E+03|
+;; Scale factor -1: | 0.031416E+02|
+;; Scale factor  0: | 0.314159E+01|
+;; Scale factor  1: | 3.141590E+00|
+;; Scale factor  2: | 31.41590E-01|
+;; Scale factor  3: | 314.1590E-02|
+;; Scale factor  4: | 3141.590E-03|
+;; Scale factor  5: | 31415.90E-04|
+;; Scale factor  6: | 314159.0E-05|
+;; Scale factor  7: | 3141590.E-06|")
+
+;;; ~G format is NYI
+
+;; (defun foo (x)
+;;   (format nil "~9,2,1,,'*G|~9,3,2,3,'?,,'$G|~9,3,2,0,'%G|~9,2G"
+;;           x x x x))
+;; (test-is "CLHS 22.3.11 20" (foo 0.0314159)
+;;          "  3.14E-2|314.2$-04|0.314E-01|  3.14E-2")
+;; (test-is "CLHS 22.3.11 21" (foo 0.314159)
+;;          "  0.31   |0.314    |0.314    | 0.31    ")
+;; (test-is "CLHS 22.3.11 22" (foo 3.14159)
+;;          "   3.1   | 3.14    | 3.14    |  3.1    ")
+;; (test-is "CLHS 22.3.11 23" (foo 31.4159)
+;;          "   31.   | 31.4    | 31.4    |  31.    ")
+;; (test-is "CLHS 22.3.11 24" (foo 314.159)
+;;          "  3.14E+2| 314.    | 314.    |  3.14E+2")
+;; (test-is "CLHS 22.3.11 25" (foo 3141.59)
+;;          "  3.14E+3|314.2$+01|0.314E+04|  3.14E+3")
+;; (test-is "CLHS 22.3.11 26" (foo 3141.59L0)
+;;          "  3.14L+3|314.2$+01|0.314L+04|  3.14L+3")
+;; (test-is "CLHS 22.3.11 27" (foo 3.14E12)
+;;          "*********|314.0$+10|0.314E+13| 3.14E+12")
+;; (test-is "CLHS 22.3.11 28" (foo 3.14L120)
+;;          "*********|?????????|%%%%%%%%%|3.14L+120")
+;; (test-is "CLHS 22.3.11 29" (foo 3.14L1200)
+;;          "*********|?????????|%%%%%%%%%|3.14L+1200")
+
+
+(test-is "CLHS 22.3.11 30"  (FORMAT NIL "Written to ~A." "foo.bin")
+         "Written to foo.bin.")
+
+
 (done-testing)
