@@ -35,7 +35,10 @@ Radix Control
 -------------
 
 [·] Tilde R: Radix
-    ~radix,mincol,padchar,commachar,comma-intervalR
+    ~radix,mincol,padchar,commachar,comma-interval[flags]R
+         where : means print commachar ever comma-interval digits,
+           and @ means *always* print the sign, also for
+                       non-negative numbers
     ~R   : cardinal English number: four
     ~:R  : ordinal English number: fourth
     ~@R  : Roman numeral: IV

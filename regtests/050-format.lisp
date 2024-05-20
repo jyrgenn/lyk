@@ -150,11 +150,16 @@
 (test-is "CLHS 22.3.2.1 R c" (format nil "~2,19,'0,' ,4:R" 3333)
          "0000 1101 0000 0101")
 
+(test-is "CLHS 22.3.2.1 R c2" (format nil "~2,16,'0,' ,4R" 3333)
+         "0000110100000101")
+
 (test-is "CLHS 22.3.2.1 R d" (format nil "~3,,,' ,2:R" 17)
          "1 22")
 
 (test-is "CLHS 22.3.2.1 R e" (format nil "~10,,,'|,2:R" #xFFFF)
          "6|55|35")
 
+(test-is "format mellum_addr" (format nil "~2,35,'0,'.,8:R" #x0A15D521)
+         "00001010.00010101.11010101.00100001")
 
 (done-testing)

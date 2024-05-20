@@ -449,23 +449,32 @@ open class RadixDirective(formatString: String,
         var arg_sign = val_sign(arg, atsignFlag)
         var the_string = abs(arg).toString(radix!!)
         var slen = the_string.length
-        if (colonFlag) {
+
+        val target_length = (mincol!! - arg_sign.length)
+        if (colonFlag) {                // --> print commachars
+            val rev_string = the_string.reversed()
             val sb = StrBuf()
-            for (index in slen - 1 downTo 0) {
-                val ch = the_string[index]
-                sb.add(ch)
-                println("sb = ${sb.toString()}")
-                if (index > 0 && (slen - index) % comma_int!! == 0) {
+            var index = 0
+            var length = 0
+            while (index < slen || length < target_length) {
+                if (index > 0 && index % comma_int!! == 0) {
                     sb.add(commachar!!)
+                    length++
                 }
+                if (index < slen) {
+                    sb.add(rev_string[index])
+                } else {
+                    sb.add(padchar!!)
+                }
+                index++
+                length++
             }
             the_string = arg_sign + sb.toString().reversed()
-        }
-        slen = the_string.length
-        if (mincol!! > slen) {
-            // TODO care for the commas!
-            the_string =
-                mulString(padchar.toString(), mincol!! - slen) + the_string
+        } else {
+            the_string = (arg_sign
+                          + mulString(padchar!!.toString(),
+                                      mincol!! - slen - arg_sign.length)
+                          + the_string)
         }
         return the_string
     }
