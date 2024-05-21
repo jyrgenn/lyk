@@ -2,6 +2,15 @@
 
 package org.w21.lyk
 
+val starSym = LSymbol.makeGlobal("*", Nil)
+val star2Sym = LSymbol.makeGlobal("**", Nil)
+val star3Sym = LSymbol.makeGlobal("***", Nil)
+val plusSym = LSymbol.makeGlobal("+", Nil)
+val plus2Sym = LSymbol.makeGlobal("++", Nil)
+val plus3Sym = LSymbol.makeGlobal("+++", Nil)
+val slashSym = LSymbol.makeGlobal("/", Nil)
+val slash2Sym = LSymbol.makeGlobal("//", Nil)
+val slash3Sym = LSymbol.makeGlobal("///", Nil)
 
 fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
 ): LispError? {
@@ -34,11 +43,6 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
             }
             lastTopLevelLocation = loc
             
-            // Expand macros (just not macro definitions (or do I?)),
-            // expr = macroExpandForm(expr)
-            // if (expr is LCons && expr.car !== defmacroSym) {
-            //     expr = macroExpandForm(expr)
-            // }
             debug(debugReplSym) {
                 expr
             }
@@ -57,7 +61,15 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
             }
             iprintln()
             if (interactive) {
-                lastValueSym.setValue(value, true)
+                plus3Sym.setValue(plus2Sym.getValue())
+                plus2Sym.setValue(plusSym.getValue())
+                plusSym.setValue(expr, true)
+                star3Sym.setValue(star2Sym.getValue())
+                star2Sym.setValue(starSym.getValue())
+                starSym.setValue(value, true)
+                slash3Sym.setValue(slash2Sym.getValue())
+                slash2Sym.setValue(slashSym.getValue())
+                slashSym.setValue(list(value), true)
                 info(perfdata.desc())
             }
         } catch (e: JavaError) {
