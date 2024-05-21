@@ -595,10 +595,40 @@ open class FixedFPDirective(formatString: String,
                 this, (if (width == -1) 0 else width!!), 1, 0, padchar!!,
                 colonFlag, atsignFlag, stream, args)
         }
-        val the_string =
-            "%.20f".format(arg.the_number * 10.0.pow(skale!!.toDouble()))
-            .trim('0')
-            // (arg.the_number * 10.0.pow(skale!!.toDouble())).toString()
+        val fformat = "%%.%df".format(if (d_frac!! >= 0) d_frac!! else 20)
+        var the_string =
+            fformat.format(arg.the_number * 10.0.pow(skale!!.toDouble()))
+        var (before, after) = the_string.split(".")
+        if (d_frac!! >= 0) {
+            if (d_frac!! > after.length) {
+                after += mulString("0", d_frac!! - after.length)
+            } else {
+                after = after.substring(0, d_frac!!)
+            }
+            the_string = before + "." + after
+        } else {
+            the_string = the_string.trimEnd('0')
+            if (the_string.endsWith(".")) {
+                the_string += "0"
+            }
+        }
+        if (width!! >= 0) {
+            if (width!! < the_string.length) {
+                if (d_frac!! < 0) {
+                    val roundto = width!! - before.length - 1
+                    if (roundto >= 0) {
+                        val round_format = "%%.%df".format(roundto)
+                        return round_format.format(arg.the_number)
+                    }
+                }
+                if (overflowchar == "") {
+                    return the_string
+                }
+                return mulString(overflowchar!!, width!!)
+            }
+            return (mulString(padchar!!.toString(), width!! - the_string.length)
+                    + the_string)
+        }
         return the_string
     }
 

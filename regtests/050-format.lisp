@@ -456,7 +456,7 @@
 ;;          "*********|?????????|%%%%%%%%%|3.14L+1200")
 
 
-(test-is "CLHS 22.3.11 30"  (FORMAT NIL "Written to ~A." "foo.bin")
+(test-is "CLHS 22.3.11 30"  (format nil "Written to ~A." "foo.bin")
          "Written to foo.bin.")
 
 
