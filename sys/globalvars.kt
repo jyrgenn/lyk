@@ -154,4 +154,5 @@ fun init_Variables() {
     LSymbol.makeGlobal(stdoutName, stdout)
     LSymbol.makeGlobal(stderrName, stderr)
     LSymbol.makeGlobal(consoleName, console)
+    LSymbol.makeGlobal("pi", makeNumber(3.141592653589793))
 }
