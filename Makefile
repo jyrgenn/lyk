@@ -84,7 +84,7 @@ clean:
 	-rm -rf *.jar *~ */*~ TAGS *.log generated DOCSTRINGS.txt
 
 # collection of all function+macro doc strings
-DOCSTRINGS.txt: lyk.jar Makefile
+DOCSTRINGS.txt: lyk.jar Makefile l/alldocs.lisp
 	./scripts/lyk -J . l/alldocs.lisp > DOCSTRINGS.txt
 
 

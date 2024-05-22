@@ -12,7 +12,7 @@
                  (push el result)))))))
 
 (defun sort (seq pred)
-  "Sort sequence SEQ with predicate PRED and return the result."
+  "Sort sequence `seq` with predicate `pred` and return the result."
   (let ((combine (cond ((listp seq) #'list)
                        ((vectorp seq) #'vector)
                        ((stringp seq) #'string)

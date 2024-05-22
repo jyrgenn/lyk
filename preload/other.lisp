@@ -24,9 +24,22 @@ If ARG is a sequence, do the same according to the number of it elements."
       "y"
     "ies"))
 
+(defun all-symbols (&optional comparison-function)
+  "Return a list of all symbols, alphabetically sorted.
+If optional `comparison-function` is supplied , use it to sort the list.
+if `comparison-function` is t, sort the list alphabetically."
+  (let (l)
+    (do-symbols (sym)
+      (push sym l))
+    (cond ((null comparison-function) l)
+          ((eq comparison-function t) (sort l #'<))
+          ((functionp comparison-function) (sort l comparison-function))
+          (t (error "all-symbols: comparison-function ~S is not t or a function"
+                    comparison-function)))))
+
 (defun function-symbols ()
   "Return a list of all function symbols."
-  (filter #'fboundp (all-symbols)))
+  (filter #'fboundp (all-symbols t)))
 
 
 (defmacro no-warnings-as-errors (&rest bodyforms)

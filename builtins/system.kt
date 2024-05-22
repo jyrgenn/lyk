@@ -165,28 +165,6 @@ fun bi_numbers(args: LObject, kwArgs: Map<LSymbol, LObject>,
 }
 
 
-/// builtin all-symbols
-/// fun     bi_all_symbols
-/// std     
-/// key     
-/// opt     
-/// rest    
-/// ret     symbol-list
-/// special no
-/// doc {
-/// Return a list of all symbols.
-/// }
-/// end builtin
-@Suppress("UNUSED_PARAMETER")
-fun bi_all_symbols(args: LObject, kwArgs: Map<LSymbol, LObject>,
-                   suppp: Map<LSymbol, Boolean>): LObject {
-    val lc = ListCollector()
-    for (sym in symbolTable.values) {
-        lc.add(sym)
-    }
-    return lc.list
-}
-
 /// builtin do-symbols
 /// fun     bi_do_symbols
 /// std     control-vars
@@ -841,7 +819,7 @@ fun bi_no_warnings(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// doc {
 /// Return t if warnings as handled as errors, nil otherwise.
 /// With optional `on` argument, set warnings to be handled as errors iff
-/// `on` is . In this case, return the status from *before* setting it.
+/// `on` is true. In this case, return the status from *before* setting it.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
