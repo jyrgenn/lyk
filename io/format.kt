@@ -836,7 +836,6 @@ open class AestheticDirective(formatString: String,
             }
         }
     }
-    override open fun present(arg: LObject) = arg.toString()
     override fun argsNeeded(): Int {
         return needArgs
     }

@@ -45,10 +45,9 @@ if `comparison-function` is t, sort the list alphabetically."
 (defmacro no-warnings-as-errors (&rest bodyforms)
   "Evaluate `bodyforms` with *warnings-as-errors* set to nil.
 After that, restore the original value."
-  `(let ((*previous-warnings-as-errors* (warnings-as-errors)))
+  `(let ((*previous-warnings-as-errors* (warnings-as-errors nil)))
      (unwind-protect
           (progn
-            (warnings-as-errors nil)
             ,@bodyforms)
        (warnings-as-errors *previous-warnings-as-errors*))))
 
