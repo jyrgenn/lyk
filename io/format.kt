@@ -462,6 +462,7 @@ val dirClassType = mapOf(
     'b' to ::BinaryDirective,
     'c' to ::CharDirective,
     'd' to ::DecimalDirective,
+    'e' to ::ExpFPDirective,
     'f' to ::FixedFPDirective,
     'o' to ::OctalDirective,
     'x' to ::HexadecimalDirective,
@@ -518,6 +519,127 @@ abstract class FormatDirective(val formatString: String,
         // println("create $this")
     }
 }
+
+
+open class ExpFPDirective(formatString: String,
+                          directive: String,
+                          params: List<String>,
+                          val colonFlag: Boolean,
+                          val atsignFlag: Boolean,
+): FormatDirective(formatString, directive) {
+    override val fd_type = "decimal"
+    var width: Int? = -1                // field width
+    var d_frac: Int? = -1               // digits in fractional part
+    var exp_d: Int? = -1                // digits in exponent
+    var skale: Int? = 0                 // scale factor k, 10^k actually
+    var overflowchar: String? = ""      // to print if larger that width
+    var padchar: Char? = ' '            // pad to width
+    var expchar: Char? = 'e'            // exponent char (rather simple here)
+    var needArgs = 1
+
+    init {
+        val nparams = params.size
+        if (nparams >= 1) {
+            width = paramInt(params[0], width!!, this)
+            if (width == null) {
+                needArgs++
+            }
+            if (nparams >= 2) {
+                d_frac = paramInt(params[1], d_frac!!, this)
+                if (d_frac == null) {
+                    needArgs++
+                }
+                if (nparams >= 3) {
+                    exp_d = paramInt(params[2], exp_d!!, this)
+                    if (exp_d == null) {
+                        needArgs++
+                    }
+                    if (nparams >= 4) {
+                        skale = paramInt(params[3], skale!!, this)
+                        if (skale == null) {
+                            needArgs++
+                        }
+                        if (nparams >= 5) {
+                            overflowchar = paramString(params[4], this)
+                            if (overflowchar == null) {
+                                needArgs++
+                            }
+                            if (nparams >= 6) {
+                                padchar = paramChar(params[5], padchar!!, this)
+                                if (padchar == null) {
+                                    needArgs++
+                                }
+                                if (nparams >= 7) {
+                                    expchar = paramChar(params[6], expchar!!,
+                                                        this)
+                                    if (expchar == null) {
+                                        needArgs++
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun argsNeeded() = needArgs
+    
+    override fun format(stream: LStream, args: MutableList<LObject>): String {
+        if (width == null) {
+            width = intArg(popO(args), " directive `$directive` width")
+        }
+        if (d_frac == null) {
+            d_frac = intArg(popO(args), " directive `$directive` d_frac")
+        }
+        if (exp_d == null) {
+            exp_d = intArg(popO(args), " directive `$directive` exp_d")
+        }
+        if (skale == null) {
+            skale = intArg(popO(args), " directive `$directive` skale")
+        }
+        if (overflowchar == null) {
+            overflowchar = charArg(popO(args),
+                                   " directive `$directive` overflowchar")
+                .toString()
+        }
+        if (padchar == null) {
+            padchar = charArg(popO(args), " directive `$directive` padchar")
+                .the_char
+        }
+        if (expchar == null) {
+            expchar = charArg(popO(args), " directive `$directive` expchar")
+                .the_char
+        }
+
+        val arg = args[0]
+        if (arg !is LNumber) {
+            return format_aesthetic(
+                this, (if (width == -1) 0 else width!!), 1, 0, padchar!!,
+                colonFlag, atsignFlag, stream, args)
+        }
+
+        val number = arg.the_number
+        val plus = if (number >=0 && atsignFlag) "+" else ""
+        val eformat = "%%$plus.%de".format(if (d_frac!! >= 0) d_frac!! else 20)
+        var the_string =
+            eformat.format(number * 10.0.pow(skale!!.toDouble()))
+        var (before, after) = the_string.split(".")
+        var (frac, exponent_s) = after.split("e")
+        var exponent = the_int(exponent_s)?.toInt() ?:
+            throw InternalError("cannot parse expfloat `the_string` returned"
+                                + " by Java's format()")
+        exponent -= skale!!
+
+        
+
+        return the_string
+    }
+
+}
+
 
 open class FixedFPDirective(formatString: String,
                             directive: String,
@@ -595,9 +717,11 @@ open class FixedFPDirective(formatString: String,
                 this, (if (width == -1) 0 else width!!), 1, 0, padchar!!,
                 colonFlag, atsignFlag, stream, args)
         }
-        val fformat = "%%.%df".format(if (d_frac!! >= 0) d_frac!! else 20)
+        val number = arg.the_number
+        val plus = if (number >=0 && atsignFlag) "+" else ""
+        val fformat = "%%$plus.%df".format(if (d_frac!! >= 0) d_frac!! else 20)
         var the_string =
-            fformat.format(arg.the_number * 10.0.pow(skale!!.toDouble()))
+            fformat.format(number * 10.0.pow(skale!!.toDouble()))
         var (before, after) = the_string.split(".")
         if (d_frac!! >= 0) {
             if (d_frac!! > after.length) {
@@ -618,7 +742,7 @@ open class FixedFPDirective(formatString: String,
                     val roundto = width!! - before.length - 1
                     if (roundto >= 0) {
                         val round_format = "%%.%df".format(roundto)
-                        return round_format.format(arg.the_number)
+                        return round_format.format(number)
                     }
                 }
                 if (overflowchar == "") {
