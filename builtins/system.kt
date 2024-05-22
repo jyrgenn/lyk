@@ -187,6 +187,34 @@ fun bi_all_symbols(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return lc.list
 }
 
+/// builtin do-symbols
+/// fun     bi_do_symbols
+/// std     control-vars
+/// key     
+/// opt     
+/// rest    bodyforms
+/// ret     result
+/// special yes
+/// doc {
+/// (do-symbols (var [result-form]) bodyforms...)
+/// Iterate over all symbols, bind them to `var`, and execute `bodyforms`.
+/// If `result-form` is specified, evaluate and return it afterwards.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_do_symbols(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
+    val (control_vars, bodyforms) = args
+    val control = consArg(control_vars, " control-vars")
+    val varsym = symbolArg(control.car)
+    val resultform = control.cdr.car
+    for (sym in symbolTable.values) {
+        varsym.bind(sym)
+        evalProgn(bodyforms)
+    }
+    return eval(resultform)
+}
+
 /// builtin gc
 /// fun     bi_gc
 /// std     
