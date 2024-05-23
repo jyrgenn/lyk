@@ -75,7 +75,7 @@
 ;; body: forms to execute and return the value (if any)
 (defmacro defl (sym args result documentation &rest body)
   (let ((doc (format nil *fstring-stack-format*
-		     (join " " args)
+		     (join args " ")
 		     (if result (format nil *fstring-simple* result) "")
 		     documentation)))
     `(deflyc ',sym (length ',args) ',result
@@ -112,7 +112,7 @@ Example:
 "))
 
 (defl lisp-functions () nil "print Lisp function symbols"
-  (format t "~A~%" (join " " (function-symbols))))
+  (format t "~A~%" (join (function-symbols) " ")))
 
 (defl lyc-version () nil "print lyk/lyc release identifier" (println Release))
 
@@ -366,7 +366,7 @@ Example:
 
 (defl functions () nil
   "show all functions"
-  (format t *fstring-functions* (join " " (sort *lyc-functions* #'string<))))
+  (format t *fstring-functions* (join (sort *lyc-functions* #'string<) " ")))
 
 (defl describe-functions () nil
   "show all functions"
@@ -395,12 +395,12 @@ Example:
 (defl h () nil "print some help" (lyc-help))
 (defl help () nil "print some help" (lyc-help))
 (defl values () nil "show all computed values"
-  (format t *fstring-simple* (join " " (reverse *lyc-values*))))
+  (format t *fstring-simple* (join (reverse *lyc-values*) " ")))
 (defl desc (symbol) nil "describe a function" (lyc-describe symbol))
 (defl exit () nil "exit lyc" (exit))
 
 (defl history () nil "print input history"
-  (format t *fstring-simple-nl* (join " " (reverse *lyc-history*))))
+  (format t *fstring-simple-nl* (join (reverse *lyc-history*) " ")))
 
 (defl acc (func) result
   "accumulate all values with `func', leaving only result"
@@ -469,22 +469,22 @@ Helper for }, +}, and *}."
   (table-get *lyc-user-variables* symbol))
 ;; (defl vars () nil "show all user variables"
 ;;   (format t *fstring-simple*
-;; 	  (join " "
-;;                 (sort (loop for key being the hash-keys in *lyc-user-variables*
+;; 	  (join (sort (loop for key being the hash-keys in *lyc-user-variables*
 ;;                         using (hash-value val)
 ;;                         collect (format nil *fstring-vars* key val))
-;;                       #'string<))))
+;;                       #'string<)
+;;                 " ")))
 
 (defl vars () nil "show all user variables"
   (format t *fstring-simple*
-	  (join " "
-                (sort (let (descs)
+	  (join (sort (let (descs)
                         (dolist (key (table-keys *lyc-user-variables*))
                           (push (format nil *fstring-vars*
                                         key (*lyc-user-variables* key))
                                 descs))
                         descs)
-                      #'string<))))
+                      #'string<)
+                " ")))
 
 
 ;; run a function; return non-nil if we have a value worth showing

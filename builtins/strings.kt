@@ -5,13 +5,6 @@ package org.w21.lyk
 val stringSeparatorKey = intern("sep")
 val defaultStringSep = makeString(" ")
 
-fun string_from_list(items: LObject, sep: String = ""): LObject {
-    var strings = mutableListOf<String>()
-    for (item in items) {
-        strings.add(item.toString())
-    }
-    return makeString(strings.joinToString(sep))
-}
 
 /// builtin string
 /// fun     bi_string
@@ -28,7 +21,7 @@ fun string_from_list(items: LObject, sep: String = ""): LObject {
 @Suppress("UNUSED_PARAMETER")
 fun bi_string(args: LObject, kwArgs: Map<LSymbol , LObject>,
               suppp: Map<LSymbol, Boolean>): LObject {
-    return string_from_list(args)
+    return makeString(args.joinToString(""))
 }
 
 /// builtin make-string
@@ -83,14 +76,16 @@ fun bi_make_string(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// ret     string
 /// special no
 /// doc {
-/// Make a string from all items, separated by `sep` and return it.
+/// Make a string from all `items` (a sequence), separated by `sep`
+/// and return it.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_join(args: LObject, kwArgs: Map<LSymbol, LObject>,
             suppp: Map<LSymbol, Boolean>): LObject {
     val (items, sep) = args2(args)
-    return string_from_list(items, sep.toString())
+    seqArg(items, " items")
+    return makeString(items.joinToString(sep.toString()))
 }
 
 /// builtin regexp
