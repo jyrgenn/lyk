@@ -21,8 +21,8 @@
 (defvar *fstring-simple* "~A")
 (defvar *fstring-simple-nl* "~A~%")
 (defvar *fstring-repl* "~%> ")
-(defvar *fstring-vars* "%10s: ~A~%")
-(defvar *fstring-stackframe* "~2A:  ~A~A~%")
+(defvar *fstring-vars* "~10A: ~A~%")
+(defvar *fstring-stackframe* "~3D:  ~A~A~%")
 (defvar *fstring-error* "~%error: ~A~%")
 (defvar *fstring-error-nosymbol* "~A is not a function symbol~%")
 (defvar *fstring-too-few-args*
