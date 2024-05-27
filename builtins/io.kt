@@ -762,3 +762,81 @@ fun bi_open_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return Nil
 }
 
+
+val startKWSym = intern(":start")
+val endKWSym = intern(":end")
+
+fun write_string_line(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                      newline: Boolean): LString {
+    val (obj, str) = args2(args)
+    val start = kwArgs[startKWSym] ?: Nil
+    val end = kwArgs[endKWSym] ?: Nil
+    
+    val string = if (obj is LString) {
+        obj.the_string
+    } else {
+        obj.toString()
+    }
+    var print_string: String
+    val stream = if (str === Nil) stdout else streamArg(str, " stream")
+    if (start !== Nil || end !== Nil) {
+        val the_start = if (start === Nil) 0 else intArg(start,
+                                                         " start keyword")
+        if (end === Nil) {
+            print_string = string.substring(the_start)
+        } else {
+            val the_end = min(string.length, intArg(end, " end keyword"))
+            print_string = string.substring(the_start, the_end)
+        }
+    } else {
+        print_string = string
+    }
+    stream.write(print_string)
+    if (newline) {
+        stream.println()
+    }
+    return makeString(string)
+}
+
+/// builtin write-string
+/// fun     bi_write_string
+/// std     string
+/// key     
+/// opt     output-stream
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Write the `string` to `output-stream`.
+/// Keyword parameters `start` and `end`, if specified, denote the start
+/// and end positions of the portion of `string` being written.
+/// Return `string`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_write_string(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
+    return write_string_line(args, kwArgs, newline = false)
+}
+
+/// builtin write-line
+/// fun     bi_write_line
+/// std     string
+/// key     "start" to Nil, "end" to Nil
+/// opt     output-stream
+/// rest    
+/// ret     string
+/// special no
+/// doc {
+/// Write the `string` to `output-stream`, then output a newline afterwards. 
+/// Keyword parameters `start` and `end`, if specified, denote the start
+/// and end positions of the portion of `string` being written.
+/// Return `string`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_write_line(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                    suppp: Map<LSymbol, Boolean>): LObject {
+    return write_string_line(args, kwArgs, newline = true)
+}
+
