@@ -48,45 +48,6 @@ class LVector(elems: LObject): LObject(), LSeq {
     }
     override fun toString() = desc(null)
     
-    override val length get() = the_vector.size
-
-    override fun delete(item: LObject): LObject {
-        val lc = ListCollector()
-        
-        for (elem in this) {
-            if (!elem.equal(item)) {
-                lc.add(elem)
-            }
-        }
-        return LVector(lc.list)
-    }
-
-
-    override fun getAt(index: Int, default: LObject?): LObject {
-        if (index >= 0 && index < the_vector.size) {
-            return the_vector[index]
-        }
-        if (default == null) {
-            throw IndexError(this, index)
-        }
-        return default
-    }
-
-    fun getAtOptional(index: Int): LObject? {
-        if (index >= 0 && index < the_vector.size) {
-            return the_vector[index]
-        }
-        return null
-    }
-
-    override fun setAt(index: Int, value: LObject) {
-            if (index >= 0 && index < the_vector.size) {
-                the_vector[index] = value
-                return
-            }
-            throw IndexError(this, index)
-        }
-
     override fun equal(other: LObject): Boolean {
         if (this === other) {
             return true
@@ -104,6 +65,7 @@ class LVector(elems: LObject): LObject(), LSeq {
         }
         return true
     }
+
     override operator fun component1() = the_vector.get(0)
     override operator fun component2() = the_vector.get(1)
     operator fun component3() = the_vector.get(2)
@@ -112,34 +74,110 @@ class LVector(elems: LObject): LObject(), LSeq {
     operator fun component6() = the_vector.get(5)
     operator fun component7() = the_vector.get(6)
 
-    override fun elements(): LObject {
-        return list2lisp(the_vector)
+    class VectorIterator(val vector: LVector): Iterator<LObject> {
+        var nextIndex = 0
+        
+        override fun hasNext(): Boolean {
+            return nextIndex < vector.the_vector.size
+        }
+
+        override fun next(): LObject {
+            return vector.getAt(nextIndex++)
+        }
     }
 
+    /////// Implementation of the LSeq interface ///////
+
+    // Get the element of the sequence at the specified index;
+    // return the default value if index isn't in the sequence,
+    // or if the default value is null, raise an error.
+    override fun getAt(index: Int, default: LObject?): LObject {
+        if (index >= 0 && index < the_vector.size) {
+            return the_vector[index]
+        }
+        if (default == null) {
+            throw IndexError(this, index)
+        }
+        return default
+    }
+    
+    // Set the element of the sequence at the specified index to the
+    // specified value; raise an error if the index isn't in the
+    // sequence or if the sequence is immutable (meaning Strings, at
+    // least for now).
+    @Suppress("UNUSED_PARAMETER")
+    override fun setAt(index: Int, value: LObject) {
+            if (index >= 0 && index < the_vector.size) {
+                the_vector[index] = value
+                return
+            }
+            throw IndexError(this, index)
+        }
+
+    // Return an iterator for the sequence.
+    override operator fun iterator(): Iterator<LObject> = VectorIterator(this)
+
+    // Return a (shallow) copy of the sequence.
+    // this is a null operation for a string, because identical content means
+    // identical string object anyway
     override fun copy(): LObject {
         return LVector(elements())
     }
 
-    override fun subseq(start: Int, end: Int?): LObject {
-        val real_end = (if (end == null) {
-                            the_vector.size
-                        } else {
-                            end
-                        })
-        if (start < 0 || start > the_vector.size) {
-            throw IndexError(this, start)
+    // Return a list with the elements of the sequence.
+    override fun elements(): LObject {
+        return list2lisp(the_vector)
+    }
+
+    // Return a subsequence of the sequence. If start is null, start
+    // at index 0; if end is null, end at the end of the sequence.
+    // If both are null, return the sequence itself; otherwise, the
+    // subsequence is a copy of the original sequence structure.
+    override fun subseq(start: Int?, end: Int?): LObject {
+        if (start == null) {
+            if (end == null) {
+                return this
+            }
+        }
+        val real_end = end ?: the_vector.size
+        val real_start = start ?: 0
+        if (real_start < 0 || real_start > the_vector.size) {
+            throw IndexError(this, real_start)
         }
         if (real_end < 0 || real_end > the_vector.size) {
             throw IndexError(this, real_end)
         }
-        if (start == end) {
+        if (real_start == real_end) {
             return LVector(Nil)
         }
-        return LVector(the_vector.subList(start, real_end))
+        return LVector(the_vector.subList(real_start, real_end))
     }
 
+    // Return a reversed copy of the sequence. The sequence is not
+    // altered.
+    override fun reversed(): LObject {
+        return LVector(the_vector.reversed())
+    }
+
+    // Return a copy of the sequence withe the specified item
+    // deleted. The item is identified using equal().
+    override fun delete(item: LObject): LObject {
+        val lc = ListCollector()
+        
+        for (elem in this) {
+            if (!elem.equal(item)) {
+                lc.add(elem)
+            }
+        }
+        return LVector(lc.list)
+    }
+
+    // Find the item in the sequence for which the predicate is
+    // true. Return a Pair of the item and its index in the
+    // sequence. If no such item is found, return a Pair of Nil and
+    // -1.
     override fun find(start: Int, end: Int?, last: Boolean,
-                      predicate: (LObject) -> Boolean): Pair<LObject, Int> {
+             predicate: (LObject) -> Boolean): Pair<LObject, Int> {
         var result: Pair<LObject, Int> = Pair(Nil, -1)
         var index = -1
         for (elem in the_vector) {
@@ -161,22 +199,7 @@ class LVector(elems: LObject): LObject(), LSeq {
         return result
     }
 
-
-    override fun reversed(): LObject {
-        return LVector(the_vector.reversed())
-    }
-
-    class VectorIterator(val vector: LVector): Iterator<LObject> {
-        var nextIndex = 0
-        
-        override fun hasNext(): Boolean {
-            return nextIndex < vector.the_vector.size
-        }
-
-        override fun next(): LObject {
-            return vector.getAt(nextIndex++)
-        }
-    }
-
-    override fun iterator(): Iterator<LObject> = VectorIterator(this)
+    // The length of the sequence, read only.
+    override val length get() = the_vector.size
+    
 }

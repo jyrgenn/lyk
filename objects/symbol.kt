@@ -100,21 +100,6 @@ class LSymbol(val name: String, val immutable: Boolean,
 
     override fun isList() = this === Nil
 
-    override val length: Int
-        get() {
-            if (this === Nil) {
-                return 0
-            }
-            return super.length
-        }
-    
-    override fun delete(item: LObject): LObject {
-        if (this === Nil) {
-            return Nil
-        }
-        throw TypeError("not a sequence: $this")
-    }
-
     override fun isKeyword(): Boolean {
         return name.startsWith(':')
     }
@@ -183,58 +168,6 @@ class LSymbol(val name: String, val immutable: Boolean,
         return result
     }
 
-    override fun getAt(index: Int, default: LObject?): LObject {
-        if (this === Nil) {
-            if (default == null) {
-                throw IndexError(this, index)
-            }
-            return default
-        }
-        throw TypeError("not a sequence: $this")
-    }
-
-    override fun setAt(index: Int, value: LObject) {
-        if (this === Nil) {
-            throw IndexError(this, index)
-        }
-        throw TypeError("not a sequence: $this")
-    }
-
-    override fun elements(): LObject {
-        if (this === Nil) {
-            return Nil
-        }
-        throw TypeError("not a sequence: $this")
-    }
-
-    override fun copy() = elements()
-
-    override fun subseq(start: Int, end: Int?): LObject {
-        if (this === Nil) {
-            if (start == 0 && (end == 0 || end == null)) {
-                return Nil
-            }
-            throw IndexError(
-                "invalid indexes [$start, ${end ?: "nil"}) for empty list")
-        }
-        throw TypeError("not a sequence: $this")
-    }
-
-    override fun find(start: Int, end: Int?, last: Boolean,
-                      predicate: (LObject) -> Boolean): Pair<LObject, Int> {
-        if (this === Nil) {
-            return Pair(Nil, -1)
-        }
-        throw TypeError("not a sequence: $this")
-    }
-
-    override fun reversed(): LObject {
-        if (this === Nil) {
-            return Nil
-        }
-        throw TypeError("not a sequence: $this")
-    }
-
     override var car: LObject
         get() {
             if (this === Nil) {
@@ -295,7 +228,102 @@ class LSymbol(val name: String, val immutable: Boolean,
         }
     }
 
-    override fun iterator(): Iterator<LObject> = SymbolIterator(this)
+    /////// Implementation of the LSeq interface ///////
+
+    // Get the element of the sequence at the specified index;
+    // return the default value if index isn't in the sequence,
+    // or if the default value is null, raise an error.
+    override fun getAt(index: Int, default: LObject?): LObject {
+        if (this === Nil) {
+            if (default == null) {
+                throw IndexError(this, index)
+            }
+            return default
+        }
+        throw TypeError("not a sequence: $this")
+    }
+    
+    // Set the element of the sequence at the specified index to the
+    // specified value; raise an error if the index isn't in the
+    // sequence or if the sequence is immutable (meaning Strings, at
+    // least for now).
+    @Suppress("UNUSED_PARAMETER")
+    override fun setAt(index: Int, value: LObject) {
+        if (this === Nil) {
+            throw IndexError(this, index)
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
+    // Return an iterator for the sequence.
+    override operator fun iterator(): Iterator<LObject> = SymbolIterator(this)
+
+    // Return a (shallow) copy of the sequence.
+    // this is a null operation for a string, because identical content means
+    // identical string object anyway
+    override fun copy() = elements()
+
+    // Return a list with the elements of the sequence.
+    override fun elements(): LObject {
+        if (this === Nil) {
+            return Nil
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
+    // Return a subsequence of the sequence. If start is null, start
+    // at index 0; if end is null, end at the end of the sequence.
+    // If both are null, return the sequence itself; otherwise, the
+    // subsequence is a copy of the original sequence structure.
+    override fun subseq(start: Int?, end: Int?): LObject {
+        if (this === Nil) {
+            if (start == 0 && (end == 0 || end == null)) {
+                return Nil
+            }
+            throw IndexError(
+                "invalid indexes [$start, ${end ?: "nil"}) for empty list")
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
+    // Return a reversed copy of the sequence. The sequence is not
+    // altered.
+    override fun reversed(): LObject {
+        if (this === Nil) {
+            return Nil
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
+    // Return a copy of the sequence withe the specified item
+    // deleted. The item is identified using equal().
+    override fun delete(item: LObject): LObject {
+        if (this === Nil) {
+            return Nil
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
+    // Find the item in the sequence for which the predicate is
+    // true. Return a Pair of the item and its index in the
+    // sequence. If no such item is found, return a Pair of Nil and
+    // -1.
+    override fun find(start: Int, end: Int?, last: Boolean,
+             predicate: (LObject) -> Boolean): Pair<LObject, Int> {
+        if (this === Nil) {
+            return Pair(Nil, -1)
+        }
+        throw TypeError("not a sequence: $this")
+    }
+
+    // The length of the sequence, read only.
+    override val length: Int
+        get () {
+            if (this === Nil) {
+                return 0
+            }
+            return super.length
+        }
 }
 
 fun intern(name: String, immutable_and_selfvalued: Boolean = false) =

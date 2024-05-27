@@ -113,133 +113,6 @@ class LCons(override var car: LObject,
         return sb.toString()
     }
 
-    override val length: Int
-        get () {
-            var len = 0
-            var cell: LObject = this
-            while (cell is LCons) {
-                len++
-                cell = cell.cdr
-            }
-            return len
-        }
-    
-    override fun delete(item: LObject): LObject {
-        val lc = ListCollector()
-        
-        for (elem in this) {
-            if (!elem.equal(item)) {
-                lc.add(elem)
-            }
-        }
-        return lc.list
-    }
-
-    override fun getAt(index: Int, default: LObject?): LObject {
-        var l: LObject = this
-        var i = 0
-        while (l is LCons) {
-            if (i++ == index) {
-                return l.car
-            }
-            l = l.cdr
-        }
-        if (default == null) {
-            throw IndexError(this, index)
-        }
-        return default
-    }
-    override fun setAt(index: Int, value: LObject) {
-        var l: LObject = this
-        var i = 0
-        while (l is LCons) {
-            if (i++ == index) {
-                l.car = value
-                return
-            }
-            l = l.cdr
-        }
-        throw IndexError(this, index)
-    }
-
-    override fun elements(): LObject {
-        var l: LObject = this
-        return collectedList {
-            while (l is LCons) {
-                it.add(l.car)
-                l = l.cdr
-            }
-            if (l !== Nil) {
-                throw TypeError("not a proper list: $this")
-            }
-        }
-    }
-
-    override fun copy() = elements()
-
-    override fun subseq(start: Int, end: Int?): LObject {
-        if (start < 0) {
-            IndexError(this, start)
-        }
-        if (end != null && end < 0) {
-            IndexError(this, end)
-        }
-        if (start == end) {
-            return Nil
-        }
-        var l: LObject = this
-        var lc = ListCollector()
-        var i = 0
-        while (l is LCons) {
-            if (end != null && i >= end) {
-                break
-            }
-            if (i >= start) {
-                lc.add(l.car)
-            }
-            i++
-            l = l.cdr
-        }
-        if (i <= start) {
-            IndexError(this, start)
-        }
-        if (end != null && i < end) {
-            IndexError(this, end)
-        }
-        return lc.list
-    }
-
-    override fun find(start: Int, end: Int?, last: Boolean,
-                      predicate: (LObject) -> Boolean): Pair<LObject, Int> {
-        var result: Pair<LObject, Int> = Pair(Nil, -1)
-        var index = -1
-        for (elem in this) {
-            index++
-            if (index < start) {
-                continue
-            }
-            if (end != null && index >= end) {
-                break
-            }
-            if (predicate(elem)) {
-                if (last) {
-                    result = Pair(elem, index)
-                } else {
-                    return Pair(elem, index)
-                }
-            }
-        }
-        return result
-    }
-
-    override fun reversed(): LObject {
-        var l: LObject = Nil
-        for (elem in this) {
-            l = LCons(elem, l)
-        }
-        return l
-    }
-
     override fun equal(other: LObject): Boolean {
         return other is LCons
             && car.equal(other.car)
@@ -273,5 +146,156 @@ class LCons(override var car: LObject,
         }
     }
 
-    override fun iterator(): Iterator<LObject> = ConsIterator(this)
+    /////// Implementation of the LSeq interface ///////
+
+    // Get the element of the sequence at the specified index;
+    // return the default value if index isn't in the sequence,
+    // or if the default value is null, raise an error.
+    override fun getAt(index: Int, default: LObject?): LObject {
+        var l: LObject = this
+        var i = 0
+        while (l is LCons) {
+            if (i++ == index) {
+                return l.car
+            }
+            l = l.cdr
+        }
+        if (default == null) {
+            throw IndexError(this, index)
+        }
+        return default
+    }
+    
+    // Set the element of the sequence at the specified index to the
+    // specified value; raise an error if the index isn't in the
+    // sequence or if the sequence is immutable (meaning Strings, at
+    // least for now).
+    override fun setAt(index: Int, value: LObject) {
+        var l: LObject = this
+        var i = 0
+        while (l is LCons) {
+            if (i++ == index) {
+                l.car = value
+                return
+            }
+            l = l.cdr
+        }
+        throw IndexError(this, index)
+    }
+
+    // Return an iterator for the sequence.
+    override operator fun iterator(): Iterator<LObject> = ConsIterator(this)
+
+    // Return a (shallow) copy of the sequence.
+    override fun copy() = elements()
+
+    // Return a list with the elements of the sequence.
+    override fun elements(): LObject {
+        var l: LObject = this
+        return collectedList {
+            while (l is LCons) {
+                it.add(l.car)
+                l = l.cdr
+            }
+            if (l !== Nil) {
+                throw TypeError("not a proper list: $this")
+            }
+        }
+    }
+
+    // Return a subsequence of the sequence. If start is null, start
+    // at index 0; if end is null, end at the end of the sequence.
+    // If both are null, return the sequence itself; otherwise, the
+    // subsequence is a copy of the original sequence structure.
+    override fun subseq(start: Int?, end: Int?): LObject {
+        if (start == null) {
+            if (end == null) {
+                return this
+            } else if (end < 0) {
+                IndexError(this, end)
+            }
+        } else {
+            if (start < 0) {
+                IndexError(this, start)
+            }
+        }
+        var lc = ListCollector()
+        var i = 0
+        for (elem in this) {
+            if (i >= start!! && (end == null || i < end)) {
+                lc.add(elem)
+            }
+            i++
+        }
+        if (i <= start!!) {
+            IndexError(this, start)
+        }
+        if (end != null && i < end) {
+            IndexError(this, end)
+        }
+        return lc.list
+    }
+
+    // Return a reversed copy of the sequence. The sequence is not
+    // altered.
+    override fun reversed(): LObject {
+        var l: LObject = Nil
+        for (elem in this) {
+            l = LCons(elem, l)
+        }
+        return l
+    }
+
+    // Return a copy of the sequence withe the specified item
+    // deleted. The item is identified using equal().
+    override fun delete(item: LObject): LObject {
+        val lc = ListCollector()
+        
+        for (elem in this) {
+            if (!elem.equal(item)) {
+                lc.add(elem)
+            }
+        }
+        return lc.list
+    }
+
+    // Find the item in the sequence for which the predicate is
+    // true. Return a Pair of the item and its index in the
+    // sequence. If no such item is found, return a Pair of Nil and
+    // -1.
+    override fun find(start: Int, end: Int?, last: Boolean,
+             predicate: (LObject) -> Boolean): Pair<LObject, Int> {
+        var result: Pair<LObject, Int> = Pair(Nil, -1)
+        var index = -1
+        for (elem in this) {
+            index++
+            if (index < start) {
+                continue
+            }
+            if (end != null && index >= end) {
+                break
+            }
+            if (predicate(elem)) {
+                if (last) {
+                    result = Pair(elem, index)
+                } else {
+                    return Pair(elem, index)
+                }
+            }
+        }
+        return result
+    }
+
+    // The length of the sequence, read only.
+    override val length: Int
+        get () {
+            var len = 0
+            var l: LObject = this
+            while (l is LCons) {
+                len++
+                l = l.cdr
+            }
+            return len
+        }
+    
 }
