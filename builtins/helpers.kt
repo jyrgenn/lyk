@@ -26,12 +26,14 @@ fun outputStreamArg(arg: LObject, desc: String = ""): LStream {
 
 fun streamArg(arg: LObject, desc: String = ""): LStream { 
     return (arg as? LStream) ?:
-        throw ArgumentError("$calledFunctionName$desc argument is not a stream: $arg")
+        throw ArgumentError(
+            "$calledFunctionName$desc argument is not a stream: $arg")
 }
 
 fun charArg(arg: LObject, desc: String = ""): LChar { 
     return (arg as? LChar) ?:
-        throw ArgumentError("$calledFunctionName$desc argument is not a char: $arg")
+        throw ArgumentError(
+            "$calledFunctionName$desc argument is not a char: $arg")
 }
 
 fun charOrStringArg(arg: LObject, desc: String = ""): Char {

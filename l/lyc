@@ -13,7 +13,7 @@
 (defvar *lyc-history-file* (string (getenv "HOME") "/.lyc-history"))
 
 ;; format strings for lyk
-(defvar *fstring-prompt* "[~A]; ") ;input prompt with stack size argument
+(defvar *fstring-prompt* "[~D]; ") ;input prompt with stack size argument
 (defvar *fstring-stack-format* "~A -> ~A: ~A")
 (defvar *fstring-describe* "~A: ~A arg~A, ~A result~%  ~A~%")
 (defvar *fstring-functions* "~A~%")
@@ -22,7 +22,7 @@
 (defvar *fstring-simple-nl* "~A~%")
 (defvar *fstring-repl* "~%> ")
 (defvar *fstring-vars* "~10A: ~A~%")
-(defvar *fstring-stackframe* "~3D:  ~A~A~%")
+(defvar *fstring-stackframe* "~4D:  ~A~A~%")
 (defvar *fstring-error* "~%error: ~A~%")
 (defvar *fstring-error-nosymbol* "~A is not a function symbol~%")
 (defvar *fstring-too-few-args*
@@ -152,6 +152,11 @@ Example:
       (setf result (* result i))
       (incf i))
     result))
+
+(defun fac (n)
+  (let ((result 1))
+    (dotimes1 (i n result)
+      (setf result (* result i)))))
 
 ;; combinations, as pick 6 from 49 (n over k)
 
