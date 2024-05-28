@@ -15,11 +15,12 @@ type ::= "C" | "%"| "&" | "|" | "~"
 
 [x] Tilde C: Character
  ~C   : the character itself
- ~:C  : like ~C for printing characters, spelled out for others (e.g. #\Rubout)
+ ~:C  : like ~C for printing characters, spelled out for others
+        (e.g. #\Rubout)
  ~@C  : spelled out for all, for the Lisp reader to read
- ~:@C : like ~:C, "and then if the character requires unusual shift keys on the
-        keyboard to type it, this fact is mentioned." Fsck that.
-        Will be (more or less) gracefully ignored.
+ ~:@C : like ~:C, "and then if the character requires unusual shift
+        keys on the keyboard to type it, this fact is mentioned."
+        Fsck that. Will be (more or less) gracefully ignored.
 
 [x] Tilde %: print a #\Newline; with ~n%, print n newlines.
 
@@ -36,15 +37,15 @@ Radix Control
 
 all implemented because they are important and/or easy to implement 
 
-[·] Tilde R: Radix
-    ~radix,mincol,padchar,commachar,comma-interval[flags]R
-         where : means print commachar ever comma-interval digits,
-           and @ means *always* print the sign, also for
-                       non-negative numbers
-    ~R   : cardinal English number: four (very restricted range)
-    ~:R  : ordinal English number: fourth (very restricted range)
-    ~@R  : Roman numeral: IV (1..3999 for historical reasons)
-    ~:@R : old Roman numeral: IIII (1..3999 for historical reasons)
+[·] Tilde R: Radix  
+    ~radix,mincol,padchar,commachar,comma-interval[flags]R  
+         where : means print commachar ever comma-interval digits,  
+           and @ means *always* print the sign, also for  
+                       non-negative numbers  
+    ~R   : cardinal English number: four (very restricted range)  
+    ~:R  : ordinal English number: fourth (very restricted range)  
+    ~@R  : Roman numeral: IV (1..3999 for historical reasons)  
+    ~:@R : old Roman numeral: IIII (1..3999 for historical reasons)  
 
     Roman numbers were much easier to implement than expected.
 
