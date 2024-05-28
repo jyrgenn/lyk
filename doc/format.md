@@ -14,13 +14,13 @@ type ::= "C" | "%"| "&" | "|" | "~"
 
 
 [x] Tilde C: Character
- ~C   : the character itself
- ~:C  : like ~C for printing characters, spelled out for others
-        (e.g. #\Rubout)
- ~@C  : spelled out for all, for the Lisp reader to read
- ~:@C : like ~:C, "and then if the character requires unusual shift
-        keys on the keyboard to type it, this fact is mentioned."
-        Fsck that. Will be (more or less) gracefully ignored.
+ ~C   : the character itself  
+ ~:C  : like ~C for printing characters, spelled out for others  
+        (e.g. #\Rubout)  
+ ~@C  : spelled out for all, for the Lisp reader to read  
+ ~:@C : like ~:C, "and then if the character requires unusual shift  
+        keys on the keyboard to type it, this fact is mentioned."  
+        Fsck that. Will be (more or less) gracefully ignored.  
 
 [x] Tilde %: print a #\Newline; with ~n%, print n newlines.
 
