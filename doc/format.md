@@ -34,31 +34,38 @@ type ::= "C" | "%"| "&" | "|" | "~"
 Radix Control
 -------------
 
+all implemented because they are important and/or easy to implement 
+
 [·] Tilde R: Radix
     ~radix,mincol,padchar,commachar,comma-interval[flags]R
          where : means print commachar ever comma-interval digits,
            and @ means *always* print the sign, also for
                        non-negative numbers
-    ~R   : cardinal English number: four
-    ~:R  : ordinal English number: fourth
-    ~@R  : Roman numeral: IV
-    ~:@R : old Roman numeral: IIII
+    ~R   : cardinal English number: four (very restricted range)
+    ~:R  : ordinal English number: fourth (very restricted range)
+    ~@R  : Roman numeral: IV (1..3999 for historical reasons)
+    ~:@R : old Roman numeral: IIII (1..3999 for historical reasons)
 
-[ ] Tilde D: Decimal
+    Roman numbers were much easier to implement than expected.
 
-[ ] Tilde B: Binary
+[x] Tilde D: Decimal
 
-[ ] Tilde O: Octal
+[x] Tilde B: Binary
 
-[ ] Tilde X: Hexadecimal
+[x] Tilde O: Octal
+
+[x] Tilde X: Hexadecimal
 
 
 Floating Point
 --------------
 
-[ ] Tilde F: Fixed-Format Floating-Point
+want to implement F (done), E (started, on hold), and G; not so sure
+about $
 
-[ ] Tilde E: Exponential Floating-Point
+[x] Tilde F: Fixed-Format Floating-Point
+
+[•] Tilde E: Exponential Floating-Point
 
 [ ] Tilde G: General Floating-Point
 
@@ -68,15 +75,23 @@ Floating Point
 Printer Operations
 ------------------
 
-[x] Tilde A: Aesthetic
+[x] Tilde A: Aesthetic, the most basic and at the same time the most
+    important format directive, as it can be used for everything
 
-[x] Tilde S: Standard
+[x] Tilde S: Standard, also pretty basic while not quite as commonly
+    in use as tilde A
 
-[-] Tilde W: Write
+[-] Tilde W: Write -- rejected because it assumes too much of the CL
+    printer concept that lyk has not
 
 
 Pretty Printer Operations
 -------------------------
+
+all rejected because they are too complex to implement; I *may*
+change my mind about tilde /, though, as it sounds relatively easy
+and could be fun to have; would need some special-casing in the
+format string parser
 
 [-] Tilde _: Conditional Newline
 
@@ -85,10 +100,18 @@ Pretty Printer Operations
 [-] Tilde I: Indent
 
 [-] Tilde /: Call Function
+    A formatting function would look like this:
+
+      (defun ff (stream arg colon-flag atsign-flag &rest params)
+        (format nil ">>~S<<" arg))
+
+    http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/Body/sec_22-3-5-4.html
 
 
 Layout Control
 --------------
+
+all rejected because they are too complex to implement
 
 [-] Tilde T: Tabulate
 
@@ -99,6 +122,13 @@ Layout Control
 
 Control-Flow Operations
 -----------------------
+
+all rejected because they are too complex to implement; also, the
+idea of having a separate programming language[1] seems overblown
+(but hey, that is CL, right?)
+
+[1] according to some blog post 
+    http://arcanesentiment.blogspot.com/2009/02/value-of-extensible-format-strings.html
 
 [-] Tilde *: Go-To
 
@@ -125,6 +155,9 @@ Miscellaneous Operations
 
 Miscellaneous Pseudo-Operations
 -------------------------------
+
+tilde newline makes sense and is relatively easy; the others are
+tied to the control-flow things I don't implement anyway
 
 [-] Tilde ;: Clause Separator
 
