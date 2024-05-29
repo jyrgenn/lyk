@@ -42,17 +42,17 @@ The lines begin with a triple slash, then, after a blank, a keyword,
 then, after whitespace, the argument. The multi-line syntax of
 `/// doc {` is a little different; see below.
 
-Keyword   | Purpose
-------------------------------------------------------------------
-`builtin` | the function name in Lisp
-`fun`     | name of the implementation of the function in Kotlin
-`std`     | the mandatory standard arguments as Lisp symbols
-`key`     | keyword arguments, with default values (see below)
-`opt`     | optional arguments, with default values (see below)
-`rest`    | the argument for all additional arguments
-`ret`     | a brief description of the return value
-`special` | `no` for a function, `yes` for a special form
-`doc {`   | the docstring, with a terse summary in the first line
+| Keyword   | Purpose                                               |
+| ----------|-------------------------------------------------------|
+| `builtin` | the function name in Lisp                             |
+| `fun`     | name of the implementation of the function in Kotlin  |
+| `std`     | the mandatory standard arguments as Lisp symbols      |
+| `key`     | keyword arguments, with default values (see below)    |
+| `opt`     | optional arguments, with default values (see below)   |
+| `rest`    | the argument for all additional arguments             |
+| `ret`     | a brief description of the return value               |
+| `special` | `no` for a function, `yes` for a special form         |
+| `doc {`   | the docstring, with a terse summary in the first line |
 
 The concrete syntax to specify these is a bit messy, a slightly
 incoherent mix of Lisp and Kotlin. Maybe a future version of
@@ -114,8 +114,9 @@ extent of the mess is clear. `:–}`
 > comment sign (`///`), and ended by a line starting with `/// }`.
 > The first line of the docstring should be enough to give the user
 > an idea what the function does; following lines can provide
-> further all details.  
+> further all details. By convention, the names of the parameter
+> symbols are in backquotes.  
 > Example: `/// doc {  
-/// Return the contents of the address part of the `list` register.  
+/// Return the contents of the address part of the \`list\` register.  
 /// The car of nil is nil.  
 /// }  
