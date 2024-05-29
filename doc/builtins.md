@@ -43,7 +43,7 @@ then, after whitespace, the argument. The multi-line syntax of
 `/// doc {` is a little different; see below.
 
 Keyword   | Purpose
-----------+-------------------------------------------------------
+------------------------------------------------------------------
 `builtin` | the function name in Lisp
 `fun`     | name of the implementation of the function in Kotlin
 `std`     | the mandatory standard arguments as Lisp symbols
@@ -115,7 +115,7 @@ extent of the mess is clear. `:–}`
 > The first line of the docstring should be enough to give the user
 > an idea what the function does; following lines can provide
 > further all details.  
-> Example: `/// doc {
-/// Return the contents of the address part of the `list` register.
-/// The car of nil is nil.
-/// }
+> Example: `/// doc {  
+/// Return the contents of the address part of the `list` register.  
+/// The car of nil is nil.  
+/// }  
