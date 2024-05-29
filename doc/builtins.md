@@ -62,17 +62,23 @@ extent of the mess is clear. `:–}`
 
 *`builtin`*
 > This is the name of the function in Lisp, i.e. a symbol.  
-> Example: `/// builtin  cdr`
+> Example:
+
+    /// builtin  cdr
 
 *`fun`*
 > The name of the Kotlin function implementing the builtin function,
 > a Kotlin identifier. By convention, these all begin with `bi_`.  
-> Example: `/// fun  bi_cdr`
+> Example:
+
+    /// fun  bi_cdr
 
 *`std`*
 > The names of the mandatory standard arguments of the function, if
 > any, as Lisp symbols separated by whitespace.  
-> Example: `/// std  table key value`
+> Example:
+
+    /// std  table key value
 
 *`key`*
 > The keyword arguments, if any, with default values. Syntactically,
@@ -85,7 +91,9 @@ extent of the mess is clear. `:–}`
 > an LObject -- for numbers, `makeNumber(0)`, for strings
 > `makeString(" ")`, for symbols, `intern(":error")` etc. Multiple
 > keywords are separated by commas.  
-> Example: `///key  "k1" to makeNumber(3), "input" to Nil`
+> Example:
+
+    ///key  "k1" to makeNumber(3), "input" to Nil
 
 *`opt`*
 > The optional arguments, if any, with default values, a mapping
@@ -93,20 +101,28 @@ extent of the mess is clear. `:–}`
 > above at *`key`*). Here, though, the symbol is not quoted as a
 > string, and the default value follows separated by whitespace. If
 > the default value is Nil, it can be omitted.  
-> Example: `///opt  separator makeString(" "), value-table`
+> Example:
+
+    ///opt  separator makeString(" "), value-table
 
 *`rest`*
 > The argument for all additional arguments, if intended, a Lisp
 > symbol.  
-> Example: `/// rest  bodyforms`
+> Example:
+
+    /// rest  bodyforms
 
 *`ret`*
 > A brief description of the return value.  
-> Example: `/// ret  string`
+> Example:
+
+    /// ret  string
 
 *`special`*
 > This is `no` for a function, `yes` for a special form.  
-> Example: `///special  no`
+> Example:
+
+    ///special  no
 
 *`doc {`*
 > The docstring of the function, starting on the following line.
