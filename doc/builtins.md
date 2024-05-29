@@ -61,22 +61,20 @@ extent of the mess is clear. `:–}`
 
 
 *`builtin`*
-> This is the name of the function in Lisp, i.e. a symbol.  
-> Example:
+> This is the name of the function in Lisp, i.e. a symbol. Example:
 
     /// builtin  cdr
 
 *`fun`*
 > The name of the Kotlin function implementing the builtin function,
-> a Kotlin identifier. By convention, these all begin with `bi_`.  
+> a Kotlin identifier. By convention, these all begin with `bi_`.
 > Example:
 
     /// fun  bi_cdr
 
 *`std`*
 > The names of the mandatory standard arguments of the function, if
-> any, as Lisp symbols separated by whitespace.  
-> Example:
+> any, as Lisp symbols separated by whitespace. Example:
 
     /// std  table key value
 
@@ -86,41 +84,36 @@ extent of the mess is clear. `:–}`
 > symbol) to the default value, a Kotlin expression for an LObject.
 > The symbol must be given *without* the colon.
 >
-> For the the value, either a Kotlin variable/value name must
-> be used (like `T` or `Nil`), or something else that evaluates to
-> an LObject -- for numbers, `makeNumber(0)`, for strings
-> `makeString(" ")`, for symbols, `intern(":error")` etc. Multiple
-> keywords are separated by commas.  
-> Example:
+> For the the value, either a Kotlin variable/value name must be
+> used (like `T` or `Nil`), or something else that evaluates to an
+> LObject -- for numbers, `makeNumber(0)`, for strings
+> `makeString(" ")`, for symbols, `intern(":error")` etc. Multiple
+> keywords are separated by commas. Example:
 
-    ///key  "k1" to makeNumber(3), "input" to Nil
+    /// key  "k1" to makeNumber(3), "input" to Nil
 
 *`opt`*
 > The optional arguments, if any, with default values, a mapping
 > from a Lisp symbol, written as a symbol, to a Kotlin value (see
 > above at *`key`*). Here, though, the symbol is not quoted as a
 > string, and the default value follows separated by whitespace. If
-> the default value is Nil, it can be omitted.  
-> Example:
+> the default value is Nil, it can be omitted. Example:
 
-    ///opt  separator makeString(" "), value-table
+    /// opt  separator makeString(" "), value-table
 
 *`rest`*
 > The argument for all additional arguments, if intended, a Lisp
-> symbol.  
-> Example:
+> symbol. Example:
 
     /// rest  bodyforms
 
 *`ret`*
-> A brief description of the return value.  
-> Example:
+> A brief description of the return value. Example:
 
     /// ret  string
 
 *`special`*
-> This is `no` for a function, `yes` for a special form.  
-> Example:
+> This is `no` for a function, `yes` for a special form. Example:
 
     ///special  no
 
@@ -131,8 +124,7 @@ extent of the mess is clear. `:–}`
 > The first line of the docstring should be enough to give the user
 > an idea what the function does; following lines can provide
 > further all details. By convention, the names of the parameter
-> symbols are in backquotes.  
-> Example:
+> symbols are in backquotes. Example:
 
     /// doc {  
     /// Return the contents of the address part of the `list` register.  
