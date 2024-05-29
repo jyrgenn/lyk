@@ -60,25 +60,25 @@ incoherent mix of Lisp and Kotlin. Maybe a future version of
 extent of the mess is clear. `:–}`
 
 
-*`builtin`*
+**`builtin`**
 > This is the name of the function in Lisp, i.e. a symbol. Example:
 
     /// builtin  cdr
 
-*`fun`*
+**`fun`**
 > The name of the Kotlin function implementing the builtin function,
 > a Kotlin identifier. By convention, these all begin with `bi_`.
 > Example:
 
     /// fun  bi_cdr
 
-*`std`*
+**`std`**
 > The names of the mandatory standard arguments of the function, if
 > any, as Lisp symbols separated by whitespace. Example:
 
     /// std  table key value
 
-*`key`*
+**`key`**
 > The keyword arguments, if any, with default values. Syntactically,
 > this is a Kotlin mapping of a string (which is the argument's
 > symbol) to the default value, a Kotlin expression for an LObject.
@@ -92,32 +92,32 @@ extent of the mess is clear. `:–}`
 
     /// key  "k1" to makeNumber(3), "input" to Nil
 
-*`opt`*
+**`opt`**
 > The optional arguments, if any, with default values, a mapping
 > from a Lisp symbol, written as a symbol, to a Kotlin value (see
-> above at *`key`*). Here, though, the symbol is not quoted as a
+> above at **`key`**). Here, though, the symbol is not quoted as a
 > string, and the default value follows separated by whitespace. If
 > the default value is Nil, it can be omitted. Example:
 
     /// opt  separator makeString(" "), value-table
 
-*`rest`*
+**`rest`**
 > The argument for all additional arguments, if intended, a Lisp
 > symbol. Example:
 
     /// rest  bodyforms
 
-*`ret`*
+**`ret`**
 > A brief description of the return value. Example:
 
     /// ret  string
 
-*`special`*
+**`special`**
 > This is `no` for a function, `yes` for a special form. Example:
 
     ///special  no
 
-*`doc {`*
+**`doc {`**
 > The docstring of the function, starting on the following line.
 > These are often multiple lines, all introduced by the triple-slash
 > comment sign (`///`), and ended by a line starting with `/// }`.
