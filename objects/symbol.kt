@@ -188,7 +188,7 @@ class LSymbol(val name: String, val immutable: Boolean,
 
     override fun isAtom() = true
 
-    override fun bool() = this != Nil
+    override fun toBoolean() = this !== Nil
 
     override fun toString() = name
 

@@ -19,8 +19,6 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
 
     abstract val obtype: String
 
-    open fun bool() = true
-
     open fun isAtom() = false
 
     open fun isList() = false
@@ -87,7 +85,7 @@ abstract class LObject: Iterable<LObject>, Comparable<LObject>, Formattable {
             throw TypeError("$this is not a pair")
     }
 
-    fun toBoolean() = this != Nil
+    open fun toBoolean() = true
 
     open fun equal(other: LObject) = this === other
 

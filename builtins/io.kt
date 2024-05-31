@@ -229,9 +229,9 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>,
             suppp: Map<LSymbol, Boolean>): LObject {
     val fname = arg1(args).toString()
     val verbose = kwArgs[verboseSym] !== Nil
-    val throw_error = ob2bool(kwArgs[errorSym] ?: T)
-    val print = ob2bool(kwArgs[printKeyw] ?: Nil)
-        || ob2bool(loadPrintSym.getValueOptional() ?: Nil)
+    val throw_error = (kwArgs[errorSym] ?: T).toBoolean()
+    val print = (kwArgs[printKeyw] ?: Nil).toBoolean()
+        || (loadPrintSym.getValueOptional() ?: Nil).toBoolean()
 
     return load(fname, throw_error, print, verbose)
 }
@@ -439,9 +439,9 @@ fun bi_read_line(args: LObject, kwArgs: Map<LSymbol, LObject>,
     } else {
         streamArg(input_stream, " input-stream")
     }
-    val line = stream.readLine(ob2bool(trim_nl))
+    val line = stream.readLine(trim_nl.toBoolean())
     if (line == null) {
-        if (ob2bool(eof_error_p)) {
+        if (eof_error_p.toBoolean()) {
             throw EOFError(stream)
         }
         return eof_value

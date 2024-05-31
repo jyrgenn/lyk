@@ -152,7 +152,7 @@ fun bi_assoc_if(args: LObject, kwArgs: Map<LSymbol, LObject>,
     var predicate = functionArg(pred)
 
     return assoc_iter_elems(alist) {
-        ob2bool(predicate.call(LCons(it, Nil)))
+        predicate.call(LCons(it, Nil)).toBoolean()
     }
 }
 
@@ -176,6 +176,6 @@ fun bi_assoc_if_not(args: LObject, kwArgs: Map<LSymbol, LObject>,
     var predicate = functionArg(pred)
 
     return assoc_iter_elems(alist) {
-        !ob2bool(predicate.call(LCons(it, Nil)))
+        !(predicate.call(LCons(it, Nil)).toBoolean())
     }
 }

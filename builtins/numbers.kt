@@ -1342,14 +1342,14 @@ fun bi_random(args: LObject, kwArgs: Map<LSymbol, LObject>,
     val rnd = Random.Default
 
     if (limit === Nil) {
-        if (ob2bool(int)) {
+        if (int.toBoolean()) {
             return makeNumber(rnd.nextInt())
         } else {
             return makeNumber(rnd.nextDouble())
         }
     } else {
         val until = numberArg(limit, " limit")
-        if (ob2bool(int)) {
+        if (int.toBoolean()) {
             return makeNumber(rnd.nextInt(until.toInt()))
         } else {
             return makeNumber(rnd.nextDouble(until))
@@ -1567,7 +1567,7 @@ fun bi_parse_integer(args: LObject, kwArgs: Map<LSymbol, LObject>,
     val end = intOrDefault(kwArgs[endKeyw]!!, s.length, "parse-integer end")
     val radix = intOrDefault(kwArgs[radixKeyw]!!, 10, "parse-integer radix")
     val subs = s.substring(start, end).trim()
-    val junk_allowed = ob2bool(kwArgs[junkAllowedKeyw]!!)
+    val junk_allowed = kwArgs[junkAllowedKeyw]!!.toBoolean()
     var sign = 1
     var first = true
     var integer = 0L

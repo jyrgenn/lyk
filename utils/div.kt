@@ -290,7 +290,7 @@ fun abbreviate(s: String, width: Int, suffix: String = ""): String {
 // evaluated
 fun printEvalStack(error: LispError) {
     val width = getTermWidth()
-    val abbr = ob2bool(evalStackAbbrLines.getValueOptional() ?: T)
+    val abbr = (evalStackAbbrLines.getValueOptional() ?: T).toBoolean()
     
     for (frame in error.evalStack) {
         val (level, expr, env, location) = frame as LVector

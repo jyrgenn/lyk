@@ -131,11 +131,11 @@ fun bi_doc(args: LObject, kwArgs: Map<LSymbol, LObject>,
         func = ob
     }
     if (func is LFunction) {
-        val doc = if (ob2bool(synopsis_only))
+        val doc = if (synopsis_only.toBoolean())
             func.synopsis()
         else
             func.documentation()
-        if (ob2bool(as_string)) {
+        if (as_string.toBoolean()) {
             return makeString(doc)
         } else {
             print(doc)
@@ -281,7 +281,7 @@ fun bi_apropos(args: LObject, kwArgs: Map<LSymbol, LObject>,
             }
         }
     }
-    if (ob2bool(as_list)) {
+    if (as_list.toBoolean()) {
         return symlist_lc.list
     }
     for (symbol in symlist_lc.list) {
@@ -328,7 +328,7 @@ fun bi_apropos(args: LObject, kwArgs: Map<LSymbol, LObject>,
 @Suppress("UNUSED_PARAMETER")
 fun bi_build_info(args: LObject, kwArgs: Map<LSymbol, LObject>,
                   suppp: Map<LSymbol, Boolean>): LObject {
-    var as_string = ob2bool(arg1(args))
+    var as_string = arg1(args).toBoolean()
     var lc = ListCollector()
     for ((key, value) in build_info) {
         lc.add(LCons(intern(key), makeString(value)))
@@ -830,7 +830,7 @@ fun bi_warnings_as_errors(args: LObject, kwArgs: Map<LSymbol, LObject>,
                           suppp: Map<LSymbol, Boolean>): LObject {
     val result = bool2ob(Options.warnIsError)
     if (suppp[onSym] ?: false) {
-        Options.warnIsError = ob2bool(arg1(args))
+        Options.warnIsError = arg1(args).toBoolean()
         warningsAsErrors.setROValue(bool2ob(Options.warnIsError))
     }
     return result
@@ -1142,7 +1142,7 @@ fun bi_user_name(args: LObject, kwArgs: Map<LSymbol, LObject>,
 fun bi_load_preload_code(args: LObject, kwArgs: Map<LSymbol, LObject>,
                          suppp: Map<LSymbol, Boolean>): LObject {
     return load_string(preload_code, "*preload-code*",
-                       print = ob2bool(arg1(args)))
+                       print = arg1(args).toBoolean())
 }
 
 

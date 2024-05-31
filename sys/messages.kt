@@ -35,7 +35,7 @@ fun notice(message: String) {
 }
 
 fun warn(warning: String) {
-    if (ob2bool(warningsAsErrors.getValueOptional() ?: Nil)) {
+    if ((warningsAsErrors.getValueOptional() ?: Nil).toBoolean()) {
         throw WarningError(warning)
     }
     notice("WARNING " + warning)

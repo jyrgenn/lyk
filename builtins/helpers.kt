@@ -210,10 +210,6 @@ fun bool2ob(value: Boolean): LObject {
     return if (value) T else Nil
 }
 
-fun ob2bool(value: LObject): Boolean {
-    return value !== Nil
-}
-
 fun lastCons(list: LCons): LCons {
     var last2b = list
     while (true) {
