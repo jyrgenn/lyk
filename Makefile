@@ -34,7 +34,7 @@ INSTALLBIN =  $(INSTALLBASE)/bin
 # rm -f $JAR
 
 
-build: lyk.jar DOCSTRINGS.txt
+build: lyk.jar generated/DOCSTRINGS.md
 
 lyk.jar: $(ALLSRCS) generated/jline Makefile tags
 	$(COMP) -cp generated/jline $(ALLSRCS) -include-runtime -d lyk.jar
@@ -81,18 +81,18 @@ test: lyk.jar
 	./run-tests.lisp
 
 clean:
-	-rm -rf *.jar *~ */*~ TAGS *.log generated DOCSTRINGS.txt
+	-rm -rf *.jar *~ */*~ TAGS *.log generated generated/DOCSTRINGS.md
 
 # collection of all function+macro doc strings
-DOCSTRINGS.txt: lyk.jar Makefile l/alldocs.lisp
-	./scripts/lyk -J . l/alldocs.lisp > DOCSTRINGS.txt
+generated/DOCSTRINGS.md: lyk.jar Makefile l/alldocs.lisp
+	./scripts/lyk -J . l/alldocs.lisp > generated/DOCSTRINGS.md
 
 
-install: DOCSTRINGS.txt
+install: generated/DOCSTRINGS.md
 	mkdir -p $(INSTALLDIR)
 	-rm -rf $(INSTALLDIR)/*
 	install -c lyk.jar $(INSTALLDIR)
-	install -c DOCSTRINGS.txt README.md $(INSTALLDIR)
+	install -c generated/DOCSTRINGS.md README.md $(INSTALLDIR)
 	sed 's|:INSTALLDIR:|:$(INSTALLDIR):|' scripts/lyk > $(INSTALLBIN)/lyk
 	chmod +x $(INSTALLBIN)/lyk
 	sed "s|:UNRELEASED:|$$(scripts/lyk -V)|" l/lyc > $(INSTALLBIN)/lyc

@@ -1,16 +1,17 @@
 Builtin Functions
 =================
 
-Builtin functions are in builtins/*.kt, roughly grouped into some
-subject areas. The template for defining a builtin function
-(actually `builtins/skeleton-builtin`) is roughly this:
+Builtin functions are in builtins/*.kt, roughly grouped into a
+number of subject areas. The template for defining a builtin
+function (actually `builtins/skeleton-builtin` so it can be easily
+inserted into the sources) is roughly this:
 
-    /// builtin <NAME>
+    /// builtin <NAME> [Lisp symbol]
     /// fun     bi_<NAME> [kotlin identifier]
     /// std     <mandatory arguments, or none> [Lisp symbols]
-    /// key     <keyword arguments, or none> [see below]
-    /// opt     <optional arguments, or none> [see below]
-    /// rest    <argument for additional arguments> [Lisp symbol]
+    /// key     <keyword parameters and defaults, or none> [see below]
+    /// opt     <optional parameters and defaults, or none> [see below]
+    /// rest    <parameter for additional arguments> [Lisp symbol]
     /// ret     <brief description of return value> [Lisp symbol]
     /// special no [or yes, for special forms]
     /// doc {
@@ -24,25 +25,26 @@ subject areas. The template for defining a builtin function
         return <VALUE> [Lisp object]
     }
 
-The part behind a triple-slash `///` comment is metadata for the
+The part behind a triple-slash `///` comment is a directive for the
 function registration. All the sections with triple-slash comments
-are transformed into builtin functions by
-`scripts/generate-builtin-init`, which writes
-`generated/init-builtins.kt`. 
+are transformed into builtin function registrations by
+`scripts/generate-builtin-init`, which is called in the `Makefile`
+to generate `generated/init-builtins.kt`. All directives must be
+present.
 
 The `@Suppress("UNUSED_PARAMETER")` is in the template to suppress
 related warnings because most functions use neither `kwArgs` nor
 `suppp`, but the interface must be uniform nevertheless.
 
 
-Registration Data
------------------
+Directives
+----------
 
-The lines begin with a triple slash, then, after a blank, a keyword,
-then, after whitespace, the argument. The multi-line syntax of
-`/// doc {` is a little different; see below.
+The lines begin with a triple slash, then, after a blank, the name
+of the directive, then, after whitespace, its argument(s). The
+multi-line syntax of `/// doc {` is a little different; see below.
 
-| Keyword   | Purpose                                               |
+| Directive | Purpose                                               |
 | ----------|-------------------------------------------------------|
 | `builtin` | the function name in Lisp                             |
 | `fun`     | name of the implementation of the function in Kotlin  |
@@ -57,20 +59,22 @@ then, after whitespace, the argument. The multi-line syntax of
 The concrete syntax to specify these is a bit messy, a slightly
 incoherent mix of Lisp and Kotlin. Maybe a future version of
 `scripts/generate-builtin-init` will clean that up now that the
-extent of the mess is clear. `:–}`
+extent of the mess is clearly documented here. :–}
 
 
 **builtin**
 > This is the name of the function in Lisp, i.e. a symbol. Example:
 
-    /// builtin  cdr
+    /// builtin  table-put
 
 **fun**
 > The name of the Kotlin function implementing the builtin function,
-> a Kotlin identifier. By convention, these all begin with `bi_`.
-> Example:
+> a Kotlin identifier. By convention, these begin with `bi_`
+> followed by the name of the function if possible. If that isn't,
+> as with functions like `+`, the name describes the function or the
+> symbol(s). Example:
 
-    /// fun  bi_cdr
+    /// fun  bi_table_put
 
 **std**
 > The names of the mandatory standard arguments of the function, if
@@ -80,9 +84,11 @@ extent of the mess is clear. `:–}`
 
 **key**
 > The keyword arguments, if any, with default values. Syntactically,
-> this is a Kotlin mapping of a string (which is the argument's
-> symbol) to the default value, a Kotlin expression for an LObject.
-> The symbol must be given *without* the colon.
+> this is a mapping of a string (which is the argument's symbol) to
+> the default value, a Kotlin expression for an LObject. This
+> mapping is like in Kotlin's Map literals, "STRING to EXPR".
+> The keyword symbol's name (the STRING) must be given *without*
+> the colon. Other than with the `opt` 
 >
 > For the the value, either a Kotlin variable/value name must be
 > used (like `T` or `Nil`), or something else that evaluates to an

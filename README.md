@@ -20,8 +20,8 @@ Work in progress as of Mai 2024, finally got through the regression
 test suite that I originally made for an earlier implementation.
 Macros seems to work mostly well now that I have followed Steele's
 advice about how they should be dealt with. The RPN calculator
-`l/lyc` seems to work now to some degree -- it is, admittedly, the
-only application that I really use a lot, so that *is* significant.
+`l/lyc` seems to mostly work now -- it is, admittedly, the only
+application that I really use a lot, so that *is* significant.
 
 Bigger things ahead are some debugging help in eval, a non-recursive
 eval with an explicit call stack, and of course many more builtin

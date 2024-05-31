@@ -4,7 +4,10 @@
 
 (dolist (f (function-symbols))
   (if (fboundp f)
-      (format t "~A:~%~A~%" f (doc f t))))
+      (let* ((docstring (doc f t))
+             (lines (string-split (string-trim t docstring) "\n"))
+             (md-lines (join lines "  \n")))
+        (format t "`~A`  ~%~A~%~%" f md-lines))))
 
 ;; (let ((funsyms (filter #'fboundp (sort (all-symbols) #'<))))
 ;;   (println (join (map (lambda (f) (string f ":\n" (doc f t)))
