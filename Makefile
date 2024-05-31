@@ -91,10 +91,12 @@ generated/DOCSTRINGS.md: lyk.jar Makefile l/alldocs.lisp
 install: generated/DOCSTRINGS.md
 	mkdir -p $(INSTALLDIR)
 	-rm -rf $(INSTALLDIR)/*
+	rsync -a doc l $(INSTALLDIR)/
 	install -c lyk.jar $(INSTALLDIR)
-	install -c generated/DOCSTRINGS.md README.md $(INSTALLDIR)
+	install -c README.md $(INSTALLDIR)/
+	install -c generated/DOCSTRINGS.md $(INSTALLDIR)/doc/
 	sed 's|:INSTALLDIR:|:$(INSTALLDIR):|' scripts/lyk > $(INSTALLBIN)/lyk
 	chmod +x $(INSTALLBIN)/lyk
 	sed "s|:UNRELEASED:|$$(scripts/lyk -V)|" l/lyc > $(INSTALLBIN)/lyc
 	chmod +x $(INSTALLBIN)/lyc
-	rsync -a l $(INSTALLDIR)/
+
