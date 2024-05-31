@@ -35,8 +35,9 @@
 
 (test-is "function-definition 1" (function-definition #'sample-function)
          sample-f)
-(test-err "function-definition 2" (function-definition #'cdr)
-          #/not a lambda function or macro/)
+(test-is "function-definition 2" (function-definition #'cdr)
+         '(<builtin> cdr (list) "Return the contents of the decrement part of the `list` register.
+The cdr of nil is nil." "#<builtin function (list)=object>"))
 (test-is "function-definition 3" (function-definition anon1)
          '(lambda (n p) "Be fruitful and multiply!" (* n p)))
 
@@ -57,8 +58,8 @@ The cdr of nil is nil.")
 
 (test-is "function-body 1" (function-body #'sample-function)
          f-body)
-(test-err "function-body 2" (function-body #'cdr)
-          #/not a lambda function or macro/)
+(test-is "function-body 2" (function-body #'cdr)
+         '("fun bi_cdr(org.w21.lyk.LObject, kotlin.collections.Map<org.w21.lyk.LSymbol, org.w21.lyk.LObject>, kotlin.collections.Map<org.w21.lyk.LSymbol, kotlin.Boolean>): org.w21.lyk.LObject"))
 (test-is "function-body 3" (function-body anon1)
          '((* n p)))
 

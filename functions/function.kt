@@ -68,7 +68,7 @@ abstract class LFunction(
     override open fun toString() = "#<$typeDesc $name>"
 
     override open fun desc(seen: Set<Int>?) =
-        "#<${typeDesc} (${parlist()})=$retval>"
+        "#<${typeDesc} ${parlist()}=$retval>"
 
     fun synopsis() = LCons(name, parlist()).toString()
 
@@ -84,9 +84,10 @@ abstract class LFunction(
                 tag = if (functionName == null) LambdaSym else defunSym
                 body = bodyForms
             }
-            else -> throw ArgumentError(
-                        "function-definition argument `$this` is not"
-                        + " a lambda function or macro")
+            else ->{
+                tag = intern("<builtin>")
+                body = list(makeString(desc(null)))
+            }
         }
 
         return collectedList {

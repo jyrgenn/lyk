@@ -395,6 +395,9 @@ fun bi_describe(args: LObject, kwArgs: Map<LSymbol, LObject>,
                   LCons(LCons(obj.name, obj.parlist()),
                         LCons(returnSym,
                               LCons(obj.retval ?: no_returnSym, Nil))))
+            entry("docstring", makeString(obj.docstring()))
+            entry("definition", obj.definition())
+            entry("body", obj.body())
             entry("special", bool2ob(obj.isSpecial))
         }
         is LString -> {

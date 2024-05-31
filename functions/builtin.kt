@@ -109,4 +109,7 @@ class LBuiltin(
         }
     }
 
+    override fun body(): LObject =
+        list(makeString(bfun.toString()))
+    
 }
