@@ -371,11 +371,11 @@ Example:
 
 (defl functions () nil
   "show all functions"
-  (format t *fstring-functions* (join (sort *lyc-functions* #'string<) " ")))
+  (format t *fstring-functions* (join (sort *lyc-functions* #'<) " ")))
 
 (defl describe-functions () nil
   "show all functions"
-  (dolist (f (sort *lyc-functions* #'string<))
+  (dolist (f (sort *lyc-functions* #'<))
     (let* ((ellipsis "[...]")
            (elllen (length ellipsis))
            (outs (format nil *fstring-describe-functions* f
@@ -390,7 +390,7 @@ Example:
 
 (defl apropos (search) nil
   "print all function descriptions matching `search'"
-  (dolist (f (sort *lyc-functions* #'string<))
+  (dolist (f (sort *lyc-functions* #'<))
     (let* ((doc (get f 'lyc-help)))
       (if (regexp-match search doc)
           (format t (string *fstring-describe-functions* "~%") f doc)))))
@@ -477,7 +477,7 @@ Helper for }, +}, and *}."
 ;; 	  (join (sort (loop for key being the hash-keys in *lyc-user-variables*
 ;;                         using (hash-value val)
 ;;                         collect (format nil *fstring-vars* key val))
-;;                       #'string<)
+;;                       #'<)
 ;;                 " ")))
 
 (defl vars () nil "show all user variables"
@@ -488,7 +488,7 @@ Helper for }, +}, and *}."
                                         key (*lyc-user-variables* key))
                                 descs))
                         descs)
-                      #'string<)
+                      #'<)
                 " ")))
 
 
