@@ -32,4 +32,8 @@ line; see the subdirectory `external/jline/`. This is not the
 current release version, but it was rather easy to integrate, which
 the current one wasn't.
 
+Please see the files in the `doc/` subdirectory for more
+information, in particular `doc/lyk.md`. It contains a few pointers
+how to explore lyk.
+
 -- ni@w21.org 2024-05

@@ -1,6 +1,10 @@
 Builtin Functions
 =================
 
+(For the description of the Lisp functions of lyk, see
+`doc/docstrings.md`. This text describes how the builtin functions
+look in the Kotlin source.)
+
 Builtin functions are in builtins/*.kt, roughly grouped into a
 number of subject areas. The template for defining a builtin
 function (actually `builtins/skeleton-builtin` so it can be easily
@@ -37,8 +41,8 @@ related warnings because most functions use neither `kwArgs` nor
 `suppp`, but the interface must be uniform nevertheless.
 
 
-Directives
-----------
+Builtin Description Directives
+------------------------------
 
 The lines begin with a triple slash, then, after a blank, the name
 of the directive, then, after whitespace, its argument(s). The
@@ -136,3 +140,56 @@ extent of the mess is clearly documented here. :–}
     /// Return the contents of the address part of the `list` register.  
     /// The car of nil is nil.  
     /// }  
+
+
+Calling Convention
+------------------
+
+As seen above, the signature of the builtin functions is this:
+
+    fun bi_<NAME>(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                  suppp: Map<LSymbol, Boolean>): LObject
+
+`args` is a Lisp list (meaning an LCons or Nil) of the standard and
+&optional and &rest arguments the function was called with. Keyword
+arguments and their values are in `kwArgs`; there should be all
+defined keyword parameters present, each with the value given in the
+call argument or the respective default value. `suppp` contains the
+names of the optional and the keyword arguments actually given in
+the call, mapped to `true`. (Using a Set instead was slower.)
+
+`builtin/helpers.kt` has a number of helper functions to get the
+arguments from `args` and to check their type. They are used
+throughout the builtin function implementations, so look there for
+usage examples.
+
+The LObject returned from a builtin function directly is the value
+of the function's evaluation in Lisp.
+
+
+Implementing new Builtin Functions
+----------------------------------
+
+Including a new builtin function takes the following steps:
+
+(1) Implement the builtin function and its registration metadata as
+    described above.
+
+(2) If you choose to put it in a new source file, you should put
+    that under `builtins/`, and you must list it in the top-level
+    `Makefile` in the `SRCS` variable so the builtin function(s) in
+    it are included in the function registration and found by the
+    compiler.
+
+That's it!
+
+
+Implementing a new Data Type
+----------------------------
+
+Implementing new data types is a bit more complicated, of course.
+Put the source in `objects/`; make sure the class inherits from
+LObject, and implement the necessary LObject methods. That does not
+mean abstract methods -- actually, there are none --, rather the
+ones that are implemented in LObject, but have some kind of default
+behaviour. That behaviour may or may not fit your data type.
