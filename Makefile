@@ -65,11 +65,11 @@ generated/init-builtins.kt: Makefile generated scripts/generate-builtin-init \
 
 tags: generated $(PRELOAD) $(ALLSRCS)
 	etags \
-	      -r "/^[ \t]*fun[ \t]+\([A-Za-z0-9_]+\)/\1/"      \
-	      -r "/^\(var\|val\)[ \t]+\([A-Za-z0-9_]+\)/\2/"   \
-	      -r "/^\/\/\/[ \t]+builtin[ \t]+\([^ \t]+\)/\1/"  \
-	      -r "/class[ \t]+\([^ \t]+\)/\1/"                 \
-	      -r "/^[ \t]+\([A-Za-z0-9_]+\)[ \t]+to[ \t]+/\1/" \
+	      -r "/[ \t]*fun[ \t]+\([A-Za-z0-9_]+\)/\1/"      \
+	      -r "/\(var\|val\)[ \t]+\([A-Za-z0-9_]+\)/\2/"   \
+	      -r "/\/\/\/[ \t]+builtin[ \t]+\([^ \t]+\)/\1/"  \
+	      -r "/.* ?class[ \t]+\([^ \t]+\)/\1/"            \
+	      -r "/[ \t]+\([A-Za-z0-9_]+\)[ \t]+to[ \t]+/\1/" \
 	      $(PRELOAD) $(ALLSRCS)
 
 measure:
