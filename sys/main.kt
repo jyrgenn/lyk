@@ -40,6 +40,7 @@ object Options {
         debugStopSym to false,
         debugSetqSym to false,
         debugFormatstringSym to false,
+        debugEnglishSym to false,
     )
     var print_estack = false
     var maxrecurse = 0

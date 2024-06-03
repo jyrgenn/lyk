@@ -289,30 +289,109 @@ fun formatRoman(arg: Long, oldRoman: Boolean, where: FormatDirective): String {
     return sb.toString()
 }
 
-val EnglishCardinals = arrayOf(
-    "zero", "one", "two", "three", "four",
-    "five", "six", "seven", "eight", "nine",
-    "ten", "elevel", "twelve", "thirteen",
+val englishCardinal = arrayOf(
+    "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
+    "nine", "ten", "elevel", "twelve", "thirteen", "fourteen", "fifteen",
+    "sixteen", "seventeen", "eighteen", "nineteen",
+)
+
+val englishTens = arrayOf(
+    Pair(90, "ninety"),
+    Pair(80, "eighty"),
+    Pair(70, "seventy"),
+    Pair(60, "sixty"),
+    Pair(50, "fifty"),
+    Pair(40, "fourty"),
+    Pair(30, "thirty"),
+    Pair(20, "twenty"),
 )
 
 val EnglishOrdinals = arrayOf(
-    "zeroth", "first", "second", "third", "fourth",
-    "fifth", "sixth", "seventh", "eightth", "nineth",
-    "tenth", "eleventh", "twelfth", "thirteenth",
+    "zeroth", "first", "second", "third", "fourth", "fifth", "sixth",
+    "seventh", "eightth", "nineth", "tenth", "eleventh", "twelfth",
+    "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth",
+    "eighteenth", "nineteenth",
+)
+
+val numFactors = arrayOf(       // exponent => name
+    Pair(18, "quintillion"),    // anough for 64-bit Longs
+    Pair(15, "quadrillion"),
+    Pair(12, "trillion"),
+    Pair( 9, "billion"),
+    Pair( 6, "million"),
+    Pair( 3, "thousand"),
+    Pair( 2, "hundred"),
 )
 
 // This may be replaced by a more sophisticated implementation in the future.
 // For now, this proof of concept is fully sufficient for my needs.
 fun formatEnglish(arg: Long, ordinal: Boolean, where: FormatDirective): String {
-    val array = if (ordinal) EnglishOrdinals else EnglishCardinals
+    val array = if (ordinal) EnglishOrdinals else englishCardinal
     val what = if (ordinal) "ordinals" else "cardinals"
-    if (arg < 0L) {
-        throw FormatError("value $arg too small for English $what", where)
+    var value = arg
+    val result = StrBuf()
+
+    debug(debugEnglishSym) {
+        "formatEnglish($value, $what, $where)"
     }
-    if (arg >= array.size) {
-        throw FormatError("value $arg too large for English $what", where)
+    if (value < 0L) {
+        value = -value
+        result.add("negative")
+        debug(debugEnglishSym) {
+            "now negative $value, ${result.desc()}"
+        }
     }
-    return array[arg.toInt()]
+    if (value < 20L) {
+        // as we need to handle zero separately anyway, we can
+        // optimize for the assumed most common case < 20 as well
+        // without extra cost
+        result.add(array[value.toInt()])
+    } else {
+        for ((exp, name) in numFactors) {
+            val dim = pow(10, exp)  // dimension
+            val factor = value / dim
+            if (value >= dim) {
+                debug(debugEnglishSym) {
+                    "dim $dim factor $factor, ${result.desc()}"
+                }
+                result.add(formatEnglish(factor, false, where))
+                result.add(name)
+            }
+            value -= factor * dim
+            debug(debugEnglishSym) {
+                "remaining value after dim $dim: $value, ${result.desc()}"
+            }
+        }
+        if (value >= 20L) {
+            debug(debugEnglishSym) {
+                "value $value >= 20L, ${result.desc()}"
+            }
+            var tens = ""           // *will* be changed in the loop below
+            for ((size, name) in englishTens) {
+                if (value >= size) {
+                    tens = name
+                    value -= size
+                    debug(debugEnglishSym) {
+                        "tens $tens, value remains $value, ${result.desc()}"
+                    }
+                    break
+                }
+            }
+            if (value > 0L) {
+                result.add(tens + "-" + array[value.toInt()])
+                debug(debugEnglishSym) {
+                    "singles ${array[value.toInt()]}, ${result.desc()}"
+                }
+            }
+        } else if (value > 0L) {
+            result.add(array[value.toInt()])
+            debug(debugEnglishSym) {
+                "value $value >= 20L, ${result.desc()}"
+            }
+        }
+    }
+       
+    return result.join()
 }
 
 // this is not generally usable, returns (maybe) "+" for zero

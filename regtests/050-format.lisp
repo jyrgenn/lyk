@@ -323,11 +323,77 @@
 (test-is "English Cardinal 13" (format nil "~R" 13)
          "thirteen")
 
-(test-err "English Cardinal -1" (format nil "~R" -1)
-          #/too small/)
+(test-is "English Cardinal -1" (format nil "~R" -1)
+         "negative one")
 
-(test-err "English Cardinal 14" (format nil "~R" 14)
-          #/too large/)
+(test-is "English Cardinal 14" (format nil "~R" 14)
+          "fourteen")
+
+;;; now frr realz!
+
+(test-is "English Cardinal 114" (format nil "~R" 114)
+          "one hundred fourteen")
+
+(test-is "English Cardinal 3114" (format nil "~R" 3114)
+          "three thousand one hundred fourteen")
+
+(test-is "English Cardinal 43114" (format nil "~R" 43114)
+          "fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 543114" (format nil "~R" 543114)
+          "five hundred fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 6543114" (format nil "~R" 6543114)
+          "six million five hundred fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 76543114" (format nil "~R" 76543114)
+         "seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 876543114" (format nil "~R" 876543114)
+         "eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 9876543114" (format nil "~R" 9876543114)
+         "nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 89876543114" (format nil "~R" 89876543114)
+         "eighty-nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 789876543114" (format nil "~R" 789876543114)
+         "seven hundred eighty-nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 6789876543114" (format nil "~R" 6789876543114)
+         "six trillion seven hundred eighty-nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 56789876543114" (format nil "~R" 56789876543114)
+         "fifty-six trillion seven hundred eighty-nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 456789876543114" (format nil "~R" 456789876543114)
+         "four hundred fifty-six trillion seven hundred eighty-nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+(test-is "English Cardinal 3456789876543114" (format nil "~R" 3456789876543114)
+         "three quadrillion four hundred fifty-six trillion seven hundred eighty-nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+;; (test-is "English Cardinal 23456789876543114"
+;;          (format nil "~R" 23456789876543114)
+;;          "twenty three quadrillion four hundred fifty-six trillion seven hundred eighty-nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+;; (test-is "English Cardinal 123456789876543114"
+;;          (format nil "~R" 123456789876543114)
+;;          "one hundred twenty three quadrillion four hundred fifty-six trillion seven hundred eighty-nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+;; (test-is "English Cardinal 2123456789876543114"
+;;          (format nil "~R" 2123456789876543114)
+;;          "two quintillion one hundred twenty three quadrillion four hundred fifty-six trillion seven hundred eighty-nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+;; (test-is "English Cardinal 32123456789876543114"
+;;          (format nil "~R" 32123456789876543114)
+;;          "thirty-two quintillion one hundred twenty three quadrillion four hundred fifty-six trillion seven hundred eighty-nine billion eight hundred seventy-six million five hundred fourty-three thousand one hundred fourteen")
+
+;;; Holy shit! This stops to work when the "integer" is so large that
+;;; the mantissa of the floating point representation isn't long
+;;; enough to hold all digits.
+;; (test-is "int 2123456789876543114" 2123456789876543114
+;;          "2123456789876543114")
 
 (test-is "English Ordinal 0" (format nil "~:R" 0)
          "zeroth")
@@ -347,11 +413,11 @@
 (test-is "English Ordinal 13" (format nil "~:R" 13)
          "thirteenth")
 
-(test-err "English Ordinal -1" (format nil "~:R" -1)
-          #/too small/)
+(test-is "English Ordinal -1" (format nil "~:R" -1)
+         "negative first")
 
-(test-err "English Ordinal 14" (format nil "~R" 14)
-          #/too large/)
+(test-is "English Ordinal 14" (format nil "~:R" -14)
+         "negative fourteenth")
 
 
 ;;; 22.3.11 Examples of FORMAT

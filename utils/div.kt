@@ -34,6 +34,15 @@ fun isPrintable(ch: Char): Boolean {
     return ch.category in printables
 }
 
+// powers of Long numbers; does not throw an exception on overflow!
+fun pow(base: Long, exp: Int): Long {
+    var value = 1L
+    for (i in 1..exp) {
+        value *= base
+    }
+    return value
+}
+
 fun mulString(s: String, n: Int): String {
     val sb = StringBuilder()
 
@@ -132,20 +141,19 @@ class StrBuf() {
         buf.add(thing.toString())
     }
     
-    override fun toString(): String {
-        return buf.joinToString(separator = "")
-    }
+    override fun toString() = buf.joinToString(separator = "")
+
+    fun desc() = "#<StrBuf[" + join("|") + "]>"
 
     val size: Int
         get() = toString().length
 
     fun join(separator: String = " ",
              prefix: String = "",
-             postfix: String = ""): String {
-        return buf.joinToString(separator = separator,
-                                prefix = prefix,
-                                postfix = postfix)
-    }
+             postfix: String = "") =
+        buf.joinToString(separator = separator,
+                         prefix = prefix,
+                         postfix = postfix)
 }
 
 fun glob2regexp(glob_pattern: String): Regex {
