@@ -297,7 +297,7 @@ val EnglishCardinals = arrayOf(
 
 val EnglishOrdinals = arrayOf(
     "zeroth", "first", "second", "third", "fourth",
-    "fiveth", "sixth", "seventh", "eightth", "nineth",
+    "fifth", "sixth", "seventh", "eightth", "nineth",
     "tenth", "eleventh", "twelfth", "thirteenth",
 )
 
