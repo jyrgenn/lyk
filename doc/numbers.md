@@ -8,6 +8,13 @@ nothing else. If they have an integer value, they can be used as
 integers, but under the hood they are still Doubles. There are no
 complex or rational numbers.
 
+One consequence of this is that numbers-pretending-to-be -integers
+start to get imprecise when they get so large that the mantissa of
+the floating point representation isn't enough to keep all digits.
+This is a known bug, and maybe enough of a motivation to implement
+some decent integer representation some time.
+
+
 Number Literals
 ---------------
 
@@ -29,11 +36,8 @@ Decimal floating-point numbers can be written in Kotlin syntax:
 
 
 Decimal integers and floating point numbers can be preceded by
-``-'', resulting in the appropriate negative number. Also, ``+''.
-
-There are no complex numbers. All numbers are internally represented
-using Kotlin's Double data type, so there aren't even real integers,
-only pretend ones.
+``-'', resulting in the appropriate negative number. Also,
+optionally by ``+''.
 
 Examples:
 
@@ -46,3 +50,4 @@ Examples:
             fifty-seven
  #x1001001  the number sixteen million seven hundred eighty-one
             thousand three-hundred thirteen
+ #17r21     the number thirty-five
