@@ -1,5 +1,9 @@
 (require 'regtests)
 
+;;; Bug!
+(test-is "format 130463" (format nil "~R" 130463)
+         "one hundred thirty thousand four hundred sixty-three")
+
 ;; this didn't previously
 (test-is "format argless" (format nil "lalala") "lalala")
 
