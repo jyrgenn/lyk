@@ -289,10 +289,17 @@ fun formatRoman(arg: Long, oldRoman: Boolean, where: FormatDirective): String {
     return sb.toString()
 }
 
-val englishCardinal = arrayOf(
+val englishBelow20 = arrayOf(
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
-    "nine", "ten", "elevel", "twelve", "thirteen", "fourteen", "fifteen",
+    "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
     "sixteen", "seventeen", "eighteen", "nineteen",
+)
+
+val englishBelow20th = arrayOf(
+    "zeroth", "first", "second", "third", "fourth", "fifth", "sixth",
+    "seventh", "eightth", "nineth", "tenth", "eleventh", "twelfth",
+    "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth",
+    "eighteenth", "nineteenth",
 )
 
 val englishTens = arrayOf(
@@ -306,27 +313,21 @@ val englishTens = arrayOf(
     Pair(20, "twenty"),
 )
 
-val EnglishOrdinals = arrayOf(
-    "zeroth", "first", "second", "third", "fourth", "fifth", "sixth",
-    "seventh", "eightth", "nineth", "tenth", "eleventh", "twelfth",
-    "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth",
-    "eighteenth", "nineteenth",
+val englishDimensions = arrayOf(             // dimension => name
+    Pair(pow(10, 18), "quintillion"), // enough for 64-bit Longs
+    Pair(pow(10, 15), "quadrillion"),
+    Pair(pow(10, 12), "trillion"),
+    Pair(pow(10,  9), "billion"),
+    Pair(pow(10,  6), "million"),
+    Pair(pow(10,  3), "thousand"),
+    Pair(pow(10,  2), "hundred"),
 )
 
-val numFactors = arrayOf(       // exponent => name
-    Pair(18, "quintillion"),    // anough for 64-bit Longs
-    Pair(15, "quadrillion"),
-    Pair(12, "trillion"),
-    Pair( 9, "billion"),
-    Pair( 6, "million"),
-    Pair( 3, "thousand"),
-    Pair( 2, "hundred"),
-)
-
-// This may be replaced by a more sophisticated implementation in the future.
-// For now, this proof of concept is fully sufficient for my needs.
+// Due to the fault of our pretend integers (which are Doubles
+// actually) being imprecise at the end of their range, this will
+// deliver wrong results for very large integers.
 fun formatEnglish(arg: Long, ordinal: Boolean, where: FormatDirective): String {
-    val array = if (ordinal) EnglishOrdinals else englishCardinal
+    val array = if (ordinal) englishBelow20th else englishBelow20
     val what = if (ordinal) "ordinals" else "cardinals"
     var value = arg
     val result = StrBuf()
@@ -347,19 +348,19 @@ fun formatEnglish(arg: Long, ordinal: Boolean, where: FormatDirective): String {
         // without extra cost
         result.add(array[value.toInt()])
     } else {
-        for ((exp, name) in numFactors) {
-            val dim = pow(10, exp)  // dimension
-            val factor = value / dim
-            if (value >= dim) {
+        for ((dimension, name) in englishDimensions) {
+            val factor = value / dimension
+            if (value >= dimension) {
                 debug(debugEnglishSym) {
-                    "dim $dim factor $factor, ${result.desc()}"
+                    "dimension $dimension factor $factor, ${result.desc()}"
                 }
                 result.add(formatEnglish(factor, false, where))
                 result.add(name)
             }
-            value -= factor * dim
+            value -= factor * dimension
             debug(debugEnglishSym) {
-                "remaining value after dim $dim: $value, ${result.desc()}"
+                ("remaining value after dimension $dimension: $value,"
+                 + " ${result.desc()}")
             }
         }
         if (value >= 20L) {
@@ -382,6 +383,8 @@ fun formatEnglish(arg: Long, ordinal: Boolean, where: FormatDirective): String {
                 debug(debugEnglishSym) {
                     "singles ${array[value.toInt()]}, ${result.desc()}"
                 }
+            } else {
+                result.add(tens)
             }
         } else if (value > 0L) {
             result.add(array[value.toInt()])
