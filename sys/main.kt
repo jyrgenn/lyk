@@ -223,6 +223,7 @@ fun main(args: Array<String>) {
             }
         } else {
             debug(debugStartupSym) { "start REPL" }
+            info("type :help to get information on short commands")
             repl(Reader(ConsoleReaderStream()), true)
         }
         exitLyk()

@@ -290,7 +290,7 @@ fun bi_stream(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// special no
 /// doc {
 /// Format `args` according to `format-string` and write to `dest` (stream,
-/// t, or nil). Nil means return the result as a string, t means write to
+/// t, or nil). nil means return the result as a string, t means write to
 /// standard output.
 ///
 /// The format string is modeled after Common Lisp's, but lacks many of its
@@ -298,6 +298,7 @@ fun bi_stream(args: LObject, kwArgs: Map<LSymbol, LObject>,
 ///   ~A : Aesthetic
 ///   ~S : Standard
 ///   ~C : Character
+///   ~F : Fixed format floating point
 ///   ~% : Newline
 ///   ~& : Fresh line
 ///   ~| : Page separator

@@ -83,5 +83,49 @@ of the program run as strings."
         (let ((result (get-output-stream-string out)))
           result))))
           
-         
-    
+
+(defmacro repl-short-command (name docstring &rest bodyforms)
+  `(define-short-command ,name
+       (lambda () ,docstring
+         ,@bodyforms)))
+
+
+(repl-short-command :replsyms
+                    "print the repl's special symbols and their values"
+                    (dolist (sym '(* ** *** + ++ +++ / // ///))
+                      (format t " ~3@A: ~A~%" sym (symbol-value sym))))
+
+(defvar exploring-help
+  "There are a few tools to help explore lyk:
+
+  - `apropos` prints all known symbols that match a substring or a
+    regular expression, together with the information if the symbol
+    is bound to a function (builtin, lambda, or macro), has a
+    variable binding, or properties. Call it like this:
+
+        (apropos \"substring\") or (apropos #/regexp/)
+
+  - `doc` prints a function documentation for a symbol (or a
+    function object) with a synopsis, description of the function,
+    and the place where it is defined. Example:
+
+        (doc 'apropos)
+
+  - `describe` return a alist with an object's (the sole argument)
+    attributes.
+
+  - The directory `doc/` of the source and installation directories
+    contains a few texts describing some aspects of lyk.
+
+  - `DOCSTRINGS.md` is built in the `generated/` subdirectory of the
+    source repository and installed in the `doc/` subdirectory of
+    the installation directory. It contains the docstrings of all
+    functions, same as those printed interactively with
+
+        (doc 'function-name)
+")
+
+(repl-short-command :explore
+                    "show hints for exploring the system"
+                    (print exploring-help))
+                    

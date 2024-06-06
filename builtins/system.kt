@@ -1145,6 +1145,32 @@ fun bi_load_preload_code(args: LObject, kwArgs: Map<LSymbol, LObject>,
                        print = arg1(args).toBoolean())
 }
 
+/// builtin define-short-command
+/// fun     bi_define_short_command
+/// std     name function
+/// key     
+/// opt     
+/// rest    
+/// ret     name
+/// special no
+/// doc {
+/// Define a repl short command with `name` (a :keyword) and `function` a
+/// parameterless Lisp function. This command can then be invoked by typing
+/// `name` into the repl. The documentation of the function is its
+/// docstring. The `:help` command will show the first line of the docstring.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_define_short_command(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                            suppp: Map<LSymbol, Boolean>): LObject {
+    val (name, func) = args2(args)
+    val function = functionArg(func)
+    val docline = function.docstring().split("\n")[0]
+    shortCommands.put(keywordArg(name),
+                      Pair({ function.call(Nil) }, docline))
+    return name
+}
+
 
 
 // EOF

@@ -131,6 +131,13 @@ fun symbolArg(arg: LObject, desc: String = ""): LSymbol {
         throw ArgumentError("$calledFunctionName$desc argument is not a symbol: $arg")
 }
 
+fun keywordArg(arg: LObject, desc: String = ""): LSymbol {
+    if (arg.isKeyword()) {
+        return arg as LSymbol
+    }    
+    throw ArgumentError("$calledFunctionName$desc argument is not a keyword: $arg")
+}
+
 fun tableArg(arg: LObject, desc: String = ""): LTable {
     if (arg is LTable) {
         return arg
