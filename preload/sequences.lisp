@@ -11,7 +11,7 @@
                (doseq (el seq)
                  (push el result)))))))
 
-(defun sort (seq pred)
+(defun sort (seq &optional (pred #'<))
   "Sort sequence `seq` with predicate `pred` and return the result."
   (let ((combine (cond ((listp seq) #'list)
                        ((vectorp seq) #'vector)
