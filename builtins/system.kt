@@ -247,6 +247,7 @@ fun bi_assert(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// special no
 /// doc {
 /// Print all interned symbols whose name contains `pattern`.
+/// `pattern` may be a string or a regular expression.
 /// If optional `as-list` is true, return a list of the symbol names.
 /// }
 /// end builtin
