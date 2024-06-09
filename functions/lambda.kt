@@ -34,6 +34,8 @@ open class Lambda(                         // Macro will inherit this
     }
 
 
+    override open fun toString() = definition().toString()
+    
     override fun call(arglist: LObject): LObject {
         callCounter++
         return with_called_function_name_return(name.name) {
