@@ -2,6 +2,8 @@
 
 package org.w21.lyk
 
+val systemStartedTime = System.currentTimeMillis()
+
 val rootEnv = LEnv()
 var currentEnv = rootEnv
 

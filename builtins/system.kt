@@ -1146,31 +1146,91 @@ fun bi_load_preload_code(args: LObject, kwArgs: Map<LSymbol, LObject>,
                        print = arg1(args).toBoolean())
 }
 
-/// builtin define-short-command
-/// fun     bi_define_short_command
-/// std     name function
+
+/// builtin system-time
+/// fun     bi_system_time
+/// std     
 /// key     
 /// opt     
 /// rest    
-/// ret     name
+/// ret     milliseconds
 /// special no
 /// doc {
-/// Define a repl short command with `name` (a :keyword) and `function` a
-/// parameterless Lisp function. This command can then be invoked by typing
-/// `name` into the repl. The documentation of the function is its
-/// docstring. The `:help` command will show the first line of the docstring.
+/// Return the current system time in milliseconds.
+/// This is the number of milliseconds since the beginning of the Unix
+/// epoch, in theory. It may not be a good source for determining the
+/// current calendar time.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_define_short_command(args: LObject, kwArgs: Map<LSymbol, LObject>,
-                            suppp: Map<LSymbol, Boolean>): LObject {
-    val (name, func) = args2(args)
-    val function = functionArg(func)
-    val docline = function.docstring().split("\n")[0]
-    shortCommands.put(keywordArg(name),
-                      Pair({ function.call(Nil) }, docline))
-    return name
+fun bi_system_time(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
+    return makeNumber(System.currentTimeMillis())
 }
+
+/// builtin system-running-time
+/// fun     bi_system_running_time
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     milliseconds
+/// special no
+/// doc {
+/// Return the number of milliseconds since the lyk system started.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_system_running_time(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                           suppp: Map<LSymbol, Boolean>): LObject {
+    return makeNumber(System.currentTimeMillis() - systemStartedTime)
+}
+
+/// builtin system-started-time
+/// fun     bi_system_started_time
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     milliseconds
+/// special no
+/// doc {
+/// Return the number of milliseconds since the lyk system started.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_system_started_time(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                           suppp: Map<LSymbol, Boolean>): LObject {
+    return makeNumber(systemStartedTime)
+}
+
+/// builtin system-perfdata
+/// fun     bi_system_perfdata
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     result
+/// special no
+/// doc {
+/// Return the overall system performance data as an alist.
+/// The items in the returned list are, in this order:
+///   `call`: the number of function calls
+///   `cons`: the number of conses created
+///   `eval`: the number of evalulations done
+///   `secs`: the number of seconds elapsed since the start of lyk
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_system_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                       suppp: Map<LSymbol, Boolean>): LObject {
+    val runtime = (System.currentTimeMillis() - systemStartedTime) / 1000.0
+    return list(LCons(intern("call"), makeNumber(callCounter)),
+                LCons(intern("cons"), makeNumber(consCounter)),
+                LCons(intern("eval"), makeNumber(evalCounter)),
+                LCons(intern("secs"), makeNumber(runtime)))
+}
+
 
 
 
