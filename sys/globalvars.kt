@@ -122,6 +122,8 @@ val evalStackAbbrLines = LSymbol.makeGlobal("*eval-stack-abbr-lines*", T)
 // set of features provided
 val modulesSym = LSymbol.makeGlobal("*modules*")
 
+val replShortCommands = LSymbol.makeGlobal("*repl-short-commands*", LTable())
+
 // eval stuff
 var evalLevel: Int = 0
 var maxEvalLevel: Int = 0
