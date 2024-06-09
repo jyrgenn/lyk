@@ -55,7 +55,7 @@ generated/preload.kt: Makefile generated scripts/preload.sh $(PRELOAD)
 	./scripts/preload.sh $(PRELOAD) > generated/preload.kt
 
 generated/buildtag.kt: Makefile generated $(SRCS) $(BUILDSCRIPTS)
-	scripts/buildtag.sh lyk > generated/buildtag.kt
+	scripts/buildtag.sh lyk $(INSTALLDIR) > generated/buildtag.kt
 
 generated/init-builtins.kt: Makefile generated scripts/generate-builtin-init \
 			    $(BUILTINSRC)
@@ -89,11 +89,12 @@ generated/DOCSTRINGS.md: lyk.jar Makefile l/alldocs.lisp
 
 
 install: generated/DOCSTRINGS.md
-	mkdir -p $(INSTALLDIR)
 	-rm -rf $(INSTALLDIR)/*
 	rsync -a doc l $(INSTALLDIR)/
+	install -d $(INSTALLDIR)/jline
 	install -c lyk.jar $(INSTALLDIR)
-	install -c README.md $(INSTALLDIR)/
+	install -c README.md LICENSE $(INSTALLDIR)/
+	install -c external/jline/LICENSE $(INSTALLDIR)/jline/
 	install -c generated/DOCSTRINGS.md $(INSTALLDIR)/doc/
 	sed 's|:INSTALLDIR:|:$(INSTALLDIR):|' scripts/lyk > $(INSTALLBIN)/lyk
 	chmod +x $(INSTALLBIN)/lyk
