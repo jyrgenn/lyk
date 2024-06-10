@@ -7,7 +7,7 @@
           #/too few normal args for special form/)
 (test-err "lambda 2" (lambda 3)
           #/is not a proper list/)
-(test-is "lambda 3" (lambda (n) (+ 3 n)) "#<lambda function *anon-lambda*>")
+(test-is "lambda 3" (lambda (n) (+ 3 n)) "(lambda (n) (+ 3 n))")
 (test-is "defun" (progn (defun lala (n) (* n n))
                         (lala 123))
          "15129")

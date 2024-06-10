@@ -298,7 +298,7 @@
 (defun square (n) (* n n))
 (test-is "setf symbol-function" (progn (setf (symbol-function '^2) #'square)
                                        #'^2)
-         "#<lambda function square>")
+         "(defun square (n) (* n n))")
 
 (defparameter symbol 'prop-bearer)
 (test-is "setf get" (progn (setf (get symbol 'shlongity) 1e19)
