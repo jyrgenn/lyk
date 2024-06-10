@@ -169,8 +169,8 @@ Traverse conses and vectors to find numbers."
               (progn (presult "load FAIL: ~A ~A~%" f *last-error*)
                      (push (cons f "load") fails))
               (unless testing-done
-                (let ((message " not completed, done-testing not called~%"))
-                  (presult "file FAIL: ~A~A" f message)
+                (let ((message " not completed, done-testing not called"))
+                  (presult "file FAIL: ~A~A~%" f message)
                   (push (cons f message) fails)))))))
 
     (let ((nfails (length fails)))

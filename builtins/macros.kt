@@ -136,7 +136,7 @@ fun bi_quasiquote(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// opt     
 /// rest    
 /// ret     no-return
-/// special no
+/// special yes
 /// doc {
 /// Throw an error if called as a function outside of a quasiquote.
 /// }
