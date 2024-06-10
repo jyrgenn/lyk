@@ -174,33 +174,6 @@ fun bi_terpri(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return Nil
 }
 
-/// builtin warning
-/// fun     bi_warning
-/// std     format-string
-/// key     
-/// opt     
-/// rest    format-args
-/// ret     nil
-/// special no
-/// doc {
-/// Raise a warning message with `format string` and format arguments.
-/// If warnings are treated as errors (i.e. *warnings-as-errors* is true), the
-/// warning exits all active calls immediately, except for errset. Otherwise,
-/// only the message is printed as a warning, formatted as specified.
-/// }
-/// end builtin
-@Suppress("UNUSED_PARAMETER")
-fun bi_warning(args: LObject, kwArgs: Map<LSymbol, LObject>,
-               suppp: Map<LSymbol, Boolean>): LObject {
-    val (msg1, rest) = args
-    val fields = mutableListOf(msg1.toString())
-    for (arg in rest) {
-        fields.add(arg.toString())
-    }
-    warn(fields.joinToString(" "))
-    return theNonPrintingObject
-}
-
 /// builtin load
 /// fun     bi_load
 /// std     filename

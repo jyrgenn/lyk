@@ -664,14 +664,14 @@ fun bi_symbol_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// std     message-format
 /// key     
 /// opt     
-/// rest    args
+/// rest    format-args
 /// ret     no-return
 /// special no
 /// doc {
-/// Raise error with the message `message` and optional additional data.
+/// Raise error with `message-format` and optional `format-args`.
 /// The error exits all active calls immediately, except for errset.
-/// For an error message, the args will be formatted using `message-format`
-/// as a format string.
+/// For the error message, the `format-args` will be formatted using
+/// `message-format` as a format string.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
@@ -681,6 +681,34 @@ fun bi_error(args: LObject, kwArgs: Map<LSymbol, LObject>,
     val stream = StringWriterStream()
     formatArgs(stream, stringArg(message_format, " message"), arguments)
     throw LispError(stream.value_and_reset())
+}
+
+/// builtin warning
+/// fun     bi_warning
+/// std     message-format
+/// key     
+/// opt     
+/// rest    format-args
+/// ret     nil
+/// special no
+/// doc {
+/// Raise a warning with `message-format` and optional `format-args`.
+/// If warnings are treated as errors (i.e. *warnings-as-errors* is true),
+/// the warning exits all active calls immediately, except for errset.
+/// Otherwise, only the message is printed as a warning, formatted as
+/// specified.
+/// For the warning message, the `format-args` will be formatted using
+/// `message-format` as a format string.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_warning(args: LObject, kwArgs: Map<LSymbol, LObject>,
+               suppp: Map<LSymbol, Boolean>): LObject {
+    val (message_format, arguments) = args
+    val stream = StringWriterStream()
+    formatArgs(stream, stringArg(message_format, " message"), arguments)
+    warn(stream.value_and_reset())
+    return theNonPrintingObject
 }
 
 /// builtin catch
