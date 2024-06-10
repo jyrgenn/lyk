@@ -1,6 +1,28 @@
 ;;; short commands for the repl in table *repl-short-commands*
 ;;; entries are  :name => func
 
+(defvar *repl-short-commands* (make-table)
+  "The table (keyword => function) of short commands for the REPL.")
+
+
+(defun maybe-run-short-command (expr)
+  "Run a short command if `expr` is a keyword matching one.
+Return true iff a short command was run or at least attempted."
+  (unless (keywordp expr)
+    nil)
+  (unless (tablep *repl-short-commands*)
+    (warning "*repl-short-commands* is not a table: ~A" *repl-short-commands*)
+    nil)
+  (let ((cmd (select-string-from-prefix expr
+                                        (table-keys *repl-short-commands*))))
+    (cond ((null cmd) nil)
+          ((eq cmd t)
+           (warning "`~A` is not a unique short command prefix")
+           t))
+    (funcall (table-get *repl-short-commands* cmd))
+    (terpri)
+    t))
+
 (defvar *lyk-install-directory* (cdr (assoc 'installdir (build-info)))
   "The pathname of the directory where lyk is installed.")
 
@@ -28,7 +50,8 @@
         (format t "~17@A : ~A~%" name (function-docstring func)))))
   (terpri)
   (println
-   "See `define-repl-short-command` on how to define short commands."))
+   "A unique command prefix is sufficient to call a command.
+See macro `define-repl-short-command` on how to define short commands."))
 
 
 (define-repl-short-command :explore

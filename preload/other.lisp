@@ -83,4 +83,17 @@ of the program run as strings."
         (let ((result (get-output-stream-string out)))
           result))))
           
+(defun select-string-from-prefix (prefix selections)
+  "If `prefix` is a prefix of just one of `selections`, return that one.
+Otherwise, return nil if it matches none, t if it matches more than one."
+  (let (matches)
+    (dolist (item selections)
+      (when (string-starts-with item prefix)
+        (push item matches)))
+    (if (null matches)
+        nil
+        (if (null (cdr matches))
+            (car matches)
+            t))))
+
 ;;; EOF

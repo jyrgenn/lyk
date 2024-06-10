@@ -1,4 +1,4 @@
-// the REPL -- to be
+// the REPL -- Read-Eval-Print-Loop
 
 package org.w21.lyk
 
@@ -11,6 +11,8 @@ val plus3Sym = LSymbol.makeGlobal("+++", Nil)
 val slashSym = LSymbol.makeGlobal("/", Nil)
 val slash2Sym = LSymbol.makeGlobal("//", Nil)
 val slash3Sym = LSymbol.makeGlobal("///", Nil)
+
+val maybeRunShortCommandSym = intern("maybe-run-short-command")
 
 
 fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
@@ -37,7 +39,7 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
 
     while (true) {
         try {
-            // Read, 
+            // READ, 
             var (expr, loc) = reader.read()
             if (expr == null) {
                 break
@@ -49,24 +51,13 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
             }
 
             // may be a short command
-            if (expr.isKeyword()) {
-                val table = replShortCommands.getValueOptional()
-                if (table is LTable) {
-                    val cmd = table.get(expr)
-                    if (cmd !== Nil) {
-                        if (cmd is LFunction) {
-                            cmd.call(Nil)
-                        }
-                        println()
-                        continue
-                    }
-                } else {
-                    warn("$replShortCommands is not a table:"
-                         + " ${replShortCommands.desc(null)}")
-                }
+            if (interactive && maybeRunShortCommandSym
+                    .function!!.call(list(expr))
+                    .toBoolean()) {
+                continue
             }
 
-            // Eval,
+            // EVAL,
             val (perfdata, value) = measurePerfdataValue {
                 eval(expr)
             }
@@ -74,11 +65,12 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
                 println(value)
             }
 
-            // Print,
+            // PRINT,
             if (value !== theNonPrintingObject) {
                 iprintln(value.desc(null))
             }
             iprintln()
+            // set special variables +, ++, +++, *, **, ***, /, //, ///
             if (interactive) {
                 plus3Sym.setValue(plus2Sym.getValue())
                 plus2Sym.setValue(plusSym.getValue())
