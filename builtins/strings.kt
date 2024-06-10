@@ -587,3 +587,41 @@ fun bi_string_contains_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return bool2ob(needle.toString() in haystack.toString())
 }
 
+/// builtin string-starts-with
+/// fun     bi_string_starts_with
+/// std     string prefix
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true iff `string` starts with `prefix`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_starts_with(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                          suppp: Map<LSymbol, Boolean>): LObject {
+    val (str, prefix) = args2(args)
+    return bool2ob(str.toString().startsWith(prefix.toString()))
+}
+
+/// builtin string-ends-with
+/// fun     bi_string_ends_with
+/// std     string prefix
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Return true iff `string` ends with `prefix`.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_string_ends_with(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                          suppp: Map<LSymbol, Boolean>): LObject {
+    val (str, prefix) = args2(args)
+    return bool2ob(str.toString().endsWith(prefix.toString()))
+}
+
