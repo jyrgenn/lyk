@@ -9,10 +9,10 @@
   "Run a short command if `expr` is a keyword matching one.
 Return true iff a short command was run or at least attempted."
   (unless (keywordp expr)
-    nil)
+    (return nil))
   (unless (tablep *repl-short-commands*)
     (warning "*repl-short-commands* is not a table: ~A" *repl-short-commands*)
-    nil)
+    (return nil))
   (let ((cmd (select-string-from-prefix expr
                                         (table-keys *repl-short-commands*))))
     (cond ((null cmd) nil)
