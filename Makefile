@@ -34,7 +34,7 @@ INSTALLBIN =  $(INSTALLBASE)/bin
 # rm -f $JAR
 
 
-build: lyk.jar generated/DOCSTRINGS.md
+build: lyk.jar # generated/DOCSTRINGS.md
 
 lyk.jar: $(ALLSRCS) generated/jline Makefile tags
 	$(COMP) -cp generated/jline $(ALLSRCS) -include-runtime -d lyk.jar
