@@ -12,7 +12,8 @@ val slashSym = LSymbol.makeGlobal("/", Nil)
 val slash2Sym = LSymbol.makeGlobal("//", Nil)
 val slash3Sym = LSymbol.makeGlobal("///", Nil)
 
-val maybeRunShortCommandSym = intern("maybe-run-short-command")
+val replInteractiveStartHookSym = intern("*repl-interactive-start-hook*")
+val replInteractiveInputHookSym = intern("*repl-interactive-input-hook*")
 
 
 fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
@@ -37,6 +38,9 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
         iprint("\n", flush = true)
     }
 
+    if (interactive) {
+        runHookFunction(replInteractiveStartHookSym, Nil)
+    }
     while (true) {
         try {
             // READ, 
@@ -51,10 +55,13 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
             }
 
             // may be a short command
-            if (interactive && maybeRunShortCommandSym
-                    .function!!.call(list(expr))
-                    .toBoolean()) {
-                continue
+            if (interactive) {
+                if (runHookFunction(replInteractiveInputHookSym,
+                                    list(expr)).toBoolean()) {
+                    // means the hook function has already processed the
+                    // argument
+                    continue
+                }
             }
 
             // EVAL,
@@ -114,4 +121,9 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
         stderr.println()
     }
     return null
+}
+
+fun init_repl() {
+    defineHook(replInteractiveStartHookSym)
+    defineHook(replInteractiveInputHookSym)
 }

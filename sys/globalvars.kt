@@ -91,6 +91,7 @@ val debugReplSym = intern("repl")
 val debugSetqSym = intern("setq")
 val debugFormatstringSym = intern("formatstring")
 val debugEnglishSym = intern("english")
+val debugHooksSym = intern("hooks")
 
 val debugOffSym = intern("=off")
 val debugListSym = intern("=list")

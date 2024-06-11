@@ -96,4 +96,13 @@ Otherwise, return nil if it matches none, t if it matches more than one."
             (car matches)
             t))))
 
+(defun example-startup-hook-function (load-files expr-list other-args)
+  "Print the arguments passed to lyk.
+This is an example for a startup hook function."
+  (format t "; startup: load ~A -e ~A args ~A~%"
+          load-files expr-list other-args))
+
+;; (set-hook-function '*startup-hook* #'example-startup-hook-function)
+                   
+
 ;;; EOF

@@ -1231,6 +1231,116 @@ fun bi_system_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>,
                 LCons(intern("secs"), makeNumber(runtime)))
 }
 
+/// builtin get-hooks
+/// fun     bi_get_hooks
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     alist
+/// special no
+/// doc {
+/// Return an alist with (hooksym . function) pairs. The function may be nil.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_get_hooks(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                 suppp: Map<LSymbol, Boolean>): LObject {
+    val lc = ListCollector()
+    for ((hooksym, function) in getHooks()) {
+        lc.add(LCons(hooksym, function ?: Nil))
+    }
+    return lc.list
+}
+
+/// builtin define-hook
+/// fun     bi_define_hook
+/// std     hook-symbol
+/// key     
+/// opt     function
+/// rest    
+/// ret     hook-symbol
+/// special no
+/// doc {
+/// Define a hook `hook-symbol` for later use.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_define_hook(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                   suppp: Map<LSymbol, Boolean>): LObject {
+    val hooksym = arg1(args)
+    defineHook(symbolArg(hooksym))
+    return hooksym
+}
+
+/// builtin set-hook-function
+/// fun     bi_set_hook_function
+/// std     hook-symbol function
+/// key     
+/// opt     
+/// rest    
+/// ret     nil
+/// special no
+/// doc {
+/// Associate a `function` with the `hook-symbol`, to be called
+/// when the hook is activated. If `function` is nil, nothing will
+/// be called when the hook is activated.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_set_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                         suppp: Map<LSymbol, Boolean>): LObject {
+           val (hooksym, function) = args2(args)
+           val func = if (function === Nil) {
+               null
+           } else {
+               functionArg(function)
+           }
+           setHookFunction(symbolArg(hooksym), func)
+           return Nil
+       }
+
+/// builtin get-hook-function
+/// fun     bi_get_hook_function
+/// std     hook-symbol
+/// key     
+/// opt     
+/// rest    
+/// ret     function
+/// special no
+/// doc {
+/// Return the function of hook `hook-symbol` (may be nil).
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_get_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                         suppp: Map<LSymbol, Boolean>): LObject {
+           return getHookFunction(symbolArg(arg1(args))) ?: Nil
+}
+
+/// builtin run-hook-function
+/// fun     bi_run_hook_function
+/// std     hook-symbol
+/// key     
+/// opt     
+/// rest    args
+/// ret     return-value
+/// special no
+/// doc {
+/// Run the hook function of hook `hook-symbol` and return its value.
+/// The `args` are passed to the function.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_run_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                         suppp: Map<LSymbol, Boolean>): LObject {
+    val (hooksym, hookargs) = args
+    return runHookFunction(symbolArg(hooksym), hookargs)
+}
+
+
+
+
 
 
 

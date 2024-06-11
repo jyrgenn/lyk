@@ -23,6 +23,9 @@ Return true iff a short command was run or at least attempted."
     (terpri)
     t))
 
+(set-hook-function '*repl-interactive-input-hook*
+                   #'maybe-run-short-command)
+
 (defvar *lyk-install-directory* (cdr (assoc 'installdir (build-info)))
   "The pathname of the directory where lyk is installed.")
 

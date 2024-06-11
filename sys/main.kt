@@ -42,6 +42,7 @@ object Options {
         debugSetqSym to false,
         debugFormatstringSym to false,
         debugEnglishSym to false,
+        debugHooksSym to false,
     )
     var print_estack = false
     var maxrecurse = 0
@@ -77,6 +78,8 @@ fun usage() {
     println()
     exitLyk(0)
 }
+
+val startupHookSym = intern("*startup-hook*")
 
 
 fun main(args: Array<String>) {
@@ -179,20 +182,36 @@ fun main(args: Array<String>) {
 	init_Variables()
         debug(debugStartupSym) { "init streams" }
         init_Streams()
+        debug(debugStartupSym) { "init repl" }
+        init_repl()
         if (!Options.noPreload) {
             debug(debugStartupSym) { "load preload code" }
+            defineHook(startupHookSym)
             load_string(preload_code, "*preload-code*")
         }
+        
+        val args_lc = ListCollector()
+        for (arg in argl) {
+            args_lc.add(makeString(arg))
+        }
+        runHookFunction(startupHookSym,
+                        list(collectedList {
+                                 for (load_file in load_files) {
+                                     it.add(makeString(load_file))
+                                 }
+                             },
+                             if (lispExpression == null) {
+                                 Nil
+                             } else {
+                                 list(makeString(lispExpression))
+                             },
+                             args_lc.list))                             
 
         for (fname in load_files) {
             debug(debugStartupSym) { "load file \"$fname\"" }
             load(fname)
         }
 
-        val args_lc = ListCollector()
-        for (arg in argl) {
-            args_lc.add(makeString(arg))
-        }
         debug(debugStartupSym) { "found command line args: ${args_lc.list}" }
         
         
