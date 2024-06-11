@@ -812,6 +812,8 @@ fun bi_no_warnings(args: LObject, kwArgs: Map<LSymbol, LObject>,
 }
 
 
+val onSym = intern("on")
+
 /// builtin warnings-as-errors
 /// fun     bi_warnings_as_errors
 /// std     
@@ -1105,8 +1107,6 @@ fun bi_return(args: LObject, kwArgs: Map<LSymbol, LObject>,
               suppp: Map<LSymbol, Boolean>): LObject {
     throw ReturnSignal(arg1(args))
 }
-
-val onSym = intern("on")
 
 /// builtin user-name
 /// fun     bi_user_name
