@@ -16,9 +16,11 @@ Return true iff a short command was run or at least attempted."
   (let ((cmd (select-string-from-prefix expr
                                         (table-keys *repl-short-commands*))))
     (cond ((null cmd) nil)
-          ((eq cmd t)
-           (warning "`~A` is not a unique short command prefix")
-           t))
+          ((listp cmd)
+           (warning "`~A` matchesmultiple short commands: ~A"
+		    expr (join cmd ", "))
+	   (warning "type :help for more information")
+           (return t)))
     (funcall (table-get *repl-short-commands* cmd))
     (terpri)
     t))
@@ -64,29 +66,29 @@ See macro `define-repl-short-command` on how to define short commands."))
   - `apropos` prints all known symbols that match a substring or a
     regular expression, together with the information if the symbol
     is bound to a function (builtin, lambda, or macro), has a
-    variable binding, or properties. Call it like this:
+    variable binding, or properties.
 
-        (apropos \"substring\") or (apropos #/regexp/)
+        (apropos \"substr\")
+	(apropos #/r.*exp/)
 
-  - `doc` prints a function documentation for a symbol (or a
-    function object) with a synopsis, description of the function,
-    and the place where it is defined. Example:
+  - `doc` prints the function documentation for a symbol (or a
+    function object) with synopsis, description, and place of
+    definition.
 
         (doc 'apropos)
 
-  - `describe` return a alist with an object's (the sole argument)
-    attributes. Example:
+  - `describe` return an alist with an object's attributes.
 
         (describe 'doc)
 
-  - The directory `~A/doc/` contains a few texts
-    describing some aspects of lyk.
+  - The directory `~A/doc/` contains not a full
+    documentation, but a few chapters describing some aspects of lyk.
 
   - `~A/doc/DOCSTRINGS.md` contains the docstrings
-    of all functions, same as those printed interactively with
+    of all functions, same as those printed interactively with `doc`.
 
-        (doc 'function-name)
-" *lyk-install-directory* *lyk-install-directory*))
+And then, there is the source code, of course."
+          *lyk-install-directory* *lyk-install-directory*))
 
 (define-repl-short-command :perfdata
     "show status counters since the start of the system"
