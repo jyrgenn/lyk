@@ -68,7 +68,7 @@ Hooks can also be defined in Lisp. The following functions can be
 used to define hooks, set hook functions, and run hooks:
 
  * builtin function (**get-hooks**) => alist  
-   Return an alist with (hooksym . function) pairs. The function may be nil.  
+   Return an alist with (hooksym . function) pairs for all defined hooks.
    [builtin function defined in builtins/system.kt:1245:1]  
 
  * builtin function (**define-hook** hook-symbol &optional function) =>

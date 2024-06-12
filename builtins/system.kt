@@ -1240,7 +1240,7 @@ fun bi_system_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// ret     alist
 /// special no
 /// doc {
-/// Return an alist with (hooksym . function) pairs. The function may be nil.
+/// Return an alist with (hooksym . function) pairs for all defined hooks.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
