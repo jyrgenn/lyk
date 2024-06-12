@@ -17,7 +17,7 @@ Return true iff a short command was run or at least attempted."
                                         (table-keys *repl-short-commands*))))
     (cond ((null cmd) nil)
           ((listp cmd)
-           (warning "`~A` matchesmultiple short commands: ~A"
+           (warning "`~A` matches multiple short commands: ~A"
 		    expr (join cmd ", "))
 	   (warning "type :help for more information")
            (return t)))
