@@ -85,7 +85,7 @@ of the program run as strings."
           
 (defun select-string-from-prefix (prefix selections)
   "If `prefix` is a prefix of just one of `selections`, return that one.
-Otherwise, return nil if it matches none, t if it matches more than one."
+Otherwise, return nil if it matches none, a list if it matches more than one."
   (let (matches)
     (dolist (item selections)
       (when (string-starts-with item prefix)
@@ -94,7 +94,7 @@ Otherwise, return nil if it matches none, t if it matches more than one."
         nil
         (if (null (cdr matches))
             (car matches)
-            t))))
+            matches))))
 
 (defun example-startup-hook-function (load-files expr-list other-args)
   "Print the arguments passed to lyk.
