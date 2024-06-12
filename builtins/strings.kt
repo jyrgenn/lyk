@@ -98,6 +98,7 @@ fun bi_join(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// special no
 /// doc {
 /// Return a new regexp object built from `pattern` (a kind of string).
+/// See `regexp-match` for more information about regular expressions.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
