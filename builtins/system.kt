@@ -43,8 +43,8 @@ fun bi_set_debug(args: LObject, kwArgs: Map<LSymbol, LObject>,
                 break
             }
             debugListSym -> {
-                for (key in Options.debug.keys) {
-                    lc.add(key)
+                for ((key, value) in Options.debug) {
+                    lc.add(LCons(key, bool2ob(value)))
                 }
                 return lc.list
             }
