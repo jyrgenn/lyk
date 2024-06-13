@@ -1338,6 +1338,34 @@ fun bi_run_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return runHookFunction(symbolArg(hooksym), hookargs)
 }
 
+/// builtin lyk-command-options
+/// fun     bi_lyk_command_options
+/// std     
+/// key     
+/// opt     
+/// rest    
+/// ret     alist
+/// special no
+/// doc {
+/// Return a alist of lyk's command line options and their values.
+/// The debug options will not be shown; use `(set-debug)` for those.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_lyk_command_options(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                           suppp: Map<LSymbol, Boolean>): LObject {
+    val lc = ListCollector()
+    lc.add(LCons(intern("print-estack"), bool2ob(Options.print_estack)))
+    lc.add(LCons(intern("max-recurse"), makeNumber(Options.maxrecurse)))
+    lc.add(LCons(intern("verbosity"),  makeNumber(Options.verbosity)))
+    lc.add(LCons(intern("warn-is-error"), bool2ob(Options.warnIsError)))
+    lc.add(LCons(intern("no-preload"), bool2ob(Options.noPreload)))
+    lc.add(LCons(intern("show-version"), bool2ob(Options.showVersion)))
+    lc.add(LCons(intern("no-user-startup"), bool2ob(Options.noUserStartup)))
+
+    return lc.list
+}
+
 
 
 
