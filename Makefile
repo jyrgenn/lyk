@@ -36,11 +36,12 @@ INSTALLBIN =  $(INSTALLBASE)/bin
 
 build: lyk.jar # generated/DOCSTRINGS.md
 
-lyk.jar: $(ALLSRCS) generated/jline Makefile tags
+lyk.jar doc/DOCSTRINGS.md: $(ALLSRCS) generated/jline Makefile tags l/alldocs.lisp
 	$(COMP) -cp generated/jline $(ALLSRCS) -include-runtime -d $@ 2>&1 |\
 		sed 's/\x1b\[[0-9;]*[a-zA-Z]//g'
 	cd generated/jline; jar -f ../../lyk.jar -u [a-z]*
 	./scripts/lyk -J . -V
+	./scripts/lyk -J . l/alldocs.lisp > doc/DOCSTRINGS.md
 
 generated/jline:
 	mkdir generated/jline
