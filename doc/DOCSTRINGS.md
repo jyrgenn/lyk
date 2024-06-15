@@ -1,5 +1,5 @@
 ;;; All function docstrings for 
-;;; lyk v0.2-123-g818e7bf-dirty kotlinc-jvm 2.0.0 2024-06-15 20:50 ni@abild /opt/w21/lib/lyk
+;;; lyk v0.2-123-g818e7bf-dirty kotlinc-jvm 2.0.0 ni@abild
 
 `%`  
 builtin function `(% num1 num2) => modulo`  
@@ -15,6 +15,23 @@ Return the product of all NUMBERS.
 builtin function `(** base power) => number`  
 Return `base` raised to the power `power`.  
 [builtin function defined in builtins/numbers.kt:417:1]
+
+`*lc-closure*`  
+builtin function `(*lc-closure* &rest args) => the-list`  
+This is a list collector closure. It takes an arbitrary number of arguments,  
+which are then added to the end of the list, and returns the list. The normal  
+use case would be to call it a number of times to add items to the list, and  
+then call it once without arguments to return the resulting list. This is more  
+efficient than using append repeatedly.  
+  
+Example:  
+    (let ((lc (list-collector)))  
+      (lc 'see)  
+      (lc 0 'evil)  
+      (lc 'hear "no" 'evil)  
+      (lc))  
+    => (see 0 evil hear "no" evil)  
+[builtin function defined in l/alldocs.lisp:1]
 
 `+`  
 builtin function `(+ &rest numbers) => sum`  
