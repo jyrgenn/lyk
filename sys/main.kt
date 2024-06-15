@@ -43,6 +43,7 @@ object Options {
         debugFormatstringSym to false,
         debugEnglishSym to false,
         debugHooksSym to false,
+        debugCompleterSym to false
     )
     var print_estack = false
     var maxrecurse = 0
@@ -50,6 +51,8 @@ object Options {
     var warnIsError = false     // let warnings be errors
     var noPreload = false       // don't load preload code
     var showVersion = false
+    var noUserStartup = false   // don't load user startup file
+    var debug_out: String? = null // file path to print debug output to
 }
 val debugOptions = Options.debug.keys.sorted()
 
@@ -123,11 +126,13 @@ fun main(args: Array<String>) {
             for (ch in arg.substring(1)) {
                 when (ch) {
                     'N' -> { Options.noPreload = true }
+                    'n' -> { Options.noUserStartup = true }
                     'E' -> { Options.print_estack = true }
                     'q' -> { Options.verbosity -= 1 }
                     'v' -> { Options.verbosity += 1 }
                     'V' -> { Options.showVersion = true }
                     'd' -> { setDebug(getOptVal("debug options")) }
+                    'D' -> { Options.debug_out = getOptVal("debug output") }
                     'e' -> { lispExpression = getOptVal("Lisp expression") }
                     'l' -> {
                         val fname = getOptVal("load file")
@@ -141,7 +146,7 @@ fun main(args: Array<String>) {
                     }
                     'W' -> {
                         Options.warnIsError = true
-                        warningsAsErrors.setValue(T, true)
+                        warningsAsErrors.setROValue(T)
                     }
                     else -> {
                         printErr("unknown option `-$ch`")
@@ -184,9 +189,9 @@ fun main(args: Array<String>) {
         init_Streams()
         debug(debugStartupSym) { "init repl" }
         init_repl()
+        defineHook(startupHookSym)
         if (!Options.noPreload) {
             debug(debugStartupSym) { "load preload code" }
-            defineHook(startupHookSym)
             load_string(preload_code, "*preload-code*")
         }
         

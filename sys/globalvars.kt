@@ -92,6 +92,7 @@ val debugSetqSym = intern("setq")
 val debugFormatstringSym = intern("formatstring")
 val debugEnglishSym = intern("english")
 val debugHooksSym = intern("hooks")
+val debugCompleterSym = intern("completer")
 
 val debugOffSym = intern("=off")
 val debugListSym = intern("=list")
@@ -154,9 +155,16 @@ fun init_Variables() {
     }
     loadPathSym.setValue(loadpath)
 
+    if (Options.debug_out != null) {
+        val path = Options.debug_out!!
+        debug_out = FileWriterStream(path, name = path,
+                                     flushch = true, error = true)
+    }
+
     LSymbol.makeGlobal(stdinName, stdin)
     LSymbol.makeGlobal(stdoutName, stdout)
     LSymbol.makeGlobal(stderrName, stderr)
     LSymbol.makeGlobal(consoleName, console)
     LSymbol.makeGlobal("pi", makeNumber(3.141592653589793))
+    LSymbol.makeGlobal("e", makeNumber(2.7182818284590455))
 }

@@ -36,6 +36,8 @@ fun closingOf(opening: Char): Char {
     return matching_bracket[opening] ?: opening
 }
 
+fun isDelimiter(ch: Char) = ch.isWhitespace() || ch in delimiter_chars
+
 fun the_int(s: String, radix: Int = 10): Long? {
     try {
         return s.toLong(radix)
@@ -437,7 +439,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
                     else -> {}
                 }
             }
-            if (ch.isWhitespace() || ch in delimiter_chars) {
+            if (isDelimiter(ch)) {
                 unreadChar(ch)
                 break
             }
@@ -482,7 +484,7 @@ class Reader(val input: LStream, sourceName: String? = null): LocationHolder
         if (ch != null) {
             if (ch == '|') { return CC.Bar }
             if (ch == '\\') { return CC.Backsl }
-            if (ch.isWhitespace() || ch in delimiter_chars) {
+            if (isDelimiter(ch)) {
                 return CC.Delim
             }
             return CC.Member

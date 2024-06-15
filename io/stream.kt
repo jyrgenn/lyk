@@ -2,8 +2,10 @@ package org.w21.lyk
 
 import java.io.File
 import java.lang.ref.WeakReference
+
+import java.util.TreeSet
 import jline.console.ConsoleReader
-import jline.console.completer.StringsCompleter
+import jline.console.completer.Completer
 
 
 val stdinName   = "*standard-input*"
@@ -21,13 +23,61 @@ val newLine = 10
 val openStreams = mutableSetOf<WeakReference<LStream>>()
 
 
+/**
+ * Completer for Lisp symbols.
+ *
+ * @author <a href="mailto:ni@w21.org">Jürgen Nickelsen/a>
+ * based on StringsCompleter by
+ * <a href="mailto:jason@planet57.com">Jason Dillon</a>
+ */
+class SymbolsCompleter(symbol_names: Set<String>): Completer
+{
+    val names = TreeSet<String>();
+
+    init {
+        for (name in symbol_names) {
+            names.add(name)
+        }
+    }
+
+    override fun complete(buffer: String?, cursor: Int,
+                 candidates: MutableList<CharSequence>): Int {
+        if (buffer == null) {
+            for (s in names) {
+                candidates.add(s);
+            }
+        } else {
+            var index = cursor
+            debug(debugCompleterSym) {
+                "buffer: \"$buffer\" len ${buffer.length} cursor $cursor"
+            }
+            while (index >= 0) {
+                if (index < buffer.length && isDelimiter(buffer[index])) {
+                    break
+                }
+                index--
+            }
+            val prefix = buffer.substring(0, min(cursor, index+1))
+            val sym = buffer.substring(min(cursor, index+1), cursor)
+            for (match in names.tailSet(sym)) {
+                if (!match.startsWith(sym)) {
+                    break;
+                }
+                candidates.add(prefix + match);
+            }
+        }
+
+        return if (candidates.isEmpty()) -1 else 0;
+    }
+}
+
 
 class ConsoleReaderStream(var prompt: LObject = Nil
 ): LStream(input = true, path = null, name = consoleName, interactive = true) {
     val cr = ConsoleReader()
     var linebuf = StringReaderStream("")
     var linenum = 0
-    var completer = StringsCompleter()
+    var completer: SymbolsCompleter? = null
 
     init {
         cr.setExpandEvents(false)
@@ -46,8 +96,10 @@ class ConsoleReaderStream(var prompt: LObject = Nil
                     is LFunction -> currentPrompt.call(Nil).toString()
                     else -> currentPrompt.toString()
                 }
-                cr.removeCompleter(completer)
-                completer = StringsCompleter(symbolTable.keys)
+                if (completer != null) {
+                    cr.removeCompleter(completer)
+                }
+                completer = SymbolsCompleter(symbolTable.keys)
                 cr.addCompleter(completer)
                 val line = cr.readLine(promptString)
                 linenum++
