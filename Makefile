@@ -37,7 +37,8 @@ INSTALLBIN =  $(INSTALLBASE)/bin
 build: lyk.jar # generated/DOCSTRINGS.md
 
 lyk.jar: $(ALLSRCS) generated/jline Makefile tags
-	$(COMP) -cp generated/jline $(ALLSRCS) -include-runtime -d lyk.jar
+	$(COMP) -cp generated/jline $(ALLSRCS) -include-runtime -d $@ 2>&1 |\
+		sed 's/\x1b\[[0-9;]*[a-zA-Z]//g'
 	cd generated/jline; jar -f ../../lyk.jar -u [a-z]*
 	./scripts/lyk -J . -V
 
