@@ -5,7 +5,7 @@
            (let ((lc (list-collector)))
              (dolist (tag tags (lc))
                (lc (cdr (assoc tag alist)))))))
-    (funcall #'format t ";;; All function docstrings for ~%;;; ~A~%~%"
+    (funcall #'format t ";;; Docstrings for ~A~%~%"
              (join (values-from-alist (build-info)
                                       'program 'version 'kotlin 'built-by)))))
 
