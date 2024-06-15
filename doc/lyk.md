@@ -28,12 +28,13 @@ Common Lisp things missing in Lyk:
   - classes
   - structures (maybe later)
   - arrays beyond vector
+  - CLOS
   and many many more (hey, even this list in incomplete!)
 
 In its inner workings, Lyk is a rather simple Lisp, firmly in the My
 Favourite Toy Language category. It is a fun project after all, and
 hammering out the details of, for instance, a sophisticated numerics
-subsystem does not sound like much fun to me. Not without users
+subsystem does not sound like much fun to me -- not without users
 crying for better number support anyway. Same goes for much of the
 above.
 
@@ -54,31 +55,25 @@ There are a few tools to help explore lyk:
   - `apropos` prints all known symbols that match a substring or a
     regular expression, together with the information if the symbol
     is bound to a function (builtin, lambda, or macro), has a
-    variable binding, or properties. Call it like this:
+    variable binding, or properties.
 
         (apropos "substring")
-
-    or
-
-        (apropos #/regexp/)
+        (apropos #/r.*exp/)
 
   - `doc` prints a function documentation for a symbol (or a
-    function object) with a synopsis, description of the function,
-    and the place where it is defined. Example:
+    function object) with synopsis, description, and place of
+    definition.
 
         (doc 'apropos)
 
-  - `describe` return a alist with an object's (the sole argument)
-    attributes. This isn't as far developed as I'd wish, but for a
-    symbol it shows all of its attributes, including the properties
-    in an alist.
+  - `describe` return a alist with an object's attributes.
+
+        (describe 'doc)
 
   - `DOCSTRINGS.md` is built in the `generated/` subdirectory of the
     source repository and installed in the `doc/` subdirectory of
     the installation directory. It contains the docstrings of all
-    functions, same as those printed interactively with
-
-        (doc 'function-name)
+    functions, same as those printed interactively with `doc`.
 
 
 Installation
@@ -90,14 +85,16 @@ be GNU Make). The places where lyk is installed are controlled by
 these Makefile variables:
 
     INSTALLBASE = /opt/w21
-    INSTALLDIR =  $(INSTALLBASE)/lib/lyk
-    INSTALLBIN =  $(INSTALLBASE)/bin
+    INSTALLDIR  = $(INSTALLBASE)/lib/lyk
+    INSTALLBIN  = $(INSTALLBASE)/bin
 
 These are the contents of the INSTALLDIR directory after
 installation:
 
+  - `LICENSE`   : the BSD 2-clause license that applies to lyk
   - `README.md` : the README file from the root of the repository
   - `doc/`      : the documentation, including this text
+  - `jline/`    : a directory with the JLine license
   - `l`         : some Lisp code that comes with lyl
   - `lyk.jar`   : contains the compiled lyk classes and the Kotlin and
                   JLine runtime libraries
@@ -105,7 +102,7 @@ installation:
 These files are installed in the INSTALLBIN:
 
   - `lyk`       : the command to run lyk (a wrapper shell script)
-  - `lyc`       : the lyk calculator, need `lyk` in $PATH
+  - `lyc`       : the lyk calculator, needs `lyk` in $PATH
 
 
 Have fun!

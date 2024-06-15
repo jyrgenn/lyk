@@ -114,7 +114,7 @@ fun bi_debug(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// doc {
 /// Return or print the documentation for `arg`, if available.
 /// If optional `return-as-string` is true, return the docstring as a string,
-/// otherwise print it and return *the-non-printing-object*.
+/// otherwise print it and return `*the-non-printing-object*`.
 /// If optional `synopsis-only` is true, print or return the function's
 /// synopsis only.
 /// }

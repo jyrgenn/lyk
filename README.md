@@ -30,7 +30,8 @@ functions.
 Lyk uses the JLine line editor Version 2 for the interactive input
 line; see the subdirectory `external/jline/`. This is not the
 current release version, but it was rather easy to integrate, which
-the current one wasn't.
+the current one wasn't. The completion on symbol names is a bit
+clumsy, but that is due to my completer implementation, not JLine's.
 
 Please see the files in the `doc/` subdirectory for more
 information, in particular `doc/lyk.md`. It contains a few pointers

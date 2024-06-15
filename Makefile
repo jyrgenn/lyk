@@ -85,18 +85,18 @@ clean:
 	-rm -rf *.jar *~ */*~ TAGS *.log generated generated/DOCSTRINGS.md
 
 # collection of all function+macro doc strings
-generated/DOCSTRINGS.md: lyk.jar Makefile l/alldocs.lisp
-	./scripts/lyk -J . l/alldocs.lisp > generated/DOCSTRINGS.md
+doc/DOCSTRINGS.md: lyk.jar Makefile l/alldocs.lisp
+	./scripts/lyk -J . l/alldocs.lisp > doc/DOCSTRINGS.md
 
 
-install: generated/DOCSTRINGS.md
+install: doc/DOCSTRINGS.md
+	mkdir -p $(INSTALLBIN)
 	-rm -rf $(INSTALLDIR)/*
 	rsync -a doc l $(INSTALLDIR)/
 	install -d $(INSTALLDIR)/jline
 	install -c lyk.jar $(INSTALLDIR)
 	install -c README.md LICENSE $(INSTALLDIR)/
 	install -c external/jline/LICENSE $(INSTALLDIR)/jline/
-	install -c generated/DOCSTRINGS.md $(INSTALLDIR)/doc/
 	sed 's|:INSTALLDIR:|:$(INSTALLDIR):|' scripts/lyk > $(INSTALLBIN)/lyk
 	chmod +x $(INSTALLBIN)/lyk
 	sed "s|:UNRELEASED:|$$(scripts/lyk -V)|" l/lyc > $(INSTALLBIN)/lyc
