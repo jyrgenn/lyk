@@ -65,10 +65,10 @@ open class LispError(message: String, val data: LObject = Nil
 
 class FormatError(message: String): LispError(message) {
     constructor(message: String, directive: FormatDirective):
-        this("$message ${directive.fd_type} directive `${directive.directive}` "
-             + "in format string `${directive.formatString}`")
+        this("$message ${directive.fd_type} directive `${directive.directive}`"
+             + " in format string \"${directive.formatString}\"")
     constructor(message: String, fstring: String):
-        this("$message in format string `$fstring`")
+        this("$message in format string \"$fstring\"")
 }
 
 class ProcessError(exit_status: Int, function: String,
