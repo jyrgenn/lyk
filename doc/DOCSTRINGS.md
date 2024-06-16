@@ -1,4 +1,4 @@
-;;; Docstrings for lyk v0.2-133-g41edfe3-dirty kotlinc-jvm 2.0.0 ni@abild
+;;; Docstrings for lyk v0.2-134-g753af29-dirty kotlinc-jvm 2.0.0 ni@abild
 
 `%`  
 builtin function `(% num1 num2) => modulo`  

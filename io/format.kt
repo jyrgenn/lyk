@@ -563,7 +563,7 @@ fun format_dollar(directive: FormatDirective, digitsAfter_: Int?,
     val arg = args[0]
     if (arg !is LNumber) {
         return format_aesthetic(
-            directive, (if (width == -1) 0 else width!!), 1, 0, padchar!!,
+            directive, (if (width == -1) 0 else width), 1, 0, padchar,
             colonFlag, atsignFlag, stream, args)
     }
     val fformat = "%%.%df".format(digitsAfter)
@@ -718,7 +718,7 @@ open class FixedFPDirective(formatString: String,
         val arg = args[0]
         if (arg !is LNumber) {
             return format_aesthetic(
-                this, (if (width == -1) 0 else width!!), 1, 0, padchar!!,
+                this, (if (width == -1) 0 else width), 1, 0, padchar!!,
                 colonFlag, atsignFlag, stream, args)
         }
         val fformat = "%%.%df".format(if (d_frac!! >= 0) d_frac!! else 20)
