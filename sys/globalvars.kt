@@ -167,4 +167,5 @@ fun init_Variables() {
     LSymbol.makeGlobal(consoleName, console)
     LSymbol.makeGlobal("pi", makeNumber(3.141592653589793))
     LSymbol.makeGlobal("e", makeNumber(2.7182818284590455))
+    LSymbol.makeGlobal("*lyk-install-directory*", makeString(installdir))
 }

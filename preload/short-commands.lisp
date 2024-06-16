@@ -28,8 +28,6 @@ Return true iff a short command was run or at least attempted."
 (set-hook-function '*repl-interactive-input-hook*
                    #'maybe-run-short-command)
 
-(defvar *lyk-install-directory* (cdr (assoc 'installdir (build-info)))
-  "The pathname of the directory where lyk is installed.")
 
 (defmacro define-repl-short-command (name docstring &rest bodyforms)
   "Define short command `name` for the repl with `docstring` and `bodyforms`.

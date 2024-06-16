@@ -36,19 +36,21 @@ INSTALLBIN =  $(INSTALLBASE)/bin
 
 build: lyk.jar
 
-lyk.jar doc/DOCSTRINGS.md: $(ALLSRCS) generated/jline Makefile \
-		tags l/alldocs.lisp
+lyk.jar: $(ALLSRCS) generated/jline Makefile tags l/alldocs.lisp
 	$(COMP) -cp generated/jline $(ALLSRCS) -include-runtime -d $@ 2>&1 |\
 		sed 's/\x1b\[[0-9;]*[a-zA-Z]//g'
 	cd generated/jline; jar -f ../../lyk.jar -u [a-z]*
 	./scripts/lyk -J . -V
-	./scripts/lyk -J . l/alldocs.lisp > doc/DOCSTRINGS.md
 
-generated/jline:
-	mkdir generated/jline
+
+generated/DOCSTRINGS.md: lyk.jar
+	./scripts/lyk -J . l/alldocs.lisp > generated/DOCSTRINGS.md
+
+generated/jline: generated
+	mkdir -p generated/jline
 	cd generated/jline; jar -xf ../../external/jline/jline.jar
 
-generated/10-types.lisp: Makefile scripts/list-types.sh $(SRCS)
+generated/10-types.lisp: Makefile generated scripts/list-types.sh $(SRCS)
 	./scripts/list-types.sh > generated/10-types.lisp
 
 generated:
@@ -66,7 +68,7 @@ generated/init-builtins.kt: Makefile generated scripts/generate-builtin-init \
 	    ln -s ../scripts/Subdirmakefile generated/Makefile
 	scripts/generate-builtin-init $(BUILTINSRC) > generated/init-builtins.kt
 
-tags: generated $(PRELOAD) $(ALLSRCS)
+tags: $(PRELOAD) $(ALLSRCS)
 	etags \
 	      -r "/[ \t]*fun[ \t]+\([A-Za-z0-9_]+\)/\1/"      \
 	      -r "/\(var\|val\)[ \t]+\([A-Za-z0-9_]+\)/\2/"   \
@@ -86,13 +88,15 @@ test: lyk.jar
 clean:
 	-rm -rf *.jar *~ */*~ TAGS *.log generated
 
-install: doc/DOCSTRINGS.md
-	mkdir -p $(INSTALLBIN)
+install: generated/DOCSTRINGS.md
+	mkdir -p $(INSTALLBIN) $(INSTALLDIR)
 	-rm -rf $(INSTALLDIR)/*
-	rsync -a doc l $(INSTALLDIR)/
-	install -d $(INSTALLDIR)/jline
+	rsync -a l $(INSTALLDIR)/
+	rsync -a doc $(INSTALLDIR)/
 	install -c lyk.jar $(INSTALLDIR)
 	install -c README.md LICENSE $(INSTALLDIR)/
+	install -c generated/DOCSTRINGS.md $(INSTALLDIR)/doc/
+	install -d $(INSTALLDIR)/jline
 	install -c external/jline/LICENSE $(INSTALLDIR)/jline/
 	sed 's|:INSTALLDIR:|:$(INSTALLDIR):|' scripts/lyk > $(INSTALLBIN)/lyk
 	chmod +x $(INSTALLBIN)/lyk

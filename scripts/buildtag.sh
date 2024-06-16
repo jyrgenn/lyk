@@ -20,8 +20,10 @@ val build_info = mapOf(
     "kotlin" to "$kotlin",
     "built-at" to "$builtat",
     "built-by" to "$builtby",
-    "installdir" to "$install"
 )
+
+val installdir = "$install"
+
 
 fun buildtag(): String {
     return "$program $version $kotlin $builtat $builtby"
