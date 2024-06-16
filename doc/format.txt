@@ -1,6 +1,41 @@
 About `format`
 ==============
 
+Formatted Output (CLHS 22.3) is one of the more intimidating parts
+of Common Lisp, so I shied away from it in all my previous Lisp
+implementations. Instead I fell back on the platform's formatted
+output options, which were all rather C-like, with a bit different
+syntax in Python.
+
+Except C and Java, all had a format directive that would print
+whatever object was thrown at it like "~A" in "real" Lisp, which was
+enough for most usage. My implementations in Java ("jnil") in C
+("hsl") did not get as far that this really emerged as a problem.
+
+But with lyk I am much farther along with the implementation than
+ever before, and Kotlin is no improvement on Java in this respect. I
+forgot the details in between, but I didn't find any directive that
+was universally usable for every type of object.
+
+So I started to do a "real" format anyway, expecting I would just do
+~A and maybe the very easy other directives, see how far I would
+get. But then I saw that wasn't enough, I had to implement at least
+basic width, padchar, number alignment and things for my own needs.
+
+Faster than I thought I had a relatively flexible internal framework
+for implementing the "normal" format directives. As it looks at each
+directive and argument separately, it doesn't begin to cover the
+meta directives in the Control Flow, Pretty Printer, Layout Control,
+but it turned out rather well suited for most of the others. So I
+got farther then I had originally expected.
+
+In general, if a directive is implemented, so are all its options as
+expressed in the prefix parameters. The notes below tell in detail
+what has been implemented and what not. I started to write them to
+better understand the respective CLHS chapters, and it turned out
+they aren't so bad as documentation as well.
+
+
 BASIC OUTPUT
 ------------
 
@@ -24,8 +59,8 @@ type ::= "C" | "%"| "&" | "|" | "~"
 
 [x] Tilde %: print a #\Newline; with ~n%, print n newlines.
 
-[x] Tilde &: fresh line; print a newline if we aren't already at the start of a
-          line.
+[x] Tilde &: fresh line; print a newline if we aren't already at the
+             start of a line.
 
 [x] Tilde |: Print a page separator; with ~n|, print n page separators
 
@@ -44,7 +79,7 @@ all implemented because they are important and/or easy to implement
                        non-negative numbers  
     ~R   : cardinal English number: four (very restricted range)  
     ~:R  : ordinal English number: fourth (very restricted range)  
-    ~@R  : Roman numeral: IV (1..3999 for historical reasons)  
+    ~@R  : Roman numeral: IV (1..3999 for historical reasons, like SBCL)  
     ~:@R : old Roman numeral: IIII (1..3999 for historical reasons)  
 
     Roman numbers were much easier to implement than expected.
@@ -61,8 +96,7 @@ all implemented because they are important and/or easy to implement
 Floating Point
 --------------
 
-want to implement F (done), E (started, on hold), and G; not so sure
-about $
+want to implement F (done), E (started, on hold), G, and $ (done)
 
 [x] Tilde F: Fixed-Format Floating-Point
 
@@ -70,7 +104,7 @@ about $
 
 [ ] Tilde G: General Floating-Point
 
-[ ] Tilde $: Monetary Floating-Point
+[x] Tilde $: Monetary Floating-Point
 
 
 Printer Operations

@@ -529,5 +529,11 @@
 (test-is "CLHS 22.3.11 30"  (format nil "Written to ~A." "foo.bin")
          "Written to foo.bin.")
 
+(test-is "Dollar all" (format nil "~3,6,13,'+$" 113.2)
+         "+++000113.200")
+
+(test-is "Dollar all neg." (format nil "~3,6,13,'+$" -113.2)
+         "++-000113.200")
+
 
 (done-testing)

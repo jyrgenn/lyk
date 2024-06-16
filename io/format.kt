@@ -533,21 +533,71 @@ fun format_aesthetic(directive: FormatDirective, mincol_: Int?, colinc_: Int?,
 }
 
 
+fun format_dollar(directive: FormatDirective, digitsAfter_: Int?,
+                  nBefore_: Int?, width_: Int?, padchar_: Char?,
+                  colonFlag: Boolean, atsignFlag: Boolean, stream: LStream,
+                  args: MutableList<LObject>): String {
+    var digitsAfter = digitsAfter_
+    var nBefore = nBefore_
+    var width = width_
+    var padchar = padchar_
+
+    if (digitsAfter == null) {
+        digitsAfter = intArg(pop(args),
+                             " directive `${directive.directive}`: digitsAfter")
+    }
+    if (nBefore == null) {
+        nBefore = intArg(pop(args),
+                         " directive `${directive.directive}': nBefore")
+    }
+    if (width == null) {
+        width = intArg(pop(args),
+                       " directive `${directive.directive}': width")
+    }
+    if (padchar == null) {
+        padchar = charArg(pop(args),
+                          " directive `${directive.directive}': padchar")
+            .the_char
+    }
+
+    val arg = args[0]
+    if (arg !is LNumber) {
+        return format_aesthetic(
+            directive, (if (width == -1) 0 else width!!), 1, 0, padchar!!,
+            colonFlag, atsignFlag, stream, args)
+    }
+    val fformat = "%%.%df".format(digitsAfter)
+    var the_string = fformat.format(arg.the_number)
+    var (before, after) = the_string.split(".")
+    var minus = before[0] == '-'
+    if (minus) {
+        before = before.substring(1)
+    }
+    the_string = before.padStart(nBefore, '0') + '.' + after
+    if (minus) {
+        the_string = "-" + the_string
+    }
+    the_string = the_string.padStart(width, padchar)
+    return the_string
+}
+
+
 val dirClassType = mapOf(
+    '$' to ::DollarDirective,
+    '%' to ::PercentDirective,
+    '&' to ::AmpDirective,
+    '\n' to ::NewlineDirective,
     'a' to ::AestheticDirective,
     'b' to ::BinaryDirective,
     'c' to ::CharDirective,
     'd' to ::DecimalDirective,
     'f' to ::FixedFPDirective,
     'o' to ::OctalDirective,
-    'x' to ::HexadecimalDirective,
+    'r' to ::RadixDirective,
     's' to ::StandardDirective,
-    '%' to ::PercentDirective,
-    '&' to ::AmpDirective,
+    'x' to ::HexadecimalDirective,
     '|' to ::PageDirective,
     '~' to ::TildeDirective,
-    '\n' to ::NewlineDirective,
-    'r' to ::RadixDirective,
 )
     
 
@@ -860,6 +910,54 @@ open class RadixDirective(formatString: String,
         return format_radix(this, radix!!, mincol, padchar, commachar,
                             comma_int, colonFlag, atsignFlag, stream, args)
     }
+}
+
+
+open class DollarDirective(formatString: String,
+                           directive: String,
+                           params: List<String>,
+                           val colonFlag: Boolean,
+                           val atsignFlag: Boolean,
+): FormatDirective(formatString, directive) {
+    override val fd_type = "dollar"
+    var digitsAfter: Int? = 2
+    var nBefore: Int? = 1
+    var width: Int? = 0
+    var padchar: Char? = ' '
+    var needArgs = 1
+
+    init {
+        val nparams = params.size
+        if (nparams >= 1) {
+            digitsAfter = paramInt(params[0], digitsAfter!!, this)
+            if (digitsAfter == null) {
+                needArgs++
+            }
+            if (nparams >= 2) {
+                nBefore = paramInt(params[1], nBefore!!, this)
+                if (nBefore == null) {
+                    needArgs++
+                }
+                if (nparams >= 3) {
+                    width = paramInt(params[2], width!!, this)
+                    if (width == null) {
+                        needArgs++
+                    }
+                    if (nparams >= 4) {
+                        padchar = paramChar(params[3], padchar!!, this)
+                        if (padchar == null) {
+                            needArgs++
+                        }
+                    }
+                }
+            }
+        }
+    }
+    override fun argsNeeded() = needArgs
+
+    override fun format(stream: LStream, args: MutableList<LObject>) =
+        format_dollar(this, digitsAfter, nBefore, width, padchar,
+                      colonFlag, atsignFlag, stream, args)
 }
 
 
