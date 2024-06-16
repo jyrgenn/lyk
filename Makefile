@@ -34,7 +34,7 @@ INSTALLBIN =  $(INSTALLBASE)/bin
 # rm -f $JAR
 
 
-build: lyk.jar # generated/DOCSTRINGS.md
+build: lyk.jar
 
 lyk.jar doc/DOCSTRINGS.md: $(ALLSRCS) generated/jline Makefile \
 		tags l/alldocs.lisp
@@ -84,7 +84,7 @@ test: lyk.jar
 	./run-tests.lisp
 
 clean:
-	-rm -rf *.jar *~ */*~ TAGS *.log generated generated/DOCSTRINGS.md
+	-rm -rf *.jar *~ */*~ TAGS *.log generated
 
 install: doc/DOCSTRINGS.md
 	mkdir -p $(INSTALLBIN)
