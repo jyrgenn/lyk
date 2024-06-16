@@ -12,7 +12,7 @@ import kotlin.math.pow
 
 val formatMapping = mutableMapOf<String, List<FormatDirective>>()
 
-// format args according to the format string
+// Format args according to the format string and print to stream
 fun formatArgs(stream: LStream, fstring: String, args: LObject) {
     if (!formatMapping.containsKey(fstring)) {
         formatMapping[fstring] = parseFormatString(fstring)
@@ -38,6 +38,7 @@ fun formatArgs(stream: LStream, fstring: String, args: LObject) {
     }
 }
 
+// What the format string parser awaits (i.e. its status)
 enum class Await {
     Tilde,                              // initial, outside of a format
                                         // directive
@@ -47,6 +48,7 @@ enum class Await {
 }
 
 
+// Parse the format string and return a list of directives (class defined below)
 fun parseFormatString(fstring: String): List<FormatDirective> {
     val directives = mutableListOf<FormatDirective>()
     var params = mutableListOf<String>()
@@ -56,12 +58,13 @@ fun parseFormatString(fstring: String): List<FormatDirective> {
     var atsignFlag = false
     var dirBuf = StrBuf()
     var ignoreWhitespace = false        // ignore after NewlineDirective
-    
-    fun setFlag(ch: Char) {             // must only be ':' or '@'
-        if (ch == ':') {
-            colonFlag = true
-        } else {
-            atsignFlag = true
+
+    // set the passed flag; must be one of ':' or '@'
+    fun setFlag(ch: Char) {
+        when (ch) {
+            ':' -> colonFlag = true
+            '@' -> atsignFlag = true
+            else -> InternalError("invalid flag `$ch` in parseFormatString")
         }
     }
 
@@ -233,17 +236,8 @@ fun paramString(s: String, where: FormatDirective): String? {
     return s.substring(1)
 }
 
-// pop the first string value off the list
-fun popS(l: MutableList<String>): String {
-    val result = l[0]
-    l.removeAt(0)
-    return result
-}
-
-fun popO(l: MutableList<LObject>): LObject {
-    val result = l[0]
-    l.removeAt(0)
-    return result
+fun pop(l: MutableList<LObject>): LObject {
+    return l.removeAt(0)
 }
 
 val romanNumberCodes = arrayOf(
@@ -421,21 +415,21 @@ fun format_radix(directive: FormatDirective, radix: Int, mincol_: Int?,
         FormatError("invalid radix $radix, must be in 2..36", directive)
     }
     if (mincol == null) {
-        mincol = intArg(popO(args),
+        mincol = intArg(pop(args),
                         " directive `${directive.directive}`: mincol")
     }
     if (padchar == null) {
-        padchar = charArg(popO(args),
+        padchar = charArg(pop(args),
                           " directive `${directive.directive}`: padchar")
             .the_char
     }
     if (commachar == null) {
-        commachar = charArg(popO(args),
+        commachar = charArg(pop(args),
                             " directive `${directive.directive}`: commachar")
             .the_char
     }
     if (comma_int == null) {
-        comma_int = intArg(popO(args),
+        comma_int = intArg(pop(args),
                            " directive `${directive.directive}`: comma_int")
     }
     
@@ -487,19 +481,19 @@ fun format_aesthetic(directive: FormatDirective, mincol_: Int?, colinc_: Int?,
     var minpad = minpad_
     var padchar = padchar_
     if (mincol == null) {
-        mincol = intArg(popO(args),
+        mincol = intArg(pop(args),
                         " directive `${directive.directive}`: mincol")
     }
     if (colinc == null) {
-        colinc = intArg(popO(args),
+        colinc = intArg(pop(args),
                         " directive `${directive.directive}`: colinc")
     }
     if (minpad == null) {
-        minpad = intArg(popO(args),
+        minpad = intArg(pop(args),
                         " directive `${directive.directive}`: minpad")
     }
     if (padchar == null) {
-        padchar = charArg(popO(args),
+        padchar = charArg(pop(args),
                           " directive `${directive.directive}`: padchar")
             .the_char
     }
@@ -653,21 +647,21 @@ open class FixedFPDirective(formatString: String,
     
     override fun format(stream: LStream, args: MutableList<LObject>): String {
         if (width == null) {
-            width = intArg(popO(args), " directive `$directive` width")
+            width = intArg(pop(args), " directive `$directive` width")
         }
         if (d_frac == null) {
-            d_frac = intArg(popO(args), " directive `$directive` d_frac")
+            d_frac = intArg(pop(args), " directive `$directive` d_frac")
         }
         if (skale == null) {
-            skale = intArg(popO(args), " directive `$directive` skale")
+            skale = intArg(pop(args), " directive `$directive` skale")
         }
         if (overflowchar == null) {
-            overflowchar = charArg(popO(args),
+            overflowchar = charArg(pop(args),
                                    " directive `$directive` overflowchar")
                 .toString()
         }
         if (padchar == null) {
-            padchar = charArg(popO(args), " directive `$directive` padchar")
+            padchar = charArg(pop(args), " directive `$directive` padchar")
                 .the_char
         }
 
@@ -858,7 +852,7 @@ open class RadixDirective(formatString: String,
                                  colonFlag, this)
         }
         if (radix == null) {
-            radix = intArg(popO(args), " directive `$directive`: radix")
+            radix = intArg(pop(args), " directive `$directive`: radix")
             if (radix!! < 2 || radix!! > 36) {
                 FormatError("invalid radix $radix, must be in 2..36", this)
             }

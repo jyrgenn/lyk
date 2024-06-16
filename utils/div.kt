@@ -52,11 +52,6 @@ fun mulString(s: String, n: Int): String {
     return sb.toString()
 }
 
-fun padString(s: String, width: Int, pad: Char = ' '): String {
-    val result = s.padEnd(width, pad).toString()
-    return result
-}
-
 // Return true iff `needle` is in `haystack` at `index`
 fun lookingAt(haystack: CharSequence, index: Int, needle: CharSequence): Boolean
 {
