@@ -8,5 +8,5 @@
   (unless (cdr (assoc 'no-user-startup (lyk-command-options)))
     (errset (load lyk-rc-file :error nil) nil)))
 
-(set-hook-function '*startup-hook*
+(add-hook-function '*startup-hook*
                    #'load-lyk-rc-file)

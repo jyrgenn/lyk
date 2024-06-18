@@ -25,7 +25,7 @@ Return true iff a short command was run or at least attempted."
     (terpri)
     t))
 
-(set-hook-function '*repl-interactive-input-hook*
+(add-hook-function '*repl-interactive-input-hook*
                    #'maybe-run-short-command)
 
 

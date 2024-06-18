@@ -39,7 +39,7 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
     }
 
     if (interactive) {
-        runHookFunction(replInteractiveStartHookSym, Nil)
+        runHookFunctions(replInteractiveStartHookSym, Nil)
     }
     while (true) {
         try {
@@ -56,12 +56,11 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
 
             // may be a short command
             if (interactive) {
-                if (runHookFunction(replInteractiveInputHookSym,
-                                    list(expr)).toBoolean()) {
-                    // means the hook function has already processed the
-                    // argument
-                    continue
-                }
+                runHookFunctions(replInteractiveInputHookSym, list(expr))
+                // With the function list hook regime, we don't have a single
+                // return value any more to learn of the argument has already
+                // been processed, but in case of a short command keyword
+                // entered here, there is no harm in evaluating it, too.
             }
 
             // EVAL,

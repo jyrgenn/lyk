@@ -1240,15 +1240,15 @@ fun bi_system_perfdata(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// ret     alist
 /// special no
 /// doc {
-/// Return an alist with (hooksym . function) pairs for all defined hooks.
+/// Return an alist with (hooksym . function-list) pairs for all defined hooks.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
 fun bi_get_hooks(args: LObject, kwArgs: Map<LSymbol, LObject>,
                  suppp: Map<LSymbol, Boolean>): LObject {
     val lc = ListCollector()
-    for ((hooksym, function) in getHooks()) {
-        lc.add(LCons(hooksym, function ?: Nil))
+    for ((hooksym, funlist) in getHooks()) {
+        lc.add(LCons(hooksym, list2lisp(funlist)))
     }
     return lc.list
 }
@@ -1273,8 +1273,8 @@ fun bi_define_hook(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return hooksym
 }
 
-/// builtin set-hook-function
-/// fun     bi_set_hook_function
+/// builtin add-hook-function
+/// fun     bi_add_hook_function
 /// std     hook-symbol function
 /// key     
 /// opt     
@@ -1282,31 +1282,48 @@ fun bi_define_hook(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// ret     nil
 /// special no
 /// doc {
-/// Associate a `function` with the `hook-symbol`, to be called
-/// when the hook is activated. If `function` is nil, nothing will
-/// be called when the hook is activated.
+/// Associate `function` with the `hook-symbol`, to be called when
+/// the hook is activated.
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_set_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
+fun bi_add_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
                          suppp: Map<LSymbol, Boolean>): LObject {
-           val (hooksym, function) = args2(args)
-           val func = if (function === Nil) {
-               null
-           } else {
-               functionArg(function)
-           }
-           setHookFunction(symbolArg(hooksym), func)
-           return Nil
-       }
+    val (hooksym, function) = args2(args)
+    val func = functionArg(function)
+    addHookFunction(symbolArg(hooksym), func)
+    return Nil
+}
 
-/// builtin get-hook-function
+/// builtin remove-hook-function
+/// fun     bi_remove_hook_function
+/// std     hook-symbol function
+/// key     
+/// opt     
+/// rest    
+/// ret     t/nil
+/// special no
+/// doc {
+/// Remove `function` with the `hook-symbol`, so it os no longer
+/// called when the hook is activated. Return t if the function was
+/// in the hook functions.
+/// }
+/// end builtin
+@Suppress("UNUSED_PARAMETER")
+fun bi_remove_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
+                            suppp: Map<LSymbol, Boolean>): LObject {
+    val (hooksym, function) = args2(args)
+    val func = functionArg(function)
+    return bool2ob(removeHookFunction(symbolArg(hooksym), func))
+}
+
+/// builtin get-hook-functions
 /// fun     bi_get_hook_function
 /// std     hook-symbol
 /// key     
 /// opt     
 /// rest    
-/// ret     function
+/// ret     function-list
 /// special no
 /// doc {
 /// Return the function of hook `hook-symbol` (may be nil).
@@ -1315,16 +1332,16 @@ fun bi_set_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
 @Suppress("UNUSED_PARAMETER")
 fun bi_get_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
                          suppp: Map<LSymbol, Boolean>): LObject {
-           return getHookFunction(symbolArg(arg1(args))) ?: Nil
+    return list2lisp(getHookFunctions(symbolArg(arg1(args))))
 }
 
-/// builtin run-hook-function
-/// fun     bi_run_hook_function
+/// builtin run-hook-functions
+/// fun     bi_run_hook_functions
 /// std     hook-symbol
 /// key     
 /// opt     
 /// rest    args
-/// ret     return-value
+/// ret     t/nil
 /// special no
 /// doc {
 /// Run the hook function of hook `hook-symbol` and return its value.
@@ -1332,10 +1349,10 @@ fun bi_get_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
 /// }
 /// end builtin
 @Suppress("UNUSED_PARAMETER")
-fun bi_run_hook_function(args: LObject, kwArgs: Map<LSymbol, LObject>,
+fun bi_run_hook_functions(args: LObject, kwArgs: Map<LSymbol, LObject>,
                          suppp: Map<LSymbol, Boolean>): LObject {
     val (hooksym, hookargs) = args
-    return runHookFunction(symbolArg(hooksym), hookargs)
+    return bool2ob(runHookFunctions(symbolArg(hooksym), hookargs))
 }
 
 /// builtin lyk-command-options

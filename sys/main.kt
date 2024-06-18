@@ -199,18 +199,18 @@ fun main(args: Array<String>) {
         for (arg in argl) {
             args_lc.add(makeString(arg))
         }
-        runHookFunction(startupHookSym,
-                        list(collectedList {
-                                 for (load_file in load_files) {
-                                     it.add(makeString(load_file))
-                                 }
-                             },
-                             if (lispExpression == null) {
-                                 Nil
-                             } else {
-                                 list(makeString(lispExpression))
-                             },
-                             args_lc.list))                             
+        runHookFunctions(startupHookSym,
+                         list(collectedList {
+                                  for (load_file in load_files) {
+                                      it.add(makeString(load_file))
+                                  }
+                              },
+                              if (lispExpression == null) {
+                                  Nil
+                              } else {
+                                  list(makeString(lispExpression))
+                              },
+                              args_lc.list))                             
 
         for (fname in load_files) {
             debug(debugStartupSym) { "load file \"$fname\"" }

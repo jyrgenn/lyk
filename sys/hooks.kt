@@ -3,9 +3,10 @@
 package org.w21.lyk
 
 
-val hookFunctions = mutableMapOf<LSymbol, LFunction?>()
+// per hook we have a list of Lisp function to be called
+val hookFunctions = mutableMapOf<LSymbol, MutableList<LFunction>>()
 
-// Return an alist with (hooksym . function) pairs
+// Return an with (hooksym . function-list) pairs
 fun getHooks() = hookFunctions.entries
 
 
@@ -14,40 +15,54 @@ fun defineHook(hookSymbol: LSymbol) {
     if (hookSymbol in hookFunctions.keys) {
         throw ArgumentError("hook $hookSymbol already defined")
     }
-    hookFunctions.put(hookSymbol, null)
+    hookFunctions.put(hookSymbol, mutableListOf<LFunction>())
 }
 
 
-// Associate a Lisp function to the hookSymbol. If `function` is null, remove an
-// existing hook.
-fun setHookFunction(hookSymbol: LSymbol, function: LFunction?) {
-    debug(debugHooksSym) { "set $hookSymbol function $function" }
-    if (hookSymbol in hookFunctions.keys) {
-        hookFunctions.put(hookSymbol, function)
+// Add a Lisp function to the function list of hookSymbol.
+fun addHookFunction(hookSymbol: LSymbol, function: LFunction) {
+    debug(debugHooksSym) { "add $hookSymbol function $function" }
+    val funlist = hookFunctions[hookSymbol]
+    if (funlist != null) {
+        funlist.add(function)
     } else {
-        val what = if (function == null) "remove" else "set function for"
-        throw ArgumentError("cannot $what unknown hook $hookSymbol")
+        throw ArgumentError("cannot add function to unknown hook $hookSymbol")
+    }
+}
+
+// Add a Lisp function to the function list of hookSymbol.
+fun removeHookFunction(hookSymbol: LSymbol, function: LFunction): Boolean {
+    debug(debugHooksSym) { "remove $hookSymbol function $function" }
+    val funlist = hookFunctions[hookSymbol]
+    if (funlist != null) {
+        return funlist.remove(function)
+    } else {
+        throw ArgumentError("cannot remove function from unknown"
+                            + " hook $hookSymbol")
     }
 }
 
 
-fun getHookFunction(hookSymbol: LSymbol): LFunction? {
-    if (hookSymbol in hookFunctions.keys) {
-        val func = hookFunctions.get(hookSymbol)
-        debug(debugHooksSym) { "get $hookSymbol function: $func" }
+fun getHookFunctions(hookSymbol: LSymbol): List<LFunction> {
+    val funlist = hookFunctions[hookSymbol]
+    if (funlist != null) {
+        debug(debugHooksSym) { "get $hookSymbol functions: $funlist" }
+        return funlist
     }
-    throw ArgumentError("cannot get function for unknown hook $hookSymbol")
+    throw ArgumentError("cannot get functions of unknown hook $hookSymbol")
 }
 
 /// args is an argument list for the function
-fun runHookFunction(hookSymbol: LSymbol, args: LObject): LObject {
-    if (hookSymbol in hookFunctions.keys) {
-        val func = hookFunctions.get(hookSymbol)
-        debug(debugHooksSym) { "run $hookSymbol function $func" }
-        if (func != null) {
-            return func.call(args)
+fun runHookFunctions(hookSymbol: LSymbol, args: LObject): Boolean {
+    val funlist = hookFunctions[hookSymbol]
+    if (funlist != null) {
+        debug(debugHooksSym) { "run $hookSymbol functions: $funlist" }
+        var called_one = false
+        for (func in funlist) {
+            called_one = true
+            func.call(args)
         }
-        return Nil
+        return called_one
     }
-    throw ArgumentError("cannot run function for unknown hook $hookSymbol")
+    throw ArgumentError("cannot run functions of unknown hook $hookSymbol")
 }

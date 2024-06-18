@@ -211,6 +211,15 @@ fun pairsInternFirst(pairs: Array<Pair<String, LObject>>
     return result
 }
 
+// convert a Kotlin list to a Lisp list
+fun list2lisp(list: List<LObject>): LObject {
+    return collectedList {
+        for (item in list) {
+            it.add(item)
+        }
+    }
+}
+
 val dense_float_format = "%.3g"
 val float_regexp = Regex("e+0?")
 
