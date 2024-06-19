@@ -1,0 +1,1594 @@
+
+preload/20-macros.lisp,441
+(defmacro unless 2,1
+(defmacro when 9,287
+(defmacro if 15,557
+(defmacro =/= =/=23,883
+(defmacro dolist 27,1003
+(defmacro dotimes 37,1321
+(defmacro dotimes1 57,2164
+var boundbound63,2554
+(defmacro with-open-file 81,3110
+(defmacro with-lines-from-file 100,4054
+(defmacro debug-vars 117,4852
+(defmacro declare 124,5114
+(defmacro prog2 145,6032
+(defmacro with-input-from-string 151,6268
+(defmacro with-output-to-string 158,6596
+
+preload/30-places.lisp,1125
+(defmacro incf 3,46
+(defmacro decf 9,241
+(defmacro push 15,434
+(defmacro pop 24,749
+(defparameter *setf-update-table* 39,1364
+(defmacro defsetf 41,1405
+(defsetf car 65,2389
+(defsetf cdr 66,2420
+(defsetf caar 67,2451
+(defsetf cadr 68,2509
+(defsetf cdar 69,2567
+(defsetf cddr 70,2625
+(defsetf caaar 71,2683
+(defsetf caadr 72,2743
+(defsetf cadar 73,2803
+(defsetf caddr 74,2863
+(defsetf cdaar 75,2923
+(defsetf cdadr 76,2983
+(defsetf cddar 77,3043
+(defsetf cdddr 78,3103
+(defsetf caaaar 79,3163
+(defsetf caaadr 80,3225
+(defsetf caadar 81,3287
+(defsetf caaddr 82,3349
+(defsetf cadaar 83,3411
+(defsetf cadadr 84,3473
+(defsetf caddar 85,3535
+(defsetf cadddr 86,3597
+(defsetf cdaaar 87,3659
+(defsetf cdaadr 88,3721
+(defsetf cdadar 89,3783
+(defsetf cdaddr 90,3845
+(defsetf cddaar 91,3907
+(defsetf cddadr 92,3969
+(defsetf cdddar 93,4031
+(defsetf cddddr 94,4093
+(defsetf elt 95,4155
+(defsetf vector-get 96,4176
+(defsetf aref 97,4208
+(defsetf table-get 98,4234
+(defsetf symbol-function 99,4264
+(defsetf symbol-value 100,4295
+(defsetf get 101,4322
+(defsetf nth 102,4340
+(defmacro setf 104,4405
+
+preload/40-macros-using-places.lisp,51
+(defmacro for 3,37
+(defmacro with-gensyms 16,527
+
+preload/copy.lisp,159
+(defun deep-copy 3,21
+(defun deep-copy-cons 12,350
+(defun deep-copy-vector 19,542
+(defun deep-copy-table 27,829
+(defvar *deep-copy-function-table*47,1605
+
+preload/hooks.lisp,57
+(defvar lyk-rc-file 3,22
+(defun load-lyk-rc-file 6,100
+
+preload/lists.lisp,134
+(defun remove-if 2,1
+(defun filter 12,272
+(defun reduce 21,493
+(defun make-list 31,846
+(defun iota 43,1210
+(defun range 53,1553
+
+preload/numeric.lisp,126
+(defun pow 1,0
+(defun float 17,412
+(defun gcd 25,683
+(defun lcm 42,1165
+(defun seq 59,1830
+(defun prime-numbers 72,2238
+
+preload/other.lisp,304
+(defun arg-number-is-one 3,48
+(defun plural-s 9,247
+(defun plural-ies 18,547
+(defun all-symbols 27,858
+(defun function-symbols 40,1446
+(defmacro no-warnings-as-errors 45,1556
+(defun get-program-output 55,1902
+(defun select-string-from-prefix 86,3288
+(defun example-startup-hook-function 99,3734
+
+preload/sequences.lisp,123
+(defun concatenate 2,1
+(defun sort 14,468
+(defun member 35,1335
+(defun member-if 45,1715
+(defun member-if-not 54,1988
+
+preload/short-commands.lisp,462
+(defvar *repl-short-commands* 4,95
+(defun maybe-run-short-command 8,209
+(defmacro define-repl-short-command 32,1085
+(define-repl-short-command :replsyms42,1458
+(define-repl-short-command :help47,1652
+(define-repl-short-command :explore60,2129
+(define-repl-short-command :perfdata91,3154
+(define-repl-short-command :exit 99,3390
+(defun print-file 101,3450
+(define-repl-short-command :license 106,3638
+(define-repl-short-command :jline-license 110,3783
+
+preload/time.lisp,25
+(defun get-iso-time 2,1
+
+generated/10-types.lisp,28
+(defvar *object-types*4,41
+
+objects/cons.kt,166
+class LCons(overrideLCons(override6,53
+    fun incHitcountincHitcount24,429
+    fun toArraytoArray122,3972
+    class ConsIterator(varConsIterator(var132,4198
+
+objects/object.kt,109
+// Parent class ofof1,0
+abstract class LObject:LObject:12,181
+    fun compareErrorcompareError104,2864
+
+objects/symbol.kt,821
+val symbolTablesymbolTable5,36
+val symcharssymchars7,99
+fun isNumberStringisNumberString10,220
+class LSymbol(valLSymbol(val19,371
+        fun internedinterned29,663
+        fun uninterneduninterned50,1460
+        fun makeGlobalmakeGlobal55,1607
+    fun makeDescNamemakeDescName63,1930
+    fun getpropgetprop108,3070
+    fun putpropputprop113,3204
+    fun setFunctionsetFunction118,3289
+    fun setValuesetValue126,3562
+    fun setROValuesetROValue142,4082
+    fun bindbind146,4170
+    fun getValuegetValue153,4343
+    fun getValueOptionalgetValueOptional155,4391
+    fun setPropsetProp157,4453
+    fun getPropgetProp161,4537
+    fun remPropremProp165,4642
+    class SymbolIterator(valSymbolIterator(val215,5842
+fun internintern329,9635
+fun systemROSymbolsystemROSymbol333,9856
+
+objects/environment.kt,288
+class LEnv(valLEnv(val7,66
+    fun bindbind15,386
+    fun unbindunbind22,558
+    fun getValueMaybegetValueMaybe36,936
+    fun getValuegetValue48,1233
+    fun setValuesetValue53,1389
+fun withNewEnvironmentwithNewEnvironment90,2579
+fun withEnvironmentwithEnvironment95,2740
+
+objects/number.kt,358
+// class LNumber:LNumber:8,92
+class LNumber(valLNumber(val9,132
+        fun mkNumbermkNumber20,528
+        fun numbersnumbers29,790
+    fun isLongisLong47,1175
+    fun isIntisInt48,1239
+    fun toLongtoLong50,1302
+    fun toInttoInt51,1341
+fun makeNumbermakeNumber82,2169
+fun makeNumbermakeNumber83,2234
+fun makeNumbermakeNumber84,2298
+
+objects/string.kt,198
+class LString(valLString(val8,64
+        fun mkStringmkString20,381
+        fun stringsstrings29,643
+    class StringIterator(valStringIterator(val86,2026
+fun makeStringmakeString221,6472
+
+objects/table.kt,220
+class LTable():LTable():4,22
+    fun getget29,715
+    fun existsexists32,812
+    fun removeremove35,900
+    fun putput43,1089
+    fun keyskeys47,1171
+    fun valuesvalues55,1332
+    fun itemsitems63,1501
+
+objects/vector.kt,97
+class LVector(elems:LVector(elems:3,21
+    class VectorIterator(valVectorIterator(val77,2070
+
+objects/regexp.kt,203
+class LRegexp(pattern:LRegexp(pattern:6,46
+    fun matchToListmatchToList24,478
+    fun matchmatch38,904
+    fun findAllfindAll43,1020
+    fun splitsplit51,1217
+    fun replacereplace53,1284
+
+objects/char.kt,241
+class LChar(valLChar(val8,82
+        fun getCharNamegetCharName25,578
+        fun mkCharmkChar38,992
+        fun charschars47,1225
+    fun ascii_glyphascii_glyph69,1693
+fun makeCharmakeChar108,2790
+fun makeCharmakeChar110,2880
+
+io/reader.kt,1852
+val commentCharcommentChar6,42
+val escape2specialCharescape2specialChar11,200
+val specialChar2escapedspecialChar2escaped15,369
+val delimiter_charsdelimiter_chars21,608
+val QuoteSymbolQuoteSymbol23,642
+val UnquoteSymbolUnquoteSymbol24,682
+val QuasiquoteSymbolQuasiquoteSymbol25,726
+val UnquoteSplicingSymbolUnquoteSplicingSymbol26,776
+val FunctionSymbolFunctionSymbol27,831
+fun closingOfclosingOf29,878
+fun isDelimiterisDelimiter39,1229
+fun the_intthe_int41,1301
+fun the_doublethe_double49,1461
+class Reader(valReader(val58,1607
+    fun setPromptsetPrompt70,2132
+    fun descdesc97,3112
+    fun unreadTokenunreadToken103,3223
+    fun nextCharnextChar115,3588
+    fun unreadCharunreadChar139,4253
+    fun nextNonCommentCharnextNonCommentChar151,4549
+    fun nextNonSpaceCharnextNonSpaceChar182,5533
+    fun nextTokennextToken204,6158
+    fun octothorpeMacrooctothorpeMacro272,8525
+    fun charLiteralTokencharLiteralToken325,10802
+    fun readFreeRadixNumberreadFreeRadixNumber392,12922
+    fun readRadixNumberreadRadixNumber422,13925
+    enum class CCCC460,15038
+    enum class StSt467,15371
+    enum class AcAc475,15796
+    fun charclasscharclass482,16163
+        // Return the class ofof483,16198
+    fun readAtomTokenreadAtomToken495,16513
+            val cclass ==540,18438
+                "state $the_state, `$ch`:$cclass actact545,18647
+    fun read_stringlikeread_stringlike587,19937
+        fun parse_octaldigitsparse_octaldigits598,20508
+        fun parse_hexdigitsparse_hexdigits624,21617
+    fun readRegexpreadRegexp694,24492
+    fun readStringTokenreadStringToken701,24756
+    fun skipRestOfLineskipRestOfLine708,25003
+    fun readread719,25196
+    fun readTablereadTable771,27238
+    fun readVectorreadVector793,27954
+    fun readListreadList817,28768
+
+io/token.kt,1013
+open class ReaderToken(reader:ReaderToken(reader:7,191
+class OparenToken(reader:OparenToken(reader:17,586
+class CparenToken(reader:CparenToken(reader:18,641
+class PeriodToken(reader:PeriodToken(reader:19,699
+class QuoteToken(reader:QuoteToken(reader:20,757
+class FunctionToken(reader:FunctionToken(reader:21,814
+class UnquoteToken(reader:UnquoteToken(reader:22,874
+class QuasiquoteToken(reader:QuasiquoteToken(reader:23,933
+class UnquoteSplicingToken(reader:UnquoteSplicingToken(reader:24,995
+class TableStartToken(reader:TableStartToken(reader:25,1062
+class VectorStartToken(reader:VectorStartToken(reader:26,1124
+class StringToken(reader:StringToken(reader:27,1187
+class SymbolToken(reader:SymbolToken(reader:30,1317
+class CharToken(reader:CharToken(reader:33,1447
+class NumberToken(reader:NumberToken(reader:36,1573
+class RegexpToken(reader:RegexpToken(reader:39,1703
+class EOFToken(reader:EOFToken(reader:42,1833
+class QuasiQuoteToken(reader:QuasiQuoteToken(reader:43,1888
+
+io/repl.kt,506
+val starSymstarSym5,58
+val star2Symstar2Sym6,101
+val star3Symstar3Sym7,146
+val plusSymplusSym8,192
+val plus2Symplus2Sym9,235
+val plus3Symplus3Sym10,280
+val slashSymslashSym11,326
+val slash2Symslash2Sym12,370
+val slash3Symslash3Sym13,416
+val replInteractiveStartHookSymreplInteractiveStartHookSym15,464
+val replInteractiveInputHookSymreplInteractiveInputHookSym16,538
+fun replrepl19,614
+    fun iprintiprint24,813
+    fun iprintlniprintln33,1007
+fun init_replinit_repl126,3801
+
+io/stream.kt,1165
+val stdinNamestdinName11,180
+val stdoutNamestdoutName12,217
+val stderrNamestderrName13,255
+val consoleNameconsoleName14,290
+val stdinPathstdinPath15,324
+val stdoutPathstdoutPath16,355
+val stderrPathstderrPath17,387
+val consolePathconsolePath18,419
+val devNullPathdevNullPath19,448
+val newLinenewLine20,478
+val openStreamsopenStreams23,497
+class SymbolsCompleter(symbol_names:SymbolsCompleter(symbol_names:33,746
+class ConsoleReaderStream(varConsoleReaderStream(var75,1942
+class StringWriterStream(name:StringWriterStream(name:125,3422
+    fun value_and_resetvalue_and_reset147,3973
+class StringReaderStream(valStringReaderStream(val171,4819
+    fun hasNexthasNext213,6215
+class FileReaderStream(file:FileReaderStream(file:226,6640
+class FileIOStream(path:FileIOStream(path:269,7947
+class FileWriterStream(path:FileWriterStream(path:348,10193
+abstract class LStream(LStream(406,11830
+    fun newlineLastnewlineLast431,12633
+    fun readCharreadChar495,14332
+    fun unreadCharunreadChar504,14517
+    fun finalizefinalize527,15107
+fun closeAllStreamscloseAllStreams535,15217
+fun init_Streamsinit_Streams549,15537
+
+io/load.kt,195
+fun loadload9,139
+    fun trySuffixestrySuffixes15,365
+fun load_fileload_file44,1234
+fun load_fileload_file54,1632
+fun load_stringload_string63,2031
+fun load_streamload_stream72,2440
+
+io/format.kt,2343
+val formatMappingformatMapping13,427
+fun formatArgsformatArgs16,560
+enum class AwaitAwait42,1542
+// Parse the format string and return a list of directives (class defineddefined51,1897
+fun parseFormatStringparseFormatString52,1978
+    fun setFlagsetFlag63,2444
+    fun finishDirectivefinishDirective73,2786
+    fun setStatussetStatus112,4137
+fun paramIntparamInt195,6774
+fun paramCharparamChar211,7189
+fun paramStringparamString226,7591
+fun poppop239,7880
+val romanNumberCodesromanNumberCodes243,7952
+fun formatRomanformatRoman261,8425
+val englishBelow20englishBelow20286,9083
+val englishBelow20thenglishBelow20th292,9318
+val englishTensenglishTens299,9596
+val englishDimensionsenglishDimensions310,9817
+fun formatEnglishformatEnglish323,10340
+fun val_signval_sign395,12832
+fun format_radixformat_radix406,12985
+fun format_aestheticformat_aesthetic475,15279
+fun format_dollarformat_dollar536,17156
+val dirClassTypedirClassType585,18782
+fun makeDirectivemakeDirective607,19467
+abstract class FormatDirective(valFormatDirective(val627,20415
+open class FixedFPDirective(formatString:FixedFPDirective(formatString:648,21078
+class BinaryDirective(formatString:BinaryDirective(formatString:764,25130
+class OctalDirective(formatString:OctalDirective(formatString:774,25496
+class HexadecimalDirective(formatString:HexadecimalDirective(formatString:784,25910
+open class DecimalDirective(formatString:DecimalDirective(formatString:794,26285
+open class RadixDirective(formatString:RadixDirective(formatString:841,27923
+open class DollarDirective(formatString:DollarDirective(formatString:916,30575
+class StandardDirective(formatString:StandardDirective(formatString:964,32171
+open class AestheticDirective(formatString:AestheticDirective(formatString:973,32534
+class CharDirective(formatString:CharDirective(formatString:1022,34269
+class NewlineDirective(formatString:NewlineDirective(formatString:1053,35343
+class PercentDirective(formatString:PercentDirective(formatString:1067,35913
+class AmpDirective(formatString:AmpDirective(formatString:1093,36750
+class PageDirective(formatString:PageDirective(formatString:1116,37498
+class TildeDirective(formatString:TildeDirective(formatString:1145,38449
+class TextDirective(formatString:TextDirective(formatString:1174,39349
+
+functions/function.kt,917
+val anonLambdaSymanonLambdaSym6,60
+abstract class LFunction(LFunction(8,105
+    fun parlistparlist36,1278
+    fun synopsissynopsis73,2302
+    fun docHeaderdocHeader106,3172
+    fun docstringdocstring113,3350
+    fun documentationdocumentation115,3392
+    fun myKeywordArgmyKeywordArg132,3867
+fun bindParsbindPars154,4664
+enum class PLSPLS232,7401
+val PLS_descPLS_desc242,7893
+enum class TCTC252,8099
+enum class AcAc259,8322
+val new_statenew_state269,8738
+val action_tableaction_table281,9390
+fun makeLambdaOrMacromakeLambdaOrMacro293,9932
+    fun parse_2parlistparse_2parlist315,10931
+    fun tokenClasstokenClass350,12372
+        val tclass ==362,12717
+        // print("state $state, seen $elem, tclass $tclass,$tclass,364,12820
+fun with_called_function_namewith_called_function_name425,14931
+fun with_called_function_name_returnwith_called_function_name_return436,15221
+
+functions/builtin.kt,66
+fun maybeInternmaybeIntern5,46
+class LBuiltin(LBuiltin(13,167
+
+functions/lambda.kt,32
+open class Lambda(Lambda(6,46
+
+functions/macro.kt,235
+class LMacro(LMacro(5,48
+    fun expandexpand28,926
+fun macroExpandListmacroExpandList50,1508
+fun macroExpandFormRecursemacroExpandFormRecurse75,2275
+fun macroExpandFormmacroExpandForm90,2673
+fun makeMacromakeMacro107,3120
+
+builtins/helpers.kt,1390
+fun outputStreamArgoutputStreamArg20,841
+fun streamArgstreamArg27,991
+fun charArgcharArg33,1185
+fun charOrStringArgcharOrStringArg39,1371
+fun envArgenvArg56,1853
+fun numberArgnumberArg61,2030
+fun intArgintArg66,2237
+fun indexArgindexArg68,2313
+fun longArglongArg76,2531
+fun functionArgfunctionArg83,2759
+fun consArgconsArg88,2945
+fun listArglistArg93,3115
+fun seqArgseqArg100,3304
+fun stringArgstringArg114,3727
+fun stringlikeArgstringlikeArg119,3918
+fun symbolArgsymbolArg129,4193
+fun keywordArgkeywordArg134,4371
+fun tableArgtableArg141,4584
+fun regexpArgregexpArg148,4775
+fun vectorArgvectorArg159,5063
+fun intOrDefaultintOrDefault166,5258
+fun stringlistArgstringlistArg173,5413
+fun spreadArglistspreadArglist181,5610
+fun environmentArgenvironmentArg211,6529
+fun bool2obbool2ob216,6711
+fun lastConslastCons220,6786
+fun lastCons2lastCons2232,7009
+fun arg1arg1244,7318
+fun arg2arg2251,7578
+fun arg3arg3258,7854
+fun args2args2265,8152
+fun args3args3276,8502
+fun args4args4289,8910
+fun args5args5305,9347
+fun key2varkey2var320,9643
+fun isKeysymisKeysym324,9724
+fun var2keyvar2key331,9852
+fun itemListitemList335,9926
+fun withVariableAswithVariableAs343,10069
+fun dirlistdirlist359,10435
+fun basenamebasename370,10715
+fun dirnamedirname382,10993
+fun isqrtisqrt399,11440
+fun intValueOrintValueOr419,11871
+
+builtins/numbers.kt,4772
+/// builtin ++8,95
+fun bi_plusbi_plus21,316
+/// builtin --32,545
+fun bi_minusbi_minus45,808
+/// builtin **60,1146
+fun bi_multbi_mult73,1375
+/// builtin //83,1595
+fun bi_divbi_div96,1860
+/// builtin zeropzerop110,2195
+fun bi_zeropbi_zerop123,2433
+val numberZeronumberZero128,2598
+/// builtin absabs130,2630
+fun bi_absbi_abs143,2870
+/// builtin acosacos148,3032
+fun bi_acosbi_acos161,3263
+/// builtin acoshacosh166,3428
+fun bi_acoshbi_acosh179,3672
+/// builtin <<185,3883
+fun bi_cmp_ltbi_cmp_lt199,4197
+/// builtin >>215,4568
+fun bi_cmp_gtbi_cmp_gt229,4883
+/// builtin ==245,5250
+fun bi_cmp_eqvbi_cmp_eqv258,5444
+/// builtin /=/=274,5818
+fun bi_cmp_nebi_cmp_ne288,6115
+/// builtin >=>=303,6494
+fun bi_cmp_gebi_cmp_ge317,6801
+/// builtin <=<=333,7182
+fun bi_cmp_lebi_cmp_le347,7488
+/// builtin <=><=>363,7888
+fun bi_cmpbi_cmp377,8215
+/// builtin %%384,8465
+fun bi_modulobi_modulo397,8730
+/// builtin ****406,9024
+fun bi_powerbi_power419,9265
+/// builtin 1+1+426,9493
+fun bi_1plusbi_1plus439,9722
+/// builtin 1-1-445,9909
+fun bi_1minusbi_1minus458,10139
+/// builtin isqrtisqrt464,10328
+fun bi_isqrtbi_isqrt477,10569
+/// builtin ashash483,10760
+fun bi_ashbi_ash498,11154
+/// builtin asinasin510,11502
+fun bi_asinbi_asin523,11731
+/// builtin asinhasinh529,11918
+fun bi_asinhbi_asinh542,12162
+/// builtin atanatan548,12352
+fun bi_atanbi_atan561,12584
+/// builtin atanhatanh567,12771
+fun bi_atanhbi_atanh580,13021
+/// builtin eastereaster587,13301
+fun bi_easterbi_easter603,13766
+/// builtin roundround627,14401
+/// builtin froundfround640,14680
+fun bi_roundbi_round654,14990
+/// builtin ceilingceiling659,15158
+fun bi_ceilingbi_ceiling672,15426
+/// builtin floorfloor677,15597
+/// builtin ffloorffloor689,15831
+fun bi_floorbi_floor702,16096
+/// builtin sqrtsqrt707,16264
+fun bi_sqrtbi_sqrt720,16494
+/// builtin integerpintegerp725,16659
+fun bi_integerpbi_integerp738,16905
+/// builtin signumsignum744,17104
+fun bi_signumbi_signum757,17374
+/// builtin evenpevenp769,17759
+fun bi_evenpbi_evenp782,18005
+/// builtin oddpoddp795,18378
+fun bi_oddpbi_oddp808,18621
+/// builtin conjugateconjugate821,18995
+fun bi_conjugatebi_conjugate834,19258
+/// builtin ciscis839,19425
+fun bi_cisbi_cis852,19676
+/// builtin rationalrational857,19825
+fun bi_rationalbi_rational870,20086
+/// builtin rationalizerationalize875,20250
+fun bi_rationalizebi_rationalize888,20517
+/// builtin minuspminusp893,20690
+fun bi_minuspbi_minusp906,20932
+/// builtin pluspplusp911,21096
+fun bi_pluspbi_plusp924,21339
+/// builtin integer-lengthinteger-length929,21501
+fun bi_integer_lengthbi_integer_length943,21853
+/// builtin exptexpt959,22283
+fun bi_exptbi_expt972,22524
+/// builtin numeratornumerator979,22781
+fun bi_numeratorbi_numerator994,23119
+/// builtin denominatordenominator1001,23302
+fun bi_denominatorbi_denominator1016,23632
+/// builtin realpartrealpart1023,23829
+fun bi_realpartbi_realpart1038,24164
+/// builtin imagpartimagpart1045,24345
+fun bi_imagpartbi_imagpart1060,24672
+/// builtin phasephase1067,24863
+fun bi_phasebi_phase1082,25256
+/// builtin pipi1095,25635
+fun bi_pibi_pi1108,25853
+/// builtin ee1113,25989
+fun bi_ebi_e1126,26203
+/// builtin fceilingfceiling1131,26336
+fun bi_fceilingbi_fceiling1144,26606
+/// builtin loglog1149,26779
+fun bi_logbi_log1162,27055
+/// builtin expexp1169,27313
+fun bi_expbi_exp1182,27546
+/// builtin tanhtanh1187,27708
+fun bi_tanhbi_tanh1200,27947
+/// builtin coshcosh1205,28112
+fun bi_coshbi_cosh1218,28350
+/// builtin sinhsinh1223,28515
+fun bi_sinhbi_sinh1236,28751
+/// builtin tantan1241,28916
+fun bi_tanbi_tan1254,29142
+/// builtin coscos1259,29304
+fun bi_cosbi_cos1272,29529
+/// builtin sinsin1277,29691
+fun bi_sinbi_sin1290,29914
+/// builtin truncatetruncate1295,30076
+/// builtin ftruncateftruncate1307,30289
+fun bi_truncatebi_truncate1320,30533
+/// builtin randomrandom1325,30710
+fun bi_randombi_random1339,31058
+/// builtin maxmax1360,31652
+fun bi_maxbi_max1373,31896
+/// builtin minmin1387,32246
+fun bi_minbi_min1400,32491
+/// builtin remrem1414,32841
+fun bi_rembi_rem1427,33108
+/// builtin modmod1434,33378
+fun bi_modbi_mod1447,33641
+/// builtin divdiv1454,33907
+fun bi_div_intbi_div_int1467,34180
+val dig_weightsdig_weights1474,34469
+/// builtin digit-char-pdigit-char-p1513,35038
+fun bi_digit_char_pbi_digit_char_p1527,35386
+val radixKeywradixKeyw1546,35930
+val junkAllowedKeywjunkAllowedKeyw1547,35963
+/// builtin parse-integerparse-integer1549,36010
+fun bi_parse_integerbi_parse_integer1562,36302
+/// builtin floatfloat1610,37811
+fun bi_floatbi_float1625,38175
+
+builtins/cxr.kt,1824
+/// builtin caarcaar5,43
+fun bi_caarbi_caar18,262
+/// builtin cadrcadr23,406
+fun bi_cadrbi_cadr36,625
+/// builtin cdarcdar41,769
+fun bi_cdarbi_cdar54,988
+/// builtin cddrcddr59,1132
+fun bi_cddrbi_cddr72,1351
+/// builtin caaarcaaar77,1495
+fun bi_caaarbi_caaar90,1717
+/// builtin caadrcaadr95,1867
+fun bi_caadrbi_caadr108,2089
+/// builtin cadarcadar113,2239
+fun bi_cadarbi_cadar126,2461
+/// builtin caddrcaddr131,2611
+fun bi_caddrbi_caddr144,2833
+/// builtin cdaarcdaar149,2983
+fun bi_cdaarbi_cdaar162,3205
+/// builtin cdadrcdadr167,3355
+fun bi_cdadrbi_cdadr180,3577
+/// builtin cddarcddar185,3727
+fun bi_cddarbi_cddar198,3949
+/// builtin cdddrcdddr203,4099
+fun bi_cdddrbi_cdddr216,4321
+/// builtin caaaarcaaaar222,4472
+fun bi_caaaarbi_caaaar235,4697
+/// builtin caaadrcaaadr240,4853
+fun bi_caaadrbi_caaadr253,5078
+/// builtin caadarcaadar258,5234
+fun bi_caadarbi_caadar271,5459
+/// builtin caaddrcaaddr276,5615
+fun bi_caaddrbi_caaddr289,5840
+/// builtin cadaarcadaar294,5996
+fun bi_cadaarbi_cadaar307,6221
+/// builtin cadadrcadadr312,6377
+fun bi_cadadrbi_cadadr325,6602
+/// builtin caddarcaddar330,6758
+fun bi_caddarbi_caddar343,6983
+/// builtin cadddrcadddr348,7139
+fun bi_cadddrbi_cadddr361,7364
+/// builtin cdaaarcdaaar366,7520
+fun bi_cdaaarbi_cdaaar379,7745
+/// builtin cdaadrcdaadr384,7901
+fun bi_cdaadrbi_cdaadr397,8126
+/// builtin cdadarcdadar402,8282
+fun bi_cdadarbi_cdadar415,8507
+/// builtin cdaddrcdaddr420,8663
+fun bi_cdaddrbi_cdaddr433,8888
+/// builtin cddaarcddaar438,9044
+fun bi_cddaarbi_cddaar451,9269
+/// builtin cddadrcddadr456,9425
+fun bi_cddadrbi_cddadr469,9650
+/// builtin cdddarcdddar474,9806
+fun bi_cdddarbi_cdddar487,10031
+/// builtin cddddrcddddr492,10187
+fun bi_cddddrbi_cddddr505,10412
+
+builtins/basic.kt,6204
+/// builtin carcar7,82
+fun bi_carbi_car21,364
+/// builtin cdrcdr26,511
+fun bi_cdrbi_cdr40,795
+/// builtin rplacarplaca45,942
+fun bi_rplacabi_rplaca58,1205
+/// builtin rplacdrplacd65,1407
+fun bi_rplacdbi_rplacd78,1670
+/// builtin internintern85,1872
+fun bi_internbi_intern98,2141
+/// builtin listlist103,2300
+fun bi_listbi_list116,2533
+/// builtin list*list*121,2663
+fun bi_list_starbi_list_star137,3120
+/// builtin conscons142,3275
+fun bi_consbi_cons155,3518
+/// builtin setset161,3692
+fun bi_setbi_set174,3953
+/// builtin quotequote181,4152
+fun bi_quotebi_quote194,4398
+/// builtin setqsetq199,4536
+fun bi_setqbi_setq215,5051
+fun destructuringBinddestructuringBind232,5537
+fun let_internallet_internal275,7126
+/// builtin letlet332,9173
+fun bi_letbi_let348,9637
+/// builtin let*let*353,9786
+fun bi_letrecbi_letrec369,10277
+/// builtin andand375,10431
+fun bi_andbi_and388,10689
+/// builtin oror400,10958
+fun bi_orbi_or413,11218
+/// builtin condcond427,11639
+fun bi_condbi_cond442,12056
+/// builtin prognprogn460,12649
+fun bi_prognbi_progn473,12917
+/// builtin prog1prog1478,13060
+fun bi_prog1bi_prog1491,13335
+/// builtin lambdalambda500,13589
+fun bi_lambdabi_lambda513,13870
+/// builtin defundefun520,14133
+fun bi_defunbi_defun539,14724
+/// builtin nullnull555,15383
+/// builtin notnot567,15582
+fun bi_nullbi_null580,15810
+/// builtin eqeq585,15963
+fun bi_eqbi_eq599,16304
+/// builtin functionfunction606,16476
+fun bi_functionbi_function619,16755
+/// builtin symbol-functionsymbol-function638,17303
+fun bi_symbol_functionbi_symbol_function652,17621
+/// builtin errorerror662,17948
+fun bi_errorbi_error678,18408
+/// builtin warningwarning686,18724
+fun bi_warningbi_warning705,19350
+/// builtin catchcatch714,19691
+fun bi_catchbi_catch729,20073
+/// builtin throwthrow758,20847
+fun bi_throwbi_throw772,21191
+/// builtin boundpboundp781,21450
+fun bi_boundpbi_boundp794,21705
+/// builtin fboundpfboundp800,21910
+fun bi_fboundpbi_fboundp813,22170
+/// builtin errseterrset822,22396
+fun bi_errsetbi_errset837,22828
+/// builtin makunboundmakunbound856,23359
+fun bi_makunboundbi_makunbound869,23618
+/// builtin fmakunboundfmakunbound876,23822
+fun bi_fmakunboundbi_fmakunbound889,24086
+/// builtin funcallfuncall896,24337
+fun bi_funcallbi_funcall909,24609
+/// builtin applyapply915,24805
+fun bi_applybi_apply930,25193
+/// builtin environmentpenvironmentp937,25426
+fun bi_environmentpbi_environmentp950,25686
+/// builtin errorperrorp955,25855
+fun bi_errorpbi_errorp968,26104
+/// builtin stringpstringp973,26268
+fun bi_stringpbi_stringp986,26512
+/// builtin numberpnumberp991,26674
+fun bi_numberpbi_numberp1004,26918
+/// builtin conspconsp1009,27080
+fun bi_conspbi_consp1022,27323
+/// builtin regexppregexpp1027,27479
+fun bi_regexppbi_regexpp1040,27723
+/// builtin symbolpsymbolp1045,27885
+fun bi_symbolpbi_symbolp1058,28129
+/// builtin tableptablep1063,28291
+fun bi_tablepbi_tablep1076,28532
+/// builtin vectorpvectorp1081,28691
+fun bi_vectorpbi_vectorp1094,28935
+/// builtin listplistp1099,29097
+fun bi_listpbi_listp1112,29335
+/// builtin sequencepsequencep1118,29524
+fun bi_sequencepbi_sequencep1132,29821
+/// builtin functionpfunctionp1142,30127
+fun bi_functionpbi_functionp1155,30377
+/// builtin builtinpbuiltinp1160,30545
+fun bi_builtinpbi_builtinp1173,30801
+/// builtin macropmacrop1178,30966
+fun bi_macropbi_macrop1191,31207
+/// builtin lengthlength1196,31366
+fun bi_lengthbi_length1209,31612
+/// builtin type-oftype-of1214,31771
+fun bi_typeofbi_typeof1227,32012
+/// builtin looploop1232,32167
+fun bi_loopbi_loop1245,32398
+/// builtin whilewhile1252,32561
+fun bi_whilebi_while1265,32834
+/// builtin untiluntil1275,33081
+fun bi_untilbi_until1288,33350
+/// builtin unwind-protectunwind-protect1298,33584
+fun bi_unwind_protectbi_unwind_protect1313,33985
+/// builtin gensymgensym1323,34251
+fun bi_gensymbi_gensym1339,34750
+/// builtin appendappend1358,35330
+fun bi_appendbi_append1372,35642
+/// builtin nconcnconc1391,36074
+fun bi_nconcbi_nconc1405,36386
+/// builtin fsetfset1426,36959
+fun bi_fsetbi_fset1439,37240
+/// builtin defvardefvar1448,37534
+fun bi_defvarbi_defvar1462,37894
+/// builtin defparameterdefparameter1478,38462
+fun bi_defparameterbi_defparameter1492,38841
+/// builtin lastlast1507,39367
+fun bi_lastbi_last1520,39612
+/// builtin readread1529,39848
+fun bi_readbi_read1543,40185
+/// builtin fletflet1569,41065
+fun bi_fletbi_flet1583,41406
+/// builtin symbol-namesymbol-name1608,42395
+fun bi_symbol_namebi_symbol_name1621,42645
+/// builtin atomatom1626,42823
+fun bi_atombi_atom1639,43092
+/// builtin equalequal1644,43246
+fun bi_equalbi_equal1657,43518
+/// builtin evaleval1663,43706
+fun bi_evalbi_eval1677,44050
+/// builtin getget1689,44337
+fun bi_getpropbi_getprop1702,44628
+/// builtin putput1710,44927
+fun bi_putpropbi_putprop1723,45211
+/// builtin rempropremprop1732,45516
+fun bi_rempropbi_remprop1745,45797
+/// builtin reversereverse1753,46078
+fun bi_reversebi_reverse1767,46410
+/// builtin nreversenreverse1772,46571
+fun bi_nreversebi_nreverse1785,46843
+/// builtin mapcarmapcar1803,47253
+fun bi_mapcarbi_mapcar1821,47721
+    fun allCarsallCars1828,47975
+/// builtin rplaca-ret-valuerplaca-ret-value1854,48584
+fun bi_rplaca_ret_valuebi_rplaca_ret_value1868,48903
+/// builtin rplacd-ret-valuerplacd-ret-value1875,49153
+fun bi_rplacd_ret_valuebi_rplacd_ret_value1889,49472
+/// builtin function-bodyfunction-body1896,49722
+fun bi_function_bodybi_function_body1912,50139
+/// builtin identityidentity1917,50313
+fun bi_identitybi_identity1930,50534
+/// builtin ignoreignore1935,50678
+fun bi_ignorebi_ignore1948,50883
+/// builtin nthnth1953,51016
+fun bi_nthbi_nth1966,51245
+/// builtin nthcdrnthcdr1981,51615
+fun bi_nthcdrbi_nthcdr1994,51847
+/// builtin charpcharp2009,52222
+fun bi_charpbi_charp2022,52466
+/// builtin lambdaplambdap2027,52622
+fun bi_lambdapbi_lambdap2040,52867
+/// builtin keywordpkeywordp2045,53028
+fun bi_keywordpbi_keywordp2060,53386
+
+builtins/system.kt,4688
+/// builtin set-debugset-debug14,215
+fun bi_set_debugbi_set_debug31,751
+/// builtin debugdebug75,2060
+fun bi_debugbi_debug91,2496
+/// builtin docdoc106,2886
+fun bi_docbi_doc123,3413
+/// builtin numbersnumbers149,4095
+fun bi_numbersbi_numbers162,4349
+/// builtin do-symbolsdo-symbols168,4499
+fun bi_do_symbolsbi_do_symbols183,4913
+/// builtin gcgc196,5341
+fun bi_gcbi_gc209,5553
+/// builtin assertassert215,5694
+fun bi_assertbi_assert230,6075
+/// builtin aproposapropos240,6331
+fun bi_aproposbi_apropos255,6726
+    fun match_smatch_s262,6978
+    fun match_rmatch_r263,7029
+/// builtin build-infobuild-info316,8516
+fun bi_build_infobi_build_info330,8863
+/// builtin describedescribe343,9269
+fun bi_describebi_describe356,9548
+    fun entryentry361,9716
+    fun entryentry368,9921
+    fun entryentry371,10006
+    fun entryentry374,10106
+/// builtin provideprovide432,12028
+fun bi_providebi_provide445,12301
+/// builtin requirerequire452,12522
+fun bi_requirebi_require467,12894
+val k1Symk1Sym482,13399
+val k2Symk2Sym483,13425
+/// builtin baramsbarams485,13452
+fun bi_baramsbi_barams498,13764
+/// builtin exitexit519,14315
+fun bi_exitbi_exit532,14581
+/// builtin getenvgetenv539,14825
+fun bi_getenvbi_getenv553,15141
+/// builtin process-envprocess-env558,15325
+fun bi_process_envbi_process_env571,15599
+/// builtin env-tableenv-table581,15874
+fun bi_env_tablebi_env_table595,16196
+/// builtin env-varsenv-vars611,16570
+fun bi_env_varsbi_env_vars625,16881
+/// builtin function-definitionfunction-definition637,17174
+fun bi_function_definitionbi_function_definition653,17610
+/// builtin function-docstringfunction-docstring658,17802
+fun bi_function_docstringbi_function_docstring671,18061
+/// builtin function-parametersfunction-parameters676,18262
+fun bi_function_parametersbi_function_parameters691,18671
+/// builtin make-symbolmake-symbol697,18888
+fun bi_make_symbolbi_make_symbol711,19239
+/// builtin symbol-valuesymbol-value717,19443
+fun bi_symbol_valuebi_symbol_value730,19683
+/// builtin collect-performance-datacollect-performance-data736,19875
+fun bi_collect_perfdatabi_collect_perfdata753,20394
+/// builtin measure-timemeasure-time766,20974
+fun bi_measure_timebi_measure_time779,21245
+/// builtin no-warningsno-warnings788,21511
+fun bi_no_warningsbi_no_warnings803,21897
+val onSymonSym815,22213
+/// builtin warnings-as-errorswarnings-as-errors817,22239
+fun bi_warnings_as_errorsbi_warnings_as_errors832,22665
+val inShellKSyminShellKSym843,23030
+val inputKSyminputKSym844,23068
+val outputKSymoutputKSym845,23101
+val errorOutputKSymerrorOutputKSym846,23136
+val envKSymenvKSym847,23182
+val raiseErrorKSymraiseErrorKSym848,23211
+val shell_meta_charactersshell_meta_characters850,23256
+fun has_shellmetahas_shellmeta852,23316
+/// builtin run-programrun-program861,23479
+fun bi_run_programbi_run_program899,25301
+    fun handleProcessOutputhandleProcessOutput998,29304
+/// builtin error-object-perror-object-p1052,30936
+fun bi_error_object_pbi_error_object_p1065,31202
+/// builtin sleepsleep1070,31382
+fun bi_sleepbi_sleep1083,31649
+/// builtin returnreturn1093,31947
+fun bi_returnbi_return1106,32210
+/// builtin user-nameuser-name1111,32363
+fun bi_user_namebi_user_name1124,32603
+/// builtin load-preload-codeload-preload-code1129,32782
+fun bi_load_preload_codebi_load_preload_code1143,33086
+/// builtin system-timesystem-time1150,33337
+fun bi_system_timebi_system_time1166,33762
+/// builtin system-running-timesystem-running-time1171,33940
+fun bi_system_running_timebi_system_running_time1184,34229
+/// builtin system-started-timesystem-started-time1189,34443
+fun bi_system_started_timebi_system_started_time1202,34732
+/// builtin system-perfdatasystem-perfdata1207,34917
+fun bi_system_perfdatabi_system_perfdata1225,35438
+/// builtin get-hooksget-hooks1234,35902
+fun bi_get_hooksbi_get_hooks1247,36176
+/// builtin define-hookdefine-hook1256,36450
+fun bi_define_hookbi_define_hook1269,36720
+/// builtin add-hook-functionadd-hook-function1276,36931
+fun bi_add_hook_functionbi_add_hook_function1290,37253
+/// builtin remove-hook-functionremove-hook-function1298,37533
+fun bi_remove_hook_functionbi_remove_hook_function1313,37929
+/// builtin get-hook-functionsget-hook-functions1320,38219
+fun bi_get_hook_functionbi_get_hook_function1333,38509
+/// builtin run-hook-functionsrun-hook-functions1338,38711
+fun bi_run_hook_functionsbi_run_hook_functions1352,39051
+/// builtin lyk-command-optionslyk-command-options1358,39294
+fun bi_lyk_command_optionsbi_lyk_command_options1372,39645
+
+builtins/alists.kt,459
+fun assoc_iter_elemsassoc_iter_elems6,57
+/// builtin assocassoc27,668
+fun bi_assocbi_assoc41,986
+/// builtin sassocsassoc50,1205
+fun bi_sassocbi_sassoc65,1614
+/// builtin assqassq81,2006
+fun bi_assqbi_assq95,2359
+/// builtin sassqsassq104,2573
+fun bi_sassqbi_sassq119,2977
+/// builtin assoc-ifassoc-if135,3364
+fun bi_assoc_ifbi_assoc_if149,3688
+/// builtin assoc-if-notassoc-if-not159,3979
+fun bi_assoc_if_notbi_assoc_if_not173,4312
+
+builtins/environments.kt,413
+/// builtin new-environmentnew-environment5,62
+fun bi_new_environmentbi_new_environment24,726
+/// builtin the-environmentthe-environment53,1624
+fun bi_the_environmentbi_the_environment66,1872
+/// builtin with-environmentwith-environment71,2030
+fun bi_with_environmentbi_with_environment84,2320
+/// builtin root-environmentroot-environment97,2682
+fun bi_root_environmentbi_root_environment110,2934
+
+builtins/io.kt,3649
+val directionKeywdirectionKeyw8,61
+val inputKeywinputKeyw9,102
+val outputKeywoutputKeyw10,135
+val ioKeywioKeyw11,170
+val if_existsKeywif_existsKeyw12,197
+val new_versionKeywnew_versionKeyw13,238
+val overwriteKeywoverwriteKeyw14,283
+val supersedeKeywsupersedeKeyw15,324
+val errorKeywerrorKeyw16,365
+val if_does_not_existKeywif_does_not_existKeyw17,398
+val createKeywcreateKeyw18,455
+val sepKeywsepKeyw19,490
+val printKeywprintKeyw20,519
+/// builtin printlnprintln23,554
+fun bi_printlnbi_println36,861
+/// builtin printprint42,1079
+fun bi_printbi_print57,1456
+/// builtin prin1prin164,1679
+fun bi_prin1bi_prin178,2005
+/// builtin prin1-to-stringprin1-to-string85,2233
+fun bi_prin1_to_stringbi_prin1_to_string98,2508
+/// builtin princprinc103,2689
+fun bi_princbi_princ116,2967
+/// builtin princ-to-stringprinc-to-string123,3195
+/// builtin princsprincs137,3472
+fun bi_princsbi_princs151,3778
+/// builtin terpriterpri156,3941
+fun bi_terpribi_terpri170,4235
+/// builtin loadload177,4445
+fun bi_loadbi_load201,5459
+/// builtin make-string-input-streammake-string-input-stream212,5886
+fun bi_make_string_input_streambi_make_string_input_stream226,6220
+/// builtin streamstream232,6451
+fun bi_streambi_stream247,6814
+/// builtin formatformat256,7054
+fun bi_formatbi_format283,7825
+/// builtin openopen302,8410
+fun bi_openbi_open319,9001
+/// builtin closeclose368,10361
+fun bi_closebi_close381,10621
+/// builtin read-lineread-line391,10885
+fun bi_read_linebi_read_line407,11394
+/// builtin make-string-output-streammake-string-output-stream426,11935
+fun bi_make_string_output_streambi_make_string_output_stream440,12322
+/// builtin get-output-stream-stringget-output-stream-string445,12510
+fun bi_get_output_stream_stringbi_get_output_stream_string462,13110
+/// builtin console-reader-stream-pconsole-reader-stream-p472,13541
+fun bi_console_reader_stream_pbi_console_reader_stream_p485,13833
+/// builtin file-reader-stream-pfile-reader-stream-p491,14040
+fun bi_file_reader_stream_pbi_file_reader_stream_p504,14323
+/// builtin string-reader-stream-pstring-reader-stream-p510,14521
+fun bi_string_reader_stream_pbi_string_reader_stream_p523,14810
+/// builtin string-writer-stream-pstring-writer-stream-p529,15014
+fun bi_string_writer_stream_pbi_string_writer_stream_p542,15303
+/// builtin file-writer-stream-pfile-writer-stream-p548,15507
+fun bi_file_writer_stream_pbi_file_writer_stream_p561,15790
+/// builtin file-io-stream-pfile-io-stream-p566,15987
+fun bi_file_io_stream_pbi_file_io_stream_p579,16258
+/// builtin streampstreamp584,16443
+fun bi_streampbi_streamp597,16688
+/// builtin finish-outputfinish-output602,16850
+fun bi_finish_outputbi_finish_output616,17179
+/// builtin open-interactive-streamopen-interactive-stream629,17517
+fun bi_open_interactive_streambi_open_interactive_stream646,18058
+/// builtin input-stream-pinput-stream-p651,18262
+fun bi_input_stream_pbi_input_stream_p664,18527
+/// builtin output-stream-poutput-stream-p673,18763
+fun bi_output_stream_pbi_output_stream_p686,19031
+/// builtin interactive-stream-pinteractive-stream-p695,19269
+fun bi_interactive_stream_pbi_interactive_stream_p708,19552
+/// builtin open-stream-popen-stream-p717,19793
+fun bi_open_stream_pbi_open_stream_p730,20055
+val startKWSymstartKWSym740,20292
+val endKWSymendKWSym741,20326
+fun write_string_linewrite_string_line743,20357
+/// builtin write-stringwrite-string775,21388
+fun bi_write_stringbi_write_string791,21809
+/// builtin write-linewrite-line796,21999
+fun bi_write_linebi_write_line812,22479
+
+builtins/strings.kt,1987
+val stringSeparatorKeystringSeparatorKey5,67
+val defaultStringSepdefaultStringSep6,106
+/// builtin stringstring9,147
+fun bi_stringbi_string22,388
+/// builtin make-stringmake-string27,552
+fun bi_make_stringbi_make_string40,857
+/// builtin joinjoin70,1817
+fun bi_joinbi_join84,2114
+/// builtin regexpregexp91,2349
+fun bi_regexpbi_regexp105,2695
+/// builtin regexp-matchregexp-match114,2920
+fun bi_regexp_matchbi_regexp_match144,4106
+fun regexp_splitregexp_split164,4690
+/// builtin regexp-splitregexp-split172,4888
+fun bi_regexp_splitbi_regexp_split186,5270
+/// builtin regexp-replaceregexp-replace193,5550
+fun bi_regexp_replacebi_regexp_replace206,5852
+/// builtin string-splitstring-split214,6193
+fun bi_string_splitbi_string_split233,6888
+fun substring_limitssubstring_limits261,7637
+/// builtin string-upcasestring-upcase274,8028
+fun bi_string_upcasebi_string_upcase289,8441
+/// builtin string-downcasestring-downcase312,9214
+fun bi_string_downcasebi_string_downcase327,9631
+val word_charsword_chars350,10410
+fun capitalizecapitalize353,10497
+/// builtin string-capitalizestring-capitalize374,10959
+fun bi_string_capitalizebi_string_capitalize389,11380
+fun string_trimstring_trim416,12298
+/// builtin string-trimstring-trim447,12987
+fun bi_string_trimbi_string_trim462,13427
+/// builtin string-left-trimstring-left-trim479,13949
+fun bi_string_left_trimbi_string_left_trim494,14391
+/// builtin string-right-trimstring-right-trim508,14830
+fun bi_string_right_trimbi_string_right_trim523,15268
+/// builtin substringsubstring538,15709
+fun bi_substringbi_substring552,16033
+/// builtin string-contains-pstring-contains-p572,16645
+fun bi_string_contains_pbi_string_contains_p585,16923
+/// builtin string-starts-withstring-starts-with591,17165
+fun bi_string_starts_withbi_string_starts_with604,17441
+/// builtin string-ends-withstring-ends-with610,17684
+fun bi_string_ends_withbi_string_ends_with623,17954
+
+builtins/tables.kt,924
+/// builtin table-gettable-get6,42
+fun bi_table_getbi_table_get20,374
+/// builtin table-puttable-put27,625
+fun bi_table_putbi_table_put40,897
+/// builtin make-tablemake-table48,1144
+fun bi_make_tablebi_make_table62,1468
+/// builtin table-counttable-count67,1618
+fun bi_table_countbi_table_count80,1874
+/// builtin table-existstable-exists86,2083
+fun bi_table_existsbi_table_exists99,2343
+val initialKeySyminitialKeySym105,2547
+val createKeySymcreateKeySym106,2585
+/// builtin table-inctable-inc108,2622
+fun bi_table_incbi_table_inc124,3184
+/// builtin table-keystable-keys148,4053
+fun bi_table_keysbi_table_keys161,4295
+/// builtin table-valuestable-values167,4475
+fun bi_table_valuesbi_table_values180,4728
+/// builtin table-pairstable-pairs185,4909
+fun bi_table_pairsbi_table_pairs198,5171
+/// builtin table-removetable-remove204,5354
+fun bi_table_removebi_table_remove217,5613
+
+builtins/utils.kt,140
+/// builtin list-collectorlist-collector5,52
+fun bi_list_collectorbi_list_collector32,873
+    fun list_collectorlist_collector37,1070
+
+builtins/vectors.kt,329
+/// builtin arefaref6,43
+/// builtin vector-getvector-get18,258
+fun bi_arefbi_aref31,509
+/// builtin make-vectormake-vector38,750
+fun bi_make_vectorbi_make_vector51,1040
+/// builtin vector-setvector-set69,1562
+fun bi_vector_setbi_vector_set82,1847
+/// builtin vectorvector90,2115
+fun bi_vectorbi_vector103,2317
+
+builtins/sequences.kt,1380
+val defaultSymdefaultSym6,49
+/// builtin eltelt8,85
+fun bi_eltbi_elt22,431
+/// builtin seteltsetelt30,773
+fun bi_seteltbi_setelt45,1173
+/// builtin elementselements52,1404
+fun bi_elementsbi_elements65,1673
+/// builtin copy-seqcopy-seq74,1906
+fun bi_copy_seqbi_copy_seq89,2256
+/// builtin doseqdoseq94,2415
+fun bi_doseqbi_doseq108,2773
+/// builtin subseqsubseq134,3560
+fun bi_subseqbi_subseq148,3906
+/// builtin deletedelete158,4257
+fun bi_deletebi_delete172,4579
+val from_endKeywfrom_endKeyw178,4780
+val testKeywtestKeyw179,4819
+val test_notKeywtest_notKeyw180,4850
+val startKeywstartKeyw181,4889
+val endKeywendKeyw182,4922
+val keyKeywkeyKeyw183,4951
+val equalSymequalSym184,4980
+val identitySymidentitySym185,5011
+fun find_pos_corefind_pos_core188,5109
+/// builtin findfind229,6401
+fun bi_findbi_find251,7376
+/// builtin positionposition256,7535
+fun bi_positionbi_position278,8527
+fun find_if_pos_corefind_if_pos_core284,8770
+/// builtin find-iffind-if309,9655
+fun bi_find_ifbi_find_if327,10333
+/// builtin find-if-notfind-if-not333,10518
+fun bi_find_if_notbi_find_if_not351,11205
+fun indexOrNilindexOrNil356,11396
+/// builtin position-ifposition-if363,11515
+fun bi_position_ifbi_position_if381,12201
+/// builtin position-if-notposition-if-not386,12406
+fun bi_position_if_notbi_position_if_not404,13101
+
+builtins/macros.kt,548
+/// builtin defmacrodefmacro5,61
+fun bi_defmacrobi_defmacro25,729
+/// builtin macroexpandmacroexpand36,1090
+fun bi_macroexpandbi_macroexpand50,1435
+/// builtin macroexpand-1macroexpand-155,1602
+fun bi_macroexpand_1bi_macroexpand_168,1891
+fun qq_recurseqq_recurse74,2122
+/// builtin quasiquotequasiquote109,3224
+fun bi_quasiquotebi_quasiquote127,3742
+/// builtin unquoteunquote132,3902
+fun bi_unquotebi_unquote145,4169
+/// builtin unquote-splicingunquote-splicing150,4356
+fun bi_unquote_splicingbi_unquote_splicing163,4640
+
+builtins/factor.kt,641
+val primesprimes6,88
+fun addNextPrimeaddNextPrime8,128
+fun highestPrimehighestPrime13,226
+fun haveDivisorhaveDivisor16,326
+fun growPrimesgrowPrimes31,603
+fun primeSeqFuncprimeSeqFunc41,844
+fun factorfactor53,1085
+fun isPrimeisPrime74,1586
+fun nextPrimeAfternextPrimeAfter92,1961
+/// builtin factorfactor108,2220
+fun bi_factorbi_factor121,2464
+/// builtin prime-number-pprime-number-p131,2740
+fun bi_prime_number_pbi_prime_number_p144,3000
+/// builtin next-primenext-prime149,3183
+fun bi_next_primebi_next_prime162,3443
+/// builtin known-primesknown-primes167,3628
+fun bi_known_primesbi_known_primes180,3898
+
+builtins/chars.kt,1312
+/// builtin code-charcode-char6,54
+fun bi_code_charbi_code_char20,386
+/// builtin char-intchar-int29,728
+fun bi_char_intbi_char_int43,1030
+fun char_compare_orderedchar_compare_ordered68,2052
+fun char_compare_uniquechar_compare_unique91,2724
+fun char_compare_equalchar_compare_equal109,3190
+/// builtin char-equalchar-equal130,3689
+fun bi_char_equalbi_char_equal143,3960
+/// builtin char-not-equalchar-not-equal148,4137
+fun bi_char_not_equalbi_char_not_equal161,4423
+/// builtin char/=char/=166,4609
+fun bi_char_not_equal2bi_char_not_equal2179,4884
+/// builtin char<char<184,5073
+fun bi_char_ltbi_char_lt197,5336
+/// builtin char-lesspchar-lessp204,5556
+fun bi_char_lesspbi_char_lessp217,5827
+/// builtin char<=char<=224,6052
+fun bi_char_lebi_char_le237,6319
+/// builtin char-not-greaterpchar-not-greaterp244,6540
+fun bi_char_not_greaterpbi_char_not_greaterp257,6828
+/// builtin char=char=264,7068
+fun bi_char_eqlbi_char_eql277,7316
+/// builtin char>char>282,7490
+fun bi_char_gtbi_char_gt295,7753
+/// builtin char-greaterpchar-greaterp302,7973
+fun bi_char_greaterpbi_char_greaterp315,8250
+/// builtin char>=char>=322,8481
+fun bi_char_gebi_char_ge335,8749
+/// builtin char-not-lesspchar-not-lessp342,8970
+fun bi_char_not_lesspbi_char_not_lessp355,9253
+
+builtins/files.kt,1556
+/// builtin basenamebasename10,126
+fun bi_basenamebi_basename23,412
+/// builtin dirnamedirname29,615
+fun bi_dirnamebi_dirname42,894
+/// builtin directorydirectory48,1094
+fun bi_directorybi_directory62,1413
+/// builtin delete-filedelete-file68,1607
+fun bi_delete_filebi_delete_file82,1909
+fun pathname_frompathname_from90,2191
+/// builtin file-authorfile-author104,2671
+fun bi_file_authorbi_file_author119,2989
+/// builtin file-lengthfile-length125,3232
+fun bi_file_lengthbi_file_length139,3558
+val reTildePathnamereTildePathname145,3786
+fun tildeExpandtildeExpand147,3835
+                       outputKSym to outputKSym152,4076
+                       inShellKSym to inShellKSym153,4119
+/// builtin expand-file-nameexpand-file-name158,4238
+fun bi_expand_file_namebi_expand_file_name190,5467
+/// builtin get-working-directoryget-working-directory215,6298
+fun bi_get_working_directorybi_get_working_directory228,6573
+/// builtin user-homedir-pathnameuser-homedir-pathname233,6782
+fun bi_user_homedir_pathnamebi_user_homedir_pathname246,7057
+fun normalize_pathnormalize_path252,7261
+/// builtin namestringnamestring265,7570
+fun bi_namestringbi_namestring282,8104
+/// builtin probe-fileprobe-file287,8273
+fun bi_probe_filebi_probe_file300,8544
+/// builtin directory-pdirectory-p309,8804
+fun bi_directory_pbi_directory_p322,9083
+/// builtin plain-file-pplain-file-p328,9287
+fun bi_plain_file_pbi_plain_file_p341,9569
+/// builtin symlink-psymlink-p347,9769
+fun bi_symlink_pbi_symlink_p360,10045
+
+utils/lists.kt,405
+fun pushpush6,150
+fun listlist11,306
+fun firstNfirstN21,516
+fun collectedListcollectedList35,761
+fun list2lisplist2lisp41,895
+fun valueArrayvalueArray49,1052
+class ListCollector():ListCollector():66,1466
+    fun addadd70,1568
+    fun lastcdrlastcdr80,1789
+class ListFeed(varListFeed(var94,2050
+    fun nextnext100,2344
+    fun isListisList111,2656
+    fun hasNexthasNext112,2705
+
+utils/div.kt,1397
+val printablesprintables11,202
+fun isPrintableisPrintable33,1125
+fun powpow38,1270
+fun mulStringmulString46,1399
+fun lookingAtlookingAt56,1605
+fun restOfLinerestOfLine68,1956
+fun lispifyNamelispifyName83,2271
+class CharBufCharBuf104,2680
+    fun addadd114,2827
+class StrBuf()StrBuf()126,3028
+    fun addadd135,3193
+    fun descdesc141,3328
+    fun joinjoin146,3430
+fun glob2regexpglob2regexp154,3676
+    var in_cclass ==157,3818
+            '[' -> in_cclass ==171,4163
+            ']' -> in_cclass ==172,4199
+fun arrayInternarrayIntern185,4537
+fun mapInternKeysmapInternKeys195,4822
+fun pairsInternFirstpairsInternFirst205,5149
+fun list2lisplist2lisp215,5461
+val dense_float_formatdense_float_format223,5607
+val float_regexpfloat_regexp224,5639
+fun dense_formatdense_format226,5673
+fun dense_formatdense_format234,5875
+data class Perfdata(valPerfdata(val238,5991
+    fun descdesc240,6106
+fun measurePerfdataValuemeasurePerfdataValue254,6647
+fun measurePerfdatameasurePerfdata265,6995
+fun minmin280,7481
+fun maxmax284,7579
+fun abbreviateabbreviate291,7844
+fun printEvalStackprintEvalStack303,8288
+fun printThingsWrappedprintThingsWrapped329,9413
+fun printThingWrappedprintThingWrapped351,10111
+fun identityidentity364,10455
+class LOStack(privateLOStack(private368,10505
+    fun pushpush371,10575
+    fun poppop376,10656
+
+utils/interfaces.kt,292
+fun interfaceinterface6,41
+    fun locationlocation7,72
+    fun getAtgetAt14,302
+    fun setAtsetAt20,594
+    fun copycopy26,777
+    fun elementselements29,858
+    fun subseqsubseq35,1156
+    fun reversedreversed39,1288
+    fun deletedelete43,1433
+    fun findfind49,1676
+
+sys/exception.kt,1934
+abstract class LykSignal(message:LykSignal(message:10,290
+class AbortEvalSignal(reason:AbortEvalSignal(reason:15,443
+class ThrowSignal(valThrowSignal(val20,572
+class ReturnSignal(valReturnSignal(val23,695
+class ErrorObject(valErrorObject(val28,832
+open class LispError(message:LispError(message:37,1068
+    fun toObjecttoObject50,1417
+    fun pushFramepushFrame60,1638
+class FormatError(message:FormatError(message:66,1836
+class ProcessError(exit_status:ProcessError(exit_status:74,2210
+class NotImplementedError(what:NotImplementedError(what:78,2376
+class IndexError(message:IndexError(message:81,2471
+class WarningError(message:WarningError(message:86,2636
+open class IOError(message:IOError(message:88,2693
+open class InternalError(message:InternalError(message:95,2931
+class JavaError(valJavaError(val98,2995
+open class ParseError(message:ParseError(message:103,3165
+open class EOFListError(lh:EOFListError(lh:109,3334
+class SyntaxError(message:SyntaxError(message:123,3711
+class InternalReaderError(message:InternalReaderError(message:126,3810
+class ImmutableError(valImmutableError(val131,3987
+class ReadOnlyError(valReadOnlyError(val134,4077
+open class ValueError(message:ValueError(message:137,4184
+fun indef_aindef_a156,4698
+class TypeError(message:TypeError(message:163,4831
+class FileError(filename:FileError(filename:169,5110
+class CallError(message:CallError(message:172,5200
+class ArgumentError(message:ArgumentError(message:174,5254
+class LambdaDefError(message:LambdaDefError(message:176,5312
+class FunctionError(message:FunctionError(message:178,5371
+class EOFError(message:EOFError(message:180,5429
+class OtherError(message:OtherError(message:184,5546
+class NotProvidedError(valNotProvidedError(val188,5687
+class AssertionFail(form:AssertionFail(form:192,5805
+class RegexpError(valRegexpError(val195,5949
+fun makeLispErrormakeLispError205,6255
+
+sys/eval.kt,141
+fun markFramemarkFrame7,118
+fun evalPrognevalProgn19,439
+fun evalFunevalFun39,1109
+fun evalArgsevalArgs66,1751
+fun evaleval76,1905
+
+sys/messages.kt,266
+fun printErrprintErr6,83
+fun printErrprintErr14,258
+fun errExiterrExit18,323
+fun infoinfo25,445
+fun noticenotice31,565
+fun warnwarn37,689
+fun anyDebugOnanyDebugOn45,866
+fun setDebugsetDebug52,993
+fun setDebugsetDebug64,1283
+fun debugdebug77,1605
+
+sys/main.kt,1821
+val verbosityNoticeverbosityNotice11,103
+val verbosityInfoverbosityInfo12,127
+        debugEvalSym to debugEvalSym16,215
+        debugCallSym to debugCallSym17,246
+        debugErrorSym to debugErrorSym18,277
+        debugDebugSym to debugDebugSym19,309
+        debugEvalFunSym to debugEvalFunSym20,341
+	debugCatchThrowSym to debugCatchThrowSym21,375
+	debugBindSymSym to debugBindSymSym22,405
+	debugLetBindSym to debugLetBindSym23,432
+        debugIOSym to debugIOSym24,459
+        debugBindParSym to debugBindParSym25,488
+        debugReaderSym to debugReaderSym26,522
+        debugConsSym to debugConsSym27,555
+        debugStepEval to debugStepEval28,586
+        debugMacroSym to debugMacroSym29,618
+        debugLambdaParamsSym to debugLambdaParamsSym30,650
+        debugPreloadSym to debugPreloadSym31,689
+        debugFormatSym to debugFormatSym32,723
+        debugDefunSym to debugDefunSym33,756
+        debugAtexitSym to debugAtexitSym34,788
+        debugFinalizeSym to debugFinalizeSym35,821
+        debugLoadlineSym to debugLoadlineSym36,856
+        debugReadCharSym to debugReadCharSym37,891
+        debugStartupSym to debugStartupSym38,926
+        debugReplSym to debugReplSym39,960
+        debugReadSymSym to debugReadSymSym40,991
+        debugStopSym to debugStopSym41,1025
+        debugSetqSym to debugSetqSym42,1056
+        debugFormatstringSym to debugFormatstringSym43,1087
+        debugEnglishSym to debugEnglishSym44,1126
+        debugHooksSym to debugHooksSym45,1160
+        debugCompleterSym to debugCompleterSym46,1192
+val debugOptionsdebugOptions57,1638
+fun usageusage60,1687
+val startupHookSymstartupHookSym85,2641
+fun mainmain88,2689
+        fun getOptValgetOptVal96,2965
+        fun getOptValIntgetOptValInt106,3253
+
+sys/globalvars.kt,3518
+val systemStartedTimesystemStartedTime5,71
+val rootEnvrootEnv7,123
+var currentEnvcurrentEnv8,144
+val NilNil10,170
+val TT11,200
+val LambdaSymLambdaSym12,226
+val greekLambdaSymgreekLambdaSym13,265
+val warningsAsErrorswarningsAsErrors15,306
+val last_errorlast_error17,436
+var inErrsetinErrset19,489
+var gensymCountergensymCounter21,560
+val theNonPrintingObjecttheNonPrintingObject28,824
+val stdinstdin30,894
+val stdoutstdout31,952
+val stderrstderr32,1029
+var consoleconsole35,1151
+var consolePromptconsolePrompt36,1187
+var debug_outdebug_out38,1267
+val verboseSymverboseSym40,1291
+val errorSymerrorSym41,1326
+var consCounterconsCounter43,1358
+var evalCounterevalCounter44,1379
+var callCountercallCounter45,1400
+var lastTopLevelLocationlastTopLevelLocation48,1482
+var definedInPropSymdefinedInPropSym51,1578
+var varDefinedInPropSymvarDefinedInPropSym54,1691
+val optionalPSymoptionalPSym57,1766
+val keyPSymkeyPSym58,1805
+val restPSymrestPSym59,1834
+val emptyStringemptyString60,1865
+val returnSymreturnSym61,1898
+val no_returnSymno_returnSym62,1927
+val debugEvalSymdebugEvalSym65,1998
+val debugEvalPrognSymdebugEvalPrognSym66,2032
+val debugEvalFunSymdebugEvalFunSym67,2076
+val debugCallSymdebugCallSym68,2116
+val debugErrorSymdebugErrorSym69,2150
+val debugIOSymdebugIOSym70,2186
+val debugBindParSymdebugBindParSym71,2216
+val debugReaderSymdebugReaderSym72,2256
+val debugReadSymSymdebugReadSymSym73,2294
+val debugConsSymdebugConsSym74,2334
+val debugCatchThrowSymdebugCatchThrowSym75,2368
+val debugLetBindSymdebugLetBindSym76,2415
+val debugBindSymSymdebugBindSymSym77,2451
+val debugStepEvaldebugStepEval78,2488
+val debugMacroSymdebugMacroSym79,2527
+val debugLambdaParamsSymdebugLambdaParamsSym80,2563
+val debugPreloadSymdebugPreloadSym81,2607
+val debugDebugSymdebugDebugSym82,2647
+val debugFormatSymdebugFormatSym83,2683
+val debugDefunSymdebugDefunSym84,2721
+val debugAtexitSymdebugAtexitSym85,2757
+val debugFinalizeSymdebugFinalizeSym86,2795
+val debugLoadlineSymdebugLoadlineSym87,2837
+val debugReadCharSymdebugReadCharSym88,2879
+val debugStartupSymdebugStartupSym89,2921
+val debugReplSymdebugReplSym90,2961
+val debugSetqSymdebugSetqSym91,2995
+val debugFormatstringSymdebugFormatstringSym92,3029
+val debugEnglishSymdebugEnglishSym93,3079
+val debugHooksSymdebugHooksSym94,3119
+val debugCompleterSymdebugCompleterSym95,3155
+val debugOffSymdebugOffSym97,3200
+val debugListSymdebugListSym98,3233
+val debugStopSymdebugStopSym99,3268
+val defunSymdefunSym101,3304
+val quoteSymbolquoteSymbol102,3333
+val unquoteSymbolunquoteSymbol103,3367
+val unquoteSplicingSymbolunquoteSplicingSymbol104,3405
+val defmacroSymdefmacroSym105,3460
+var debugOndebugOn107,3498
+val commandLineArgscommandLineArgs109,3566
+val lastErrorlastError110,3626
+val terminalWidthterminalWidth111,3677
+val terminalHeightterminalHeight112,3736
+val loadPrintSymloadPrintSym113,3797
+val loadPathSymloadPathSym114,3851
+val loadFilenameSymloadFilenameSym115,3903
+var calledFunctionNamecalledFunctionName117,4012
+val loadFileNameIndloadFileNameInd120,4127
+val evalStackAbbrLinesevalStackAbbrLines122,4159
+val modulesSymmodulesSym125,4262
+var evalLevelevalLevel128,4326
+var maxEvalLevelmaxEvalLevel129,4349
+var maxRecursionDepthmaxRecursionDepth130,4375
+var abortEvalabortEval131,4418
+var stepEvalstepEval132,4449
+fun getTermWidthgetTermWidth134,4480
+fun init_Variablesinit_Variables142,4623
+
+sys/exit.kt,93
+val cleanupRoutinescleanupRoutines7,99
+fun atexitatexit10,151
+fun exitLykexitLyk14,221
+
+sys/hooks.kt,285
+val hookFunctionshookFunctions7,140
+fun getHooksgetHooks10,259
+fun defineHookdefineHook13,300
+fun addHookFunctionaddHookFunction23,632
+fun removeHookFunctionremoveHookFunction34,1023
+fun getHookFunctionsgetHookFunctions46,1419
+fun runHookFunctionsrunHookFunctions56,1776
+
+generated/buildtag.kt,93
+val build_infobuild_info5,66
+val installdirinstalldir13,266
+fun buildtagbuildtag16,304
+
+generated/init-builtins.kt,229
+val noStdnoStd28,707
+val noKeynoKey29,780
+val noOptnoOpt30,849
+val noRestnoRest31,923
+fun init_Builtinsinit_Builtins34,994
+Function is 2748,86792
+Function is 2759,87089
+Function is 2770,87396
+Function is 2781,87709
+
+generated/preload.kt,114
+val preload_codepreload_code5,66
+var boundbound74,2907
+function plus 232,9354
+    function object)822,30410
+
+preload/aliases.lisp,0
+
+preload/00-start.lisp,0

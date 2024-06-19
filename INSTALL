@@ -1,0 +1,15 @@
+To build and install lyk, you need a JDK that is recent enough (I
+have no idea which ones work, I use OpenJDK 21.0.3), a Kotlin JVM
+compiler named kotlinc, version 1.9.22 or 2.0.0, etags (as of a
+current GNU Emacs installation).
+
+The OSes that work for me are macOS 14.5 (Sonoma) and Ubuntu 22.04.
+
+You may want to edit src/Makefile to set INSTALLBASE; the default is
+`/opt/w21/`. Then it is
+
+  $ cd src && make new install
+
+Have fun!
+
+[2024-06-19 ni@w21.org]

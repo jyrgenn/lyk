@@ -2,7 +2,7 @@
 # start the lyk Lisp interpreter
 
 # this is also a base for the load path
-export LYKPATH=${LYKPATH-.:INSTALLDIR:$HOME/devel/lyk}
+export LYKPATH=${LYKPATH-.:INSTALLDIR:$HOME/devel/lyk/src}
 
 if [ -t 0 ]; then
     stty size | read LINES COLUMNS

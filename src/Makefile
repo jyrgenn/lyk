@@ -48,7 +48,7 @@ generated/DOCSTRINGS.md: lyk.jar
 
 generated/jline: generated
 	mkdir -p generated/jline
-	cd generated/jline; jar -xf ../../external/jline/jline.jar
+	cd generated/jline; jar -xf ../../../external/jline/jline.jar
 
 generated/10-types.lisp: Makefile generated scripts/list-types.sh $(SRCS)
 	./scripts/list-types.sh > generated/10-types.lisp
@@ -92,12 +92,12 @@ install: generated/DOCSTRINGS.md
 	mkdir -p $(INSTALLBIN) $(INSTALLDIR)
 	-rm -rf $(INSTALLDIR)/*
 	rsync -a l $(INSTALLDIR)/
-	rsync -a doc $(INSTALLDIR)/
+	rsync -a ../doc $(INSTALLDIR)/
 	install -c lyk.jar $(INSTALLDIR)
-	install -c README.md LICENSE $(INSTALLDIR)/
+	install -c ../README.md ../LICENSE $(INSTALLDIR)/
 	install -c generated/DOCSTRINGS.md $(INSTALLDIR)/doc/
 	install -d $(INSTALLDIR)/jline
-	install -c external/jline/LICENSE $(INSTALLDIR)/jline/
+	install -c ../external/jline/LICENSE $(INSTALLDIR)/jline/
 	sed 's|:INSTALLDIR:|:$(INSTALLDIR):|' scripts/lyk > $(INSTALLBIN)/lyk
 	chmod +x $(INSTALLBIN)/lyk
 	sed "s|:UNRELEASED:|$$(scripts/lyk -V)|" l/lyc > $(INSTALLBIN)/lyc
