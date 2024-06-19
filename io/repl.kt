@@ -56,11 +56,15 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
 
             // may be a short command
             if (interactive) {
+                // Set these so the hook function(s) can change this to e.g.
+                // *the-non-printing-object*
+                plus3Sym.setValue(plus2Sym.getValue())
+                plus2Sym.setValue(plusSym.getValue())
+                plusSym.setValue(expr, true)
+                
                 runHookFunctions(replInteractiveInputHookSym, list(expr))
-                // With the function list hook regime, we don't have a single
-                // return value any more to learn of the argument has already
-                // been processed, but in case of a short command keyword
-                // entered here, there is no harm in evaluating it, too.
+
+                expr = plusSym.getValueOptional() ?: Nil
             }
 
             // EVAL,
@@ -78,9 +82,6 @@ fun repl(reader: Reader, interactive: Boolean = false, print: Boolean = false
             iprintln()
             // set special variables +, ++, +++, *, **, ***, /, //, ///
             if (interactive) {
-                plus3Sym.setValue(plus2Sym.getValue())
-                plus2Sym.setValue(plusSym.getValue())
-                plusSym.setValue(expr, true)
                 star3Sym.setValue(star2Sym.getValue())
                 star2Sym.setValue(starSym.getValue())
                 starSym.setValue(value, true)

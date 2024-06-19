@@ -13,6 +13,7 @@ Return true iff a short command was run or at least attempted."
   (unless (tablep *repl-short-commands*)
     (warning "*repl-short-commands* is not a table: ~A" *repl-short-commands*)
     (return nil))
+  (setf + *the-non-printing-object*)
   (let ((cmd (select-string-from-prefix expr
                                         (table-keys *repl-short-commands*))))
     (cond ((null cmd) nil)
@@ -22,7 +23,6 @@ Return true iff a short command was run or at least attempted."
 	   (warning "type :help for more information")
            (return t)))
     (funcall (table-get *repl-short-commands* cmd))
-    (terpri)
     t))
 
 (add-hook-function '*repl-interactive-input-hook*
@@ -85,7 +85,7 @@ See macro `define-repl-short-command` on how to define short commands."))
   - `~A/doc/DOCSTRINGS.md` contains the docstrings
     of all functions, same as those printed interactively with `doc`.
 
-And then, there is the source code, of course."
+And then, there is the source code, of course.~%"
           *lyk-install-directory* *lyk-install-directory*))
 
 (define-repl-short-command :perfdata
