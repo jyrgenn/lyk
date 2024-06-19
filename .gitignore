@@ -1,19 +1,4 @@
-
-# added by ni/gitignore 2024-02-09T09:25:19
-META-INF
-*.class
-*.kexe
-*.kexe.dSYM
-org
-
-# added by ni/gitignore 2024-02-11T17:40:48
-/lyk.jar
-
-# added by ni/gitignore 2024-03-03T15:36:40
-/generated
-
-# added by ni/gitignore 2024-03-22T10:05:00
-/testrun.log
-
-# added by ni/gitignore 2024-05-01T20:06:55
-/TAGS
+/src/lyk.jar
+/src/generated
+/src/testrun.log
+/src/TAGS
