@@ -86,7 +86,7 @@ test: lyk.jar
 	./run-tests.lisp
 
 clean:
-	-rm -rf *.jar *~ */*~ TAGS *.log generated
+	-rm -rf *.jar *.tmp *~ */*~ TAGS *.log generated
 
 install: generated/DOCSTRINGS.md
 	mkdir -p $(INSTALLBIN) $(INSTALLDIR)
