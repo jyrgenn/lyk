@@ -24,15 +24,15 @@ Otherwise, evaluate `else-clauses` and return the last value."
   "Return true iff OB1 and OB2 are unequal (in terms of #'equal)."
   `(not (equal ,ob1 ,ob2)))
 
-(defmacro dolist (cvars &rest bodyforms)
-  "(dolist (var listform &optional resultform) &rest bodyforms)"
-  (let (((var listform resultform) cvars)
+(defmacro dolist (control-vars &rest bodyforms)
+  "(dolist (var list-form &optional result-form) &rest bodyforms)"
+  (let (((var list-form result-form) control-vars)
         (listsym (gensym)))
-    `(let ((,listsym ,listform))
+    `(let ((,listsym ,list-form))
        (while ,listsym
          (let ((,var (pop ,listsym)))
            ,@bodyforms))
-       ,resultform)))
+       ,result-form)))
 
 (defmacro dotimes (countargs &rest bodyforms)
   "(dotimes (var count-form &optional result-form) &rest bodyforms)
