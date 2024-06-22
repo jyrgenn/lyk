@@ -32,8 +32,8 @@ val stdout = FileWriterStream(stdoutPath, name = stdoutName, flushch = true)
 val stderr = FileWriterStream(stderrPath, name = stderrName, flushch = true,
                               error = true)
 
-var console = ConsoleReaderStream()
 var consolePrompt = LSymbol.makeGlobal("*console-prompt*", makeString("%s> "))
+var console = stdin
 
 var debug_out = stderr
 
@@ -113,6 +113,11 @@ val terminalHeight = LSymbol.makeGlobal("*terminal-height*")
 val loadPrintSym = LSymbol.makeGlobal("*load-print*")
 val loadPathSym = LSymbol.makeGlobal("*load-path*")
 val loadFilenameSym = LSymbol.makeGlobal("*load-filename*")
+
+val userHome = System.getProperty("user.home")
+val historyFilenameSym =
+    LSymbol.makeGlobal("*history-filename*",
+                       makeString(userHome + "/.lyk-history"))
 // name of the currently topmost called function
 var calledFunctionName: String = ""
 
@@ -164,7 +169,6 @@ fun init_Variables() {
     LSymbol.makeGlobal(stdinName, stdin)
     LSymbol.makeGlobal(stdoutName, stdout)
     LSymbol.makeGlobal(stderrName, stderr)
-    LSymbol.makeGlobal(consoleName, console)
     LSymbol.makeGlobal("pi", makeNumber(3.141592653589793))
     LSymbol.makeGlobal("e", makeNumber(2.7182818284590455))
     LSymbol.makeGlobal("*lyk-install-directory*", makeString(installdir))

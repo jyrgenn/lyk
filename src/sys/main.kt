@@ -247,9 +247,11 @@ fun main(args: Array<String>) {
                 }
             }
         } else {
+            val consreader = ConsoleReaderStream()
+            atexit({ consreader.close() })
             debug(debugStartupSym) { "start REPL" }
             info("type :help to get information on short commands")
-            repl(Reader(ConsoleReaderStream()), true)
+            repl(Reader(consreader), true)
         }
         exitLyk()
     } catch (e: LispError) {

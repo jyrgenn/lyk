@@ -5,6 +5,7 @@ import java.lang.ref.WeakReference
 
 import java.util.TreeSet
 import jline.console.ConsoleReader
+import jline.console.history.FileHistory
 import jline.console.completer.Completer
 
 
@@ -78,9 +79,16 @@ class ConsoleReaderStream(var prompt: LObject = Nil
     var linebuf = StringReaderStream("")
     var linenum = 0
     var completer: SymbolsCompleter? = null
+    val history_file = historyFilenameSym.getValueOptional()
+    val history = if (history_file != null) {
+        FileHistory(File(history_file.toString()))
+    } else {
+        null
+    }
 
     init {
         cr.setExpandEvents(false)
+        cr.setHistory(history)
     }
 
     override val obtype = "console-reader-stream"
@@ -106,6 +114,7 @@ class ConsoleReaderStream(var prompt: LObject = Nil
                 if (line == null) {
                     return null
                 }
+                history?.add(line)
                 linebuf = StringReaderStream(line + "\n")
             }
             return linebuf.read()
@@ -118,7 +127,9 @@ class ConsoleReaderStream(var prompt: LObject = Nil
         prompt = makeString(newPrompt)
     }
 
-    override fun close_specific() {}
+    override fun close_specific() {
+        history?.flush()
+    }
 }
 
 
