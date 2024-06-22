@@ -1,0 +1,46 @@
+;;; find out how many regtests call each function/specialform/macro
+
+(defvar fun-count (let ((table #:()))
+                    (dolist (fsym (function-symbols))
+                      (setf (table-get table fsym) 0))
+                    table))
+
+(defun maxlen (things)
+  (apply #'max (mapcar (lambda (thing) (length (string thing)))
+                       things)))
+
+(defun examine-expr (expr)
+  (cond ((symbolp expr)
+         (when (table-exists fun-count expr)
+           (table-inc fun-count expr)))
+        ((consp expr)
+         (if (symbolp (car expr))
+             (examine-expr (car expr))
+             (dolist (elem (cdr expr))
+               (when (consp elem)
+                   (examine-expr elem)))))))
+
+(defun consider-expr (expr)
+  (when (consp expr)
+    (let ((maybe-test (car expr)))
+      (when (and (symbolp maybe-test)
+                 (stringp (cadr expr))
+                 (string-starts-with (symbol-name maybe-test) "test"))
+        (examine-expr (caddr expr))))))
+
+(defun count-function-regtests ()
+  (dolist (fname (directory "regtests/*.lisp"))
+    (with-open-file (f fname)
+      (format t "opened ~A~%" fname)
+      (let ((not-done t))
+        (while not-done
+          (let ((next (errset (read f t) nil)))
+            (if (null next)
+                (setf not-done nil)
+                (consider-expr (car next))))))))
+  (let ((space (maxlen (table-keys fun-count))))
+    (dolist (kv (sort (table-pairs fun-count)
+                      #'(lambda (p1 p2)
+                          (> (cdr p1) (cdr p2)))))
+      (format t "~vA: ~A~%" space (car kv) (cdr kv)))))
+
