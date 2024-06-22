@@ -73,8 +73,9 @@ class SymbolsCompleter(symbol_names: Set<String>): Completer
 }
 
 
-class ConsoleReaderStream(var prompt: LObject = Nil
-): LStream(input = true, path = null, name = consoleName, interactive = true) {
+class ConsoleReaderStream(var prompt: LObject = Nil):
+    ReaderStream(consoleName, null, true)
+{
     val cr = ConsoleReader()
     var linebuf = StringReaderStream("")
     var linenum = 0
@@ -133,13 +134,12 @@ class ConsoleReaderStream(var prompt: LObject = Nil
 }
 
 
-class StringWriterStream(name: String? = null
-): LStream(output = true, name = name) {
+class StringWriterStream(name: String? = null):
+    WriterStream(name ?: "*string-writer*", null, false, false)
+{
     var content = StrBuf()
     
     override val obtype = "string-writer-stream"
-
-    override fun read_location() = ""
 
     override fun write(code: Int) {
         // stderr.println("added $code")
@@ -182,7 +182,7 @@ class StringWriterStream(name: String? = null
 class StringReaderStream(val content: String, name: String? = "",
                          var lineno: Int = 1,
                          val debugline: Boolean = false):
-    LStream(input = true, path = null, name = name)
+    ReaderStream(name ?: "", null, false)
 {
     var nextpos = 0
     var current_name = name
@@ -236,8 +236,7 @@ class StringReaderStream(val content: String, name: String? = "",
 
 class FileReaderStream(file: File, name: String? = null,
                        val debugline: Boolean = false):
-    LStream(input = true, path = file.path, name = name ?: file.path,
-            error = false)
+    ReaderStream(name ?: file.path, file.path, false)
 {
     constructor(pathname: String, name: String? = null,
                 debugline: Boolean = false):
@@ -277,84 +276,84 @@ class FileReaderStream(file: File, name: String? = null,
     }
 }
 
-class FileIOStream(path: String,
-                            name: String? = null,
-                            val flushln: Boolean = false,
-                            val flushch: Boolean = false,
-                            error: Boolean = false,
-                            // append: Boolean = false,
-                            // create: Boolean = true,
-                            // exclusive: Boolean = false
-): LStream(input = true, output = true, path = path,
-           name = name ?: "'$path'", error = error)
-{
-    val file = File(path)
-    val fileWriter = file.bufferedWriter()
-    val fileReader = file.bufferedReader()
-    var linebuf = StringReaderStream("", name = name)
+// class FileIOStream(path: String,
+//                             name: String? = null,
+//                             val flushln: Boolean = false,
+//                             val flushch: Boolean = false,
+//                             error: Boolean = false,
+//                             // append: Boolean = false,
+//                             // create: Boolean = true,
+//                             // exclusive: Boolean = false
+// ): LStream(input = true, output = true, path = path,
+//            name = name ?: "'$path'", error = error)
+// {
+//     val file = File(path)
+//     val fileWriter = file.bufferedWriter()
+//     val fileReader = file.bufferedReader()
+//     var linebuf = StringReaderStream("", name = name)
 
-    override val obtype = "file-io-stream"
+//     override val obtype = "file-io-stream"
 
-    override fun read_location() = linebuf.read_location()
+//     override fun read_location() = linebuf.read_location()
 
-    override fun read(): Char? {
-        try {
-            if (!linebuf.hasNext()) {
-                val line = fileReader.readLine()
-                if (line == null) {
-                    return null
-                }
-                linebuf = StringReaderStream(line + "\n", name = name)
-            }
-            return linebuf.read()
-        } catch (e: Exception) {
-            throw IOError(e)
-        }
-    }
+//     override fun read(): Char? {
+//         try {
+//             if (!linebuf.hasNext()) {
+//                 val line = fileReader.readLine()
+//                 if (line == null) {
+//                     return null
+//                 }
+//                 linebuf = StringReaderStream(line + "\n", name = name)
+//             }
+//             return linebuf.read()
+//         } catch (e: Exception) {
+//             throw IOError(e)
+//         }
+//     }
     
-    override fun write(code: Int) {
-        try {
-            fileWriter.write(code)
-            lastChar = code.toChar()
-            if (flushch || (flushln && code == newLine)) {
-                fileWriter.flush()
-            }
-        } catch (e: Exception) {
-            throw IOError(e)
-        }
-    }
-    override fun write(s: String) {
-        try {
-            if (s.length > 0) {
-                fileWriter.write(s)
-                lastChar = s[s.length-1]
-                if (flushch || (flushln && lastChar == '\n')) {
-                    fileWriter.flush()
-                }
-            }
-        } catch (e: Exception) {
-            throw IOError(e)
-        }
-    }
+//     override fun write(code: Int) {
+//         try {
+//             fileWriter.write(code)
+//             lastChar = code.toChar()
+//             if (flushch || (flushln && code == newLine)) {
+//                 fileWriter.flush()
+//             }
+//         } catch (e: Exception) {
+//             throw IOError(e)
+//         }
+//     }
+//     override fun write(s: String) {
+//         try {
+//             if (s.length > 0) {
+//                 fileWriter.write(s)
+//                 lastChar = s[s.length-1]
+//                 if (flushch || (flushln && lastChar == '\n')) {
+//                     fileWriter.flush()
+//                 }
+//             }
+//         } catch (e: Exception) {
+//             throw IOError(e)
+//         }
+//     }
 
-    override fun flush() {
-        try {
-            fileWriter.flush()
-        } catch (e: Exception) {
-            throw IOError(e)
-        }
-    }
+//     override fun flush() {
+//         try {
+//             fileWriter.flush()
+//         } catch (e: Exception) {
+//             throw IOError(e)
+//         }
+//     }
 
-    override fun close_specific() {
-        try {
-            fileReader.close()
-            fileWriter.close()
-        } catch (e: Exception) {
-            throw IOError(e)
-        }
-    }
+//     override fun close_specific() {
+//         try {
+//             fileReader.close()
+//             fileWriter.close()
+//         } catch (e: Exception) {
+//             throw IOError(e)
+//         }
+//     }
 
-}
+// }
 
 class FileWriterStream(path: String,
                             name: String? = null,
@@ -364,13 +363,10 @@ class FileWriterStream(path: String,
                             // append: Boolean = false,
                             // create: Boolean = true,
                             // exclusive: Boolean = false
-): LStream(output = true, path = path, name = name ?: "'$path'", error = error)
-{
+): WriterStream(name ?: "'$path'", path, error, false){
     val fileWriter = File(path).bufferedWriter()
 
     override val obtype = "file-writer-stream"
-
-    override fun read_location() = ""
 
     override fun write(code: Int) {
         try {
@@ -414,54 +410,10 @@ class FileWriterStream(path: String,
     }
 }
 
-abstract class LStream(
-    val input: Boolean = false,         // is input stream?
-    val output: Boolean = false,        // is output stream?
-    val error: Boolean = false,         // i.e. stderr
-    val name: String? = null,           // pathname or *stdin/out/err* or
-                                        // network something
-    val path: String? = null,           // file pathname
-    val append: Boolean = false,        // "a"
-    val interactive: Boolean = false,
-): LObject()
+abstract class ReaderStream(name: String, path: String?, interactive: Boolean):
+    LStream(input = true, output = false, error = false, name = name,
+            path = path, append = false, interactive = interactive)
 {
-    var charUnread: Char? = null
-    var is_open = true
-    var lastChar: Char? = null
-    
-    init {
-        openStreams.add(WeakReference(this))
-    }
-
-    
-    abstract fun read_location(): String
-
-    open fun setPrompt(newPrompt: String) {}
-
-    // return true if the last character written was a newline
-    fun newlineLast(): Boolean {
-        return lastChar != null && lastChar == '\n'
-    }
-    
-    open fun read(): Char? {          // the actual reading
-        throw ArgumentError("read on $this")
-    }
-    open fun write(code: Int) {
-        throw ArgumentError("write on $this")
-    }
-    open fun write(s: String) {
-        throw ArgumentError("write on $this")
-    }
-    open fun write(ch: Char) {
-        write(ch.code)
-    }
-    open fun write(buf: CharArray, n: Int) {
-        for (i in 0 ..< n) {
-            write(buf[i])
-        }
-    }
-    open fun flush() {}
-    
     open fun readLine(trimNewline: Boolean = false): String? {
         val sb = StrBuf()
         while (true) {
@@ -479,6 +431,32 @@ abstract class LStream(
         }
     }
 
+    abstract fun read_location(): String
+
+    open fun setPrompt(newPrompt: String) {}
+
+    fun readChar(): Char? {
+        if (charUnread != null) {
+            val ch = charUnread
+            charUnread = null
+            return ch
+        }
+        return read()
+    }
+
+    fun unreadChar(ch : Char) {
+        charUnread = ch
+    }
+
+    
+}
+
+abstract class WriterStream(name: String, path: String?,
+                            is_error: Boolean, append: Boolean = false):
+    LStream(false, true, is_error, name, path, append, false)
+{
+    open fun flush() {}
+    
     open fun print(vararg things: Any, separator: String = " ") {
         val last = things.size - 1
         var n = 0
@@ -503,19 +481,51 @@ abstract class LStream(
         write(newLine)
     }
     
-    fun readChar(): Char? {
-        if (charUnread != null) {
-            val ch = charUnread
-            charUnread = null
-            return ch
+    open fun write(ch: Char) {
+        write(ch.code)
+    }
+    open fun write(buf: CharArray, n: Int) {
+        for (i in 0 ..< n) {
+            write(buf[i])
         }
-        return read()
+    }
+    
+}
+
+abstract class LStream(
+    val input: Boolean = false,         // is input stream?
+    val output: Boolean = false,        // is output stream?
+    val error: Boolean = false,         // i.e. stderr
+    val name: String? = null,           // pathname or *stdin/out/err* or
+                                        // network something
+    val path: String? = null,           // file pathname
+    val append: Boolean = false,        // "a"
+    val interactive: Boolean = false,
+): LObject()
+{
+    var charUnread: Char? = null
+    var is_open = true
+    var lastChar: Char? = null
+    
+    init {
+        openStreams.add(WeakReference(this))
     }
 
-    fun unreadChar(ch : Char) {
-        charUnread = ch
+    
+    // return true if the last character written was a newline
+    fun newlineLast(): Boolean {
+        return lastChar != null && lastChar == '\n'
     }
-
+    
+    open fun read(): Char? {          // the actual reading
+        throw ArgumentError("read on $this")
+    }
+    open fun write(code: Int) {
+        throw ArgumentError("write on $this")
+    }
+    open fun write(s: String) {
+        throw ArgumentError("write on $this")
+    }
     abstract fun close_specific()
 
     open fun close(): Boolean {

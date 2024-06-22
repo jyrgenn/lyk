@@ -995,7 +995,7 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
     // really mind. The three threads I create here still cheap compared to the
     // effort of creating a separate process and starting an external program.
 
-    fun handleProcessOutput(in_stream: InputStream, writer: LStream) {
+    fun handleProcessOutput(in_stream: InputStream, writer: WriterStream) {
         val reader = in_stream.bufferedReader()
         val buf = CharArray(4096)
         while (true) {
@@ -1031,12 +1031,12 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
         }
     }
     thread {
-        if (key_output is LStream) {
+        if (key_output is WriterStream) {
             handleProcessOutput(proc.getInputStream(), key_output)
         }
     }
     thread {
-        if (key_error_output is LStream) {
+        if (key_error_output is WriterStream) {
             handleProcessOutput(proc.getErrorStream(), key_error_output)
         }
     }

@@ -17,11 +17,19 @@ import kotlin.io.path.*
 // If passed at all, it SHOULD begin with a blank, like in " index" so the error
 // message can be templated as "$calledFunctionName$desc is not an [...]"
 
-fun outputStreamArg(arg: LObject, desc: String = ""): LStream {
+fun outputStreamArg(arg: LObject, desc: String = ""): WriterStream {
     if (arg === Nil) {
         return stdout
     }
-    return streamArg(arg, desc)
+    return (arg as? WriterStream) ?:
+        throw ArgumentError(
+            "$calledFunctionName$desc argument is not an output stream: $arg")
+}
+
+fun inputStreamArg(arg: LObject, desc: String = ""): ReaderStream { 
+    return (arg as? ReaderStream) ?:
+        throw ArgumentError(
+            "$calledFunctionName$desc argument is not an input stream: $arg")
 }
 
 fun streamArg(arg: LObject, desc: String = ""): LStream { 

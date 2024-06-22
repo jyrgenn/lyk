@@ -1543,11 +1543,11 @@ fun bi_last(args: LObject, kwArgs: Map<LSymbol, LObject>,
 fun bi_read(args: LObject, kwArgs: Map<LSymbol, LObject>,
             suppp: Map<LSymbol, Boolean>): LObject {
     val (tentative_stream, eof_error_p, eof_value) = args3(args)
-    var input_stream: LStream? = null
+    var input_stream: ReaderStream? = null
 
     if (tentative_stream === Nil) {
         input_stream = stdin
-    } else if (tentative_stream is LStream) {
+    } else if (tentative_stream is ReaderStream) {
         input_stream = tentative_stream
     } else if (tentative_stream is LString) {
         input_stream = StringReaderStream(tentative_stream.the_string)

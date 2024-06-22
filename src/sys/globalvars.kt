@@ -27,13 +27,15 @@ var gensymCounter = 4711
 //
 val theNonPrintingObject = intern("*the-non-printing-object*", true)
 
-val stdin = FileReaderStream(stdinPath, name = stdinName)
-val stdout = FileWriterStream(stdoutPath, name = stdoutName, flushch = true)
-val stderr = FileWriterStream(stderrPath, name = stderrName, flushch = true,
-                              error = true)
+val stdin: ReaderStream = FileReaderStream(stdinPath, name = stdinName)
+val stdout: WriterStream = FileWriterStream(stdoutPath, name = stdoutName,
+                                            flushch = true)
+val stderr: WriterStream = FileWriterStream(stderrPath, name = stderrName,
+                                            flushch = true, error = true)
 
 var consolePrompt = LSymbol.makeGlobal("*console-prompt*", makeString("%s> "))
-var console = stdin
+var console: ReaderStream = stdin
+// TODO var terminalIO: IOStream = 
 
 var debug_out = stderr
 

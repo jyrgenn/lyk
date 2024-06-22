@@ -411,7 +411,7 @@ fun bi_read_line(args: LObject, kwArgs: Map<LSymbol, LObject>,
     var stream = if (input_stream === Nil) {
         stdin
     } else {
-        streamArg(input_stream, " input-stream")
+        inputStreamArg(input_stream, " input-stream")
     }
     val line = stream.readLine(trim_nl.toBoolean())
     if (line == null) {
@@ -563,23 +563,23 @@ fun bi_file_writer_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
     return bool2ob(arg1(args) is FileWriterStream)
 }
 
-/// builtin file-io-stream-p
-/// fun     bi_file_io_stream_p
-/// std     object
-/// key     
-/// opt     
-/// rest    
-/// ret     t/nil
-/// special no
-/// doc {
-/// Return t iff `object` is a file io stream, nil else.
-/// }
-/// end builtin
-@Suppress("UNUSED_PARAMETER")
-fun bi_file_io_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
-                        suppp: Map<LSymbol, Boolean>): LObject {
-    return bool2ob(arg1(args) is FileIOStream)
-}
+// /// builtin file-io-stream-p
+// /// fun     bi_file_io_stream_p
+// /// std     object
+// /// key     
+// /// opt     
+// /// rest    
+// /// ret     t/nil
+// /// special no
+// /// doc {
+// /// Return t iff `object` is a file io stream, nil else.
+// /// }
+// /// end builtin
+// @Suppress("UNUSED_PARAMETER")
+// fun bi_file_io_stream_p(args: LObject, kwArgs: Map<LSymbol, LObject>,
+//                         suppp: Map<LSymbol, Boolean>): LObject {
+//     return bool2ob(arg1(args) is FileIOStream)
+// }
 
 /// builtin streamp
 /// fun     bi_streamp
@@ -620,7 +620,7 @@ fun bi_finish_output(args: LObject, kwArgs: Map<LSymbol, LObject>,
         if (output_stream === Nil) {
             stdout
         } else {
-            streamArg(output_stream)
+            outputStreamArg(output_stream)
         }
     stream.flush()
     return Nil
@@ -752,7 +752,7 @@ fun write_string_line(args: LObject, kwArgs: Map<LSymbol, LObject>,
         obj.toString()
     }
     var print_string: String
-    val stream = if (str === Nil) stdout else streamArg(str, " stream")
+    val stream = if (str === Nil) stdout else outputStreamArg(str, " stream")
     if (start !== Nil || end !== Nil) {
         val the_start = if (start === Nil) 0 else intArg(start,
                                                          " start keyword")

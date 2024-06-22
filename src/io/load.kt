@@ -69,8 +69,9 @@ fun load_string(code: String, name: String, throw_error: Boolean = true,
                        name, throw_error, quiet, print)
 }
 
-fun load_stream(load_stream: LStream, name: String,
-                throw_error: Boolean, quiet: Boolean, print: Boolean): LObject {
+fun load_stream(load_stream: ReaderStream, name: String,
+                throw_error: Boolean, quiet: Boolean, print: Boolean): LObject
+{
     var success = Nil
 
     debug(debugLoadlineSym) { "loading $name" }
