@@ -24,6 +24,29 @@ If ARG is a sequence, do the same according to the number of it elements."
       "y"
     "ies"))
 
+
+(defvar affirmative-words
+  (string-split "yes y sure ja j jou si on oui t true  aye 1 affirmative")
+  "Words, letters, and a number meaning \"true\" or \"yes\"")
+
+(defvar negative-words
+  (string-split "no n  nope nein nee   off non f false nay 0 negative")
+  "Words, letters, and a number meaning \"false\" or \"no\"")
+
+(defun boolish (string &optional default)
+  "Return t if the `string` is an affirmative word or starts with one;
+nil if negative. If it is neither, return `default`."
+  (let ((word (string-downcase (car (string-split string)))))
+    (cond ((find word affirmative-words) t)
+          ((find word negative-words) nil)
+          (t default))))
+
+(defun yes-or-no-p (&optional format-control &rest arguments)
+  "Ask the user a \"yes or no\" question and return the boolean result."
+  (princ (string (apply #'format nil format-control arguments)
+                 " (yes or no) "))
+  (boolish (read-line *terminal-io*)))
+
 (defun all-symbols (&optional comparison-function)
   "Return a list of all symbols, alphabetically sorted.
 If optional `comparison-function` is supplied , use it to sort the list.

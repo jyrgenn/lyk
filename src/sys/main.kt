@@ -248,6 +248,8 @@ fun main(args: Array<String>) {
             }
         } else {
             val consreader = ConsoleReaderStream()
+            console = consreader
+            intern(consoleName).setValue(console)
             atexit({ consreader.close() })
             debug(debugStartupSym) { "start REPL" }
             info("type :help to get information on short commands")
