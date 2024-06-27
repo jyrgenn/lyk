@@ -124,11 +124,6 @@ class ConsoleReaderStream(var prompt: LObject = Nil):
         }
     }
 
-    override fun readLine(trimNewline: Boolean): String? {
-        return cr.readLine("") + (if (trimNewline) "" else "\n")
-    }
-
-
     override fun setPrompt(newPrompt: String) {
         prompt = makeString(newPrompt)
     }
