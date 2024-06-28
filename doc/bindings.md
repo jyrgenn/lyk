@@ -70,7 +70,7 @@ like this:
 
 This is clumsy and inefficient, as it has to evaluate three function
 calls and `control-vars` in each of them. It is easier and and more
-to do it in one go:
+efficient to do it in one go:
 
     (defmacro dolist (control-vars &rest bodyforms)
       (let (((var list-form result-form) control-vars))
@@ -92,5 +92,5 @@ binding:
 As the parameter list of a function or macro is a much more complex
 thing anyway with the `&optional`, `&key`, and `&rest` bindings,
 *and* has more implications on other parts of the system, this is
-much tricker to implement. Perhaps I'll get around to doing that,
+much trickier to implement. Perhaps I'll get around to doing that,
 too, but don't hold your breath.
