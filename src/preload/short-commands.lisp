@@ -13,17 +13,22 @@ Return true iff a short command was run or at least attempted."
   (unless (tablep *repl-short-commands*)
     (warning "*repl-short-commands* is not a table: ~A" *repl-short-commands*)
     (return nil))
-  (setf + *the-non-printing-object*)
   (let ((cmd (select-string-from-prefix expr
                                         (table-keys *repl-short-commands*))))
-    (cond ((null cmd) nil)
+    (cond ((null cmd)
+           (return nil))
           ((listp cmd)
            (warning "`~A` matches multiple short commands: ~A"
 		    expr (join cmd ", "))
 	   (warning "type :help for more information")
-           (return t)))
-    (funcall (table-get *repl-short-commands* cmd))
-    t))
+           (return t))
+          (t (funcall (table-get *repl-short-commands* cmd))
+             (setf + *the-non-printing-object*) ;; replace the repl's
+                                                ;; expression to
+                                                ;; suppress further
+                                                ;; output
+             ))))
+
 
 (add-hook-function '*repl-interactive-input-hook*
                    #'maybe-run-short-command)
