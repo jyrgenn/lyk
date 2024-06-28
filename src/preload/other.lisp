@@ -113,11 +113,10 @@ Otherwise, return nil if it matches none, a list if it matches more than one."
     (dolist (item selections)
       (when (string-starts-with item prefix)
         (push item matches)))
-    (if (null matches)
-        nil
-        (if (null (cdr matches))
-            (car matches)
-            matches))))
+    (cond ((null matches) nil)          ;no match
+          ((null (cdr matches))         ;just one?
+           (car matches))               ;  so return as an atom
+          (t matches))))                ;otherwise, all of them
 
 (defun example-startup-hook-function (load-files expr-list other-args)
   "Print the arguments passed to lyk.
