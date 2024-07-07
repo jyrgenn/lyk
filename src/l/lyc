@@ -3,9 +3,10 @@
 ;;; lyc -- a Lisp RPN Calculator, adapted for lyk
 ;;; placed into the public domain by Juergen Nickelsen <ni@w21.org>
 
-(defvar Release
-  "part of :UNRELEASED:")
+(defvar Release "part of :UNRELEASED:")
+(defvar install-directory ":INSTALLDIR:")
 
+(defvar numbers-doc-path (string install-directory "/doc/numbers.md"))
 (defvar *lyc-stack* nil)		;the whole stack
 (defvar *lyc-values* nil)		;all computed values
 (defvar *lyc-print-stack* nil)		;print stack after every input line
@@ -95,6 +96,7 @@ p                  -- print the stack
 functions          -- print the function symbols
 'func desc         -- describe a single function \"func\"
 describe-functions -- describe all functions
+help-numbers       -- print documentations on number literals
 
 lisp-functions     -- print Lisp function symbols
 (doc 'func)        -- describe a Lisp function \"func\"
@@ -110,6 +112,13 @@ Example:
 (defl hypo (a b) c \"compute hypotenuse\" (sqrt (+ (* a a) (* b b))))
 
 "))
+
+(defun help-numbers ()
+  "Print help on numbers by showings lyk's doc/numbers.md."
+  (with-open-file (f numbers-doc-path)
+    (let (line)
+      (while (setf line (read-line f nil))
+        (princ line)))))
 
 (defl lisp-functions () nil "print Lisp function symbols"
   (format t "~A~%" (join (function-symbols) " ")))
@@ -399,6 +408,7 @@ Example:
 (defl ? () nil "print some help" (lyc-help))
 (defl h () nil "print some help" (lyc-help))
 (defl help () nil "print some help" (lyc-help))
+(defl help-numbers () nil "print help on numbers" (help-numbers))
 (defl values () nil "show all computed values"
   (format t *fstring-simple* (join (reverse *lyc-values*) " ")))
 (defl desc (symbol) nil "describe a function" (lyc-describe symbol))

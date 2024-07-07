@@ -100,6 +100,8 @@ install: generated/DOCSTRINGS.md
 	install -c ../external/jline/LICENSE $(INSTALLDIR)/jline/
 	sed 's|:INSTALLDIR:|:$(INSTALLDIR):|' scripts/lyk > $(INSTALLBIN)/lyk
 	chmod +x $(INSTALLBIN)/lyk
-	sed "s|:UNRELEASED:|$$(scripts/lyk -V)|" l/lyc > $(INSTALLBIN)/lyc
+	sed -e "s|:UNRELEASED:|$$(scripts/lyk -V)|" \
+	    -e 's|:INSTALLDIR:|$(INSTALLDIR)|' \
+            l/lyc > $(INSTALLBIN)/lyc
 	chmod +x $(INSTALLBIN)/lyc
 
