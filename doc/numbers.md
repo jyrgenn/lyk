@@ -8,7 +8,7 @@ nothing else. If they have an integer value, they can be used as
 integers, but under the hood they are still Doubles. There are no
 complex or rational numbers.
 
-One consequence of this is that numbers-pretending-to-be -integers
+One consequence of this is that numbers-pretending-to-be-integers
 start to get imprecise when they get so large that the mantissa of
 the floating point representation isn't enough to keep all digits.
 This is a known bug, and maybe enough of a motivation to implement
