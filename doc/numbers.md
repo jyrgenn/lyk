@@ -1,4 +1,4 @@
-;;; lys doc
+;;; lyk doc
 
 Numbers
 -------
@@ -33,7 +33,6 @@ Decimal floating-point numbers can be written in Kotlin syntax:
                 "." decimals [ exponent ] .
     decimals  = decimal_digit { decimal_digit } .
     exponent  = ( "e" | "E" ) [ "+" | "-" ] decimals .
-
 
 Decimal integers and floating point numbers can be preceded by
 ``-'', resulting in the appropriate negative number. Also,
