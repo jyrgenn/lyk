@@ -202,7 +202,7 @@ fun bi_load(args: LObject, kwArgs: Map<LSymbol, LObject>,
             suppp: Map<LSymbol, Boolean>): LObject {
     val fname = arg1(args).toString()
     val verbose = kwArgs[verboseSym] !== Nil
-    val throw_error = (kwArgs[errorSym] ?: T).toBoolean()
+    val throw_error = (kwArgs[errorKeywSym] ?: T).toBoolean()
     val print = (kwArgs[printKeyw] ?: Nil).toBoolean()
         || (loadPrintSym.getValueOptional() ?: Nil).toBoolean()
 

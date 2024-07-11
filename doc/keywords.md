@@ -20,7 +20,7 @@ Major point is, the keywords do have the leading colon here. Also,
 they are used with the colon when getting the value from the kwArgs
 parameter:
 
-    val direction = kwArgs[":direction"] ?: Nil
+    val direction = kwArgs[intern(":direction")] ?: Nil
 
 This is different with the Lambdas.
 

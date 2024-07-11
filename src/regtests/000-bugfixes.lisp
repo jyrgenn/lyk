@@ -37,4 +37,15 @@
                             h)
          21)
 
+;; #34 `load :error nil` does not work
+;;
+;; > (load "no existe" :error nil)
+;; IOError: could not find load file: no existe
+;; #1 *terminal-io*:3 #<environment1[root:80]{...}>
+;;    (load "no existe" :error nil)
+
+(test-is "#34 load :error nil" (load "no existe" :error nil)
+         nil)
+
+
 (done-testing)

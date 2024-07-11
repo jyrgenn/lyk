@@ -26,7 +26,10 @@ fun load(fname: String, throw_error: Boolean = true,
         if (File(fname).exists()) {
             return load_file(fname, throw_error, !verbose, print)
         }
-        throw IOError("could not find load file: $fname")
+        if (throw_error) {
+            throw IOError("could not find load file: $fname")
+        }
+        return Nil
     }
 
     // no slash in name, so try the load path
@@ -36,7 +39,10 @@ fun load(fname: String, throw_error: Boolean = true,
             return result
         }
     }
-    throw IOError("could not find load file: $fname")
+    if (throw_error) {
+        throw IOError("could not find load file: $fname")
+    }
+    return Nil
 }
 
 // return the result value of the load, and a Boolean if the file was actually

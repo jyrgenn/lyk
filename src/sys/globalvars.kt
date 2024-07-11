@@ -41,6 +41,7 @@ var debug_out = stderr
 
 val verboseSym = intern("verbose")
 val errorSym = intern("error")
+val errorKeywSym = intern(":error")
 
 var consCounter = 0L
 var evalCounter = 0L
