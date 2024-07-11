@@ -1,10 +1,19 @@
 #!/bin/ksh
 # start the lyk Lisp interpreter
+#
+# This script does not work with dash, bash, or zsh; reasons are
+# outlined below.
 
 # this is also a base for the load path
 export LYKPATH=${LYKPATH-.:INSTALLDIR:$HOME/devel/lyk/src}
 
 if [ -t 0 ]; then
+    # I know this is a crutch, as the terminal (window) size can
+    # change at any time. But this is better than nothing, and with
+    # "nothing" I mean Java's ability to let me catch and handle
+    # SIGWINCH. Or other signals, for that matter.
+
+    # this works only with ksh and zsh
     stty size | read LINES COLUMNS
     export LINES COLUMNS
 fi
@@ -13,6 +22,7 @@ if [ "$1" = -J ]; then
     JARPATH="$2"
     shift; shift
 else
+    # the following does not work with zsh, which is weird
     JARPATH=
     IFS=:
     for dir in $LYKPATH; do
