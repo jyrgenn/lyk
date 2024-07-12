@@ -11,7 +11,8 @@
 (defvar *lyc-values* nil)		;all computed values
 (defvar *lyc-print-stack* nil)		;print stack after every input line
 (defvar *period-char* (elt "." 0))      ;due to different char literal syntaxes
-(defvar *lyc-history-file* (string (getenv "HOME") "/.lyc-history"))
+(defvar *lyc-history-file* (expand-file-name "~/.lyc-history"))
+(defvar *lyc-rc-file* (expand-file-name "~/.lycrc"))
 
 ;; format strings for lyk
 (defvar *fstring-prompt* "[~D]; ") ;input prompt with stack size argument
@@ -616,6 +617,9 @@ Helper for }, +}, and *}."
 	      (lyc-print-stack)
 	      (when presultp
 	        (format t *fstring-simple-nl* (car *lyc-stack*))))))))
+
+;; now read the rc file, if it exists
+(load *lyc-rc-file* :error nil)
 
 (run-lyc *command-line-args*)
 ;;; EOF
