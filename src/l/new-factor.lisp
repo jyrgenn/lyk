@@ -8,7 +8,6 @@
 (defun append-prime (new-prime)
   "Append a new prime to the prime number list."
   (let ((new-pair (list new-prime)))
-    ;; (rplacd last-pair new-pair)
     (setf (cdr last-pair) new-pair)
     (setf last-pair new-pair)))
 
@@ -16,36 +15,32 @@
   "Return a function that returns the existing primes (and nil when done)."
   (let ((pos *the-primes*))
     (lambda ()
-      (if pos
-          (prog1
-              (car pos)
-            (setf pos (cdr pos)))))))
+      (when pos
+        (prog1
+            (car pos)
+          (setf pos (cdr pos)))))))
 
 (defun try-candidate (candidate)
   "Try a prime number candidate. Return t if it is prime, nil else."
   (let ((limit (isqrt candidate))
         (divisor 0)
-        (prime-gen (return-existing-primes-func))
-        (still-good t))
-    (while (and still-good
-                (setf divisor (prime-gen))
-                (<= divisor limit))
+        (prime-gen (return-existing-primes-func)))
+    (while (progn (setf divisor (prime-gen))
+                  (<= divisor limit))
       (when (zerop (% candidate divisor))
-        (setf still-good nil)))
-    still-good))
+        (return nil)))
+    t))
 
 
 (defun expand-primes ()
-  "Expand the list of prime numbers by one and return it."
-  (let ((candidate (car last-pair))
-        found-one)
-    (while (not found-one)
-      (setf candidate (+ candidate 2))
-      (setf found-one (try-candidate candidate)))
+  "Expand the list of prime numbers by one and return the new prime."
+  (let ((candidate (+ 2 (car last-pair))))
+    (while (not (try-candidate candidate))
+      (incf candidate 2))
     (append-prime candidate)
     candidate))
 
-;; defun a prinln function in case we don't have one
+;; defun a println function in case we don't have one
 (when (not (fboundp 'println))
   (defun println (&rest args)
     (while args
@@ -62,8 +57,8 @@ Well, in theory."
       (if pos
           (prog1
               (car pos)
-            (setf pos (cdr pos))))
-      (expand-primes))))
+            (setf pos (cdr pos)))
+          (expand-primes)))))
 
 (defun factors (n)
   "Return a list of the prime factors of `n`."
@@ -79,5 +74,3 @@ Well, in theory."
           (setf n (/ n divisor)))))
     (nreverse factors)))
 
-      
-        
