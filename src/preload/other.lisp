@@ -126,5 +126,44 @@ This is an example for a startup hook function."
 
 ;; (set-hook-function '*startup-hook* #'example-startup-hook-function)
                    
+;;; have some variable values with the most basic help about getting
+;;; more help; I think what a naïve user may type in here would be
+;;; "?", "h", or "help".
+
+(defvar *basic-help-string*
+  "This is the `lyk' Lisp interpreter into with you can type
+expressions to have them evaluated:
+
+    > (cons 'a 13)
+    (a . 13)
+or
+    > (* 3 7)
+    21
+or
+    > (list 3 4 'five)
+    (3 4 five)
+or
+    > (map (lambda (n) (* 2 n)) '(7 8 9 10))
+    (14 16 18 20)
+
+To get more information, type the short command :h to get more help
+about short commands, or :explore to learn more how to explore lyk.
+
+The language implemented by lyk is a simple, relatively traditional
+Lisp with lexical variable scope. It is somewhat oriented on Common
+Lisp, but does not implement Common Lisp's more complex features.
+
+For more about Lisp see
+<https://en.wikipedia.org/wiki/Lisp_(programming_language)>"
+    "Some basic help on how to use lyk.")
+
+(defvar ? *basic-help-string*)
+(defvar h *basic-help-string*)
+(defvar help *basic-help-string*)
+
+(defvar exit "Type :exit to exit lyk.")
+(defvar quit "Type :exit to exit lyk.")
+(defvar q "Type :exit to exit lyk.")
+
 
 ;;; EOF
