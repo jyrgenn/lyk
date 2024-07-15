@@ -72,6 +72,7 @@ was executed."
          (while (<= ,var ,end)
            ,@bodyforms
            (incf ,var))
+         (decf ,var)
          ,resultform))))
 
 ;; (defmacro aref (vector index)
