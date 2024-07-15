@@ -6,7 +6,7 @@ The lyk start script needs a Korn Shell; ksh93 works.
 
 Build and install lyk like this:
 
-    $ ./make.sh new install
+    $ ./make new install
 
 You may want to edit `src/Makefile` to set INSTALLBASE, which
 defaults to `/opt/w21`. The executable programs `lyk` (the shell
