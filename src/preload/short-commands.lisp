@@ -58,7 +58,7 @@ Return true iff a short command was run or at least attempted."
         (format t "~17@A : ~A~%" name (function-docstring func)))))
   (terpri)
   (println
-   "A unique command prefix is sufficient to call a command.
+   "A unique prefix is sufficient to call a short command.
 See macro `define-repl-short-command` on how to define short commands."))
 
 
