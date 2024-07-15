@@ -23,8 +23,8 @@ use a
     ,@body)
 symbol definition chain explicitly."
   (let (decls)
-    (while syms
-      (push (list (pop syms) '(gensym)) decls))
+    (dolist (sym syms)
+      (push (list sym '(gensym (symbol-name sym))) decls))
     `(let ,decls
        ,@body)))
 
