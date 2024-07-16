@@ -1040,6 +1040,9 @@ fun bi_run_program(args: LObject, kwArgs: Map<LSymbol, LObject>,
             handleProcessOutput(proc.getErrorStream(), key_error_output)
         }
     }
+    // TODO: this is a crutch to avoid those synchronisation problems that I
+    // haven't been able to clear up yet. The bug still persists, though.
+    Thread.sleep(5)
     val exit_status = proc.waitFor()
 
 
