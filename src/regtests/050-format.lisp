@@ -17,7 +17,7 @@
 (test-is "format stream some" (with-output-to-string (s)
                                 (format s "~3@A: the number that intrigued ~A~%"
                                         73 (string 'Sheldon '| | 'Cooper)))
-         " 73: the number that intrigued Sheldon Cooper\n")
+         " 73: the number that intrigued sheldon cooper\n")
 
 ;; I think now we can resort to making the output a simple string
 ;; without sacrificing the efficacy of the tests.

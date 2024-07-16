@@ -26,10 +26,11 @@ class LSymbol(val name: String, val immutable: Boolean,
     override val obtype = "symbol"
 
     companion object {
-        fun interned(name: String,
+        fun interned(name_cased: String,
                      immutable: Boolean = false,
                      selfvalued: Boolean = false,
                      read_only: Boolean = false): LSymbol {
+            val name = name_cased.lowercase()
             if (name in symbolTable.keys) {
                 return symbolTable[name] ?:
                     throw Exception(

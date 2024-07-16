@@ -38,13 +38,13 @@ subsystem does not sound like much fun to me -- not without users
 crying for better number support anyway. Same goes for much of the
 above.
 
-One important difference of lyk to most other Lisps is that it is
-case sensitive. That means that 'car and 'CAR and 'CaR are different
-symbols. All standard symbols are in lowercase.
+Like most other Lisps lyk is case insensitive. That means that 'car
+and 'CAR and 'CaR are the same symbol. Other than with most Lisps,
+though, the standard presentation is in lowercase.
 
-Why is that? I like it better that way. It may well change in the
-future, though. The default presentation of symbols will stay
-lowercase.
+Why is that? I like it better that way. In my eyes (literally!-)
+this is more pleasing and better readable than ALL-UPPERCASE
+presentation.
 
 
 Documentation
