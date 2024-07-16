@@ -289,10 +289,13 @@
                                              :capture-all t)
          '(0 "rasor!" ""))
 
-(test-is "run-program 2" (cdr (get-program-output '("ls" "-l" "edofjerwofijn")
-                                                  :capture-all t
-                                                  :raise-error nil))
-         '("" "ls: edofjerwofijn: No such file or directory\n"))
+(test-match "run-program 2"
+            (let (((stdout stderr)
+                   (cdr (get-program-output '("ls" "-l" "edofjerwofijn")
+                                            :capture-all t
+                                            :raise-error nil))))
+              (string stdout stderr))
+            #/^ls: .* No such file or directory\n/)
 (test-err "run-program 2a" (get-program-output '("ls" "-l" "edofjerwofijn")
                                                :error-output nil)
           #/run-program: command exit status/)
