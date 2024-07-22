@@ -453,13 +453,20 @@ Helper for }, +}, and *}."
   "multiply all values on the stack since {"
   ({-accumulate '*))
 
+(defun format-hours (minutes)
+  "Print minutes as hh:mm."
+  ;; factored out of 'hours, so I can use that functionality elsewhere
+  ;; TODO: do seconds, if necessary
+  ;; but until we do that, just round the minutes
+  (let ((sign (if (< minutes 0) "-" ""))
+        (minutes-abs (abs (round minutes))))
+    (format nil "~A~A:~2,,,'0@A"
+            sign (div minutes-abs 60) (mod minutes-abs 60))))
+
 (defl hours () nil
   "Assume the TOS value as minutes and print it as hh:mm."
-  (let* ((m (car *lyc-stack*))
-         (sign (if (< m 0) "-" ""))
-         (m-abs (abs m)))
-    (format t "~A~A:~2,,,'0@A~%" sign (div m-abs 60) (mod m-abs 60))
-    nil))
+  (println (format-hours (car *lyc-stack*)))
+  nil)
 
 (defl minutes (hh:mm) mm
   "Assume the TOS value as an hh:mm symbol and convert it to minutes."
