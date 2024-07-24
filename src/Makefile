@@ -28,6 +28,7 @@ COMP = kotlinc
 INSTALLBASE = /opt/w21
 INSTALLDIR =  $(INSTALLBASE)/lib/lyk
 INSTALLBIN =  $(INSTALLBASE)/bin
+SITELYKDIR =  $(INSTALLBASE)/site-lyk
 
 # JAR=$(basename $1 .kt).jar
 # kotlinc $1 -include-runtime -d $JAR && java -jar $JAR
@@ -90,6 +91,7 @@ clean:
 
 install: generated/DOCSTRINGS.md
 	mkdir -p $(INSTALLBIN) $(INSTALLDIR)
+	mkdir -p $(INSTALLBASE)/site-lyk
 	-rm -rf $(INSTALLDIR)/*
 	rsync -a l $(INSTALLDIR)/
 	rsync -a ../doc $(INSTALLDIR)/
@@ -98,10 +100,11 @@ install: generated/DOCSTRINGS.md
 	install -c generated/DOCSTRINGS.md $(INSTALLDIR)/doc/
 	install -d $(INSTALLDIR)/jline
 	install -c ../external/jline/LICENSE $(INSTALLDIR)/jline/
-	sed 's|:INSTALLDIR:|:$(INSTALLDIR):|' scripts/lyk > $(INSTALLBIN)/lyk
+	sed -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
+            -e 's|@SITELYKDIR@|$(SITELYKDIR)|g' \
+		scripts/lyk > $(INSTALLBIN)/lyk
 	chmod +x $(INSTALLBIN)/lyk
-	sed -e "s|:UNRELEASED:|$$(scripts/lyk -V)|" \
-	    -e 's|:INSTALLDIR:|$(INSTALLDIR)|' \
+	sed -e "s|@UNRELEASED@|$$(scripts/lyk -V)|" \
+	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|' \
             l/lyc > $(INSTALLBIN)/lyc
 	chmod +x $(INSTALLBIN)/lyc
-

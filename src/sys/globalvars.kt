@@ -116,6 +116,7 @@ val terminalHeight = LSymbol.makeGlobal("*terminal-height*")
 val loadPrintSym = LSymbol.makeGlobal("*load-print*")
 val loadPathSym = LSymbol.makeGlobal("*load-path*")
 val loadFilenameSym = LSymbol.makeGlobal("*load-filename*")
+val siteLispDir = "site-lisp"
 
 val userHome = System.getProperty("user.home")
 val historyFilenameSym =
@@ -155,10 +156,10 @@ fun init_Variables() {
     val height = Reader(StringReaderStream(lines ?: "")).read().first ?: Nil
     terminalHeight.setValue(height)
 
-    val lykpath = System.getenv("LYKPATH")?.split(":") ?: listOf(".")
+    val lykloadpath = System.getenv("LYKLOADPATH")?.split(":") ?: listOf(".")
     val loadpath = collectedList {
-        for (dir in lykpath) {
-            it.add(makeString(dir.trimEnd('/') + "/l"))
+        for (dir in lykloadpath) {
+            it.add(makeString(dir.trimEnd('/')))
         }
     }
     loadPathSym.setValue(loadpath)

@@ -5,7 +5,8 @@
 # outlined below.
 
 # this is also a base for the load path
-export LYKPATH=${LYKPATH-.:INSTALLDIR:$HOME/devel/lyk/src}
+export LYKPATH=${LYKPATH-.:@INSTALLDIR@:$HOME/devel/lyk/src}
+export LYKLOADPATH=${LYKLOADPATH-.:@SITELYKDIR@:@INSTALLDIR@/l}
 
 if [ -t 0 ]; then
     # I know this is a crutch, as the terminal (window) size can
