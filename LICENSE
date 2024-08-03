@@ -1,5 +1,6 @@
 [BSD 2-Clause License]
 [for the license of the JLine editor see external/jline/LICENSE]
+[src/l/lyc is in the public domain, so this license does not apply]
 
 This is the "lyk" Lisp in Kotlin. Copyright (c) 2024, Juergen Nickelsen
 
