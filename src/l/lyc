@@ -359,9 +359,6 @@ Example:
 (defl c2f (celsius) fahrenheit
   "convert degrees celsius to fahrenheit"  (+ (* celsius (/ 9 5)) 32))
 
-(defl fi2m (feet inches) meters "convert feet and inches to meters"
-  (* 2.54 (+ inches (* 12 feet))))
-
 (defl feetin (ft in) meters "convert feet and inches to meters"
   (* 2.54 (+ in (* 12 ft))))
 (defl feet (ft) meters "convert feet to meters" (* 0.0254 12 ft))
