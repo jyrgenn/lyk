@@ -364,7 +364,7 @@ Example:
 (defl feet (ft) meters "convert feet to meters" (* 0.0254 12 ft))
 (defl inches (in) meters "convert inches to meters" (* 0.0254 in))
 
-(defl % (fraction) percentage
+(defl =% (fraction) percentage
   "make fraction a percentage (* 100)"
   (* fraction 100))
 
@@ -375,6 +375,14 @@ Example:
 (defl -% (base percentage) sum
   "add percentage to base"
   (* base (- 1 (/ percentage 100))))
+
+(defl *% (base part) base+percentage
+  "make part a percentage of base, keep base"
+  (list base (* 100 (/ part base))))
+
+(defl %* (base percentage) value
+  "calculate percentage of base"
+  (* base (/ percentage 100)))
 
 (defl drop (x) nil "drop and ignore tos")
 (defl dup (x) "x x" "duplicate tos" (list x x))
