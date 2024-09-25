@@ -28,9 +28,9 @@ COMP = kotlinc
 INSTALLBASE = /opt/w21
 STAGE_BASE  = stage
 STAGE_DIR   = $(STAGE_BASE)/lib/lyk
-INSTALLLIB =  $(INSTALLBASE)/lib/lyk
+INSTALLDIR =  $(INSTALLBASE)/lib/lyk
 INSTALLBIN =  $(INSTALLBASE)/bin
-SITELYKDIR =  site-lyk
+SITELYKDIR =  $(INSTALLBASE)/lib/site-lyk
 
 # JAR=$(basename $1 .kt).jar
 # kotlinc $1 -include-runtime -d $JAR && java -jar $JAR
@@ -104,7 +104,7 @@ install: pkg
 stage: generated/DOCSTRINGS.md
 	-rm -rf $(STAGE_BASE)
 	mkdir -p $(STAGE_BASE)/{lib/lyk,bin}
-	rsync -a l $(STAGE_DIR)/l
+	rsync -a l $(STAGE_DIR)
 	rsync -a ../doc $(STAGE_DIR)/
 	install -c lyk.jar $(STAGE_DIR)
 	install -c ../README.md ../LICENSE $(STAGE_DIR)/
