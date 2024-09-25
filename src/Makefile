@@ -26,9 +26,11 @@ BUILTINSRC = $(shell ls builtins/*.kt | egrep -v '(helpers)\.kt')
 COMP = kotlinc
 
 INSTALLBASE = /opt/w21
-INSTALLDIR =  $(INSTALLBASE)/lib/lyk
+STAGE_BASE  = stage
+STAGE_DIR   = $(STAGE_BASE)/lib/lyk
+INSTALLLIB =  $(INSTALLBASE)/lib/lyk
 INSTALLBIN =  $(INSTALLBASE)/bin
-SITELYKDIR =  $(INSTALLBASE)/site-lyk
+SITELYKDIR =  site-lyk
 
 # JAR=$(basename $1 .kt).jar
 # kotlinc $1 -include-runtime -d $JAR && java -jar $JAR
@@ -61,7 +63,8 @@ generated/preload.kt: Makefile generated scripts/preload.sh $(PRELOAD)
 	./scripts/preload.sh $(PRELOAD) > generated/preload.kt
 
 generated/buildtag.kt: Makefile generated $(SRCS) $(BUILDSCRIPTS)
-	scripts/buildtag.sh lyk $(INSTALLDIR) > generated/buildtag.kt
+	scripts/buildtag.sh lyk $(INSTALLBASE)/$(INSTALLDIR) \
+		> generated/buildtag.kt
 
 generated/init-builtins.kt: Makefile generated scripts/generate-builtin-init \
 			    $(BUILTINSRC)
@@ -89,22 +92,30 @@ test: lyk.jar
 clean:
 	-rm -rf *.jar *.tmp *~ */*~ TAGS *.log generated
 
-install: generated/DOCSTRINGS.md
-	mkdir -p $(INSTALLBIN) $(INSTALLDIR)
-	mkdir -p $(INSTALLBASE)/site-lyk
-	-rm -rf $(INSTALLDIR)/*
-	rsync -a l $(INSTALLDIR)/
-	rsync -a ../doc $(INSTALLDIR)/
-	install -c lyk.jar $(INSTALLDIR)
-	install -c ../README.md ../LICENSE $(INSTALLDIR)/
-	install -c generated/DOCSTRINGS.md $(INSTALLDIR)/doc/
-	install -d $(INSTALLDIR)/jline
-	install -c ../external/jline/LICENSE $(INSTALLDIR)/jline/
+pkg: $(STAGE_BASE)/lyk.tar.gz
+
+$(STAGE_BASE)/lyk.tar.gz: stage
+	cd $(STAGE_BASE) && tar zcvf lyk.tar.gz bin lib
+
+install: pkg
+	mkdir -p $(INSTALLDIR) $(INSTALLBIN)
+	tar -C $(INSTALLBASE) -zxmvf $(STAGE_BASE)/lyk.tar.gz
+
+stage: generated/DOCSTRINGS.md
+	-rm -rf $(STAGE_BASE)
+	mkdir -p $(STAGE_BASE)/{lib/lyk,bin}
+	rsync -a l $(STAGE_DIR)/l
+	rsync -a ../doc $(STAGE_DIR)/
+	install -c lyk.jar $(STAGE_DIR)
+	install -c ../README.md ../LICENSE $(STAGE_DIR)/
+	install -c generated/DOCSTRINGS.md $(STAGE_DIR)/doc/
+	install -d $(STAGE_DIR)/jline
+	install -c ../external/jline/LICENSE $(STAGE_DIR)/jline/
 	sed -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
             -e 's|@SITELYKDIR@|$(SITELYKDIR)|g' \
-		scripts/lyk > $(INSTALLBIN)/lyk
-	chmod +x $(INSTALLBIN)/lyk
+		scripts/lyk > $(STAGE_BASE)/bin/lyk
+	chmod +x $(STAGE_BASE)/bin/lyk
 	sed -e "s|@UNRELEASED@|$$(scripts/lyk -V)|" \
 	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|' \
-            l/lyc > $(INSTALLBIN)/lyc
-	chmod +x $(INSTALLBIN)/lyc
+            l/lyc > $(STAGE_BASE)/bin/lyc
+	chmod +x $(STAGE_BASE)/bin/lyc
