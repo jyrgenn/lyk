@@ -364,6 +364,14 @@ Example:
 (defl feet (ft) meters "convert feet to meters" (* 0.0254 12 ft))
 (defl inches (in) meters "convert inches to meters" (* 0.0254 in))
 
+(defl miles (miles) km
+      "convert miles to kilometers"
+      (* 1.609344 miles))
+
+(defl nm (nm) km
+  "convert nautical miles to kilometers (and knots to km/h)"
+  (* 1.852 nm))
+
 (defl =% (fraction) percentage
   "make fraction a percentage (* 100)"
   (* fraction 100))
