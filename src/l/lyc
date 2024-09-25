@@ -376,9 +376,9 @@ Example:
   "add percentage to base"
   (* base (- 1 (/ percentage 100))))
 
-(defl *% (base part) base+percentage
-  "make part a percentage of base, keep base"
-  (list base (* 100 (/ part base))))
+(defl *% (base part) percentage
+  "make part a percentage of base"
+  (* 100 (/ part base)))
 
 (defl %* (base percentage) value
   "calculate percentage of base"
