@@ -4,9 +4,14 @@
 # This script does not work with dash, bash, or zsh; reasons are
 # outlined below.
 
+# this is so lyk can determine as what it was called, the execution path
+export LYK_CALLED_AS="$0"
+
 # this is also a base for the load path
-export LYKPATH=${LYKPATH-.:@INSTALLDIR@:$HOME/devel/lyk/src}
-export LYKLOADPATH=${LYKLOADPATH-.:@SITELYKDIR@:@INSTALLDIR@/l}
+installbase=$(dirname $0)/..
+installdir=$installbase/lib/lyk
+export LYKPATH=${LYKPATH-.:$installdir:$HOME/devel/lyk/src}
+export LYKLOADPATH=${LYKLOADPATH-.:$installbase/lib/site-lyk:$installdir/l}
 
 if [ -t 0 ]; then
     # I know this is a crutch, as the terminal (window) size can

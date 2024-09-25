@@ -1,8 +1,7 @@
 #!/bin/sh
 # generate the source file containing the build tag
 
-program=$1
-install=${2?usage: $(basename $0) TARGET INSTALLDIR}
+program=${1??usage: $(basename $0) TARGET}
 version=$(git describe --dirty)
 builtat=$(date "+%F %R")
 builtby=$USER@$HOST
@@ -21,9 +20,6 @@ val build_info = mapOf(
     "built-at" to "$builtat",
     "built-by" to "$builtby",
 )
-
-val installdir = "$install"
-
 
 fun buildtag(): String {
     return "$program $version $kotlin $builtat $builtby"

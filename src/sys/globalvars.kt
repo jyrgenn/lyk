@@ -156,6 +156,8 @@ fun init_Variables() {
     val height = Reader(StringReaderStream(lines ?: "")).read().first ?: Nil
     terminalHeight.setValue(height)
 
+    systemROSymbol("*lyk-called-as*")
+        .setROValue(makeString(System.getenv("LYK_CALLED_AS")))
     val lykloadpath = System.getenv("LYKLOADPATH")?.split(":") ?: listOf(".")
     val loadpath = collectedList {
         for (dir in lykloadpath) {
@@ -176,5 +178,4 @@ fun init_Variables() {
     LSymbol.makeGlobal(consoleName, console)
     LSymbol.makeGlobal("pi", makeNumber(3.141592653589793))
     LSymbol.makeGlobal("e", makeNumber(2.7182818284590455))
-    LSymbol.makeGlobal("*lyk-install-directory*", makeString(installdir))
 }

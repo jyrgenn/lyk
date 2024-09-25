@@ -91,7 +91,7 @@ See macro `define-repl-short-command` on how to define short commands."))
     of all functions, same as those printed interactively with `doc`.
 
 And then, there is the source code, of course.~%"
-          *lyk-install-directory* *lyk-install-directory*))
+          *lyk-lib-directory* *lyk-lib-directory*))
 
 (define-repl-short-command :perfdata
     "show status counters since the start of the system"
@@ -109,11 +109,11 @@ And then, there is the source code, of course.~%"
     (princ line stream)))
 
 (define-repl-short-command :license "show the lyk license"
-  (print-file (string *lyk-install-directory*
+  (print-file (string *lyk-lib-directory*
                       "/" "LICENSE")))
 
 (define-repl-short-command :jline-license "show the jline license"
-  (print-file (string *lyk-install-directory*
+  (print-file (string *lyk-lib-directory*
                       "/jline/LICENSE")))
 
 ;;; EOF

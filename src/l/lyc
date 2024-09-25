@@ -4,9 +4,8 @@
 ;;; placed into the public domain by Juergen Nickelsen <ni@w21.org>
 
 (defvar Release "part of @UNRELEASED@")
-(defvar install-directory "@INSTALLDIR@")
 
-(defvar numbers-doc-path (string install-directory "/doc/numbers.md"))
+(defvar numbers-doc-path (string *lyk-lib-directory* "/doc/numbers.md"))
 (defvar *lyc-stack* nil)		;the whole stack
 (defvar *lyc-values* nil)		;all computed values
 (defvar *lyc-print-stack* nil)		;print stack after every input line

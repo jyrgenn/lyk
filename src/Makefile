@@ -63,8 +63,7 @@ generated/preload.kt: Makefile generated scripts/preload.sh $(PRELOAD)
 	./scripts/preload.sh $(PRELOAD) > generated/preload.kt
 
 generated/buildtag.kt: Makefile generated $(SRCS) $(BUILDSCRIPTS)
-	scripts/buildtag.sh lyk $(INSTALLBASE)/$(INSTALLDIR) \
-		> generated/buildtag.kt
+	scripts/buildtag.sh lyk $(INSTALLDIR) > generated/buildtag.kt
 
 generated/init-builtins.kt: Makefile generated scripts/generate-builtin-init \
 			    $(BUILTINSRC)
@@ -111,11 +110,8 @@ stage: generated/DOCSTRINGS.md
 	install -c generated/DOCSTRINGS.md $(STAGE_DIR)/doc/
 	install -d $(STAGE_DIR)/jline
 	install -c ../external/jline/LICENSE $(STAGE_DIR)/jline/
-	sed -e 's|@INSTALLDIR@|$(INSTALLDIR)|g' \
-            -e 's|@SITELYKDIR@|$(SITELYKDIR)|g' \
-		scripts/lyk > $(STAGE_BASE)/bin/lyk
+	install -c scripts/lyk $(STAGE_BASE)/bin
 	chmod +x $(STAGE_BASE)/bin/lyk
-	sed -e "s|@UNRELEASED@|$$(scripts/lyk -V)|" \
-	    -e 's|@INSTALLDIR@|$(INSTALLDIR)|' \
-            l/lyc > $(STAGE_BASE)/bin/lyc
+	sed -e "s|@UNRELEASED@|$$(scripts/lyk -V)|" l/lyc \
+		> $(STAGE_BASE)/bin/lyc
 	chmod +x $(STAGE_BASE)/bin/lyc
