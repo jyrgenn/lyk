@@ -24,7 +24,7 @@
 (defvar *fstring-repl* "~%> ")
 (defvar *fstring-vars* "~10A: ~A~%")
 (defvar *fstring-stackframe* "~4D:  ~A~A~%")
-(defvar *fstring-error* "~%error: ~A~%")
+(defvar *fstring-error* "~%~A~%")
 (defvar *fstring-error-nosymbol* "~A is not a function symbol~%")
 (defvar *fstring-too-few-args*
   "too few arguments on stack for ~A (needs ~A)~%")
