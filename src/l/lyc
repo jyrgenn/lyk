@@ -216,14 +216,17 @@ Example:
 
 (defun to-minutes (timesym)
   "Convert a timesym of the form hh:mm to minutes."
-  (let (((h min) (map #'read (split-string (symbol-string timesym) ":"))))
-    (+ (* h 60) min)))
+  (let* (((minus h min) (cdr (regexp-match #/(-?)(\d?\d):(\d\d)$/ timesym)))
+         (sign (if (eql minus "") 1 -1)))
+    (unless minus
+      (error "not a time symbol: \"~A\"~%" timesym))
+    (* sign (+ (* (read h) 60) (read min)))))
 
 (defun to-time (minutes)
   "Convert minutes to a timesym of the form hh:mm."
   (intern (format nil "~2,,,'0@A:~2,,,'0@A"
 		  (truncate (/ minutes 60))
-                  (% minutes 60))))
+                  (abs (% minutes 60)))))
 
 (defl time- (time-a time-b) diff-mins "subtract times in format 'hh:mm"
   (let ((mins-a (to-minutes time-a))
