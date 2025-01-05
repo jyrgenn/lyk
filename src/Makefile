@@ -40,6 +40,7 @@ SITELYKDIR =  $(INSTALLBASE)/lib/site-lyk
 build: lyk.jar
 
 lyk.jar: $(ALLSRCS) generated/jline Makefile tags l/alldocs.lisp
+	@echo compile...
 	$(COMP) -cp generated/jline $(ALLSRCS) -include-runtime -d $@ 2>&1 |\
 		sed 's/\x1b\[[0-9;]*[a-zA-Z]//g'
 	cd generated/jline; jar -f ../../lyk.jar -u [a-z]*
@@ -102,7 +103,7 @@ install: pkg
 
 stage: generated/DOCSTRINGS.md
 	-rm -rf $(STAGE_BASE)
-	mkdir -p $(STAGE_BASE)/{lib/lyk,bin}
+	mkdir -p $(STAGE_BASE)/lib/lyk $(STAGE_BASE)/bin
 	rsync -a l $(STAGE_DIR)
 	rsync -a ../doc $(STAGE_DIR)/
 	install -c lyk.jar $(STAGE_DIR)
