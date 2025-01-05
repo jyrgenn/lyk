@@ -15,7 +15,8 @@ fun load(fname: String, throw_error: Boolean = true,
     fun trySuffixes(dir: String, fname: String): LObject? {
         for (suffix in suffixes) {
             val fullname = fname + suffix
-            if (File(dir, fullname).exists()) {
+            val file = File(dir, fullname)
+            if (file.exists() && file.isFile()) {
                 return load_file(dir, fullname, throw_error, !verbose, print)
             }
         }
