@@ -156,8 +156,9 @@ fun init_Variables() {
     val height = Reader(StringReaderStream(lines ?: "")).read().first ?: Nil
     terminalHeight.setValue(height)
 
-    systemROSymbol("*lyk-called-as*")
-        .setROValue(makeString(System.getenv("LYK_CALLED_AS")))
+    val calledAsEnv = System.getenv("LYK_CALLED_AS")
+    val calledAs = if (calledAsEnv == null) Nil else makeString(calledAsEnv)
+    systemROSymbol("*lyk-called-as*").setROValue(calledAs)
     val lykloadpath = System.getenv("LYKLOADPATH")?.split(":") ?: listOf(".")
     val loadpath = collectedList {
         for (dir in lykloadpath) {
