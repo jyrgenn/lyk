@@ -1,6 +1,6 @@
-#!/usr/bin/env -S java -jar lyk.jar # -d call
+#!/usr/bin/env -S ./scripts/lyk -J . # -d call
 
+(setf *load-path* (list "l"))
 (require 'regtests)
-;; (set-debug 'call)
 (exit (run-tests))
 
