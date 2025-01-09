@@ -12,6 +12,10 @@
 (defvar *period-char* (elt "." 0))      ;due to different char literal syntaxes
 (defvar *lyc-history-file* (expand-file-name "~/.lyc-history"))
 (defvar *lyc-rc-file* (expand-file-name "~/.lycrc"))
+(defvar *lyc-debug* nil)                ;set to non-nil to switch on debug output
+                                        ;(see #'ldebug)
+
+()
 
 ;; format strings for lyk
 (defvar *fstring-prompt* "[~D]; ") ;input prompt with stack size argument
@@ -39,8 +43,11 @@
 (defmacro make-blanks-string (len)
   `(make-string ,len " "))
 (defmacro print-prompt ())
-(defmacro ldebug (msg obj)
-  `(format t "DBG ~A: ~A~%" ,msg ,obj))
+(defmacro ldebug (msg &optional obj)
+  (if obj
+      `(when *lyc-debug* (format t "DBG ~A: ~A~%" ,msg ,obj))
+      `(when *lyc-debug* (format t "DBG ~A~%" ,msg))))
+  
 (defparameter *tty*
   (open-interactive-stream (lambda ()
                              (format nil *fstring-prompt*
@@ -59,9 +66,9 @@
 
 ;; define a lyc function
 (defun deflyc (symbol arity resultsp function help)
-  ;;(ldebug "deflyc" (list symbol arity resultsp function help))
+  (ldebug "deflyc" (list symbol arity resultsp function help))
   (setf (get symbol 'lyc-function) function)
-  ;;(ldebug "retrieve" (get symbol 'lyc-function))
+  (ldebug "retrieve" (get symbol 'lyc-function))
   (setf (get symbol 'lyc-arity) arity)
   (setf (get symbol 'lyc-resultsp) resultsp)
   (setf (get symbol 'lyc-help) help)
@@ -214,32 +221,23 @@ Example:
   (let ((gcd (gcd num den)))
     (list (/ num gcd) (/ den gcd))))
 
-(defun to-minutes (timesym)
-  "Convert a timesym of the form hh:mm to minutes."
+(defun time-to-minutes (timesym &optional (throw-error t))
+  "Convert a timesym of the form hh:mm to minutes.
+If throw-error is nil, return nil for an invalid timesym instead of
+throwing an error."
   (let* (((minus h min) (cdr (regexp-match #/(-?)(\d?\d):(\d\d)$/ timesym)))
          (sign (if (eql minus "") 1 -1)))
     (unless minus
-      (error "not a time symbol: \"~A\"~%" timesym))
+      (if throw-error
+          (error "not a time symbol: \"~A\"~%" timesym)
+          (return nil)))
     (* sign (+ (* (read h) 60) (read min)))))
 
-(defun to-time (minutes)
+(defun minutes-to-time (minutes)
   "Convert minutes to a timesym of the form hh:mm."
   (intern (format nil "~2,,,'0@A:~2,,,'0@A"
 		  (truncate (/ minutes 60))
                   (abs (% minutes 60)))))
-
-(defl time- (time-a time-b) diff-mins "subtract times in format 'hh:mm"
-  (let ((mins-a (to-minutes time-a))
-        (mins-b (to-minutes time-b)))
-    (to-time (- mins-a mins-b))))
-
-(defl time+ (time-a time-b) diff-mins "add times in format 'hh:mm"
-  (let ((mins-a (to-minutes time-a))
-        (mins-b (to-minutes time-b)))
-    (to-time (+ mins-a mins-b))))
-
-(defl 2time (mins) timesym "convert minutes to timesym"
-  (to-time mins))
 
 (defl nthrt (x n) result
   "take the n-th root of x (n need not be integer)"
@@ -481,29 +479,11 @@ Helper for }, +}, and *}."
   "multiply all values on the stack since {"
   ({-accumulate '*))
 
-(defun format-hours (minutes)
-  "Print minutes as hh:mm."
-  ;; factored out of 'hours, so I can use that functionality elsewhere
-  ;; TODO: do seconds, if necessary
-  ;; but until we do that, just round the minutes
-  (let ((sign (if (< minutes 0) "-" ""))
-        (minutes-abs (abs (round minutes))))
-    (format nil "~A~A:~2,,,'0@A"
-            sign (div minutes-abs 60) (mod minutes-abs 60))))
 
 (defl hours () nil
   "Assume the TOS value as minutes and print it as hh:mm."
-  (println (format-hours (car *lyc-stack*)))
+  (println (minutes-to-time (car *lyc-stack*)))
   nil)
-
-(defl minutes (hh:mm) mm
-  "Assume the TOS value as an hh:mm symbol and convert it to minutes."
-  (let ((match (regexp-match #/^([0-9]+):([0-9]+)$/
-                             (symbol-name hh:mm))))
-    (if match
-        (let (((_ hours minutes) (map #'read match)))
-          (+ (* hours 60) minutes))
-      (error "TOS not an hh:mm symbol"))))
 
 (defun repl ()
   (let (expr)
@@ -541,7 +521,7 @@ Helper for }, +}, and *}."
 ;; run a function; return non-nil if we have a value worth showing
 (defun lyc-run-function (sym)
   (let ((fun (get sym 'lyc-function)))
-    ;;(ldebug "function-function" fun)
+    (ldebug "function-function" fun)
     (if fun
 	(let ((arity (get sym 'lyc-arity)))
 	  (if (>= (length *lyc-stack*) arity)
@@ -618,18 +598,20 @@ Helper for }, +}, and *}."
       (let ((exp t))
         (while (setf exp (maybe-number (read s nil)))
           (when exp
+            (ldebug "read token" exp)
             (push exp *lyc-history*)
             (setf result
-                  (cond ((numberp exp) (push exp *lyc-stack*))
+                  (cond ((numberp exp) (ldebug "push number" exp) (push exp *lyc-stack*))
                         ((symbolp exp)
-                         (let ((match (regexp-match #/^([0-9]+):([0-9]+)$/
-                                                    (symbol-name exp))))
+                         (ldebug "try minutes first" exp)
+                         (let ((minutes (time-to-minutes exp nil)))
                            ;; special-casing for hh:mm symbols
-                           (if match
-                               (let (((_ hours minutes) (map #' read match)))
-                                 (push (+ (* 60 hours) minutes) *lyc-stack*))
+                           (if minutes
+                               (progn (ldebug "push minutes" minutes)
+                                      (push minutes *lyc-stack*))
+                             (ldebug "run function" exp)
                              (lyc-run-function exp))))
-                        (t (lyc-push-result (eval exp)))))))))
+                        (t (ldebug "eval and push" exp) (lyc-push-result (eval exp)))))))))
     result))
 
 (defun run-lyc (args)
