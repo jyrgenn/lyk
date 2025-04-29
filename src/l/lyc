@@ -235,9 +235,12 @@ throwing an error."
 
 (defun minutes-to-time (minutes)
   "Convert minutes to a timesym of the form hh:mm."
-  (intern (format nil "~2,,,'0@A:~2,,,'0@A"
-		  (truncate (/ minutes 60))
-                  (abs (% minutes 60)))))
+  (let* ((sign (if (< minutes 0) "-" ""))
+         (abs-minutes (abs minutes))
+         (hours (truncate (/ abs-minutes 60)))
+         (rem-minutes (% abs-minutes 60)))
+    (intern (format nil "~A~2,,,'0@A:~2,,,'0@A"
+                    sign hours rem-minutes))))
 
 (defl nthrt (x n) result
   "take the n-th root of x (n need not be integer)"
