@@ -1,6 +1,22 @@
 Lyk -- Lysp yn Kotlin
 =====================
 
+**Update**: Seeing that the Kotlin and Java runtime libraries
+actually *don't* offer all functionaluity I could ever wish for, but
+rather lack in system functionality like file system access and
+process control, as well as other POSIX functionality that is *of
+course* present in e.g. Python, let alone Perl, was a big
+disappointment. I know there is a way around it with jna-posix, but
+I don't want to go that route. I rather intend to port the progress
+that I have made in Lyk back to its mother implementation Lys and
+make another attempt to tackle the complexity of Apple's macOS
+system libraries, now in earnest.
+
+See more about that plan in the Lys repository.
+[2025-05-24 ni]
+
+---
+
 This is a small Lisp implementation in Kotlin, running on the JVM.
 While I am not the biggest fan of JVM-based things because you'll
 always have to schlep that huge runtime around, I am curious. (I
