@@ -90,7 +90,7 @@ test: lyk.jar
 	./run-tests.lisp
 
 clean:
-	-rm -rf *.jar *.tmp *~ */*~ TAGS *.log generated
+	-rm -rf *.jar *.tmp *~ */*~ TAGS *.log generated stage
 
 pkg: $(STAGE_BASE)/lyk.tar.gz
 
